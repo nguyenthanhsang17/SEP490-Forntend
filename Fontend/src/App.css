@@ -30,7 +30,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #2d8f2d;
+  background-color: #4a54e2;
 }
 
 .navbar .logo img {
@@ -67,7 +67,7 @@ body {
 
 /* Main Section */
 .main-section {
-  background-color: #004d00;
+  background-color: #3626df;
   color: white;
   padding: 50px 20px;
   text-align: center;
@@ -232,5 +232,48 @@ footer {
   background-color: #e5e5e5;
   margin: 0 auto;
   border-radius: 5px;
+}
+.blog-section {
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.blog-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.blog-cards {
+  display: flex;
+  gap: 2rem;
+}
+
+.blog-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
+}
+
+.blog-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.blog-card p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.blog-card a {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.blog-card a:hover {
+  text-decoration: underline;
 }
 

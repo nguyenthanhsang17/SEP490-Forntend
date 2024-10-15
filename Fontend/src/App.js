@@ -58,6 +58,28 @@ function App() {
         </div>
       </section>
 
+      {/* Phần blog */}
+      <section className="blog-section">
+        <h2>Cẩm nang nghề nghiệp</h2>
+        <div className="blog-cards">
+          <article className="blog-card">
+            <h3>Cách viết CV ấn tượng cho nhà tuyển dụng</h3>
+            <p>Tìm hiểu cách để làm nổi bật CV của bạn trước nhà tuyển dụng.</p>
+            <a href="#">Đọc thêm</a>
+          </article>
+          <article className="blog-card">
+            <h3>Làm sao để chuẩn bị phỏng vấn tốt?</h3>
+            <p>Những mẹo và lời khuyên giúp bạn chuẩn bị tốt cho buổi phỏng vấn.</p>
+            <a href="#">Đọc thêm</a>
+          </article>
+          <article className="blog-card">
+            <h3>Làm thế nào để thăng tiến trong sự nghiệp?</h3>
+            <p>Chiến lược để bạn có thể phát triển và thăng tiến nhanh hơn trong công việc.</p>
+            <a href="#">Đọc thêm</a>
+          </article>
+        </div>
+      </section>
+
       <Footer /> {/* Footer component */}
     </div>
   );

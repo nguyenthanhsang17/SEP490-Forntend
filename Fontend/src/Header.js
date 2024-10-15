@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css'; // If you have a separate CSS file for header styles, import that here
+import { Link } from 'react-router-dom'; // Import Link từ react-router-dom
+import './App.css';
 
 function Header() {
   return (
@@ -9,15 +10,17 @@ function Header() {
       </div>
       <nav>
         <ul>
-          <li><a href="#">Việc làm</a></li>
-          <li><a href="#">Hồ sơ & CV</a></li>
-          <li><a href="#">Công ty</a></li>
-          <li><a href="#">Cẩm nang nghề nghiệp</a></li>
+          <li><Link to="/jobs">Việc làm</Link></li>
+          <li><Link to="/profile">Hồ sơ & CV</Link></li>
+          <li><Link to="/companies">Công ty</Link></li>
+          <li><Link to="/career-guide">Cẩm nang nghề nghiệp</Link></li>
         </ul>
       </nav>
       <div className="auth-buttons">
         <button>Đăng nhập</button>
-        <button>Đăng ký</button>
+        <Link to="/register">
+          <button>Đăng ký</button>
+        </Link>
       </div>
     </header>
   );
