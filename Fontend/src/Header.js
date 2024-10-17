@@ -16,8 +16,10 @@ function Header() {
           <li><Link to="/career-guide">Cẩm nang nghề nghiệp</Link></li>
         </ul>
       </nav>
-      <div className="auth-buttons">
+      <div className="auth-buttons">\
+        <Link to ="/login">
         <button>Đăng nhập</button>
+        </Link>
         <Link to="/register">
           <button>Đăng ký</button>
         </Link>
