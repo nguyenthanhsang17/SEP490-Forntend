@@ -354,6 +354,35 @@ body {
 
 }
 
+.simple-bg-screen {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    min-height: 100vh; /* Chiều cao tối thiểu 100% màn hình */
+    background-size: cover; /* Đảm bảo ảnh background luôn full */
+    background-position: center center; /* Đặt vị trí trung tâm cho background */
+}
+
+.login-screen-sec {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Chiều cao 100% */
+}
+
+.login-screen {
+    background: rgba(255, 255, 255, 0.9); /* Làm nổi bật phần đăng nhập */
+    padding: 30px;
+    border-radius: 10px; /* Bo góc cho đẹp */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Thêm shadow */
+    max-width: 400px; /* Đặt giới hạn chiều rộng */
+    width: 100%; /* Chiếm toàn bộ chiều rộng trong max-width */
+}
+
+.btn-login {
+    width: 100%; /* Chiếm toàn bộ chiều rộng nút */
+}
   
   
 
