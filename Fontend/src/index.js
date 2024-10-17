@@ -1,16 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-
+import App from './App'; // Trang chính của ứng dụng
 import Register from './componets/accounts/Register'; // Trang đăng ký
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-<<<<<<< Updated upstream
 import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
-=======
 import HomePage from './componets/common/HomePage';
->>>>>>> Stashed changes
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
