@@ -9,6 +9,7 @@ import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
 import HomePage from './componets/common/HomePage';
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
