@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
+import HomePage from './componets/common/HomePage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +15,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         {/* Định tuyến đến các trang khác nhau */}
-        <Route path="/" element={<App />} /> {/* Trang chính */}
+        <Route path="/" element={<HomePage />} /> {/* Trang chính */}
         <Route path="/register" element={<Register />} /> {/* Trang đăng ký */}
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
