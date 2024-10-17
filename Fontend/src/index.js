@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App'; // Trang chính của ứng dụng
+
 import Register from './componets/accounts/Register'; // Trang đăng ký
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+<<<<<<< Updated upstream
 import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
+=======
+import HomePage from './componets/common/HomePage';
+>>>>>>> Stashed changes
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +18,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         {/* Định tuyến đến các trang khác nhau */}
-        <Route path="/" element={<App />} /> {/* Trang chính */}
+        <Route path="/" element={<HomePage />} /> {/* Trang chính */}
         <Route path="/register" element={<Register />} /> {/* Trang đăng ký */}
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
