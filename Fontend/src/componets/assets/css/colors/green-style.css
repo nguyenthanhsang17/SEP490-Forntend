@@ -383,8 +383,41 @@ body {
 .btn-login {
     width: 100%; /* Chiếm toàn bộ chiều rộng nút */
 }
-  
-  
 
+
+/* style.css */
+.logo-container {
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  
+  .login-form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .btn-google {
+    background-color: #db4437;
+    color: white;
+    margin-top: 10px;
+    border: 5px solid #db4437;
+  }
+  
+  .btn-google i {
+    margin-right: 8px;
+  }
+  
+  .login-links {
+    margin-top: 15px;
+  }
+  
+  .login-links a {
+    color: #28a745;
+  }
+  
 
 

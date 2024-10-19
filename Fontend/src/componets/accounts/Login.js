@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "../assets/css/style.css"; // Import các tệp CSS từ đúng đường dẫn trong src
+import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
-import bannerImage from '../assets/img/banner-10.jpg'; // Import banner image từ thư mục đúng
-import logoImage from '../assets/img/logo.png'; // Import logo image từ thư mục đúng
+import bannerImage from '../assets/img/banner-6.jpg';
+import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; 
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -11,95 +11,55 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Logic đăng nhập ở đây
     console.log("Username:", username, "Password:", password);
   };
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const openRightMenu = () => {
-    setIsMenuOpen(true);
-  };
-
-  const closeRightMenu = () => {
-    setIsMenuOpen(false);
+  const handleGoogleLogin = () => {
+    console.log("Google login clicked");
+    // Logic for Google login here
   };
 
   return (
-    <div className="simple-bg-screen" style={{ backgroundImage: `url(${bannerImage})` }}> {/* Sửa background image */}
+    <div className="simple-bg-screen" style={{ backgroundImage: `url(${bannerImage})` }}>
       <div className="wrapper">
         <section className="login-screen-sec">
           <div className="container">
             <div className="login-screen">
-              <a href="index-2.html">
-                <img src={logoImage} className="img-responsive" alt="Logo" /> {/* Sửa đường dẫn logo */}
-              </a>
-              <form onSubmit={handleLogin}>
+              <div className="logo-container text-center">
+                <a href="/">
+                  <img src={logoImage} className="img-responsive logo" alt="Logo" />
+                </a>
+              </div>
+              <form onSubmit={handleLogin} className="login-form">
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Username"
+                  placeholder="Tên tài khoản"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
                   type="password"
                   className="form-control"
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <button className="btn btn-login" type="submit">
-                  Login
+                <button className="btn btn-login btn-block" type="submit">
+                  Đăng nhập
                 </button>
-                <span>
-                  You Have No Account? <a href="/register"> Create An Account</a>
-                </span>
-                <span>
-                  <a href="/forgotPassword"> Forgot Password</a>
-                </span>
+                <span>OR</span>
+                <button className="btn btn-google btn-block" type="button" onClick={handleGoogleLogin}>
+                  <i className="fa fa-google"></i> Đăng nhập bằng Google
+                </button>
+                <div className="login-links text-center">
+                  <span>Bạn chưa có tài khoản? <a href="/register">Tạo tài khoản</a></span>
+                  <span><a href="/forgotPassword">Quên mật khẩu</a></span>
+                </div>
               </form>
             </div>
           </div>
         </section>
-
-        <button className="w3-button w3-teal w3-xlarge w3-right" onClick={openRightMenu}>
-          <i className="spin fa fa-cog" aria-hidden="true"></i>
-        </button>
-
-        {isMenuOpen && (
-          <div className="w3-sidebar w3-bar-block w3-card-2 w3-animate-right" style={{ right: 0 }}>
-            <button onClick={closeRightMenu} className="w3-bar-item w3-button w3-large">
-              Close &times;
-            </button>
-            <ul id="styleOptions" title="switch styling">
-              <li>
-                <a href="javascript: void(0)" className="cl-box blue" data-theme="colors/blue-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box red" data-theme="colors/red-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box purple" data-theme="colors/purple-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box green" data-theme="colors/green-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box dark-red" data-theme="colors/dark-red-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box orange" data-theme="colors/orange-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box sea-blue" data-theme="colors/sea-blue-style"></a>
-              </li>
-              <li>
-                <a href="javascript: void(0)" className="cl-box pink" data-theme="colors/pink-style"></a>
-              </li>
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

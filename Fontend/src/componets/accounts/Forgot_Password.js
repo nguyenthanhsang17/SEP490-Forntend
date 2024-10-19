@@ -1,29 +1,87 @@
 import React, { useState } from 'react';
-import '../assets/css/style.css'; // Custom CSS
-import '../assets/css/colors/green-style.css'; // Theme CSS
-import logoImage from '../assets/img/logo.png'; // Logo image import
-import bannerImage from '../assets/img/banner-10.jpg'; // Background image import
+import '../assets/css/style.css'; // Import CSS tùy chỉnh
+import '../assets/css/colors/green-style.css'; // Import CSS chủ đề
+import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; // Logo
+import bannerImage from '../assets/img/banner-.jpg'; // Ảnh nền
 
 function ForgotPassword() {
-  const [email, setEmail] = useState(''); // State for managing email input
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State for managing menu visibility
-
+  const [email, setEmail] = useState(''); // Quản lý email
+  const [code, setCode] = useState(''); // Quản lý mã xác thực
+  const [password, setPassword] = useState(''); // Quản lý mật khẩu
+  const [confirmPassword, setConfirmPassword] = useState(''); // Quản lý xác nhận mật khẩu
+  const [emailVerified, setEmailVerified] = useState(false); // Trạng thái email đã được xác minh
+  const [errorMessage, setErrorMessage] = useState(''); // Quản lý lỗi
+  
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
+  // Hàm xử lý khi nhấn nút Submit để kiểm tra email
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle submit logic here
-    console.log("Email submitted:", email);
+    try {
+      // Gọi API kiểm tra email tồn tại
+      const response = await fetch('/api/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+
+      if (result.exists) {
+        // Nếu email tồn tại, chuyển đến bước tiếp theo
+        setEmailVerified(true);
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Email không tồn tại!');
+      }
+    } catch (error) {
+      console.error("Có lỗi xảy ra khi kiểm tra email:", error);
+      setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
+    }
   };
 
-  const openRightMenu = () => {
-    setIsMenuOpen(true);
-  };
+   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
+  //  const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   setLoading(true); // Bắt đầu trạng thái loading
 
-  const closeRightMenu = () => {
-    setIsMenuOpen(false);
+  //   // Mô phỏng gọi API với setTimeout
+  //   setTimeout(() => {
+  //     setLoading(false); // Kết thúc trạng thái loading
+  //     if (email === 'test@example.com') {
+  //       // Giả lập email tồn tại
+  //       setEmailVerified(true);
+  //       setErrorMessage('');
+  //     } else {
+  //       // Giả lập email không tồn tại
+  //       setErrorMessage('Email không tồn tại!');
+  //     }
+  //   }, 2000); // Giả lập thời gian phản hồi là 2 giây
+  // };
+
+  // Hàm xử lý khi người dùng hoàn tất nhập mã code và mật khẩu
+  const handleResetPassword = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setErrorMessage('Mật khẩu xác nhận không khớp!');
+      return;
+    }
+    // Logic gửi mã code và mật khẩu mới về API để cập nhật
+    console.log("Mã code:", code, "Mật khẩu mới:", password);
   };
 
   return (
@@ -35,57 +93,50 @@ function ForgotPassword() {
               <a href="/">
                 <img src={logoImage} className="img-responsive" alt="Logo" />
               </a>
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="email"
-                  className="form-control"
-                  placeholder="Enter your Email"
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-                <button className="btn btn-login" type="submit">Submit</button>
-              </form>
+              {!emailVerified ? (
+                // Form kiểm tra email
+                <form onSubmit={handleSubmit}>
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Nhập email của bạn"
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  <button className="btn btn-login" type="submit">Xác nhận Email</button>
+                  {errorMessage && <p className="error-message">{errorMessage}</p>}
+                </form>
+              ) : (
+                // Form nhập mã xác thực và mật khẩu
+                <form onSubmit={handleResetPassword}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Nhập mã xác thực"
+                    value={code}
+                    onChange={handleCodeChange}
+                  />
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Nhập mật khẩu mới"
+                    value={password}
+                    onChange={handlePasswordChange}
+                  />
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Xác nhận mật khẩu"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                  />
+                  <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
+                  {errorMessage && <p className="error-message">{errorMessage}</p>}
+                </form>
+              )}
             </div>
           </div>
         </section>
-
-        {/* Toggle button for settings menu */}
-        <button className="w3-button w3-teal w3-xlarge w3-right" onClick={openRightMenu}>
-          <i className="spin fa fa-cog" aria-hidden="true"></i>
-        </button>
-
-        {/* Right sidebar menu */}
-        {isMenuOpen && (
-          <div className="w3-sidebar w3-bar-block w3-card-2 w3-animate-right" style={{ right: 0 }}>
-            <button onClick={closeRightMenu} className="w3-bar-item w3-button w3-large">Close &times;</button>
-            <ul id="styleOptions" title="switch styling">
-              <li>
-                <a href="javascript:void(0)" className="cl-box blue" data-theme="colors/blue-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box red" data-theme="colors/red-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box purple" data-theme="colors/purple-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box green" data-theme="colors/green-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box dark-red" data-theme="colors/dark-red-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box orange" data-theme="colors/orange-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box sea-blue" data-theme="colors/sea-blue-style"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0)" className="cl-box pink" data-theme="colors/pink-style"></a>
-              </li>
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );
