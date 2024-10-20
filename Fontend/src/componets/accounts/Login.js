@@ -48,7 +48,7 @@ function Login() {
                 <button className="btn btn-login btn-block" type="submit">
                   Đăng nhập
                 </button>
-                <span>OR</span>
+                <span>Hoặc</span>
                 <button className="btn btn-google btn-block" type="button" onClick={handleGoogleLogin}>
                   <i className="fa fa-google"></i> Đăng nhập bằng Google
                 </button>

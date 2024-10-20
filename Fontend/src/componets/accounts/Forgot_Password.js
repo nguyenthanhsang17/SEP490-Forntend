@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../assets/css/style.css'; // Import CSS tùy chỉnh
 import '../assets/css/colors/green-style.css'; // Import CSS chủ đề
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; // Logo
-import bannerImage from '../assets/img/banner-.jpg'; // Ảnh nền
+import bannerImage from '../assets/img/banner-2.jpg'; // Ảnh nền
 
 function ForgotPassword() {
   const [email, setEmail] = useState(''); // Quản lý email
@@ -11,6 +11,7 @@ function ForgotPassword() {
   const [confirmPassword, setConfirmPassword] = useState(''); // Quản lý xác nhận mật khẩu
   const [emailVerified, setEmailVerified] = useState(false); // Trạng thái email đã được xác minh
   const [errorMessage, setErrorMessage] = useState(''); // Quản lý lỗi
+  const [loading, setLoading] = useState(false); // Quản lý trạng thái loading
   
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -29,49 +30,49 @@ function ForgotPassword() {
   };
 
   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      // Gọi API kiểm tra email tồn tại
-      const response = await fetch('/api/check-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const result = await response.json();
-
-      if (result.exists) {
-        // Nếu email tồn tại, chuyển đến bước tiếp theo
-        setEmailVerified(true);
-        setErrorMessage('');
-      } else {
-        setErrorMessage('Email không tồn tại!');
-      }
-    } catch (error) {
-      console.error("Có lỗi xảy ra khi kiểm tra email:", error);
-      setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
-    }
-  };
-
-   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
-  //  const handleSubmit = (e) => {
+  // const handleSubmit = async (e) => {
   //   e.preventDefault();
-  //   setLoading(true); // Bắt đầu trạng thái loading
+  //   try {
+  //     // Gọi API kiểm tra email tồn tại
+  //     const response = await fetch('/api/check-email', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email }),
+  //     });
 
-  //   // Mô phỏng gọi API với setTimeout
-  //   setTimeout(() => {
-  //     setLoading(false); // Kết thúc trạng thái loading
-  //     if (email === 'test@example.com') {
-  //       // Giả lập email tồn tại
+  //     const result = await response.json();
+
+  //     if (result.exists) {
+  //       // Nếu email tồn tại, chuyển đến bước tiếp theo
   //       setEmailVerified(true);
   //       setErrorMessage('');
   //     } else {
-  //       // Giả lập email không tồn tại
   //       setErrorMessage('Email không tồn tại!');
   //     }
-  //   }, 2000); // Giả lập thời gian phản hồi là 2 giây
+  //   } catch (error) {
+  //     console.error("Có lỗi xảy ra khi kiểm tra email:", error);
+  //     setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
+  //   }
   // };
+
+   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true); // Bắt đầu trạng thái loading
+
+    // Mô phỏng gọi API với setTimeout
+    setTimeout(() => {
+      setLoading(false); // Kết thúc trạng thái loading
+      if (email === 'test@example.com') {
+        // Giả lập email tồn tại
+        setEmailVerified(true);
+        setErrorMessage('');
+      } else {
+        // Giả lập email không tồn tại
+        setErrorMessage('Email không tồn tại!');
+      }
+    }, 2000); // Giả lập thời gian phản hồi là 2 giây
+  };
 
   // Hàm xử lý khi người dùng hoàn tất nhập mã code và mật khẩu
   const handleResetPassword = (e) => {
@@ -131,6 +132,7 @@ function ForgotPassword() {
                     onChange={handleConfirmPasswordChange}
                   />
                   <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
+                  
                   {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </form>
               )}
