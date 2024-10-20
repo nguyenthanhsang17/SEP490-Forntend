@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../assets/css/style.css'; // Custom CSS
 import '../assets/css/colors/green-style.css'; // Theme CSS
-import logoImage from '../assets/img/logo.png'; // Logo image import
+import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; // Logo image import
 import bannerImage from '../assets/img/banner-10.jpg'; // Background image import
 
 function ForgotPassword() {

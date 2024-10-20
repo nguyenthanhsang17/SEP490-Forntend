@@ -3,7 +3,7 @@ import "../assets/css/style.css"; // Import các tệp CSS từ đúng đường
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
 import bannerImage from '../assets/img/banner-10.jpg'; // Import banner image từ thư mục đúng
-import logoImage from '../assets/img/logo.png'; // Import logo image từ thư mục đúng
+import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; // Import logo image từ thư mục đúng
 
 function Login() {
   const [username, setUsername] = useState("");
