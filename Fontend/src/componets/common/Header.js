@@ -123,6 +123,8 @@ const ChangePasswordModal = ({ show, handleClose }) => {
     } else {
       console.error('Passwords do not match');
     }
+    const token = localStorage.getItem('token');
+    console.log(token);
   };
 
   const checkPasswordStrength = (password) => {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
@@ -8,15 +9,55 @@ import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const navigate = useNavigate(); // Khởi tạo useNavigate
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Username:", username, "Password:", password);
+    setIsLoading(true);
+    setError(null);
+
+    const loginData = {
+      UserName: username,
+      Password: password,
+    };
+
+    try {
+      const response = await fetch("https://localhost:7077/api/Users/Login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.Message || "Đăng nhập không thành công");
+      }
+
+      console.log("Đăng nhập thành công:", result);
+
+      // Lưu token vào localStorage
+      localStorage.setItem('token', result.token);
+
+      // Điều hướng đến trang chủ
+      navigate('/'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
+
+    } catch (error) {
+      setError(error.message);
+      console.error("Lỗi:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
     console.log("Google login clicked");
-    // Logic for Google login here
+    // Logic cho đăng nhập bằng Google
   };
 
   return (
@@ -31,12 +72,14 @@ function Login() {
                 </a>
               </div>
               <form onSubmit={handleLogin} className="login-form">
+                {error && <div className="error-message" style={{ color: 'red' }}>{error}</div>}
                 <input
                   type="text"
                   className="form-control"
                   placeholder="Tên tài khoản"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
                 <input
                   type="password"
@@ -44,9 +87,10 @@ function Login() {
                   placeholder="Mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
-                <button className="btn btn-login btn-block" type="submit">
-                  Đăng nhập
+                <button className="btn btn-login btn-block" type="submit" disabled={isLoading}>
+                  {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
                 <span>Hoặc</span>
                 <button className="btn btn-google btn-block" type="button" onClick={handleGoogleLogin}>
