@@ -436,4 +436,28 @@ body {
     width: 100%;
     max-width: 400px; /* Đặt độ rộng tối đa của khung */
   }
+  .pricing .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .freelance-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+  
+  .freelance-box {
+    flex-grow: 1;
+  }
+  
+  .freelance-box-extra {
+    margin-top: auto;
+  }
+  .flc-rate {
+    font-size: 12px; /* Adjust the size as needed */
+    text-align: right; /* Align text to the right */
+    margin-right: -5px; /* Add some space from the right edge */
+  }
   

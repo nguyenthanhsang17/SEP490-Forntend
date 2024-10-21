@@ -82,17 +82,14 @@ const styles = {
     cursor: 'pointer',
     color: '#999',
   },
-  '@keyframes fadeIn': {
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-  },
-  '@keyframes slideIn': {
-    from: { transform: 'translateY(-50px)', opacity: 0 },
-    to: { transform: 'translateY(0)', opacity: 1 },
+  notification: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: '20px',
   },
 };
 
-const ChangePasswordModal = ({ show, handleClose }) => {
+const ChangePasswordModal = ({ show, handleClose, userName }) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -100,25 +97,51 @@ const ChangePasswordModal = ({ show, handleClose }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [notification, setNotification] = useState('');
 
   useEffect(() => {
-    if (show) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = show ? 'hidden' : 'unset';
   }, [show]);
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
-    if (newPassword === confirmPassword) {
-      console.log('Password changed successfully');
-      handleClose();
-    } else {
-      console.error('Passwords do not match');
+    
+    if (newPassword !== confirmPassword) {
+      setNotification('Mật khẩu không khớp.'); // "Passwords do not match"
+      return;
     }
+
     const token = localStorage.getItem('token');
-    console.log(token);
+
+    try {
+      const response = await fetch('https://localhost:7077/api/Users/ChangePassword', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Thay đổi mật khẩu không thành công.'); // "Password change failed"
+      }
+
+      setNotification(`Mật khẩu đã được thay đổi thành công cho người dùng: ${userName}`); // "Password has been changed successfully for user: {userName}"
+      handleClose();
+      // Clear form fields
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setPasswordStrength(0);
+    } catch (error) {
+      setNotification('Có lỗi xảy ra khi thay đổi mật khẩu.'); // "An error occurred while changing the password."
+      console.error('Error changing password:', error);
+    }
   };
 
   const checkPasswordStrength = (password) => {
@@ -157,6 +180,7 @@ const ChangePasswordModal = ({ show, handleClose }) => {
     <div style={styles.modal}>
       <div style={styles.modalContent}>
         <h2 style={styles.title}>Đổi mật khẩu</h2>
+        {notification && <div style={styles.notification}>{notification}</div>} {/* Notification display */}
         <form onSubmit={handleChangePassword}>
           <div style={styles.formGroup}>
             <label style={styles.label} htmlFor="old-password">Mật Khẩu Cũ</label>

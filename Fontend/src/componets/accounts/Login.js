@@ -43,6 +43,7 @@ function Login() {
 
       // Lưu token vào localStorage
       localStorage.setItem('token', result.token);
+      localStorage.setItem('userName', result.userName);
 
       // Điều hướng đến trang chủ
       navigate('/'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
