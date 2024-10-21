@@ -4,7 +4,7 @@ import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
 import bannerImage from '../assets/img/banner-10.jpg';
-import logoImage from '../assets/img/logo.png';
+import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -84,7 +84,7 @@ const Signup = () => {
                   onChange={handleChange}
                 />
                 <button className="btn btn-login" type="submit">
-                  Sign Up
+                  Đăng Ký
                 </button>
                 <span>
                   Have You Account? <a href="/login">Login</a>
