@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
 import HomePage from './componets/common/HomePage';
+import ViewJobDetail from './componets/jobs/View_Job_Detail'
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -20,6 +21,7 @@ root.render(
         <Route path="/register" element={<Register />} /> {/* Trang đăng ký */}
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
+        <Route path="/viewJobDetail" element={<ViewJobDetail />} />
         {/* Thêm các route khác nếu cần */}
       </Routes>
     </BrowserRouter>

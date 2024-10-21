@@ -69,7 +69,7 @@ class HomePage extends React.Component {
                     <img src="assets/img/com-1.jpg" class="img-responsive" alt="" />
                   </div>
                   <div class="brows-job-position">
-                    <h3><a href="job-detail.html">Web Developer</a></h3>
+                    <h3><a href="/viewJobDetail">Web Developer</a></h3>
                     <p><span>Google</span></p>
                   </div>
                   <div class="job-position"><span class="job-num">5 Positions</span></div>

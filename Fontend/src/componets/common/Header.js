@@ -22,7 +22,7 @@ class Header extends React.Component {
                 <a href="pricing.html"><i class="fa fa-sign-in" aria-hidden="true"></i>Pricing</a>
               </li>
               <li class="left-br">
-                <a href="javascript:void(0)" data-toggle="modal" data-target="#signup" class="signin">Sign In Now</a>
+                <a href="/login" data-toggle="modal" data-target="#signup" class="signin">Sign In Now</a>
               </li>
             </ul>
 
