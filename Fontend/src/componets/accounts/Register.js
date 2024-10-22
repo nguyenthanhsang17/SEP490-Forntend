@@ -10,25 +10,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontA
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const [formVerify, setFormDataVerify] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
 
   const navigate = useNavigate(); // Khởi tạo useNavigate
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
-  const [sendmail, setsendmail] = useState(false);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -44,6 +37,7 @@ const Signup = () => {
       alert("Mật khẩu và xác nhận mật khẩu không khớp.");
       return;
     }
+    console.log(formData);
     try {
       const response = await fetch("https://localhost:7077/api/Users/ResgisterUser", {
         method: "POST",
@@ -58,6 +52,8 @@ const Signup = () => {
       if (!response.ok) {
         setError(result.message)
         throw new Error(result.message || "Đăng Ký không thành công");
+      }else{
+        navigate('/VerifyRegister'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
       }
 
       console.log("Đăng ký thành công:", result);
@@ -65,7 +61,7 @@ const Signup = () => {
       // Lưu token vào localStorage
 
       // Điều hướng đến trang chủ
-      navigate('/'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
+      
 
     } catch (error) {
       setError(error.message);
@@ -161,65 +157,13 @@ const Signup = () => {
         <a href="/">
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
-        {!sendmail ? (<form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            style={styles.input}
-            name="name"
-            placeholder="Your Name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            style={styles.input}
-            name="email"
-            placeholder="Your Email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <div style={styles.passwordInput}>
-            <input
-              type={showPassword ? "text" : "password"}
-              style={styles.input}
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <span onClick={togglePasswordVisibility} style={styles.icon}>
-              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-            </span>
-          </div>
-          <div style={styles.passwordInput}>
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              style={styles.input}
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-            <span onClick={toggleConfirmPasswordVisibility} style={styles.icon}>
-              <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
-            </span>
-          </div>
-          <div style={{ color: 'red' }} >{error}</div>
-          <button style={styles.button} type="submit">
-            Đăng Ký
-          </button>
-          <span style={styles.link}>
-            Have You Account? <a href="/login">Login</a>
-          </span>
-        </form>) : (
-
-          <form onSubmit={handleVerify}>
+          <form onSubmit={handleSubmit}>
             <input
               type="text"
               style={styles.input}
-              name="name"
+              name="fullName"
               placeholder="Your Name"
-              value={formData.name}
+              value={formData.fullName}
               onChange={handleChange}
             />
             <input
@@ -258,11 +202,9 @@ const Signup = () => {
             </div>
             <div style={{ color: 'red' }} >{error}</div>
             <button style={styles.button} type="submit">
-              Xác thực Code
+              Đăng Ký Tài Khoản
             </button>
           </form>
-        )
-        }
       </div>
     </div>
   );
