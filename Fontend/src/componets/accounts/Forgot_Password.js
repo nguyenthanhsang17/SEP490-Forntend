@@ -30,49 +30,67 @@ function ForgotPassword() {
   };
 
   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
-  // const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định
+    setLoading(true); // Bắt đầu trạng thái loading
+    setErrorMessage(''); // Reset thông báo lỗi
+
+    // Kiểm tra xem email đã được nhập chưa
+    if (!email) {
+        setErrorMessage('Vui lòng nhập email!');
+        setLoading(false); // Kết thúc trạng thái loading
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://localhost:7077/api/Email/SendMailToForgotPassword?email=${encodeURIComponent(email)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text(); // Đọc phản hồi lỗi
+            console.error("Error response:", errorText);
+            setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!'); // Cập nhật thông báo lỗi
+            return;
+        }
+
+        // Đọc kết quả từ phản hồi API
+        const result = await response.json();
+        if (result) {
+            setEmailVerified(true); // Chuyển sang phần đổi mật khẩu
+            setErrorMessage(''); // Reset thông báo lỗi
+        } else {
+            setErrorMessage('Email không tồn tại!');
+        }
+    } catch (error) {
+        console.error("Có lỗi xảy ra khi kiểm tra email:", error);
+        setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
+    } finally {
+        setLoading(false); // Kết thúc trạng thái loading
+    }
+};
+
+
+
+   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
+  // const handleSubmit = (e) => {
   //   e.preventDefault();
-  //   try {
-  //     // Gọi API kiểm tra email tồn tại
-  //     const response = await fetch('/api/check-email', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ email }),
-  //     });
+  //   setLoading(true); // Bắt đầu trạng thái loading
 
-  //     const result = await response.json();
-
-  //     if (result.exists) {
-  //       // Nếu email tồn tại, chuyển đến bước tiếp theo
+  //   // Mô phỏng gọi API với setTimeout
+  //   setTimeout(() => {
+  //     setLoading(false); // Kết thúc trạng thái loading
+  //     if (email === 'test@example.com') {
+  //       // Giả lập email tồn tại
   //       setEmailVerified(true);
   //       setErrorMessage('');
   //     } else {
+  //       // Giả lập email không tồn tại
   //       setErrorMessage('Email không tồn tại!');
   //     }
-  //   } catch (error) {
-  //     console.error("Có lỗi xảy ra khi kiểm tra email:", error);
-  //     setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
-  //   }
+  //   }, 2000); // Giả lập thời gian phản hồi là 2 giây
   // };
-
-   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true); // Bắt đầu trạng thái loading
-
-    // Mô phỏng gọi API với setTimeout
-    setTimeout(() => {
-      setLoading(false); // Kết thúc trạng thái loading
-      if (email === 'test@example.com') {
-        // Giả lập email tồn tại
-        setEmailVerified(true);
-        setErrorMessage('');
-      } else {
-        // Giả lập email không tồn tại
-        setErrorMessage('Email không tồn tại!');
-      }
-    }, 2000); // Giả lập thời gian phản hồi là 2 giây
-  };
 
   // Hàm xử lý khi người dùng hoàn tất nhập mã code và mật khẩu
   const handleResetPassword = (e) => {
@@ -95,47 +113,47 @@ function ForgotPassword() {
                 <img src={logoImage} className="img-responsive" alt="Logo" />
               </a>
               {!emailVerified ? (
-                // Form kiểm tra email
-                <form onSubmit={handleSubmit}>
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Nhập email của bạn"
-                    value={email}
-                    onChange={handleEmailChange}
-                  />
-                  <button className="btn btn-login" type="submit">Xác nhận Email</button>
-                  {errorMessage && <p className="error-message">{errorMessage}</p>}
-                </form>
-              ) : (
-                // Form nhập mã xác thực và mật khẩu
-                <form onSubmit={handleResetPassword}>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Nhập mã xác thực"
-                    value={code}
-                    onChange={handleCodeChange}
-                  />
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Nhập mật khẩu mới"
-                    value={password}
-                    onChange={handlePasswordChange}
-                  />
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Xác nhận mật khẩu"
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
-                  />
-                  <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
-                  
-                  {errorMessage && <p className="error-message">{errorMessage}</p>}
-                </form>
-              )}
+    // Form kiểm tra email
+    <form onSubmit={handleSubmit}>
+        <input
+            type="email"
+            className="form-control"
+            placeholder="Nhập email của bạn"
+            value={email}
+            onChange={handleEmailChange}
+        />
+        <button className="btn btn-login" type="submit">Xác nhận Email</button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+    </form>
+) : (
+    // Form nhập mã xác thực và mật khẩu
+    <form onSubmit={handleResetPassword}>
+        <input
+            type="text"
+            className="form-control"
+            placeholder="Nhập mã xác thực"
+            value={code}
+            onChange={handleCodeChange}
+        />
+        <input
+            type="password"
+            className="form-control"
+            placeholder="Nhập mật khẩu mới"
+            value={password}
+            onChange={handlePasswordChange}
+        />
+        <input
+            type="password"
+            className="form-control"
+            placeholder="Xác nhận mật khẩu"
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+        />
+        <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+    </form>
+)}
+
             </div>
           </div>
         </section>

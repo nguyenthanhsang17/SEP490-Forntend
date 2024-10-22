@@ -126,6 +126,12 @@ const ChangePasswordModal = ({ show, handleClose }) => {
     const token = localStorage.getItem('token');
     console.log(token);
   };
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Hoặc sử dụng sessionStorage
+    // Thực hiện thêm các hành động cần thiết, như điều hướng về trang đăng nhập
+  };
+  
 
   const checkPasswordStrength = (password) => {
     let strength = 0;

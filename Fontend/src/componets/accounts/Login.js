@@ -7,7 +7,7 @@ import bannerImage from '../assets/img/banner-6.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; 
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ function Login() {
     setError(null);
 
     const loginData = {
-      UserName: username,
+      Email: email,
       Password: password,
     };
 
@@ -76,9 +76,9 @@ function Login() {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Tên tài khoản"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
                 <input
