@@ -6,6 +6,7 @@ import bannerImage from '../assets/img/banner-10.jpg';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 
+
 function ViewJobDetail() {
   return (
     <>
