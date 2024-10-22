@@ -22,6 +22,7 @@ root.render(
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail" element={<ViewJobDetail />} />
+        <Route path="/VerifyRegister" element={<VerifyRegister/>} />
         {/* Thêm các route khác nếu cần */}
       </Routes>
     </BrowserRouter>
