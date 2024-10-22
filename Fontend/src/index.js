@@ -9,7 +9,7 @@ import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobs/View_Job_Detail'
-
+import Profile from './componets/accounts/Profile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,8 +22,7 @@ root.render(
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail" element={<ViewJobDetail />} />
-        <Route path="/VerifyRegister" element={<VerifyRegister/>} />
-        {/* Thêm các route khác nếu cần */}
+        <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

@@ -436,4 +436,125 @@ body {
     width: 100%;
     max-width: 400px; /* Đặt độ rộng tối đa của khung */
   }
+  .pricing .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .freelance-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+  
+  .freelance-box {
+    flex-grow: 1;
+  }
+  
+  .freelance-box-extra {
+    margin-top: auto;
+  }
+  .flc-rate {
+    font-size: 12px; /* Adjust the size as needed */
+    text-align: right; /* Align text to the right */
+    margin-right: -5px; /* Add some space from the right edge */
+  }
+/* Profile.css */
+
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-header h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.profile-image {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-image img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-details,
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profile-details p,
+.profile-form label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.profile-form input,
+.profile-form select,
+.profile-form textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+
+.profile-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.profile-form button:disabled {
+  background-color: #6c757d;
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.edit-button {
+  background-color: #17a2b8;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.edit-button:hover {
+  background-color: #138496;
+}
+
   
