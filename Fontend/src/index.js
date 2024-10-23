@@ -9,9 +9,14 @@ import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/Forgot_Password';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobs/View_Job_Detail'
+
 import ViewAllJobApplied from './componets/jobs/View_All_Job_Applied';
 import ViewAllJobSeekerApply from './componets/jobs/View_All_Jobseeker_Apply';
 import ViewJobSeekerDetail from './componets/jobs/View_JobSeeker_Detail';
+
+import Profile from './componets/accounts/Profile';
+import VerifyRegister from "./componets/accounts/VerifyRegister";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -24,10 +29,15 @@ root.render(
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail" element={<ViewJobDetail />} />
+
         <Route path="/ViewAllJobApplied/:id" element={<ViewAllJobApplied />} />
         <Route path="/ViewAllJobseekerApply/:id" element={<ViewAllJobSeekerApply />} />
         <Route path="/ViewJobSeekerDetail/:id" element={<ViewJobSeekerDetail />} />
         {/* Thêm các route khác nếu cần */}
+
+        <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
+        <Route path='/VerifyRegister' element={<VerifyRegister/>}/>{/*màn này để verifycode khi đăng ký */}
+
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

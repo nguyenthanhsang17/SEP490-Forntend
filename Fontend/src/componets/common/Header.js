@@ -45,11 +45,25 @@ const Header = () => {
   useEffect(() => {
     const token = localStorage.getItem("token"); // Check if token exists
     setIsLoggedIn(!!token); // Set login state based on token existence
-
-    // Log the username from localStorage
-    const userName = localStorage.getItem("userName");
-    console.log("Username:", userName); // Log the username
+  
+    // Log the full name from localStorage
+    const fullName = localStorage.getItem("fullName");
+    console.log("fullName:", fullName); // Log the full name
+  
+    // Function to clear localStorage on window close
+    const handleWindowClose = () => {
+      localStorage.clear(); // Clear the entire localStorage
+    };
+  
+    // Attach the event listener
+    window.addEventListener("beforeunload", handleWindowClose);
+  
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("beforeunload", handleWindowClose);
+    };
   }, []);
+  
 
   const openChangePassModal = () => {
     setShowChangePassModal(true);
@@ -66,6 +80,11 @@ const Header = () => {
     setIsLoggedIn(false); // Set login state to false
     setDropdownVisible(false); // Close dropdown on logout
     window.location.reload(); // Reload the page
+  };
+
+  const handleProfileClick = () => {
+    setDropdownVisible(false); // Close dropdown when navigating
+    navigate("/profile"); // Navigate to the profile page
   };
 
   const toggleDropdown = () => {
@@ -117,8 +136,8 @@ const Header = () => {
               {isLoggedIn ? (
                 <li className="left-br">
                   <button style={styles.profileButton} onClick={toggleDropdown}>
-                    {localStorage.getItem("userName") || "Username"}{" "}
-                    {/* Display the username */}
+                    {localStorage.getItem("fullName") || "Fullname"}{" "}
+                    {/* Display the full name */}
                   </button>
                   <div
                     style={{
@@ -126,6 +145,9 @@ const Header = () => {
                       ...(dropdownVisible ? styles.dropdownVisible : {}),
                     }}
                   >
+                    <div style={styles.dropdownItem} onClick={handleProfileClick}>
+                      Your Profile {/* New profile option */}
+                    </div>
                     <div
                       style={styles.dropdownItem}
                       onClick={openChangePassModal}
