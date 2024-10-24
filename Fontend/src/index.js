@@ -6,9 +6,9 @@ import Register from './componets/accounts/Register'; // Trang đăng ký
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './componets/accounts/Login';
-import ForgotPassword from './componets/accounts/ForgotPassword';
+import ForgotPassword from './componets/accounts/Forgot_Password';
 import HomePage from './componets/common/HomePage';
-import ViewJobDetail from './componets/jobs/View_Job_Detail'
+import ViewJobDetail from './componets/jobs/ViewJobDetail'
 
 import ViewAllJobApplied from './componets/jobs/View_All_Job_Applied';
 import ViewAllJobSeekerApply from './componets/jobs/View_All_Jobseeker_Apply';

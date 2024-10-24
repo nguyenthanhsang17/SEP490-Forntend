@@ -6,10 +6,8 @@ import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
 import bannerImage from '../assets/img/banner-10.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom'; // Thêm useNavigate để chuyển trang
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
 const Signup = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -31,11 +29,12 @@ const Signup = () => {
     });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Mật khẩu và xác nhận mật khẩu không khớp.");
+      alert("Mật khẩu và xác nhận mật khẩu không khớp.");
       return;
     }
     console.log(formData);
@@ -84,9 +83,77 @@ const Signup = () => {
     setShowConfirmPassword((prev) => !prev);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  useEffect(() => {
+    if (typeof $.fn.styleSwitcher === "function") {
+      $('#styleOptions').styleSwitcher();
+    } else {
+      console.error("styleSwitcher is not defined");
+    }
+  }, []);
+
+  const styles = {
+    body: {
+      backgroundImage: `url(${bannerImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      height: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    wrapper: {
+      width: '100%',
+      maxWidth: '400px',
+      margin: '0 auto',
+      background: 'rgba(255, 255, 255, 0.9)',
+      padding: '20px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+    },
+    input: {
+      width: '100%',
+      marginBottom: '15px',
+      padding: '10px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+    },
+    passwordInput: {
+      position: 'relative',
+    },
+    icon: {
+      position: 'absolute',
+      top: '50%',
+      right: '10px',
+      transform: 'translateY(-50%)',
+      cursor: 'pointer',
+    },
+    button: {
+      width: '100%',
+      padding: '10px',
+      backgroundColor: '#4facfe',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s',
+    },
+    buttonHover: {
+      backgroundColor: '#3a8fdd',
+    },
+    link: {
+      display: 'block',
+      marginTop: '10px',
+      textAlign: 'center',
+    }
+  };
+
   return (
-    <div style={{ backgroundImage: `url(${bannerImage})`, backgroundSize: 'cover', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '100%', maxWidth: '400px', background: 'rgba(255, 255, 255, 0.9)', padding: '20px', borderRadius: '8px' }}>
+    <div style={styles.body}>
+      <div style={styles.wrapper}>
         <a href="/">
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
@@ -98,7 +165,6 @@ const Signup = () => {
               placeholder="Your Name"
               value={formData.fullName}
               onChange={handleChange}
-              style={{ marginBottom: '15px' }}
             />
             <input
               type="email"
@@ -107,7 +173,6 @@ const Signup = () => {
               placeholder="Your Email"
               value={formData.email}
               onChange={handleChange}
-              style={{ marginBottom: '15px' }}
             />
             <div style={styles.passwordInput}>
               <input
