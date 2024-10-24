@@ -20,8 +20,8 @@ function Login() {
     setError(null);
 
     const loginData = {
-      Email: email,
-      Password: password,
+      userName: email,
+      password: password,
     };
 
     try {
