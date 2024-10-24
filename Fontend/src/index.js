@@ -16,7 +16,7 @@ import ViewJobSeekerDetail from './componets/jobs/View_JobSeeker_Detail';
 
 import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
-
+import PostJobs from './componets/jobs/ViewPostJob';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -37,7 +37,7 @@ root.render(
 
         <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
         <Route path='/VerifyRegister' element={<VerifyRegister/>}/>{/*màn này để verifycode khi đăng ký */}
-
+        <Route path='/viewalljob' element={<PostJobs/>}/>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
