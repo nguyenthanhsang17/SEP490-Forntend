@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import $ from 'jquery';
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
@@ -11,18 +12,18 @@ import { useNavigate } from 'react-router-dom'; // Thêm useNavigate để chuy�
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const [isEmailVerified, setIsEmailVerified] = useState(false); // Trạng thái xác thực email
-  const [verificationCode, setVerificationCode] = useState(''); // Quản lý mã xác thực
-  const [errorMessage, setErrorMessage] = useState('');
+
+
+  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate(); // Điều hướng trang
-
+  const [error, setError] = useState('');
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -37,50 +38,43 @@ const Signup = () => {
       setErrorMessage("Mật khẩu và xác nhận mật khẩu không khớp.");
       return;
     }
-
+    console.log(formData);
     try {
-      // Gửi dữ liệu đăng ký tới API
-      const response = await fetch('https://localhost:7077/api/Auth/Register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      const response = await fetch("https://localhost:7077/api/Users/ResgisterUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error('Đăng ký thất bại!');
+        setError(result.message)
+        throw new Error(result.message || "Đăng Ký không thành công");
+      }else{
+        navigate('/VerifyRegister'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
       }
 
-      // Sau khi đăng ký thành công, yêu cầu người dùng nhập mã xác thực email
-      setIsEmailVerified(true);
+      console.log("Đăng ký thành công:", result);
+
+      // Lưu token vào localStorage
+
+      // Điều hướng đến trang chủ
+      
 
     } catch (error) {
-      console.error("Error during registration:", error);
-      setErrorMessage("Đăng ký thất bại, vui lòng thử lại.");
+      setError(error.message);
+      console.error("Lỗi:", error);
     }
   };
 
-  const handleVerifyEmail = async (e) => {
+  const handleVerify = async (e) => {
     e.preventDefault();
-    try {
-      // Gửi mã xác thực tới API
-      const response = await fetch(`https://localhost:7077/api/Email/VerifyCode?code=${encodeURIComponent(verificationCode)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+    
 
-      if (!response.ok) {
-        throw new Error('Mã xác thực không hợp lệ hoặc đã hết hạn.');
-      }
-
-      // Xác thực thành công, chuyển về màn hình đăng nhập
-      alert('Đăng ký thành công! Bạn sẽ được chuyển đến trang đăng nhập.');
-      navigate('/login'); // Chuyển đến trang đăng nhập
-
-    } catch (error) {
-      console.error("Error during email verification:", error);
-      setErrorMessage("Xác thực email thất bại, vui lòng thử lại.");
-    }
-  };
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -96,74 +90,56 @@ const Signup = () => {
         <a href="/">
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
-
-        {!isEmailVerified ? (
-          // Form đăng ký
           <form onSubmit={handleSubmit}>
             <input
               type="text"
-              className="form-control"
-              name="name"
+              style={styles.input}
+              name="fullName"
               placeholder="Your Name"
-              value={formData.name}
+              value={formData.fullName}
               onChange={handleChange}
               style={{ marginBottom: '15px' }}
             />
             <input
               type="email"
-              className="form-control"
+              style={styles.input}
               name="email"
               placeholder="Your Email"
               value={formData.email}
               onChange={handleChange}
               style={{ marginBottom: '15px' }}
             />
-            <div className="password-input" style={{ position: 'relative', marginBottom: '15px' }}>
+            <div style={styles.passwordInput}>
               <input
                 type={showPassword ? "text" : "password"}
-                className="form-control"
+                style={styles.input}
                 name="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
               />
-              <span onClick={togglePasswordVisibility} style={{ position: 'absolute', right: '10px', top: '50%', cursor: 'pointer', transform: 'translateY(-50%)' }}>
+              <span onClick={togglePasswordVisibility} style={styles.icon}>
                 <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
               </span>
             </div>
-            <div className="password-input" style={{ position: 'relative', marginBottom: '15px' }}>
+            <div style={styles.passwordInput}>
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className="form-control"
+                style={styles.input}
                 name="confirmPassword"
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
-              <span onClick={toggleConfirmPasswordVisibility} style={{ position: 'absolute', right: '10px', top: '50%', cursor: 'pointer', transform: 'translateY(-50%)' }}>
+              <span onClick={toggleConfirmPasswordVisibility} style={styles.icon}>
                 <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
               </span>
             </div>
-            <button type="submit" className="btn btn-login" style={{ width: '100%' }}>Đăng Ký</button>
-            {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
+            <div style={{ color: 'red' }} >{error}</div>
+            <button style={styles.button} type="submit">
+              Đăng Ký Tài Khoản
+            </button>
           </form>
-        ) : (
-          // Form xác thực email
-          <form onSubmit={handleVerifyEmail}>
-            <h3>Nhập mã xác thực</h3>
-            <input
-              type="text"
-              className="form-control"
-              name="verificationCode"
-              placeholder="Nhập mã xác thực"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-              style={{ marginBottom: '15px' }}
-            />
-            <button type="submit" className="btn btn-login" style={{ width: '100%' }}>Xác thực Email</button>
-            {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
-          </form>
-        )}
       </div>
     </div>
   );
