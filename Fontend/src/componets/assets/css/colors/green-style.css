@@ -558,3 +558,31 @@ body {
 }
 
   
+.container.white-shadow {
+    padding: 30px; /* Tạo khoảng cách giữa khung và nội dung */
+    margin-top: 20px; /* Tạo khoảng cách giữa phần header và form */
+}
+
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1 1 calc(50% - 20px); /* 50% chiều rộng, trừ khoảng cách */
+    margin-bottom: 20px;
+}
+
+textarea.form-control {
+    min-height: 100px; /* Điều chỉnh chiều cao của textarea */
+}
+
+.full-width {
+    flex: 1 1 100%; /* Chiếm toàn bộ chiều rộng */
+}
+
+.small-btn {
+    margin-top: 20px;
+}
