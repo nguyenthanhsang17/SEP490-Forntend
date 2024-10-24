@@ -22,6 +22,8 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -32,7 +34,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData.password !== formData.confirmPassword) {
       alert("Mật khẩu và xác nhận mật khẩu không khớp.");
       return;
@@ -46,28 +48,27 @@ const Signup = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
-        setError(result.message)
+        setError(result.message);
         throw new Error(result.message || "Đăng Ký không thành công");
-      }else{
-        navigate('/VerifyRegister'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
+      } else {
+        setError(''); // Clear any previous error message
+        setSuccessMessage("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.");
+        navigate('/VerifyRegister');
       }
-
+  
       console.log("Đăng ký thành công:", result);
-
-      // Lưu token vào localStorage
-
-      // Điều hướng đến trang chủ
-      
-
+  
     } catch (error) {
+      setSuccessMessage(''); // Clear success message if there's an error
       setError(error.message);
       console.error("Lỗi:", error);
     }
   };
+  
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -157,54 +158,59 @@ const Signup = () => {
         <a href="/">
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            style={styles.input}
+            name="fullName"
+            placeholder="Your Name"
+            value={formData.fullName}
+            onChange={handleChange}
+          />
+          <input
+            type="email"
+            style={styles.input}
+            name="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <div style={styles.passwordInput}>
             <input
-              type="text"
+              type={showPassword ? "text" : "password"}
               style={styles.input}
-              name="fullName"
-              placeholder="Your Name"
-              value={formData.fullName}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
               onChange={handleChange}
             />
+            <span onClick={togglePasswordVisibility} style={styles.icon}>
+              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+            </span>
+          </div>
+          <div style={styles.passwordInput}>
             <input
-              type="email"
+              type={showConfirmPassword ? "text" : "password"}
               style={styles.input}
-              name="email"
-              placeholder="Your Email"
-              value={formData.email}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
               onChange={handleChange}
             />
-            <div style={styles.passwordInput}>
-              <input
-                type={showPassword ? "text" : "password"}
-                style={styles.input}
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <span onClick={togglePasswordVisibility} style={styles.icon}>
-                <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-              </span>
-            </div>
-            <div style={styles.passwordInput}>
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                style={styles.input}
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              <span onClick={toggleConfirmPasswordVisibility} style={styles.icon}>
-                <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
-              </span>
-            </div>
-            <div style={{ color: 'red' }} >{error}</div>
-            <button style={styles.button} type="submit">
-              Đăng Ký Tài Khoản
-            </button>
-          </form>
+            <span onClick={toggleConfirmPasswordVisibility} style={styles.icon}>
+              <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
+            </span>
+          </div>
+  
+          {/* Error message */}
+          {error && <div style={{ color: 'red' }}>{error}</div>}
+          {/* Success message */}
+          {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
+  
+          <button style={styles.button} type="submit">
+            Đăng Ký Tài Khoản
+          </button>
+        </form>
       </div>
     </div>
   );
