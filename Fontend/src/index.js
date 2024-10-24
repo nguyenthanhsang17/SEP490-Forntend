@@ -6,7 +6,7 @@ import Register from './componets/accounts/Register'; // Trang đăng ký
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './componets/accounts/Login';
-import ForgotPassword from './componets/accounts/Forgot_Password';
+import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobs/ViewJobDetail'
 
