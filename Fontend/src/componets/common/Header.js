@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import ChangePasswordModal from "../accounts/ChangePasswordModal"; // Assuming you have this component
+import { FaBriefcase } from "react-icons/fa"; // Import an icon (FaBriefcase)
 
 const styles = {
   wrapper: {
@@ -34,6 +35,16 @@ const styles = {
     padding: "10px 15px",
     cursor: "pointer",
   },
+  viewJobsLink: {
+    display: "flex",
+    alignItems: "center",
+    padding: "10px 15px",
+    color: "#333", // Adjust the text color as needed
+    textDecoration: "none",
+  },
+  icon: {
+    marginRight: "5px", // Space between icon and text
+  },
 };
 
 const Header = () => {
@@ -63,7 +74,6 @@ const Header = () => {
       window.removeEventListener("beforeunload", handleWindowClose);
     };
   }, []);
-  
 
   const openChangePassModal = () => {
     setShowChangePassModal(true);
@@ -85,6 +95,11 @@ const Header = () => {
   const handleProfileClick = () => {
     setDropdownVisible(false); // Close dropdown when navigating
     navigate("/profile"); // Navigate to the profile page
+  };
+
+  const handleViewAllJobsClick = () => {
+    setDropdownVisible(false); // Close dropdown when navigating
+    navigate("/jobs"); // Navigate to the jobs page
   };
 
   const toggleDropdown = () => {
@@ -110,7 +125,7 @@ const Header = () => {
             className="navbar-header"
             style={{ position: "relative", top: "-90px" }}
           >
-            <a className="navbar-brand" href="#">
+            <a className="navbar-brand" href="/">
               <img src={logoImage} className="logo logo-display" alt="Logo" />
               <img
                 src={logoImage}
@@ -130,6 +145,18 @@ const Header = () => {
                 <a href="pricing.html">
                   <i className="fa fa-sign-in" aria-hidden="true"></i>
                   Pricing
+                </a>
+              </li>
+
+              {/* New "View All Jobs" link */}
+              <li>
+                <a 
+                  style={styles.viewJobsLink} 
+                  onClick={handleViewAllJobsClick}
+                  href="/viewalljob"
+                >
+                  <FaBriefcase style={styles.icon} /> {/* Job icon */}
+                 tất cả các công việc
                 </a>
               </li>
 
@@ -167,7 +194,7 @@ const Header = () => {
                     data-target="#signup"
                     className="signin"
                   >
-                    Sign In Now
+                    Đăng Ký Ngay
                   </a>
                 </li>
               )}

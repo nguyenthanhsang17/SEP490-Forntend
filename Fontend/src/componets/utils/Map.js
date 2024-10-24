@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const Map = ({ latitude, longitude }) => {
+const Map = ({ latitude, longitude, employerLatitude, employerLongitude }) => {
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
 
@@ -11,77 +11,41 @@ const Map = ({ latitude, longitude }) => {
         zoom: 15,
       });
 
-      // Đánh dấu vị trí công việc
+      // Mark the job location
       new window.google.maps.Marker({
         position: { lat: latitude, lng: longitude },
         map,
         title: "Vị trí công việc",
       });
 
-      // Đánh dấu vị trí hiện tại của người dùng nếu có
-      if (userLocation) {
-        new window.google.maps.Marker({
-          position: userLocation,
-          map,
-          title: "Vị trí của bạn",
-        });
+      // Mark the employer's location
+      new window.google.maps.Marker({
+        position: { lat: employerLatitude, lng: employerLongitude },
+        map,
+        title: "Vị trí nhà tuyển dụng", // Title for employer's location
+      });
 
-        // Vẽ đường từ vị trí của người dùng đến vị trí công việc
-        const directionsService = new window.google.maps.DirectionsService();
-        const directionsRenderer = new window.google.maps.DirectionsRenderer();
-        directionsRenderer.setMap(map);
-
-        const request = {
-          origin: userLocation,
-          destination: { lat: latitude, lng: longitude },
-          travelMode: window.google.maps.TravelMode.DRIVING, // Bạn có thể thay đổi mode nếu cần
-        };
-
-        directionsService.route(request, (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            directionsRenderer.setDirections(result);
-          } else {
-            console.error("Error fetching directions:", status);
-          }
-        });
-      }
+      // Optional: Add logic for user's location if needed
     };
 
-    // Lấy vị trí hiện tại của người dùng
-    const getUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setUserLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-            loadMap(); // Load map sau khi có vị trí
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-            loadMap(); // Load map nếu không thể lấy vị trí
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-        loadMap(); // Load map nếu không hỗ trợ Geolocation
-      }
-    };
-
+    // Load the Google Maps script and initialize the map
     if (window.google) {
-      getUserLocation();
+      loadMap();
     } else {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAuAo7Y-aDuHJufQ5w538pdoY9cBA44Zzg&libraries=geometry`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY`; // Update with your actual API key
       script.onload = () => {
-        getUserLocation();
+        loadMap();
+      };
+      script.onerror = () => {
+        console.error("Failed to load the Google Maps script.");
       };
       document.body.appendChild(script);
     }
-  }, [latitude, longitude, userLocation]);
+  }, [latitude, longitude, employerLatitude, employerLongitude]);
 
   return <div ref={mapRef} style={{ height: '400px', width: '100%' }} />;
 };
+
 
 export default Map;

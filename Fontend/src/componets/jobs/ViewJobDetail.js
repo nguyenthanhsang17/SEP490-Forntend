@@ -118,7 +118,12 @@ function ViewJobDetail() {
       <section className="map-section">
         <div className="container">
           <h2 className="detail-title">Vị trí công việc</h2>
-          <Map latitude={jobDetails.latitude} longitude={jobDetails.longitude} />
+          <Map 
+            latitude={jobDetails.latitude} 
+            longitude={jobDetails.longitude} 
+            employerLatitude={jobDetails.employerLatitude} // Add this line
+            employerLongitude={jobDetails.employerLongitude} // Add this line
+          />
         </div>
       </section>
 
