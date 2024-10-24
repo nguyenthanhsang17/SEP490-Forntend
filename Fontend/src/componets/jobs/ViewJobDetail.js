@@ -61,7 +61,7 @@ function ViewJobDetail() {
               <a href="#" className="detail-edit" title="Sửa"><i className="fa fa-pencil"></i></a>
             </div>
             <div className="detail-status">
-              <span>{new Date(jobDetails.createDate).toLocaleDateString()} - {jobDetails.jobCategoryName}</span>
+              <span>{new Date(jobDetails.createDate).toLocaleDateString('en-GB')} - {jobDetails.jobCategoryName}</span>
             </div>
           </div>
 
@@ -90,7 +90,9 @@ function ViewJobDetail() {
           <div className="row no-padd">
             <div className="detail pannel-footer">
               <div className="col-md-5 col-sm-5">
-                <h4 style={styles.expirationDate}>Ngày hết hạn: {new Date(jobDetails.expirationDate).toLocaleDateString()}</h4>
+                <h4 style={styles.expirationDate}>
+                  Ngày hết hạn: {new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}
+                </h4>
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
@@ -136,13 +138,13 @@ const styles = {
   noJob: {
     textAlign: 'center',
     fontSize: '1.5rem',
-    color: '#e74c3c',
+    color: '#e74c3c', // Màu đỏ cho thông báo không tìm thấy công việc
     margin: '2rem 0',
   },
   expirationDate: {
     fontSize: '1.2rem',
     fontWeight: 'bold',
-    color: '#d9534f',
+    color: '#d9534f', // Màu đỏ đậm cho ngày hết hạn
   },
 };
 
