@@ -6,10 +6,12 @@ import Register from './componets/accounts/Register'; // Trang đăng ký
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './componets/accounts/Login';
-import ForgotPassword from './componets/accounts/Forgot_Password';
+import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
-import ViewJobDetail from './componets/jobs/View_Job_Detail'
+import ViewJobDetail from './componets/jobs/ViewJobDetail'
 import Profile from './componets/accounts/Profile';
+import CreatePostJob from './componets/jobs/CreatePostJob';
+import GmailVerification from './componets/accounts/GmailVerification';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,7 +24,8 @@ root.render(
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail" element={<ViewJobDetail />} />
-       
+        <Route path="/createPostJob" element={<CreatePostJob />} />
+        <Route path="/gmailVerification" element={<GmailVerification />} />
         <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
       </Routes>
     </BrowserRouter>
