@@ -145,7 +145,7 @@ function ForgotPassword() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Nhập mã xác thực"
+                    placeholder="Nhập mã xác thực được gửi về email của bạn"
                     value={code}
                     onChange={handleCodeChange}
                   />

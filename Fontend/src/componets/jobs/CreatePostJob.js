@@ -6,7 +6,6 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 
 function CreatePostJob() {
-    // Khởi tạo state cho các trường trong bảng Post
     const [jobTitle, setJobTitle] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [salaryType, setSalaryType] = useState('');
@@ -21,8 +20,9 @@ function CreatePostJob() {
     const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(false);
     const [jobCategory, setJobCategory] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         const jobData = {
             JobTitle: jobTitle,
             JobDescription: jobDescription,
@@ -39,8 +39,25 @@ function CreatePostJob() {
             JobCategory_Id: jobCategory
         };
 
-        console.log("Job Data:", jobData);
-        // Gửi dữ liệu lên server hoặc API
+        try {
+            const response = await fetch('https://localhost:7077/api/PostJobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jobData),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Job successfully created:', result);
+                // Xử lý khi gửi dữ liệu thành công (hiển thị thông báo hoặc điều hướng)
+            } else {
+                console.error('Error creating job:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -66,6 +83,7 @@ function CreatePostJob() {
 
                     <div className="row bottom-mrg">
                         <form className="add-feild" onSubmit={handleSubmit}>
+                            {/* Các trường form */}
                             <div className="col-md-6 col-sm-6">
                                 <div className="input-group">
                                     <input 

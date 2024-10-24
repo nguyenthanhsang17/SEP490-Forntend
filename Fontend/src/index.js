@@ -9,6 +9,7 @@ import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobs/ViewJobDetail'
+import CreatePostJob from './componets/jobs/CreatePostJob'
 
 import ViewAllJobApplied from './componets/jobs/View_All_Job_Applied';
 import ViewAllJobSeekerApply from './componets/jobs/View_All_Jobseeker_Apply';
@@ -29,7 +30,7 @@ root.render(
         <Route path="/login" element={<Login />} /> {/* Trang đăng nhập*/}
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail" element={<ViewJobDetail />} />
-
+        <Route path="/createPostJob" element={<CreatePostJob />} />
         <Route path="/ViewAllJobApplied/:id" element={<ViewAllJobApplied />} />
         <Route path="/ViewAllJobseekerApply/:id" element={<ViewAllJobSeekerApply />} />
         <Route path="/ViewJobSeekerDetail/:id" element={<ViewJobSeekerDetail />} />
