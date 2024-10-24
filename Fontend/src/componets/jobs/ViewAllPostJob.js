@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Thay useHistory bằng useNavigate
 
 const JobListing = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Khởi tạo navigate
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -21,6 +23,10 @@ const JobListing = () => {
     fetchJobs();
   }, []);
 
+  const handleJobClick = (postId) => {
+    navigate(`/viewJobDetail/${postId}`); // Sử dụng navigate để điều hướng
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -32,19 +38,19 @@ const JobListing = () => {
   return (
     <div className="job-list">
       {jobs.map((job) => (
-        <div className="item-click" key={job.postId}>
+        <div className="item-click" key={job.postId} onClick={() => handleJobClick(job.postId)}>
           <article>
             <div className="brows-job-list">
               <div className="col-md-1 col-sm-2 small-padding">
                 <div className="brows-job-company-img">
-                  <a href="job-detail.html">
+                  <a href="">
                     <img src={job.thumbnail} className="img-responsive" alt={job.jobTitle} />
                   </a>
                 </div>
               </div>
               <div className="col-md-6 col-sm-5">
                 <div className="brows-job-position">
-                  <a href="job-apply-detail.html"><h3>{job.jobTitle}</h3></a>
+                  <a href=""><h3>{job.jobTitle}</h3></a>
                   <p>
                     <span>{job.authorName}</span>
                     <span className="brows-job-sallery">
@@ -61,7 +67,7 @@ const JobListing = () => {
               </div>
               <div className="col-md-2 col-sm-2">
                 <div className="brows-job-link">
-                  <a href="job-apply-detail.html" className="btn btn-default">Apply Now</a>
+                  <a href="" className="btn btn-default">Apply Now</a>
                 </div>
               </div>
             </div>
