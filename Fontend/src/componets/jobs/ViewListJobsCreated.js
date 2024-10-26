@@ -42,8 +42,13 @@ const ViewListJobsCreated = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             setLoading(true);
+            const token = localStorage.getItem('authToken'); // Lấy token từ localStorage
+
             try {
                 const response = await axios.get(`https://localhost:7077/api/PostJobs/GetListJobsCreated`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Thêm token vào header
+                    },
                     params: {
                         SalaryTypesId: salaryTypesId,
                         JobCategoryId: jobCategoryId,
@@ -51,16 +56,17 @@ const ViewListJobsCreated = () => {
                     },
                 });
 
-                const fetchedJobs = response.data.items.$values || [];
+                const fetchedJobs = response.data.items || []; // Dùng `items` trực tiếp
                 const jobsWithDistance = fetchedJobs.map((job) => ({
                     ...job,
                     distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude),
                 }));
 
                 setJobs(jobsWithDistance);
-                setTotalPages(response.data.totalPages || 1); // Đảm bảo totalPages không bị null hoặc undefined
-            } catch {
-                setError('Failed to fetch jobs. Please try again later.');
+                setTotalPages(response.data.totalPages || 1);
+            } catch (error) {
+                console.error("Error fetching jobs:", error); // In chi tiết lỗi
+                setError('Không thể tải công việc. Vui lòng thử lại sau.');
             } finally {
                 setLoading(false);
             }
@@ -110,9 +116,9 @@ const ViewListJobsCreated = () => {
 
             <div className="job-list">
                 {jobs.map((job) => (
-                    <div className="job-item" >
+                    <div className="job-item" key={job.postId}>
                         <article>
-                            <div className="brows-job-list" key={job.postId} onClick={() => handleJobClick(job.postId)}>
+                            <div className="brows-job-list" onClick={() => handleJobClick(job.postId)}>
                                 <div className="job-thumbnail">
                                     <img src={job.thumbnail || 'path/to/fallback-image.jpg'} className="img-responsive" alt={job.jobTitle || 'Job Thumbnail'} />
                                 </div>
@@ -134,24 +140,14 @@ const ViewListJobsCreated = () => {
                             </div>
                             <div className="button-container">
                                 <a href="#" className="apply-button">Chỉnh sửa bài đăng</a>
-                                <a href="#" className="apply-button favorite-button" >Ẩn bài đăng</a>
+                                <a href="#" className="apply-button favorite-button">Ẩn bài đăng</a>
                             </div>
                             {job.isUrgentRecruitment && <span className="urgent-tag">Premium</span>}
                         </article>
                     </div>
-
                 ))}
-
-                <div className="pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                        Trang trước
-                    </button>
-                    <span>Trang {currentPage} trên {totalPages}</span>
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                        Trang tiếp theo
-                    </button>
-                </div>
             </div>
+
 
             <Footer />
 
