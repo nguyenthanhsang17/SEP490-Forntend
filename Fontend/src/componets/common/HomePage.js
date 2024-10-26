@@ -119,7 +119,7 @@ const HomePage = () => {
                         <img
                           src={`assets/img/blog-${blog.thumbnail}.jpg`} // Assuming blog images are named like 'blog-3.jpg'
                           className="img-responsive"
-                          // alt={blog.blogTitle}
+                        // alt={blog.blogTitle}
                         />
                       </div>
                       <div className="brows-job-position">
@@ -240,21 +240,19 @@ const HomePage = () => {
                     <div className="freelance-container style-2">
                       <div className="freelance-box">
                         <span
-                          className={`freelance-status ${
-                            job.isUrgentRecruitment ? "urgent" : ""
-                          }`}
+                          className={`freelance-status ${job.isUrgentRecruitment ? "urgent" : ""
+                            }`}
                         >
                           {job.isUrgentRecruitment ? "Urgent" : "Available"}
                         </span>
                         <h4 className="flc-rate">
-                          {job.fixSalary !== null
-                            ? `₫${job.fixSalary.toLocaleString()} / ${
-                                job.salaryTypeName
-                              }`
-                            : `₫${job.rangeSalaryMin.toLocaleString()} - ₫${job.rangeSalaryMax.toLocaleString()} / ${
-                                job.salaryTypeName
-                              }`}
+                          {job.fixSalary !== null && job.fixSalary !== undefined
+                            ? `₫${job.fixSalary.toLocaleString()} / ${job.salaryTypeName || ''}`
+                            : job.rangeSalaryMin !== undefined && job.rangeSalaryMax !== undefined
+                              ? `₫${job.rangeSalaryMin.toLocaleString()} - ₫${job.rangeSalaryMax.toLocaleString()} / ${job.salaryTypeName || ''}`
+                              : 'Lương không xác định'}
                         </h4>
+
                         <div className="freelance-inner-box">
                           <div className="freelance-box-thumb">
                             <img
