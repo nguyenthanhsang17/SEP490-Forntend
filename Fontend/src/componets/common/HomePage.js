@@ -115,7 +115,7 @@ const HomePage = () => {
                     <div className="grid-view brows-job-list">
                       <div className="brows-job-company-img">
                         <img
-                          src={`assets/img/blog-${blog.thumbnail}.jpg`}
+                          src={`${blog.thumbnail}`}
                           className="img-responsive"
                         />
                       </div>
@@ -128,10 +128,6 @@ const HomePage = () => {
                         <p>{blog.blogDescription.substring(0, 150)}...</p>
                       </div>
                       <div className="blog-meta">
-                        <span className="author">
-                          <i className="fa fa-user"></i> Author ID:{" "}
-                          {blog.authorId}
-                        </span>
                         <span className="create-date">
                           <i className="fa fa-calendar"></i>{" "}
                           {new Date(blog.createDate).toLocaleDateString()}
@@ -164,14 +160,7 @@ const HomePage = () => {
               {["Create An Account", "Search Jobs", "Save & Apply"].map((step, index) => (
                 <div key={index} className="col-md-4 col-sm-4 mb-4">
                   <div className="working-process text-center">
-                    <span className="process-img">
-                      <img
-                        src={`assets/img/step-${index + 1}.png`}
-                        className="img-responsive"
-                        alt={`Step ${index + 1}`}
-                      />
-                      <span className="process-num">{`0${index + 1}`}</span>
-                    </span>
+                    
                     <h4>{step}</h4>
                     <p>
                       Post a job to tell us about your project. We'll quickly
@@ -216,7 +205,7 @@ const HomePage = () => {
                         <div className="freelance-inner-box">
                           <div className="freelance-box-thumb">
                             <img
-                              src={job.thumbnail || "path/to/default-image.jpg"}
+                              src={job.thumnail || "path/to/default-image.jpg"}
                               className="img-responsive img-circle"
                               alt={job.jobTitle}
                             />

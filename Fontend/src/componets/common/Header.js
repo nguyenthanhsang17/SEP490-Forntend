@@ -194,7 +194,7 @@ const Header = () => {
                     data-target="#signup"
                     className="signin"
                   >
-                    Đăng Ký Ngay
+                    Đăng Nhập Ngay
                   </a>
                 </li>
               )}
