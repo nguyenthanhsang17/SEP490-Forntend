@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import ChangePasswordModal from "../accounts/ChangePasswordModal"; // Assuming you have this component
-import { FaBriefcase } from "react-icons/fa"; // Import an icon (FaBriefcase)
+import { FaBriefcase } from "react-icons/fa";
 
 const styles = {
   wrapper: {
@@ -39,11 +39,11 @@ const styles = {
     display: "flex",
     alignItems: "center",
     padding: "10px 15px",
-    color: "#333", // Adjust the text color as needed
+    color: "#333",
     textDecoration: "none",
   },
   icon: {
-    marginRight: "5px", // Space between icon and text
+    marginRight: "5px",
   },
 };
 
@@ -51,25 +51,21 @@ const Header = () => {
   const [showChangePassModal, setShowChangePassModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Check if token exists
-    setIsLoggedIn(!!token); // Set login state based on token existence
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
   
-    // Log the full name from localStorage
     const fullName = localStorage.getItem("fullName");
-    console.log("fullName:", fullName); // Log the full name
+    console.log("fullName:", fullName);
   
-    // Function to clear localStorage on window close
     const handleWindowClose = () => {
-      localStorage.clear(); // Clear the entire localStorage
+      localStorage.clear();
     };
   
-    // Attach the event listener
     window.addEventListener("beforeunload", handleWindowClose);
   
-    // Cleanup the event listener when the component unmounts
     return () => {
       window.removeEventListener("beforeunload", handleWindowClose);
     };
@@ -77,7 +73,7 @@ const Header = () => {
 
   const openChangePassModal = () => {
     setShowChangePassModal(true);
-    setDropdownVisible(false); // Close dropdown when opening modal
+    setDropdownVisible(false);
   };
 
   const closeChangePassModal = () => {
@@ -85,21 +81,21 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear the token
-    localStorage.removeItem("userName"); // Optionally clear the username
-    setIsLoggedIn(false); // Set login state to false
-    setDropdownVisible(false); // Close dropdown on logout
-    window.location.reload(); // Reload the page
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    setIsLoggedIn(false);
+    setDropdownVisible(false);
+    window.location.reload();
   };
 
   const handleProfileClick = () => {
-    setDropdownVisible(false); // Close dropdown when navigating
-    navigate("/profile"); // Navigate to the profile page
+    setDropdownVisible(false);
+    navigate("/profile");
   };
 
   const handleViewAllJobsClick = () => {
-    setDropdownVisible(false); // Close dropdown when navigating
-    navigate("/jobs"); // Navigate to the jobs page
+    setDropdownVisible(false);
+    navigate("/jobs");
   };
 
   const toggleDropdown = () => {
@@ -144,7 +140,7 @@ const Header = () => {
               <li>
                 <a href="pricing.html">
                   <i className="fa fa-sign-in" aria-hidden="true"></i>
-                  Pricing
+                  Giá
                 </a>
               </li>
 
@@ -156,15 +152,14 @@ const Header = () => {
                   href="/viewalljob"
                 >
                   <FaBriefcase style={styles.icon} /> {/* Job icon */}
-                 tất cả các công việc
+                  Tất cả các công việc
                 </a>
               </li>
 
               {isLoggedIn ? (
                 <li className="left-br">
                   <button style={styles.profileButton} onClick={toggleDropdown}>
-                    {localStorage.getItem("fullName") || "Fullname"}{" "}
-                    {/* Display the full name */}
+                    {localStorage.getItem("fullName") || "Họ và tên"}{/* Display the full name */}
                   </button>
                   <div
                     style={{
@@ -173,16 +168,16 @@ const Header = () => {
                     }}
                   >
                     <div style={styles.dropdownItem} onClick={handleProfileClick}>
-                      Your Profile {/* New profile option */}
+                      Hồ sơ của bạn
                     </div>
                     <div
                       style={styles.dropdownItem}
                       onClick={openChangePassModal}
                     >
-                      Change Password
+                      Đổi mật khẩu
                     </div>
                     <div style={styles.dropdownItem} onClick={handleLogout}>
-                      Log Out
+                      Đăng xuất
                     </div>
                   </div>
                 </li>
@@ -194,7 +189,7 @@ const Header = () => {
                     data-target="#signup"
                     className="signin"
                   >
-                    Đăng Ký Ngay
+                    Đăng ký ngay
                   </a>
                 </li>
               )}

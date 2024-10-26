@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Map from "../utils/Map";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -63,7 +62,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.put(
+      await axios.put(
         "https://localhost:7077/api/Users/UpdateProfile",
         updatedProfile,
         {
@@ -73,28 +72,28 @@ const Profile = () => {
           },
         }
       );
-      setSuccess("Profile updated successfully!");
+      setSuccess("Cập nhật hồ sơ thành công!");
       setLoading(false);
       setProfile(updatedProfile);
       setEditMode(false);
     } catch (err) {
-      setError("Failed to update profile. Please try again.");
+      setError("Không thể cập nhật hồ sơ. Vui lòng thử lại.");
       setLoading(false);
     }
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  if (loading) return <div className="loading">Đang tải...</div>;
+  if (error) return <div className="error">Lỗi: {error}</div>;
 
   return (
     <div className="profile-container">
-      <h1>Your Profile</h1>
+      <h1>Hồ sơ của bạn</h1>
       {profile && (
         <div className="profile-content">
           {editMode ? (
             <form className="profile-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Full Name:</label>
+                <label>Họ và Tên:</label>
                 <input
                   type="text"
                   name="fullName"
@@ -104,7 +103,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label>Age:</label>
+                <label>Tuổi:</label>
                 <input
                   type="number"
                   name="age"
@@ -114,7 +113,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label>Phone Number:</label>
+                <label>Số điện thoại:</label>
                 <input
                   type="text"
                   name="phonenumber"
@@ -124,7 +123,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label>Current Job:</label>
+                <label>Công việc hiện tại:</label>
                 <input
                   type="number"
                   name="currentJob"
@@ -134,7 +133,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label>Description:</label>
+                <label>Mô tả:</label>
                 <textarea
                   name="description"
                   value={updatedProfile.description}
@@ -143,7 +142,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label>Address:</label>
+                <label>Địa chỉ:</label>
                 <input
                   type="text"
                   name="address"
@@ -153,48 +152,27 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label>Latitude:</label>
-                <input
-                  type="number"
-                  name="latitude"
-                  value={updatedProfile.latitude}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Longitude:</label>
-                <input
-                  type="number"
-                  name="longitude"
-                  value={updatedProfile.longitude}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Gender:</label>
+                <label>Giới tính:</label>
                 <select
                   name="gender"
                   value={updatedProfile.gender}
                   onChange={handleInputChange}
                 >
-                  <option value={true}>Male</option>
-                  <option value={false}>Female</option>
+                  <option value={true}>Nam</option>
+                  <option value={false}>Nữ</option>
                 </select>
               </div>
 
               <div className="btn-group">
                 <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? "Updating..." : "Update Profile"}
+                  {loading ? "Đang cập nhật..." : "Cập nhật hồ sơ"}
                 </button>
-                {/* Back to Profile button */}
                 <button
                   type="button"
                   className="back-btn"
                   onClick={() => setEditMode(false)}
                 >
-                  Back to Profile
+                  Trở về
                 </button>
               </div>
             </form>
@@ -206,33 +184,30 @@ const Profile = () => {
                 width="150"
                 className="avatar"
               />
-              <p><strong>Full Name:</strong> {profile.fullName}</p>
-              <p><strong>Username:</strong> {profile.userName}</p>
+              <p><strong>Họ và Tên:</strong> {profile.fullName}</p>
+              <p><strong>Tên đăng nhập:</strong> {profile.userName}</p>
               <p><strong>Email:</strong> {profile.email}</p>
-              <p><strong>Age:</strong> {profile.age}</p>
-              <p><strong>Phone Number:</strong> {profile.phonenumber}</p>
-              <p><strong>Current Job:</strong> {profile.jobName}</p>
-              <p><strong>Description:</strong> {profile.description}</p>
-              <p><strong>Address:</strong> {profile.address}</p>
-              <p><strong>Balance:</strong> {profile.balance} VND</p>
-              <p><strong>Status:</strong> {profile.status === 1 ? "Active" : "Inactive"}</p>
-              <p><strong>Gender:</strong> {profile.gender ? "Male" : "Female"}</p>
-              <p><strong>Role:</strong> {profile.roleName}</p>
-              <p><strong>Coordinates:</strong> {profile.latitude}, {profile.longitude}</p>
-              <Map latitude={profile.latitude} longitude={profile.longitude} />
+              <p><strong>Tuổi:</strong> {profile.age}</p>
+              <p><strong>Số điện thoại:</strong> {profile.phonenumber}</p>
+              <p><strong>Công việc hiện tại:</strong> {profile.jobName}</p>
+              <p><strong>Mô tả:</strong> {profile.description}</p>
+              <p><strong>Địa chỉ:</strong> {profile.address}</p>
+              <p><strong>Số dư:</strong> {profile.balance} VND</p>
+              <p><strong>Trạng thái:</strong> {profile.status === 1 ? "Hoạt động" : "Không hoạt động"}</p>
+              <p><strong>Giới tính:</strong> {profile.gender ? "Nam" : "Nữ"}</p>
+              <p><strong>Vai trò:</strong> {profile.roleName}</p>
 
               <div className="btn-group">
-              <button
+                <button
                   type="button"
                   className="back-btn"
-                  onClick={() => navigate("/")} // Adjust as needed
+                  onClick={() => navigate("/")}
                 >
-                  Back
+                  Quay lại
                 </button>
                 <button className="edit-btn" onClick={() => setEditMode(true)}>
-                  Edit Profile
+                  Chỉnh sửa hồ sơ
                 </button>
-               
               </div>
             </div>
           )}
@@ -247,7 +222,7 @@ const Profile = () => {
 
 export default Profile;
 
-// Embedded CSS for the component
+// CSS for the component
 const css = `
 .profile-container {
   max-width: 900px;
