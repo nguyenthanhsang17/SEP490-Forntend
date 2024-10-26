@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import "../assets/css/style.css";
-// import '../assets/plugins/css/plugins.css';
-import '../assets/css/colors/green-style.css';
+import "../assets/css/colors/green-style.css";
 import Footer from "./Footer";
 import bannerImage from "../assets/img/banner-9.jpg";
 import Header from "./Header";
@@ -11,22 +9,20 @@ const HomePage = () => {
   const [blogs, setBlogs] = useState([]);
   const [jobs, setJobs] = useState([]);
 
-  // Fetch blogs from the provided API
   useEffect(() => {
     axios
       .get("https://localhost:7077/api/Home/getThreeBlogNews")
       .then((response) => {
-        setBlogs(response.data); // Assuming response.data contains an array of blog objects
+        setBlogs(response.data);
       })
       .catch((error) => {
         console.error("Error fetching blogs:", error);
       });
 
-    // Fetch popular jobs from the provided API
     axios
       .get("https://localhost:7077/api/Home/getPopularJob")
       .then((response) => {
-        setJobs(response.data); // Assuming response.data contains an array of job objects
+        setJobs(response.data);
       })
       .catch((error) => {
         console.error("Error fetching jobs:", error);
@@ -47,50 +43,52 @@ const HomePage = () => {
               <div className="col-md-12 col-sm-12 banner-text">
                 <h1>7,000+ Công Việc Được Chọn</h1>
                 <form className="form-horizontal">
-                  <div className="col-md-4 no-padd">
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        className="form-control right-bor"
-                        id="joblist"
-                        placeholder="Skills, Designations, Companies"
-                        aria-label="Job skills"
-                      />
+                  <div className="row">
+                    <div className="col-md-4 no-padd">
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control right-bor"
+                          id="joblist"
+                          placeholder="Skills, Designations, Companies"
+                          aria-label="Job skills"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-md-3 no-padd">
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        className="form-control right-bor"
-                        id="location"
-                        placeholder="Search By Location.."
-                        aria-label="Location"
-                      />
+                    <div className="col-md-3 no-padd">
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control right-bor"
+                          id="location"
+                          placeholder="Search By Location.."
+                          aria-label="Location"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-md-3 no-padd">
-                    <div className="input-group">
-                      <select
-                        id="choose-city"
-                        className="form-control"
-                        aria-label="Choose City"
-                      >
-                        <option value="">Chọn thành phố</option>
-                        <option value="Chandigarh">Chandigarh</option>
-                        <option value="London">London</option>
-                        <option value="England">England</option>
-                        <option value="Pratapcity">Pratapcity</option>
-                        <option value="Ukrain">Ukrain</option>
-                        <option value="Wilangana">Wilangana</option>
-                      </select>
+                    <div className="col-md-3 no-padd">
+                      <div className="input-group">
+                        <select
+                          id="choose-city"
+                          className="form-control"
+                          aria-label="Choose City"
+                        >
+                          <option value="">Chọn thành phố</option>
+                          <option value="Chandigarh">Chandigarh</option>
+                          <option value="London">London</option>
+                          <option value="England">England</option>
+                          <option value="Pratapcity">Pratapcity</option>
+                          <option value="Ukrain">Ukrain</option>
+                          <option value="Wilangana">Wilangana</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-md-2 no-padd">
-                    <div className="input-group">
-                      <button type="submit" className="btn btn-primary">
-                        Tìm Kiếm
-                      </button>
+                    <div className="col-md-2 no-padd">
+                      <div className="input-group">
+                        <button type="submit" className="btn btn-primary">
+                          Tìm Kiếm
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </form>
@@ -113,24 +111,21 @@ const HomePage = () => {
             <div className="row extra-mrg">
               {blogs.length > 0 ? (
                 blogs.map((blog) => (
-                  <div key={blog.blogId} className="col-md-4 col-sm-6">
+                  <div key={blog.blogId} className="col-md-4 col-sm-6 mb-4">
                     <div className="grid-view brows-job-list">
                       <div className="brows-job-company-img">
                         <img
-                          src={`assets/img/blog-${blog.thumbnail}.jpg`} // Assuming blog images are named like 'blog-3.jpg'
+                          src={`assets/img/blog-${blog.thumbnail}.jpg`}
                           className="img-responsive"
-                        // alt={blog.blogTitle}
                         />
                       </div>
                       <div className="brows-job-position">
                         <h3>
                           <a href={`/blogDetail/${blog.blogId}`}>
                             {blog.blogTitle}
-                          </a>{" "}
-                          {/* Blog title with dynamic link */}
+                          </a>
                         </h3>
-                        <p>{blog.blogDescription.substring(0, 150)}...</p>{" "}
-                        {/* Show a short preview of the description */}
+                        <p>{blog.blogDescription.substring(0, 150)}...</p>
                       </div>
                       <div className="blog-meta">
                         <span className="author">
@@ -151,6 +146,7 @@ const HomePage = () => {
             </div>
           </div>
         </section>
+
         {/* How It Works Section */}
         <section className="how-it-works">
           <div className="container">
@@ -165,57 +161,25 @@ const HomePage = () => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-4 col-sm-4">
-                <div className="working-process">
-                  <span className="process-img">
-                    <img
-                      src="assets/img/step-1.png"
-                      className="img-responsive"
-                      alt="Step 1"
-                    />
-                    <span className="process-num">01</span>
-                  </span>
-                  <h4>Create An Account</h4>
-                  <p>
-                    Post a job to tell us about your project. We'll quickly
-                    match you with the right freelancers find place best.
-                  </p>
+              {["Create An Account", "Search Jobs", "Save & Apply"].map((step, index) => (
+                <div key={index} className="col-md-4 col-sm-4 mb-4">
+                  <div className="working-process text-center">
+                    <span className="process-img">
+                      <img
+                        src={`assets/img/step-${index + 1}.png`}
+                        className="img-responsive"
+                        alt={`Step ${index + 1}`}
+                      />
+                      <span className="process-num">{`0${index + 1}`}</span>
+                    </span>
+                    <h4>{step}</h4>
+                    <p>
+                      Post a job to tell us about your project. We'll quickly
+                      match you with the right freelancers find place best.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-4 col-sm-4">
-                <div className="working-process">
-                  <span className="process-img">
-                    <img
-                      src="assets/img/step-2.png"
-                      className="img-responsive"
-                      alt="Step 2"
-                    />
-                    <span className="process-num">02</span>
-                  </span>
-                  <h4>Search Jobs</h4>
-                  <p>
-                    Post a job to tell us about your project. We'll quickly
-                    match you with the right freelancers find place best.
-                  </p>
-                </div>
-              </div>
-              <div className="col-md-4 col-sm-4">
-                <div className="working-process">
-                  <span className="process-img">
-                    <img
-                      src="assets/img/step-3.png"
-                      className="img-responsive"
-                      alt="Step 3"
-                    />
-                    <span className="process-num">03</span>
-                  </span>
-                  <h4>Save & Apply</h4>
-                  <p>
-                    Post a job to tell us about your project. We'll quickly
-                    match you with the right freelancers find place best.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -236,27 +200,23 @@ const HomePage = () => {
             <div className="row">
               {jobs.length > 0 ? (
                 jobs.map((job) => (
-                  <div key={job.postId} className="col-md-4 col-sm-6">
+                  <div key={job.postId} className="col-md-4 col-sm-6 mb-4">
                     <div className="freelance-container style-2">
                       <div className="freelance-box">
                         <span
-                          className={`freelance-status ${job.isUrgentRecruitment ? "urgent" : ""
-                            }`}
+                          className={`freelance-status ${
+                            job.isUrgentRecruitment ? "urgent" : ""
+                          }`}
                         >
                           {job.isUrgentRecruitment ? "Urgent" : "Available"}
                         </span>
                         <h4 className="flc-rate">
-                          {job.fixSalary !== null && job.fixSalary !== undefined
-                            ? `₫${job.fixSalary.toLocaleString()} / ${job.salaryTypeName || ''}`
-                            : job.rangeSalaryMin !== undefined && job.rangeSalaryMax !== undefined
-                              ? `₫${job.rangeSalaryMin.toLocaleString()} - ₫${job.rangeSalaryMax.toLocaleString()} / ${job.salaryTypeName || ''}`
-                              : 'Lương không xác định'}
+                          ₫{job.salary.toLocaleString()} / {job.salaryTypeName}
                         </h4>
-
                         <div className="freelance-inner-box">
                           <div className="freelance-box-thumb">
                             <img
-                              src={job.thumnail}
+                              src={job.thumbnail || "path/to/default-image.jpg"}
                               className="img-responsive img-circle"
                               alt={job.jobTitle}
                             />
@@ -271,7 +231,6 @@ const HomePage = () => {
                           <ul>
                             <li>{job.jobCategoryName}</li>
                           </ul>
-                          <div className="clearfix"></div>
                         </div>
                       </div>
                       <a
@@ -288,6 +247,44 @@ const HomePage = () => {
               )}
             </div>
           </div>
+
+          {/* Inline styling for the component */}
+          <style jsx>{`
+            .freelance-container {
+              margin-bottom: 30px;
+              box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+              border-radius: 10px;
+              overflow: hidden;
+              background-color: #fff;
+              transition: transform 0.3s ease;
+            }
+            .freelance-container:hover {
+              transform: translateY(-5px);
+            }
+            .banner {
+              height: 400px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-size: cover;
+              color: #fff;
+            }
+            .banner-caption {
+              text-align: center;
+            }
+            .banner-caption h1 {
+              margin-bottom: 20px;
+            }
+            .row.extra-mrg {
+              margin-top: 40px;
+            }
+            .how-it-works {
+              margin: 60px 0;
+            }
+            .pricing {
+              margin: 60px 0;
+            }
+          `}</style>
         </section>
       </main>
       <Footer />

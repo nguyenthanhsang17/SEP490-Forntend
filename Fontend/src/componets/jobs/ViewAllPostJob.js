@@ -43,11 +43,11 @@ const JobListing = () => {
     const fetchJobs = async () => {
       try {
         const response = await axios.get(`https://localhost:7077/api/PostJobs?SalaryTypesId=${salaryTypesId}&JobCategoryId=${jobCategoryId}&pageNumber=${currentPage}`);
-        const fetchedJobs = response.data.items.$values || [];
-        // Calculate distance for each job
+        console.log(response.data); // kiểm tra dữ liệu phản hồi từ API
+        const fetchedJobs = response.data.items || [];
         const jobsWithDistance = fetchedJobs.map(job => ({
           ...job,
-          distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude) // Assuming job object contains latitude and longitude
+          distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude),
         }));
         setJobs(jobsWithDistance);
         setTotalPages(response.data.totalPages || 0);
@@ -57,13 +57,11 @@ const JobListing = () => {
         setLoading(false);
       }
     };
-
-    // Fetch jobs only if the user's location is available
+  
     if (userLocation.latitude && userLocation.longitude) {
       fetchJobs();
     }
   }, [currentPage, salaryTypesId, jobCategoryId, userLocation]);
-
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     if (!lat1 || !lon1 || !lat2 || !lon2) return null;
 
@@ -164,129 +162,101 @@ const JobListing = () => {
       
       {/* Style Block */}
       <style jsx>{`
-  .job-list {
-    margin: 20px;
-  }
-
-  .job-item {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px; /* Spacing between items */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
-    display: flex; /* Flexbox for inner elements */
-    flex-direction: column; /* Stack items vertically */
-    background-color: #fff; /* White background for job items */
-  }
-
-  .job-item:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  }
-
-  .brows-job-list {
-    display: flex;
-    flex-direction: row; /* Row for thumbnail and details */
-    align-items: center; /* Center align items */
-  }
-
-  .job-thumbnail {
-    flex: 0 0 80px; /* Fixed width for thumbnail */
-    margin-right: 15px; /* Space between thumbnail and details */
-    overflow: hidden; /* Prevent image overflow */
-    border-radius: 5px; /* Rounded corners for thumbnails */
-  }
-
-  .job-thumbnail img {
-    width: 100%;
-    height: auto;
-    border-radius: 5px; /* Added rounded corners to images */
-    object-fit: cover; /* Maintain aspect ratio */
-  }
-
-  .job-details {
-    flex: 1;
-  }
-
-  .brows-job-salary {
-    margin-left: 10px;
-    font-weight: bold; /* Highlight salary */
-  }
-
-  .job-location {
-    margin-top: 5px;
-    color: #555; /* Slightly darker color for location text */
-  }
-
-  .job-distance {
-    margin-top: 5px;
-    color: #666; /* Optional: Different color for distance text */
-  }
-
-  .apply-button {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.2s; /* Smooth transition for hover effect */
-  }
-
-  .apply-button:hover {
-    background-color: #218838;
-  }
-
-  .urgent-tag {
-    background-color: #ffc107;
-    padding: 5px 10px;
-    border-radius: 3px;
-    margin-top: 10px;
-    display: inline-block;
-    font-weight: bold; /* Highlight urgent jobs */
-  }
-
-  .pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .pagination button {
-    margin: 0 10px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s; /* Smooth transition for hover effect */
-  }
-
-  .pagination button:disabled {
-    background-color: #ccc;
-  }
-
-  .pagination span {
-    margin: 0 10px;
-  }
-
-  @media (max-width: 768px) {
-    .brows-job-list {
-      flex-direction: column; /* Stack thumbnail and details on smaller screens */
-      align-items: flex-start; /* Align items to the start */
-    }
-
-    .job-thumbnail {
-      margin-bottom: 10px; /* Space between thumbnail and details */
-    }
-  }
-`}</style>
-
+        .job-list {
+          margin: 20px;
+        }
+        .job-item {
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          padding: 15px;
+          margin-bottom: 20px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          transition: transform 0.2s, box-shadow 0.2s;
+          display: flex;
+          flex-direction: column;
+          background-color: #fff;
+        }
+        .job-item:hover {
+          transform: scale(1.02);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        .brows-job-list {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+        .job-thumbnail {
+          flex: 0 0 80px;
+          margin-right: 15px;
+          overflow: hidden;
+          border-radius: 5px;
+        }
+        .job-thumbnail img {
+          width: 100%;
+          height: auto;
+          border-radius: 5px;
+          object-fit: cover;
+        }
+        .job-details {
+          flex: 1;
+        }
+        .brows-job-salary {
+          margin-left: 10px;
+          font-weight: bold;
+        }
+        .job-location {
+          margin-top: 5px;
+          color: #555;
+        }
+        .job-distance {
+          margin-top: 5px;
+          color: #666;
+        }
+        .apply-button {
+          display: inline-block;
+          margin-top: 10px;
+          padding: 10px 15px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          text-decoration: none;
+          transition: background-color 0.2s;
+        }
+        .apply-button:hover {
+          background-color: #218838;
+        }
+        .urgent-tag {
+          background-color: #ffc107;
+          padding: 5px 10px;
+          border-radius: 3px;
+          margin-top: 10px;
+          display: inline-block;
+          font-weight: bold;
+        }
+        .pagination {
+          margin-top: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .pagination button {
+          margin: 0 10px;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 5px;
+          background-color: #007bff;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        .pagination button:disabled {
+          background-color: #ccc;
+        }
+        .pagination span {
+          margin: 0 10px;
+        }
+      `}</style>
     </>
   );
 };
