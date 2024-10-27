@@ -65,27 +65,18 @@ function CreatePostJob() {
             <Header />
             <section className="inner-header-title blank">
                 <div className="container">
-                    <h1>Create Job</h1>
+                    <h1>Tạo bài đăng tuyển</h1>
                 </div>
             </section>
             <div className="clearfix"></div>
 
             <div className="detail-desc section">
                 <div className="container white-shadow">
-                    <div className="row">
-                        <div className="detail-pic js">
-                            <div className="box">
-                                <input type="file" name="upload-pic[]" id="upload-pic" className="inputfile" />
-                                <label htmlFor="upload-pic"><i className="fa fa-upload" aria-hidden="true"></i><span>Upload Logo</span></label>
-                            </div>
-                        </div>
-                    </div>
-
                     <div className="row bottom-mrg">
                         <form className="add-feild form-container" onSubmit={handleSubmit}>
                             <div className="input-group form-group">
                                 <input 
-                                    type="text" 
+                                    type="text"
                                     className="form-control" 
                                     placeholder="Job Title"
                                     value={jobTitle}
