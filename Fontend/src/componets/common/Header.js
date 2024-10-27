@@ -59,6 +59,16 @@ const Header = () => {
 
     const fullName = localStorage.getItem("fullName");
     console.log("fullName:", fullName);
+
+  
+    const handleWindowClose = () => {
+      // localStorage.clear();
+    };
+    window.addEventListener("beforeunload", handleWindowClose);
+    return () => {
+      window.removeEventListener("beforeunload", handleWindowClose);
+    };
+
   }, []);
 
   const openChangePassModal = () => {
