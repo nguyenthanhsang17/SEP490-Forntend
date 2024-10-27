@@ -14,7 +14,7 @@ import CreatePostJob from './componets/jobs/CreatePostJob'
 import ViewAllJobApplied from './componets/jobs/View_All_Job_Applied';
 import ViewAllJobSeekerApply from './componets/jobs/View_All_Jobseeker_Apply';
 import ViewJobSeekerDetail from './componets/jobs/View_JobSeeker_Detail';
-
+import ViewJobCreatedDetail from './componets/jobs/ViewJobCreatedDetail';
 import ViewListJobsCreated from './componets/jobs/ViewListJobsCreated';
 import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
@@ -37,6 +37,7 @@ root.render(
         <Route path="/ViewAllJobseekerApply/:id" element={<ViewAllJobSeekerApply />} /> {/* Xem danh sách các ứng viên đã ứng tuyển*/}
         <Route path="/ViewJobSeekerDetail/:id/:apply_id" element={<ViewJobSeekerDetail />} /> {/* Xem chi tiết ứng viên đã ứng tuyển*/}
         <Route path="/viewListJobsCreated" element={<ViewListJobsCreated/>}/>
+        <Route path="/viewJobCreatedDetail/:id" element={<ViewJobCreatedDetail/>}/>
         <Route path="/ApplyJob/:job_id" element={<ApplyJob/>}/>
         
         {/* Thêm các route khác nếu cần */}

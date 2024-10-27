@@ -89,6 +89,10 @@ const Header = () => {
     navigate("/jobs");
   };
 
+  const handleViewListCreatedClick = () => {
+    setDropdownVisible(false);
+    navigate("/viewListJobsCreated");
+  }
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
@@ -159,6 +163,9 @@ const Header = () => {
                   >
                     <div style={styles.dropdownItem} onClick={handleProfileClick}>
                       Hồ sơ của bạn
+                    </div>
+                    <div style={styles.dropdownItem} onClick={handleViewListCreatedClick}>
+                      Danh sách công việc đã tạo
                     </div>
                     <div
                       style={styles.dropdownItem}
