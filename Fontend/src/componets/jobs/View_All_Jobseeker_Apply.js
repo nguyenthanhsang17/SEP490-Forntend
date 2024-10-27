@@ -9,37 +9,41 @@ import { useParams } from 'react-router-dom';
 
 function ViewAllJobSeekerApply() {
   const { id } = useParams();
-  const [JobSeeker, setJobSeeker] = useState([]);
+  const [jobSeekers, setJobSeekers] = useState([]);
   const [genderFilter, setGenderFilter] = useState('');
   const [ageFilter, setAgeFilter] = useState('');
   const [jobFilter, setJobFilter] = useState('');
   const [applyFilter, setApplyFilter] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const fetchJobs = async () => {
+  const fetchJobSeekers = async () => {
     try {
-      const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetAllJobseekerApply/${id}`);
-      setJobSeeker(response.data);
+      const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetAllJobseekerApply/${id}`, {
+        params: {
+          pageNumber: pageNumber,
+          pageSize: 4, // Bạn có thể thay đổi kích thước trang nếu cần
+          gender: genderFilter,
+          age: ageFilter,
+          jobName: jobFilter,
+          applyStatus: applyFilter,
+        }
+      });
+      setJobSeekers(response.data.items);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error('Error fetching the jobseeker data:', error);
+      console.error('Error fetching the job seeker data:', error);
     }
   };
 
   useEffect(() => {
-    fetchJobs();
-  }, [id]);
+    fetchJobSeekers();
+  }, [id, pageNumber, genderFilter, ageFilter, jobFilter, applyFilter]);
 
   const handleSearch = () => {
-    return JobSeeker.filter(seeker => {
-      const matchesGender = genderFilter ? (seeker.gender ? 'Nam' : 'Nữ') === genderFilter : true;
-      const matchesAge = ageFilter ? seeker.age.toString() === ageFilter : true;
-      const matchesJob = jobFilter ? seeker.jobName === jobFilter : true;
-      const matchesApplyStatus = applyFilter ? seeker.apply_id.toString() === applyFilter : true;
-      
-      return matchesGender && matchesAge && matchesJob && matchesApplyStatus;
-    });
+    setPageNumber(1); // Reset về trang 1 khi có bộ lọc mới
+    fetchJobSeekers(); // Gọi lại hàm để fetch dữ liệu mới
   };
-
-  const filteredJobSeekers = handleSearch();
 
   return (
     <>
@@ -102,11 +106,12 @@ function ViewAllJobSeekerApply() {
               <option value="3">Đã nhận</option>
             </select>
           </div>
+          <button onClick={handleSearch} className="btn btn-primary">Tìm kiếm</button>
         </div>
 
         <div className="row justify-content-center">
-          {filteredJobSeekers.length > 0 ? (
-            filteredJobSeekers.map((seeker) => (
+          {jobSeekers.length > 0 ? (
+            jobSeekers.map((seeker) => (
               <div key={seeker.userId} className="col-md-6 mb-4" style={{ margin: '16px 0' }}>
                 <div 
                   className="card" 
@@ -149,6 +154,20 @@ function ViewAllJobSeekerApply() {
             <p className="text-center">Không có ứng viên nào.</p>
           )}
         </div>
+
+        {/* Phân trang */}
+        <div className="pagination" style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+  {Array.from({ length: totalPages }, (_, index) => (
+    <button 
+      key={index} 
+      className={`btn ${pageNumber === index + 1 ? 'btn-primary' : 'btn-secondary'}`} 
+      onClick={() => setPageNumber(index + 1)}
+    >
+      {index + 1}
+    </button>
+  ))}
+</div>
+
       </div>
       <Footer />
     </>

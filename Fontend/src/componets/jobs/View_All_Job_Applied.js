@@ -5,33 +5,43 @@ import '../assets/css/colors/green-style.css';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import axios from 'axios';
-import { useParams } from 'react-router-dom'; 
+import { useParams,useNavigate } from 'react-router-dom'; 
 
 function ViewAllJobApplied() {
   const { id } = useParams();
   const [jobs, setJobs] = useState([]);
-  const [message, setMessage] = useState(''); 
+  const [message, setMessage] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // Adjust as needed
+  const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
-  const fetchJobs = async () => { 
+  const fetchJobs = async (page = 1) => {
     try {
-      const response = await axios.get(`https://localhost:7077/api/JobJobSeeker/GetAllJobApplied/${id}`);
-      console.log("API response data:", response.data); 
-
-      setJobs(response.data || []);
-      setMessage(''); // Xóa thông báo khi tải lại danh sách công việc
+      const response = await axios.get(`https://localhost:7077/api/JobJobSeeker/GetAllJobApplied/${id}`, {
+        params: {
+          pageNumber: page,
+          pageSize,
+        }
+      });
+      console.log("API response data:", response.data);
+      
+      setJobs(response.data.items || []);
+      setTotalPages(response.data.totalPages || 1);
+      setMessage(''); // Clear message on successful fetch
     } catch (error) {
       console.error('Error fetching the job data:', error);
     }
   };
 
   useEffect(() => {
-    fetchJobs(); 
-  }, [id]);
+    fetchJobs(pageNumber); 
+  }, [id, pageNumber]);
 
   const handleCancelApply = async (jobId) => {
-    console.log(`Hủy ứng tuyển cho công việc ID: ${jobId}`);
+    console.log(`Canceling application for job ID: ${jobId}`);
     
-    const newStatus = 5; // trạng thái hủy ứng tuyển 
+    const newStatus = 5;
 
     try {
       const response = await axios.get(`https://localhost:7077/api/JobEmployer/ChangeStatusApplyJob`, {
@@ -42,29 +52,36 @@ function ViewAllJobApplied() {
       });
 
       if (response.data) {
-        console.log('Thay đổi trạng thái thành công:', response.data);
-        setMessage('Bạn đã hủy ứng tuyển thành công!'); // Thiết lập thông báo thành công
-        fetchJobs(); // Gọi lại hàm fetchJobs để tải lại danh sách công việc
+        console.log('Status updated successfully:', response.data);
+        setMessage('Đã hủy ứng tuyển thành công.');
+        fetchJobs(pageNumber);
       } else {
-        console.error('Không thể thay đổi trạng thái:', response.data);
-        setMessage('Không thể hủy ứng tuyển.'); // Thông báo lỗi
+        console.error('Unable to update status:', response.data);
+        setMessage('Không thể hủy đăng ký.');
       }
     } catch (error) {
-      console.error('Lỗi khi thay đổi trạng thái ứng tuyển:', error);
-      setMessage('Có lỗi xảy ra khi hủy ứng tuyển.'); // Thông báo lỗi
+      console.error('Error updating application status:', error);
+      setMessage('Có lỗi xảy a khi hủy, hãy thử lại sau.');
     }
   };
 
   const handleViewDetail = (jobId) => {
-    
+    // Add functionality for viewing job details if needed
+    navigate("/viewJobDetail/"+jobId);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setPageNumber(newPage);
+    }
   };
 
   return (
     <>
       <Header />
       <div className="container job-list" style={{ paddingTop: '50px' }}>
-        <h2 className="text-center">Danh sách công việc đã ứng tuyển</h2>
-        {message && <div className="alert alert-info text-center">{message}</div>} {/* Hiển thị thông báo */}
+        <h2 className="text-center">List of Applied Jobs</h2>
+        {message && <div className="alert alert-info text-center">{message}</div>}
         <div className="row justify-content-center">
           {Array.isArray(jobs) && jobs.length > 0 ? (
             jobs.map((job) => (
@@ -89,7 +106,7 @@ function ViewAllJobApplied() {
                         (() => {
                           switch (job.statusApplyJob) {
                             case 0:
-                              return "Đang ứng tuyển";
+                              return "Đã ứng tuyển";
                             case 1:
                               return "Nhà tuyển dụng đánh giá bạn không phù hợp";
                             case 2:
@@ -109,28 +126,45 @@ function ViewAllJobApplied() {
 
                     {job.statusJob === 1 && job.statusApplyJob === 0 && (
                       <button
-                      
-                      className="btn btn-danger me-2" 
-                      style={{ marginRight: '10px' }}
+                        className="btn btn-danger me-2" 
+                        style={{ marginRight: '10px' }}
                         onClick={() => handleCancelApply(job.id)}
                       >
                         Hủy ứng tuyển
                       </button>
                     )}
                     <button
-                      className="btn btn-primary" // Nút Xem Chi Tiết
-                      
-                      onClick={() => handleViewDetail(job.id)} // Hàm để xử lý khi nhấn nút
+                      className="btn btn-primary"
+                      onClick={() => handleViewDetail(job.id)}
                     >
-                      Xem Chi Tiết
+                      Xem chi tiết
                     </button>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center">Bạn chưa ứng tuyển công việc nào.</p>
+            <p className="text-center">Bạn chưa ứng tuyển công viêvj nào , hãy bắt đầu ứng tuyển.</p>
           )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="pagination-controls text-center mt-4">
+          <button
+            className="btn btn-secondary me-2"
+            onClick={() => handlePageChange(pageNumber - 1)}
+            disabled={pageNumber === 1}
+          >
+            Trước
+          </button>
+          <span>Trang {pageNumber} / {totalPages}</span>
+          <button
+            className="btn btn-secondary ms-2"
+            onClick={() => handlePageChange(pageNumber + 1)}
+            disabled={pageNumber === totalPages}
+          >
+            Sau
+          </button>
         </div>
       </div>
       <Footer />

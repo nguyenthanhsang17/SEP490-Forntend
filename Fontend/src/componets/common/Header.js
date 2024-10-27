@@ -61,7 +61,7 @@ const Header = () => {
     console.log("fullName:", fullName);
   
     const handleWindowClose = () => {
-      localStorage.clear();
+      // localStorage.clear();
     };
   
     window.addEventListener("beforeunload", handleWindowClose);
