@@ -163,7 +163,6 @@ const Profile = () => {
                 <ul class="nav simple nav-tabs" id="simple-design-tab">
                   <li class="active"><a href="#about">Thông tin chi tiết</a></li>
                 </ul>
-
                 <div class="tab-content">
                   {!issupdateProfile ? (<div id="address" class="tab-pane fade in active">
                     <ul class="job-detail-des">
