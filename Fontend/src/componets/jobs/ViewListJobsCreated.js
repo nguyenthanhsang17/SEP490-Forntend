@@ -112,6 +112,7 @@ const ViewListJobsCreated = () => {
 
         return paginationItems;
     };
+
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         setCurrentPage(1); // Reset to the first page on new search
@@ -134,6 +135,22 @@ const ViewListJobsCreated = () => {
     };
     const handleJobClick = (postId) => {
         navigate(`/viewJobCreatedDetail/${postId}`);
+    };
+
+    // Định nghĩa ánh xạ trạng thái
+    const statusLabels = {
+        0: "Bản nháp",
+        1: "Chờ phê duyệt",
+        2: "Đã đăng",
+        3: "Bị từ chối",
+        4: "Đã xóa",
+        5: "Đã ẩn",
+        6: "Bị cấm"
+    };
+
+    // Hàm lấy nhãn trạng thái từ mã trạng thái
+    const getStatusLabel = (status) => {
+        return statusLabels[status] || "Không xác định";
     };
 
     const togglePostVisibility = async (job) => {
@@ -287,7 +304,7 @@ const ViewListJobsCreated = () => {
                                         <div className="col-md-1 col-sm-2 small-padding">
                                             <div className="brows-job-company-img">
                                                 <img
-                                                    src={job.thumbnail || 'https://via.placeholder.com/100'} // Fallback image if thumbnail is missing
+                                                    src={job.thumbnail || 'https://via.placeholder.com/100'} // Ảnh mặc định nếu thiếu ảnh thumbnail
                                                     className="img-responsive"
                                                     alt={job.jobTitle}
                                                     style={{ width: "100px" }}
@@ -312,6 +329,12 @@ const ViewListJobsCreated = () => {
                                                 <p><i className="fa fa-map-marker"></i> {job.address}</p>
                                             </div>
                                         </div>
+                                        <div className="col-md-3 col-sm-3">
+                                            <div className="brows-job-location">
+                                                {/* Hiển thị trạng thái công việc */}
+                                                <p>{getStatusLabel(job.status)}</p>
+                                            </div>
+                                        </div>
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
                                                 <button
@@ -321,20 +344,20 @@ const ViewListJobsCreated = () => {
                                                         togglePostVisibility(job); // Gọi hàm để ẩn/hiện bài viết
                                                     }}
                                                 >
-                                                    {job.isVisible ? "Hiện bài viết" : "Ẩn bài viết"}
+                                                    {/* Hiển thị nội dung nút dựa trên trạng thái và isVisible */}
+                                                    {job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
                                                 </button>
-                                                <FontAwesomeIcon icon={faHeart} style={{ marginLeft: 10 }} />
                                             </div>
                                         </div>
                                     </div>
                                     {job.isUrgentRecruitment && <span className="tg-themetag tg-featuretag">Tuyển gấp</span>}
                                 </article>
                             </div>
-
                         ))
                     ) : (
                         <div>{notFoundMessage}</div>
                     )}
+
 
                     <ul className="pagination">{generatePagination(currentPage, totalPages)}</ul>
                 </div>
