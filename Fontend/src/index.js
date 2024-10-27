@@ -20,7 +20,6 @@ import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
 import PostJobs from './componets/jobs/ViewAllPostJob';
 import ApplyJob from './componets/jobs/ApplyJob';
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -39,9 +38,7 @@ root.render(
         <Route path="/viewListJobsCreated" element={<ViewListJobsCreated/>}/>
         <Route path="/viewJobCreatedDetail/:id" element={<ViewJobCreatedDetail/>}/>
         <Route path="/ApplyJob/:job_id" element={<ApplyJob/>}/>
-        
         {/* Thêm các route khác nếu cần */}
-
         <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
         <Route path='/VerifyRegister' element={<VerifyRegister/>}/>{/*màn này để verifycode khi đăng ký */}
         <Route path='/viewalljob' element={<PostJobs/>}/>

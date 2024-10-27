@@ -14,6 +14,10 @@ const Profile = () => {
   const [success, setSuccess] = useState(null);
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
   const navigate = useNavigate();
+  const [img, setimg] = useState("");
+
+  const [file, setFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -33,6 +37,7 @@ const Profile = () => {
         setProfile(response.data);
         setUpdatedProfile(response.data);
         setLoading(false);
+        setimg(response.data.avatarURL);
       } catch (err) {
         if (err.response && err.response.status === 401) {
           navigate("/login");
@@ -55,6 +60,9 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (file) {
+      await handleUpload();
+    }
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -83,9 +91,60 @@ const Profile = () => {
     }
   };
 
-  if (loading) return <div className="loading">Đang tải...</div>;
-  if (error) return <div className="error">Lỗi: {error}</div>;
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(e.target.files[0]);
+      console.log(file);
+      setimg(URL.createObjectURL(selectedFile)); // Tạo URL tạm thời cho ảnh
+    }
+  };
 
+  console.log(img);
+
+  const handleUpload = async () => {
+    if (!file) {
+      console.log("No file selected");
+      setUploadStatus("Please select a file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      console.log("Uploading file...");
+      const response = await axios.post("https://localhost:7077/api/Upload/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      console.log("Upload response:", response.data);
+      const mediaId = response.data.mediaid;
+      console.log("Media ID:", mediaId);
+
+      setUpdatedProfile(prev => {
+        const updated = {
+          ...prev,
+          avatar: mediaId
+        };
+        console.log("Updated profile:", updated);
+        return updated;
+      });
+      return mediaId;
+    } catch (error) {
+      console.error("Upload error:", error);
+      console.error("Error response:", error.response);
+      setUploadStatus(`Upload failed: ${error.response?.data || error.message}`);
+      throw error;
+    }
+  };
+
+  // if (loading) return <div className="loading">Đang tải...</div>;
+  // if (error) return <div className="error">Lỗi: {error}</div>;
+  if (!profile) return <div>No profile data</div>;
   return (
     <>
       <Header />
@@ -125,19 +184,18 @@ const Profile = () => {
                 <ul className="nav simple nav-tabs" id="simple-design-tab">
                   <li className="active"><a href="#about">Thông tin chi tiết</a></li>
                 </ul>
-
                 <div className="tab-content">
                   {!isUpdateProfile ? (
                     <div id="address" className="tab-pane fade in active">
                       <ul className="job-detail-des">
-                        <li><span className="label1">Họ và tên:</span> {profile.fullName}</li>
-                        <li><span className="label1">Email:</span> {profile.email}</li>
-                        <li><span className="label1">Số điện thoại:</span> {profile.phonenumber}</li>
-                        <li><span className="label1">Công việc hiện tại:</span> {profile.jobName}</li>
-                        <li><span className="label1">Địa chỉ:</span> {profile.address}</li>
-                        <li><span className="label1">Giới tính:</span> {profile.gender ? "Nam" : "Nữ"}</li>
-                        <li><span className="label1">Tuổi:</span> {profile.age}</li>
-                        <li><span className="label1">Miêu tả bản thân:</span> <textarea>{profile.description}</textarea></li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Họ và tên:</span> {profile.fullName}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Email:</span> {profile.email}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Số điện thoại:</span> {profile.phonenumber}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Công việc hiện tại:</span> {profile.jobName}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Địa chỉ:</span> {profile.address}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Giới tính:</span> {profile.gender ? "Nam" : "Nữ"}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Tuổi:</span> {profile.age}</li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Miêu tả bản thân:</span> <textarea>{profile.description}</textarea></li>
                       </ul>
                       <button type="button" onClick={() => setIsUpdateProfile(true)} className="update-btn">Cập nhật thông tin cá nhân</button>
                     </div>
@@ -148,8 +206,8 @@ const Profile = () => {
                           <div className="edit-pro">
                             <div className="col-md-4 col-sm-6">
                               <label>Ảnh đại diện</label>
-                              <input type="file" className="form-control" placeholder="Matthew" />
-                              <img src={profile.avatarURL} alt="Avatar" />
+                              <input type="file" className="form-control" onChange={handleFileChange} />
+                              <img style={{ width: 250, height: 330 }} src={img} />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Họ và tên</label>
@@ -179,11 +237,11 @@ const Profile = () => {
                               </select>
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>T ình trạng hiện tại</label>
-                              <select className="form-control">
-                                <option>Thất nghiệp</option>
-                                <option>Đang đi học</option>
-                                <option>Đang đi làm</option>
+                              <label>Tình trạng hiện tại</label>
+                              <select name="currentJob" className="form-control" value={profile.currentJob} onChange={handleInputChange}>
+                                <option value={1} >Thất nghiệp</option>
+                                <option value={2} >Đang đi học</option>
+                                <option value={3} >Đang đi làm</option>
                               </select>
                             </div>
                             <div className="col-md-4 col-sm-6">
