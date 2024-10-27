@@ -133,6 +133,21 @@ function ViewJobCreatedDetail() {
     return days[dayOfWeek] || 'Không xác định';
   };
   
+  // Định nghĩa ánh xạ trạng thái
+  const statusLabels = {
+    0: "Bản nháp",
+    1: "Chờ phê duyệt",
+    2: "Đã đăng",
+    3: "Bị từ chối",
+    4: "Đã xóa",
+    5: "Đã ẩn",
+    6: "Bị cấm"
+};
+
+// Hàm lấy nhãn trạng thái từ mã trạng thái
+const getStatusLabel = (status) => {
+    return statusLabels[status] || "Không xác định";
+};
 
   return (
     <>
@@ -140,7 +155,7 @@ function ViewJobCreatedDetail() {
       <div className="clearfix"></div>
       <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
         <div className="container">
-          <h1>Chi tiết công việc</h1>
+          <h1>Chi tiết công việc đã tạo</h1>
         </div>
       </section>
       <div className="clearfix"></div>
@@ -149,10 +164,9 @@ function ViewJobCreatedDetail() {
           <div className="row">
             <div className="detail-pic">
               <img src={jobDetails.imagePostJobs[0]} className="img" alt="Company Logo" />
-              <a href="#" className="detail-edit" title="Sửa"><i className="fa fa-pencil"></i></a>
             </div>
             <div className="detail-status">
-              <span>{jobDetails.Status}</span>
+            <span>{getStatusLabel(jobDetails.status)}</span>
             </div>
           </div>
 

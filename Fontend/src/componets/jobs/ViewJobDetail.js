@@ -150,7 +150,6 @@ const getDayOfWeek = (dayOfWeek) => {
           <div className="row">
             <div className="detail-pic">
               <img src={jobDetails.imagePostJobs[0]} className="img" alt="Company Logo" />
-              <a href="#" className="detail-edit" title="Sửa"><i className="fa fa-pencil"></i></a>
             </div>
             <div className="detail-status">
               <span>{jobDetails.jobCategoryName}</span>
