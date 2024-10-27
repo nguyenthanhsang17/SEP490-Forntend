@@ -16,7 +16,7 @@ const HomePage = () => {
         setBlogs(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching blogs:", error);
+        console.error("Lỗi khi lấy bài viết:", error);
       });
 
     axios
@@ -25,7 +25,7 @@ const HomePage = () => {
         setJobs(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching jobs:", error);
+        console.error("Lỗi khi lấy công việc phổ biến:", error);
       });
   }, []);
 
@@ -50,8 +50,8 @@ const HomePage = () => {
                           type="text"
                           className="form-control right-bor"
                           id="joblist"
-                          placeholder="Skills, Designations, Companies"
-                          aria-label="Job skills"
+                          placeholder="Kỹ năng, Chức danh, Công ty"
+                          aria-label="Kỹ năng công việc"
                         />
                       </div>
                     </div>
@@ -61,8 +61,8 @@ const HomePage = () => {
                           type="text"
                           className="form-control right-bor"
                           id="location"
-                          placeholder="Search By Location.."
-                          aria-label="Location"
+                          placeholder="Tìm kiếm theo địa điểm..."
+                          aria-label="Địa điểm"
                         />
                       </div>
                     </div>
@@ -71,7 +71,7 @@ const HomePage = () => {
                         <select
                           id="choose-city"
                           className="form-control"
-                          aria-label="Choose City"
+                          aria-label="Chọn thành phố"
                         >
                           <option value="">Chọn thành phố</option>
                           <option value="Chandigarh">Chandigarh</option>
@@ -102,9 +102,9 @@ const HomePage = () => {
           <div className="container">
             <div className="row">
               <div className="main-heading">
-                <p>Latest Blogs</p>
+                <p>Bài Viết Mới Nhất</p>
                 <h2>
-                  New & Trending <span>Blogs</span>
+                  Blog Mới & Xu Hướng <span>Bài Viết</span>
                 </h2>
               </div>
             </div>
@@ -137,7 +137,7 @@ const HomePage = () => {
                   </div>
                 ))
               ) : (
-                <p>No blogs available.</p>
+                <p>Không có bài viết nào.</p>
               )}
             </div>
           </div>
@@ -149,26 +149,27 @@ const HomePage = () => {
             <div className="row" data-aos="fade-up">
               <div className="col-md-12">
                 <div className="main-heading">
-                  <p>Working Process</p>
+                  <p>Quy Trình Làm Việc</p>
                   <h2>
-                    How It <span>Works</span>
+                    Cách Hoạt Động <span>Quy Trình</span>
                   </h2>
                 </div>
               </div>
             </div>
             <div className="row">
-              {["Create An Account", "Search Jobs", "Save & Apply"].map((step, index) => (
-                <div key={index} className="col-md-4 col-sm-4 mb-4">
-                  <div className="working-process text-center">
-                    
-                    <h4>{step}</h4>
-                    <p>
-                      Post a job to tell us about your project. We'll quickly
-                      match you with the right freelancers find place best.
-                    </p>
+              {["Tạo Tài Khoản", "Tìm Kiếm Công Việc", "Lưu & Ứng Tuyển"].map(
+                (step, index) => (
+                  <div key={index} className="col-md-4 col-sm-4 mb-4">
+                    <div className="working-process text-center">
+                      <h4>{step}</h4>
+                      <p>
+                        Đăng công việc để cho chúng tôi biết về dự án của bạn.
+                        Chúng tôi sẽ nhanh chóng kết nối bạn với những freelancer phù hợp.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
         </section>
@@ -179,9 +180,9 @@ const HomePage = () => {
             <div className="row">
               <div className="col-md-12">
                 <div className="main-heading">
-                  <p>Top Jobs</p>
+                  <p>Công Việc Hàng Đầu</p>
                   <h2>
-                    Popular <span>Jobs</span>
+                    Công Việc <span>Phổ Biến</span>
                   </h2>
                 </div>
               </div>
@@ -197,7 +198,7 @@ const HomePage = () => {
                             job.isUrgentRecruitment ? "urgent" : ""
                           }`}
                         >
-                          {job.isUrgentRecruitment ? "Urgent" : "Available"}
+                          {job.isUrgentRecruitment ? "Khẩn Cấp" : "Có Sẵn"}
                         </span>
                         <h4 className="flc-rate">
                           ₫{job.salary.toLocaleString()} / {job.salaryTypeName}
@@ -226,13 +227,13 @@ const HomePage = () => {
                         href={`/jobDetail/${job.postId}`}
                         className="btn btn-freelance-two bg-default"
                       >
-                        View Detail
+                        Xem Chi Tiết
                       </a>
                     </div>
                   </div>
                 ))
               ) : (
-                <p>No popular jobs available.</p>
+                <p>Không có công việc phổ biến nào.</p>
               )}
             </div>
           </div>
@@ -250,28 +251,15 @@ const HomePage = () => {
             .freelance-container:hover {
               transform: translateY(-5px);
             }
-            .banner {
-              height: 400px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              background-size: cover;
+            .freelance-status.urgent {
+              background-color: #d9534f;
               color: #fff;
             }
-            .banner-caption {
-              text-align: center;
-            }
-            .banner-caption h1 {
-              margin-bottom: 20px;
-            }
-            .row.extra-mrg {
-              margin-top: 40px;
-            }
-            .how-it-works {
-              margin: 60px 0;
-            }
-            .pricing {
-              margin: 60px 0;
+            .freelance-box-extra {
+              border-top: 1px solid #f5f5f5;
+              padding: 20px;
+              font-size: 14px;
+              color: #777;
             }
           `}</style>
         </section>
