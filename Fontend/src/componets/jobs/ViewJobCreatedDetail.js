@@ -152,7 +152,7 @@ function ViewJobCreatedDetail() {
               <a href="#" className="detail-edit" title="Sửa"><i className="fa fa-pencil"></i></a>
             </div>
             <div className="detail-status">
-              <span>{jobDetails.jobCategoryName}</span>
+              <span>{jobDetails.Status}</span>
             </div>
           </div>
 
@@ -160,7 +160,7 @@ function ViewJobCreatedDetail() {
             <div className="col-md-8 col-sm-8">
               <div className="detail-desc-caption">
                 <h4>{jobDetails.jobTitle}</h4>
-                <span className="designation">Người đăng: {jobDetails.authorName}</span>
+                <span>{jobDetails.jobCategoryName}</span>
                 <ul>
                   <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người/{jobDetails.numberAppliedUser} đã ứng tuyển</span></li>
                   <li><i className="fa fa-money"></i><span>{jobDetails.salaryTypeName}: {jobDetails.salary} VND</span></li>
@@ -188,7 +188,6 @@ function ViewJobCreatedDetail() {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   <a href="#" className="footer-btn grn-btn" title="">Chỉnh sửa bài đăng</a>
-                  <a href="#" className="footer-btn blu-btn" title="">Trang thái kiểm duyệt</a>
                 </div>
               </div>
             </div>
