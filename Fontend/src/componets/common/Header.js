@@ -56,19 +56,19 @@ const Header = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-  
+
     const fullName = localStorage.getItem("fullName");
     console.log("fullName:", fullName);
+
   
     const handleWindowClose = () => {
       // localStorage.clear();
     };
-  
     window.addEventListener("beforeunload", handleWindowClose);
-  
     return () => {
       window.removeEventListener("beforeunload", handleWindowClose);
     };
+
   }, []);
 
   const openChangePassModal = () => {
@@ -83,9 +83,10 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
+    localStorage.removeItem("fullName");
     setIsLoggedIn(false);
     setDropdownVisible(false);
-    window.location.reload();
+    navigate("/login"); // Redirect to login page after logout
   };
 
   const handleProfileClick = () => {
@@ -98,6 +99,10 @@ const Header = () => {
     navigate("/jobs");
   };
 
+  const handleViewListCreatedClick = () => {
+    setDropdownVisible(false);
+    navigate("/viewListJobsCreated");
+  }
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
@@ -144,14 +149,13 @@ const Header = () => {
                 </a>
               </li>
 
-              {/* New "View All Jobs" link */}
               <li>
                 <a 
                   style={styles.viewJobsLink} 
                   onClick={handleViewAllJobsClick}
                   href="/viewalljob"
                 >
-                  <FaBriefcase style={styles.icon} /> {/* Job icon */}
+                  <FaBriefcase style={styles.icon} />
                   Tất cả các công việc
                 </a>
               </li>
@@ -159,7 +163,7 @@ const Header = () => {
               {isLoggedIn ? (
                 <li className="left-br">
                   <button style={styles.profileButton} onClick={toggleDropdown}>
-                    {localStorage.getItem("fullName") || "Họ và tên"}{/* Display the full name */}
+                    {localStorage.getItem("fullName") || "Họ và tên"}
                   </button>
                   <div
                     style={{
@@ -169,6 +173,9 @@ const Header = () => {
                   >
                     <div style={styles.dropdownItem} onClick={handleProfileClick}>
                       Hồ sơ của bạn
+                    </div>
+                    <div style={styles.dropdownItem} onClick={handleViewListCreatedClick}>
+                      Danh sách công việc đã tạo
                     </div>
                     <div
                       style={styles.dropdownItem}
@@ -189,7 +196,7 @@ const Header = () => {
                     data-target="#signup"
                     className="signin"
                   >
-                    Đăng ký ngay
+                    Đăng Nhập Ngay
                   </a>
                 </li>
               )}

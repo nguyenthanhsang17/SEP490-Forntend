@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Footer from '../common/Footer';
+import Header from '../common/Header';
+import "../assets/css/style.css";
+import '../assets/plugins/css/plugins.css';
+import '../assets/css/colors/green-style.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [updatedProfile, setUpdatedProfile] = useState({});
-
+  const [isUpdateProfile, setIsUpdateProfile] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,9 +27,7 @@ const Profile = () => {
         const response = await axios.get(
           "https://localhost:7077/api/Users/Detail",
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         setProfile(response.data);
@@ -45,12 +46,11 @@ const Profile = () => {
     fetchProfile();
   }, [navigate]);
 
+  const [updatedProfile, setUpdatedProfile] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedProfile({
-      ...updatedProfile,
-      [name]: value,
-    });
+    setUpdatedProfile({ ...updatedProfile, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -73,9 +73,10 @@ const Profile = () => {
         }
       );
       setSuccess("Cập nhật hồ sơ thành công!");
-      setLoading(false);
       setProfile(updatedProfile);
-      setEditMode(false);
+      localStorage.setItem("fullName", updatedProfile.fullName); // Update fullName in localStorage
+      setIsUpdateProfile(false);
+      setLoading(false);
     } catch (err) {
       setError("Không thể cập nhật hồ sơ. Vui lòng thử lại.");
       setLoading(false);
@@ -86,233 +87,129 @@ const Profile = () => {
   if (error) return <div className="error">Lỗi: {error}</div>;
 
   return (
-    <div className="profile-container">
-      <h1>Hồ sơ của bạn</h1>
-      {profile && (
-        <div className="profile-content">
-          {editMode ? (
-            <form className="profile-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Họ và Tên:</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={updatedProfile.fullName}
-                  onChange={handleInputChange}
-                />
-              </div>
+    <>
+      <Header />
+      <section className="inner-header-title" style={{ backgroundImage: `url(https://ik.imagekit.io/ryf3sqxfn/banner-6.jpg)` }}>
+        <div className="container">
+          <h1>Hồ sơ</h1>
+        </div>
+      </section>
+      <div className="clearfix"></div>
 
-              <div className="form-group">
-                <label>Tuổi:</label>
-                <input
-                  type="number"
-                  name="age"
-                  value={updatedProfile.age}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Số điện thoại:</label>
-                <input
-                  type="text"
-                  name="phonenumber"
-                  value={updatedProfile.phonenumber}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Công việc hiện tại:</label>
-                <input
-                  type="number"
-                  name="currentJob"
-                  value={updatedProfile.currentJob}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Mô tả:</label>
-                <textarea
-                  name="description"
-                  value={updatedProfile.description}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Địa chỉ:</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={updatedProfile.address}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Giới tính:</label>
-                <select
-                  name="gender"
-                  value={updatedProfile.gender}
-                  onChange={handleInputChange}
-                >
-                  <option value={true}>Nam</option>
-                  <option value={false}>Nữ</option>
-                </select>
-              </div>
-
-              <div className="btn-group">
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? "Đang cập nhật..." : "Cập nhật hồ sơ"}
-                </button>
-                <button
-                  type="button"
-                  className="back-btn"
-                  onClick={() => setEditMode(false)}
-                >
-                  Trở về
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div className="profile-details">
-              <img
-                src={profile.avatarURL}
-                alt="Avatar"
-                width="150"
-                className="avatar"
-              />
-              <p><strong>Họ và Tên:</strong> {profile.fullName}</p>
-              <p><strong>Tên đăng nhập:</strong> {profile.userName}</p>
-              <p><strong>Email:</strong> {profile.email}</p>
-              <p><strong>Tuổi:</strong> {profile.age}</p>
-              <p><strong>Số điện thoại:</strong> {profile.phonenumber}</p>
-              <p><strong>Công việc hiện tại:</strong> {profile.jobName}</p>
-              <p><strong>Mô tả:</strong> {profile.description}</p>
-              <p><strong>Địa chỉ:</strong> {profile.address}</p>
-              <p><strong>Số dư:</strong> {profile.balance} VND</p>
-              <p><strong>Trạng thái:</strong> {profile.status === 1 ? "Hoạt động" : "Không hoạt động"}</p>
-              <p><strong>Giới tính:</strong> {profile.gender ? "Nam" : "Nữ"}</p>
-              <p><strong>Vai trò:</strong> {profile.roleName}</p>
-
-              <div className="btn-group">
-                <button
-                  type="button"
-                  className="back-btn"
-                  onClick={() => navigate("/")}
-                >
-                  Quay lại
-                </button>
-                <button className="edit-btn" onClick={() => setEditMode(true)}>
-                  Chỉnh sửa hồ sơ
-                </button>
+      <section className="detail-desc advance-detail-pr gray-bg">
+        <div className="container white -shadow">
+          <div className="row">
+            <div className="detail-pic">
+              <img src={profile.avatarURL} className="img" alt="" />
+              <a href="#" className="detail-edit" title="edit"><i className="fa fa-pencil"></i></a>
+            </div>
+            <div className="detail-status">
+              <span>{profile.roleName === 'Job seeker' ? "Người tìm việc" : "Tuyển dụng"}</span>
+            </div>
+          </div>
+          <div className="row bottom-mrg">
+            <div className="col-md-12 col-sm-12">
+              <div className="advance-detail detail-desc-caption">
+                <h4>{profile.fullName}</h4>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      )}
+      </section>
 
-      {success && <div className="success-msg">{success}</div>}
-      {error && <div className="error-msg">{error}</div>}
-    </div>
+      <section className="full-detail-description full-detail gray-bg">
+        <div className="container">
+          <div className="col-md-12 col-sm-12">
+            <div className="full-card">
+              <div className="deatil-tab-employ tool-tab">
+                <ul className="nav simple nav-tabs" id="simple-design-tab">
+                  <li className="active"><a href="#about">Thông tin chi tiết</a></li>
+                </ul>
+
+                <div className="tab-content">
+                  {!isUpdateProfile ? (
+                    <div id="address" className="tab-pane fade in active">
+                      <ul className="job-detail-des">
+                        <li><span className="label1">Họ và tên:</span> {profile.fullName}</li>
+                        <li><span className="label1">Email:</span> {profile.email}</li>
+                        <li><span className="label1">Số điện thoại:</span> {profile.phonenumber}</li>
+                        <li><span className="label1">Công việc hiện tại:</span> {profile.jobName}</li>
+                        <li><span className="label1">Địa chỉ:</span> {profile.address}</li>
+                        <li><span className="label1">Giới tính:</span> {profile.gender ? "Nam" : "Nữ"}</li>
+                        <li><span className="label1">Tuổi:</span> {profile.age}</li>
+                        <li><span className="label1">Miêu tả bản thân:</span> <textarea>{profile.description}</textarea></li>
+                      </ul>
+                      <button type="button" onClick={() => setIsUpdateProfile(true)} className="update-btn">Cập nhật thông tin cá nhân</button>
+                    </div>
+                  ) : (
+                    <div id="settings" className="tab-pane fade in active">
+                      <form onSubmit={handleSubmit}>
+                        <div className="row no-mrg">
+                          <div className="edit-pro">
+                            <div className="col-md-4 col-sm-6">
+                              <label>Ảnh đại diện</label>
+                              <input type="file" className="form-control" placeholder="Matthew" />
+                              <img src={profile.avatarURL} alt="Avatar" />
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Họ và tên</label>
+                              <input type="text" name="fullName" value={updatedProfile.fullName} className="form-control" onChange={handleInputChange} />
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Tuổi</label>
+                              <input type="number" min={1} name="age" value={updatedProfile.age} className="form-control" onChange={handleInputChange} />
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Email</label>
+                              <input type="email" name="email" value={updatedProfile.email} className="form-control" onChange={handleInputChange} />
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Số điện thoại</label>
+                              <input type="text" name="phonenumber" value={updatedProfile.phonenumber} className="form-control" onChange={handleInputChange} />
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Địa chỉ</label>
+                              <input type="text" name="address" value={updatedProfile.address} className="form-control" onChange={handleInputChange} />
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Giới tính</label>
+                              <select name="gender" value={updatedProfile.gender} className="form-control" onChange={handleInputChange}>
+                                <option value="true">Nam</option>
+                                <option value="false">Nữ</option>
+                              </select>
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>T ình trạng hiện tại</label>
+                              <select className="form-control">
+                                <option>Thất nghiệp</option>
+                                <option>Đang đi học</option>
+                                <option>Đang đi làm</option>
+                              </select>
+                            </div>
+                            <div className="col-md-4 col-sm-6">
+                              <label>Miêu tả bản thân</label>
+                              <textarea name="description" value={updatedProfile.description} className="form-control" onChange={handleInputChange}></textarea>
+                            </div>
+                            <div className="col-sm-2">
+                              <button type="submit" className="update-btn">Cập nhật</button>
+                            </div>
+                            <div className="col-sm-2">
+                              <button type="button" className="update-btn cancel-btn" onClick={() => setIsUpdateProfile(false)}>Hủy</button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </>
   );
 };
 
 export default Profile;
-
-// CSS for the component
-const css = `
-.profile-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.profile-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.profile-details,
-.profile-form {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-}
-
-input, textarea, select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-textarea {
-  resize: none;
-}
-
-.btn-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.submit-btn, .edit-btn, .back-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.submit-btn:hover, .edit-btn:hover, .back-btn:hover {
-  background-color: #0056b3;
-}
-
-.loading, .error, .success-msg, .error-msg {
-  text-align: center;
-  margin: 20px;
-}
-
-.avatar {
-  display: block;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-}
-
-.success-msg {
-  color: green;
-}
-
-.error-msg {
-  color: red;
-}
-`;
-
-// Inject the CSS styles
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = css;
-document.head.appendChild(styleSheet);
