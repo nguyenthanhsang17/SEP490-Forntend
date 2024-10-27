@@ -19,6 +19,7 @@ import ViewListJobsCreated from './componets/jobs/ViewListJobsCreated';
 import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
 import PostJobs from './componets/jobs/ViewAllPostJob';
+import ApplyJob from './componets/jobs/ApplyJob';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -32,10 +33,12 @@ root.render(
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
         <Route path="/createPostJob" element={<CreatePostJob />} />
-        <Route path="/ViewAllJobApplied/:id" element={<ViewAllJobApplied />} />
-        <Route path="/ViewAllJobseekerApply/:id" element={<ViewAllJobSeekerApply />} />
-        <Route path="/ViewJobSeekerDetail/:id" element={<ViewJobSeekerDetail />} />
+        <Route path="/ViewAllJobApplied/:id" element={<ViewAllJobApplied />} />  {/* Xem danh sách các công việc đã ứng tuyển*/}
+        <Route path="/ViewAllJobseekerApply/:id" element={<ViewAllJobSeekerApply />} /> {/* Xem danh sách các ứng viên đã ứng tuyển*/}
+        <Route path="/ViewJobSeekerDetail/:id/:apply_id" element={<ViewJobSeekerDetail />} /> {/* Xem chi tiết ứng viên đã ứng tuyển*/}
         <Route path="/viewListJobsCreated" element={<ViewListJobsCreated/>}/>
+        <Route path="/ApplyJob/:job_id" element={<ApplyJob/>}/>
+        
         {/* Thêm các route khác nếu cần */}
 
         <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
