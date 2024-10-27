@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import bannerImage from '../assets/img/banner-10.jpg';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
+import '../assets/css/style.css'; // Import CSS tùy chỉnh
+import logoImage from "../assets/img/banner-10.jpg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
+import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
+
+
 
 const JobListing = () => {
   const [jobs, setJobs] = useState([]);
@@ -11,9 +17,21 @@ const JobListing = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [Notfound, SetNofound] = useState("");
+  const [Notfoundjob, SetNotfoundjob] = useState(false);
+  const [pageNumber, SetpageNumber] = useState(1);
+  // Search filter states
+  const [jobKeyword, setJobKeyword] = useState('');
   const [salaryTypesId, setSalaryTypesId] = useState(0);
+  const [rangeSalaryMin, setRangeSalaryMin] = useState('');
+  const [rangeSalaryMax, setRangeSalaryMax] = useState('');
+  const [address, setAddress] = useState('');
   const [jobCategoryId, setJobCategoryId] = useState(0);
+  const [sortNumberApplied, setSortNumberApplied] = useState(0);
+  const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
+
   const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,27 +59,87 @@ const JobListing = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
+      
       try {
-        const response = await axios.get(`https://localhost:7077/api/PostJobs?SalaryTypesId=${salaryTypesId}&JobCategoryId=${jobCategoryId}&pageNumber=${currentPage}`);
-        console.log(response.data); // kiểm tra dữ liệu phản hồi từ API
-        const fetchedJobs = response.data.items || [];
-        const jobsWithDistance = fetchedJobs.map(job => ({
-          ...job,
-          distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude),
-        }));
-        setJobs(jobsWithDistance);
-        setTotalPages(response.data.totalPages || 0);
+        const response = await axios.get('https://localhost:7077/api/PostJobs', {
+          params: {
+            JobKeyWord: jobKeyword,
+            SalaryTypesId: salaryTypesId,
+            RangeSalaryMin: rangeSalaryMin,
+            RangeSalaryMax: rangeSalaryMax,
+            Address: address,
+            JobCategoryId: jobCategoryId,
+            SortNumberApplied: sortNumberApplied,
+            IsUrgentRecruitment: isUrgentRecruitment,
+            pageNumber: currentPage,
+            Latitude: userLocation.latitude,
+            Longitude: userLocation.longitude,
+          },
+        });
+        if (response.status === 200 && response.data.items) {
+          const fetchedJobs = response.data.items || [];
+          const jobsWithDistance = fetchedJobs.map(job => ({
+            ...job,
+            distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude),
+          }));
+          setJobs(jobsWithDistance);
+          setTotalPages(response.data.totalPages || 0);
+          SetNotfoundjob(false);
+          SetpageNumber(response.data.pageNumber);
+          setTotalPages(response.data.totalPages);
+          console.log(response.data.pageNumber, response.data.totalPages);
+        } else {
+          SetNofound("Không tìm thấy công việc phù hợp");
+          SetNotfoundjob(true);
+          setJobs([]);
+        }
       } catch (err) {
-        setError('Failed to fetch jobs. Please try again later.');
+        if (err.response && err.response.status === 400) {
+          SetNofound("Không tìm thấy công việc phù hợp");
+          setJobs([]);
+        } else {
+          setError('An error occurred while fetching jobs.');
+        }
       } finally {
         setLoading(false);
       }
     };
-  
+
     if (userLocation.latitude && userLocation.longitude) {
       fetchJobs();
     }
-  }, [currentPage, salaryTypesId, jobCategoryId, userLocation]);
+  }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation]);
+
+  const generatePagination = (pageNumber, totalPages) => {
+    const paginationItems = [];
+  
+    // Thêm nút "Previous"
+    paginationItems.push(
+      <li key="prev" className={pageNumber === 1 ? 'disabled' : ''}>
+        <a  onClick={() => pageNumber > 1 && setCurrentPage(pageNumber - 1)}>&laquo;</a>
+      </li>
+    );
+  
+    // Tạo các nút phân trang
+    for (let i = 1; i <= totalPages; i++) {
+      paginationItems.push(
+        <li key={i} className={pageNumber === i ? 'active' : ''}>
+          <a  onClick={() => setCurrentPage(i)}>{i}</a>
+        </li>
+      );
+    }
+  
+    // Thêm nút "Next"
+    paginationItems.push(
+      <li key="next" className={pageNumber === totalPages ? 'disabled' : ''}>
+        <a  onClick={() => pageNumber < totalPages && setCurrentPage(pageNumber + 1)}>&raquo;</a>
+      </li>
+    );
+  
+    return paginationItems;
+  };
+  
+
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     if (!lat1 || !lon1 || !lat2 || !lon2) return null;
 
@@ -75,6 +153,26 @@ const JobListing = () => {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c; // Distance in km
     return distance.toFixed(2); // Return distance rounded to 2 decimal places
+  };
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setCurrentPage(1); // Reset to the first page on new search
+    const params = {
+      JobKeyWord: jobKeyword,
+      SalaryTypesId: salaryTypesId,
+      RangeSalaryMin: rangeSalaryMin,
+      RangeSalaryMax: rangeSalaryMax,
+      Address: address,
+      JobCategoryId: jobCategoryId,
+      SortNumberApplied: sortNumberApplied,
+      IsUrgentRecruitment: isUrgentRecruitment,
+      pageNumber: currentPage,
+      Latitude: userLocation.latitude,
+      Longitude: userLocation.longitude,
+    };
+    
+    // In ra nội dung của params
+    console.log(params);
   };
 
   const handleJobClick = (postId) => {
@@ -98,167 +196,232 @@ const JobListing = () => {
   return (
     <>
       <Header />
-      <div className="clearfix"></div>
-      <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
+
+
+      <section className="inner-header-title" style={{ backgroundImage: "url('/assets/img/banner-10.jpg')" }}>
         <div className="container">
-          <h1>Tất Cả Các Công Việc</h1>
+          <h1>Browse Jobs</h1>
         </div>
       </section>
-      <div className="clearfix"></div>
-      <div className="job-list">
-        {jobs.map((job) => (
-          <div
-            className="job-item"
-            key={job.postId}
-            onClick={() => handleJobClick(job.postId)}
-          >
-            <article>
-              <div className="brows-job-list">
-                <div className="job-thumbnail">
-                  <img
-                    src={job.thumbnail || 'path/to/fallback-image.jpg'}
-                    className="img-responsive"
-                    alt={job.jobTitle || 'Job Thumbnail'}
-                  />
-                </div>
-                <div className="job-details">
-                  <h3>{job.jobTitle}</h3>
-                  <p>
-                    <span>Nhà tuyển dụng: {job.authorName}</span>
-                    <span className="brows-job-salary">
-                      <i className="fa fa-money"></i>{job.salary} VND/ 
-                    </span>
-                    <span className="job-type">{job.salaryTypeName}</span>
-                    <span className="job-distance">
-                      <i className="fa fa-map-marker"></i> {job.distance} km away
-                    </span>
-                  </p>
-                  <p className="job-location">
-                    <i className="fa fa-map-marker"></i>{job.address}
-                  </p>
-                  <a href="#" className="apply-button">ỨNG TUYỂN NGAY</a>
-                  <a href="#" className="apply-button">YÊU THÍCH</a>
-                </div>
-              </div>
-              {job.isUrgentRecruitment && (
-                <span className="urgent-tag">Premium</span>
-              )}
-            </article>
-          </div>
-        ))}
 
-        {/* Pagination Controls */}
-        <div className="pagination">
-          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-            Previous
-          </button>
-          <span>Page {currentPage} of {totalPages}</span>
-          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-            Next
-          </button>
+      <section class="brows-job-category">
+        <div class="container">
+          <div class="row extra-mrg">
+            <div class="wrap-search-filter">
+              <form>
+                <div className="row g-3">
+                  {/* Keyword Search */}
+                  <div className="col-md-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="từ khóa công việc..."
+                      value={jobKeyword}
+                      onChange={(e) => setJobKeyword(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Location */}
+                  <div className="col-md-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Địa chỉ..."
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Job Category */}
+                  <div className="col-md-2">
+                    <select
+                      className="form-control"
+                      value={jobCategoryId}
+                      onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
+                    >
+                      <option value="0">loại công việc</option>
+                      <option value="1">Hành chính</option>
+                      <option value="2">Bán hàng & Tiếp thị</option>
+                      <option value="3">Dịch vụ khách hàng</option>
+                      <option value="4">Nhân viên sự kiện</option>
+                      <option value="5">Nhà hàng, khách sạn</option>
+                      <option value="6">Bán lẻ</option>
+                      <option value="7">Hậu cần & Giao hàng</option>
+                      <option value="8">Lao động chân tay</option>
+                      <option value="9">Sáng tạo & Truyền thông</option>
+                      <option value="10">Hỗ trợ kỹ thuật</option>
+
+                    </select>
+                  </div>
+
+                  {/* Salary Type */}
+                  <div className="col-md-2">
+                    <select
+                      className="form-control"
+                      value={salaryTypesId}
+                      onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
+                    >
+                      <option value="0">Tất cả các loại trả lương</option>
+                      <option value="1">Theo giờ</option>
+                      <option value="2">Theo ngày</option>
+                      <option value="3">Theo công việc</option>
+                      <option value="4">Theo tuần</option>
+                      <option value="5">Theo tháng</option>
+                      <option value="6">Lương cố định</option>
+                    </select>
+                  </div>
+                  <div className="col-md-2">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Lương tối thiểu"
+                      value={rangeSalaryMin}
+                      onChange={(e) => setRangeSalaryMin(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-2">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Lương tối đa"
+                      value={rangeSalaryMax}
+                      onChange={(e) => setRangeSalaryMax(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Urgent Recruitment */}
+                  <div className="col-md-2">
+                    <select
+                      className="form-select"
+                      value={isUrgentRecruitment}
+                      onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
+                    >
+                      <option value="-1">Tất cả</option>
+                      <option value="1">Tuyển gấp</option>
+                      <option value="0">Không tuyển gấp</option>
+                    </select>
+                  </div>
+
+                  {/* Sort By */}
+                  <div className="col-md-2">
+                    <select
+                      className="form-control"
+                      value={sortNumberApplied}
+                      onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
+                    >
+                      <option value="0">Xắp xếp theo số người ứng tuyển</option>
+                      <option value="1">Applications (Ascending)</option>
+                      <option value="-1">Applications (Descending)</option>
+                    </select>
+                  </div>
+
+                  {/* Search Button */}
+                  <div className="col-md-2">
+                    <button
+                      type="submit"
+                      className="form-control"
+                      style={{ width: 100, backgroundColor: "green", color: 'white' }}
+                      onClick={handleSearchSubmit}
+                    >
+                      <FontAwesomeIcon icon={faSearch} /> Search
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          {Notfoundjob? (<div className="not-found-message">
+            <p>{Notfound}</p>
+          </div>):(jobs.map((job) => (
+            <div class="item-click" key={job.postId}
+            onClick={() => handleJobClick(job.postId)}>
+              <article>
+                <div class="brows-job-list">
+                  <div class="col-md-1 col-sm-2 small-padding">
+                    <div class="brows-job-company-img" style={{ backgroundColor: "white" }}>
+                      <a href=""><img style={{ width: "100px" }} src={job.thumbnail} class="img-responsive" alt="" /></a>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-5">
+                    <div class="brows-job-position">
+                      <a href=""><h3>{job.jobTitle}</h3></a>
+                      <p>
+                        <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
+                        <span class="job-type cl-success bg-trans-success">Full Time</span>
+                      </p>
+                      <p>
+                        <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
+
+                        <span class="job-type cl-success bg-trans-success">Cách bạn: {job.distance} km</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                    <div class="brows-job-location">
+                      <p><i class="fa fa-map-marker"></i>{job.address}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                    <div class="brows-job-link">
+                      <a href="" style={{ marginRight: 10 }} class="btn btn-default">Ứng tuyển ngay</a><span style={{ marginLeft: 10 }}><FontAwesomeIcon icon={faHeart} /> </span>
+                    </div>
+                  </div>
+                </div>
+                {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
+              </article>
+            </div>
+          )))}
+
+          {/* {jobs.map((job) => (
+            <div class="item-click">
+              <article>
+                <div class="brows-job-list">
+                  <div class="col-md-1 col-sm-2 small-padding">
+                    <div class="brows-job-company-img" style={{ backgroundColor: "white" }}>
+                      <a href="job-detail.html"><img style={{ width: "100px" }} src={job.thumbnail} class="img-responsive" alt="" /></a>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-5">
+                    <div class="brows-job-position">
+                      <a href="job-detail.html"><h3>{job.jobTitle}</h3></a>
+                      <p>
+                        <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
+                        <span class="job-type cl-success bg-trans-success">Full Time</span>
+                      </p>
+                      <p>
+                        <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
+
+                        <span class="job-type cl-success bg-trans-success">Cách bạn: {job.distance} km</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                    <div class="brows-job-location">
+                      <p><i class="fa fa-map-marker"></i>{job.address}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                    <div class="brows-job-link">
+                      <a href="job-detail.html" style={{ marginRight: 10 }} class="btn btn-default">Ứng tuyển ngay</a><span style={{ marginLeft: 10 }}><FontAwesomeIcon icon={faHeart} /> </span>
+                    </div>
+                  </div>
+                </div>
+                {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
+              </article>
+            </div>
+          ))} */}
+          
+
+          <div class="row">
+            <ul class="pagination">
+            {generatePagination(pageNumber, totalPages)}
+            </ul>
+          </div>
         </div>
-      </div>
-      <Footer />
+      </section >
       
-      {/* Style Block */}
-      <style jsx>{`
-        .job-list {
-          margin: 20px;
-        }
-        .job-item {
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          padding: 15px;
-          margin-bottom: 20px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-          transition: transform 0.2s, box-shadow 0.2s;
-          display: flex;
-          flex-direction: column;
-          background-color: #fff;
-        }
-        .job-item:hover {
-          transform: scale(1.02);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-        }
-        .brows-job-list {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-        .job-thumbnail {
-          flex: 0 0 80px;
-          margin-right: 15px;
-          overflow: hidden;
-          border-radius: 5px;
-        }
-        .job-thumbnail img {
-          width: 100%;
-          height: auto;
-          border-radius: 5px;
-          object-fit: cover;
-        }
-        .job-details {
-          flex: 1;
-        }
-        .brows-job-salary {
-          margin-left: 10px;
-          font-weight: bold;
-        }
-        .job-location {
-          margin-top: 5px;
-          color: #555;
-        }
-        .job-distance {
-          margin-top: 5px;
-          color: #666;
-        }
-        .apply-button {
-          display: inline-block;
-          margin-top: 10px;
-          padding: 10px 15px;
-          background-color: #28a745;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          text-decoration: none;
-          transition: background-color 0.2s;
-        }
-        .apply-button:hover {
-          background-color: #218838;
-        }
-        .urgent-tag {
-          background-color: #ffc107;
-          padding: 5px 10px;
-          border-radius: 3px;
-          margin-top: 10px;
-          display: inline-block;
-          font-weight: bold;
-        }
-        .pagination {
-          margin-top: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .pagination button {
-          margin: 0 10px;
-          padding: 10px 15px;
-          border: none;
-          border-radius: 5px;
-          background-color: #007bff;
-          color: white;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-        .pagination button:disabled {
-          background-color: #ccc;
-        }
-        .pagination span {
-          margin: 0 10px;
-        }
-      `}</style>
-    </>
-  );
+      </>
+      );
 };
 
-export default JobListing;
+      export default JobListing;
