@@ -13,12 +13,14 @@ function ViewJobSeekerDetail() {
   const [jobSeeker, setJobSeeker] = useState(null);
   const [canViewDetails, setCanViewDetails] = useState(false);
   const [status, setStatus] = useState(null);
+  const [message, setMessage] = useState(''); // Thêm state cho thông báo
 
   useEffect(() => {
     const fetchJobSeekerDetail = async () => {
       try {
         const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetDetailJobseekerApply/${id}/${apply_id}`);
         setJobSeeker(response.data);
+        console.log(response.data.status);
         setStatus(response.data.status);
       } catch (error) {
         console.error('Error fetching the jobseeker detail data:', error);
@@ -36,6 +38,10 @@ function ViewJobSeekerDetail() {
         break;
       case 'Xem lại sau':
         newStatus = 7; 
+        setMessage('Bạn đã đánh dấu sẽ xem lại người này sau.');
+        setTimeout(() => {
+          setMessage('');
+        }, 10000); 
         break;
       case 'Xem thông tin liên lạc':
         newStatus = 2; 
@@ -58,6 +64,10 @@ function ViewJobSeekerDetail() {
       console.error('Error changing the job seeker status:', error);
     }
   };
+
+  // Điều kiện để vô hiệu hóa nút
+  const isDisabledViewLater = status === 2 || status === 5 || status === 6 || status === 3;
+  const isDisabledNotSuitable = status === 2 || status === 5 || status === 6 || status === 3;
 
   return (
     <>
@@ -88,10 +98,9 @@ function ViewJobSeekerDetail() {
                 <div className="col-md-6">
                   <div className="info-box">
                     <h5>Thông tin cá nhân</h5>
-                       <p style={{ color: '#000', opacity: 1 }}><strong>Tuổi:</strong> {jobSeeker.age}</p>
-                       <p style={{ color: '#000', opacity: 1 }}><strong>Giới tính:</strong> {jobSeeker.gender ? "Nam" : "Nữ"}</p>
-                       <p style={{ color: '#000', opacity: 1 }}><strong>Mô tả:</strong> {jobSeeker.description}</p>
-
+                    <p style={{ color: '#000', opacity: 1 }}><strong>Tuổi:</strong> {jobSeeker.age}</p>
+                    <p style={{ color: '#000', opacity: 1 }}><strong>Giới tính:</strong> {jobSeeker.gender ? "Nam" : "Nữ"}</p>
+                    <p style={{ color: '#000', opacity: 1 }}><strong>Mô tả:</strong> {jobSeeker.description}</p>
                   </div>
                 </div>
               </div>
@@ -99,38 +108,45 @@ function ViewJobSeekerDetail() {
 
             {/* Nút đánh giá ứng viên */}
             <div className="evaluation-buttons mt-4 text-center">
-              <h5>Đánh giá ứng viên</h5>
               <button 
                 className="btn btn-danger mx-2" 
                 onClick={() => handleEvaluation('Không phù hợp')} 
-                disabled={status === 5 || status === 6 || status === 3}
+                disabled={isDisabledNotSuitable}
+                style={{marginRight: '10px', /* Căn giữa nội dung */}}
               >
                 Không phù hợp
               </button>
               <button 
                 className="btn btn-warning mx-2" 
                 onClick={() => handleEvaluation('Xem lại sau')} 
-                disabled={status === 5 || status === 6 || status === 3}
+                disabled={isDisabledViewLater} // Vô hiệu hóa nếu status là 2
+                style={{marginRight: '10px', /* Căn giữa nội dung */}}
               >
                 Xem lại sau
               </button>
               <button 
                 className="btn btn-info mx-2" 
                 onClick={() => handleEvaluation('Xem thông tin liên lạc')} 
-                disabled={status === 5 || status === 6 || status !== 7}
+                disabled={status === 5 || status === 6 || status === 3}
+                style={{marginRight: '10px', /* Căn giữa nội dung */}}
               >
                 Xem thông tin liên lạc
               </button>
-              {canViewDetails && (
-                <button 
-                  className="btn btn-success mx-2" 
-                  onClick={() => handleEvaluation('Đã nhận')} 
-                  disabled={status === 5 || status === 6 || status === 3}
-                >
-                  Đã nhận
-                </button>
-              )}
+              <button 
+                className="btn btn-success mx-2" 
+                onClick={() => handleEvaluation('Đã nhận')} 
+                disabled={status === 5 || status === 6 || status === 3}
+              >
+                Đã nhận
+              </button>
             </div>
+
+            {/* Thông báo */}
+            {message && (
+              <div className="alert alert-info mt-3" style={{textAlign: 'center', /* Căn giữa nội dung */}}>
+                {message}
+              </div>
+            )}
 
             <div className="profile-cv mt-5">
               <h4>Chi tiết CV</h4>
