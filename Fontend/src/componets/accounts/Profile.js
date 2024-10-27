@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Footer from '../common/Footer';
+import Header from '../common/Header';
+import "../assets/css/style.css";
+import '../assets/plugins/css/plugins.css';
+import '../assets/css/colors/green-style.css';
+
+
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -10,8 +17,14 @@ const Profile = () => {
   const [editMode, setEditMode] = useState(false);
   const [updatedProfile, setUpdatedProfile] = useState({});
 
-  const navigate = useNavigate();
+  const [issupdateProfile, setissupdateProfile] = useState(false);
 
+  //=======================================
+  //=======================================
+
+  const navigate = useNavigate();
+  //==========================================
+  //==========================================
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
@@ -85,138 +98,151 @@ const Profile = () => {
   if (loading) return <div className="loading">Đang tải...</div>;
   if (error) return <div className="error">Lỗi: {error}</div>;
 
+  const handleissupdateProfile = () => {
+    setissupdateProfile(true);
+  }
+
+  const handleissupdateProfileCancel = () => {
+    setissupdateProfile(false);
+  }
+
+  const sang=()=>{
+    
+  }
+
+
   return (
-    <div className="profile-container">
-      <h1>Hồ sơ của bạn</h1>
-      {profile && (
-        <div className="profile-content">
-          {editMode ? (
-            <form className="profile-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Họ và Tên:</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={updatedProfile.fullName}
-                  onChange={handleInputChange}
-                />
-              </div>
+    <>
+      <Header />
+      <section class="inner-header-title" style={{ backgroundImage: `url(https://ik.imagekit.io/ryf3sqxfn/banner-6.jpg)` }}>
+        <div class="container">
+          <h1>Hồ sơ</h1>
+        </div>
+      </section>
+      <div class="clearfix"></div>
 
-              <div className="form-group">
-                <label>Tuổi:</label>
-                <input
-                  type="number"
-                  name="age"
-                  value={updatedProfile.age}
-                  onChange={handleInputChange}
-                />
-              </div>
+      <section class="detail-desc advance-detail-pr gray-bg">
+        <div class="container white-shadow">
 
-              <div className="form-group">
-                <label>Số điện thoại:</label>
-                <input
-                  type="text"
-                  name="phonenumber"
-                  value={updatedProfile.phonenumber}
-                  onChange={handleInputChange}
-                />
-              </div>
+          <div class="row">
+            <div class="detail-pic"><img src={profile.avatarURL} class="img" alt="" /><a href="#" class="detail-edit" title="edit"><i class="fa fa-pencil"></i></a></div>
+            <div class="detail-status"><span>{profile.roleName === 'Job seeker' ? ("người tìm việc") : ("Tuyển dụng")}</span></div>
+          </div>
 
-              <div className="form-group">
-                <label>Công việc hiện tại:</label>
-                <input
-                  type="number"
-                  name="currentJob"
-                  value={updatedProfile.currentJob}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Mô tả:</label>
-                <textarea
-                  name="description"
-                  value={updatedProfile.description}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Địa chỉ:</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={updatedProfile.address}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Giới tính:</label>
-                <select
-                  name="gender"
-                  value={updatedProfile.gender}
-                  onChange={handleInputChange}
-                >
-                  <option value={true}>Nam</option>
-                  <option value={false}>Nữ</option>
-                </select>
-              </div>
-
-              <div className="btn-group">
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? "Đang cập nhật..." : "Cập nhật hồ sơ"}
-                </button>
-                <button
-                  type="button"
-                  className="back-btn"
-                  onClick={() => setEditMode(false)}
-                >
-                  Trở về
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div className="profile-details">
-              <img
-                src={profile.avatarURL}
-                alt="Avatar"
-                width="150"
-                className="avatar"
-              />
-              <p><strong>Họ và Tên:</strong> {profile.fullName}</p>
-              <p><strong>Tên đăng nhập:</strong> {profile.userName}</p>
-              <p><strong>Email:</strong> {profile.email}</p>
-              <p><strong>Tuổi:</strong> {profile.age}</p>
-              <p><strong>Số điện thoại:</strong> {profile.phonenumber}</p>
-              <p><strong>Công việc hiện tại:</strong> {profile.jobName}</p>
-              <p><strong>Mô tả:</strong> {profile.description}</p>
-              <p><strong>Địa chỉ:</strong> {profile.address}</p>
-              <p><strong>Số dư:</strong> {profile.balance} VND</p>
-              <p><strong>Trạng thái:</strong> {profile.status === 1 ? "Hoạt động" : "Không hoạt động"}</p>
-              <p><strong>Giới tính:</strong> {profile.gender ? "Nam" : "Nữ"}</p>
-              <p><strong>Vai trò:</strong> {profile.roleName}</p>
-
-              <div className="btn-group">
-                <button
-                  type="button"
-                  className="back-btn"
-                  onClick={() => navigate("/")}
-                >
-                  Quay lại
-                </button>
-                <button className="edit-btn" onClick={() => setEditMode(true)}>
-                  Chỉnh sửa hồ sơ
-                </button>
+          <div class="row bottom-mrg">
+            <div class="col-md-12 col-sm-12">
+              <div class="advance-detail detail-desc-caption">
+                <h4>{profile.fullName}</h4>
               </div>
             </div>
-          )}
-        </div>
-      )}
+          </div>
 
-      {success && <div className="success-msg">{success}</div>}
-      {error && <div className="error-msg">{error}</div>}
-    </div>
+          <div class="row no-padd">
+            <div class="detail pannel-footer">
+              <div class="col-md-10 col-sm-10">
+                <div class="detail-pannel-footer-btn pull-left">
+                  <a href="javascript:void(0)" data-toggle="modal" data-target="#apply-job" class="footer-btn grn-btn" title="">Lịch sử ứng tuyển</a>
+                  <a href="#" class="footer-btn blu-btn" title="">Đăng ký nhà tuyển dụng</a>
+                  <a href="#" style={{ backgroundColor: "red" }} class="footer-btn blu-btn" title="">Quản lý CV</a>
+
+                </div>
+              </div>
+              <div class="col-md-7 col-sm-7">
+                <div class="detail-pannel-footer-btn pull-right">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="full-detail-description full-detail gray-bg">
+        <div class="container">
+          <div class="col-md-12 col-sm-12">
+            <div class="full-card">
+              <div class="deatil-tab-employ tool-tab">
+                <ul class="nav simple nav-tabs" id="simple-design-tab">
+                  <li class="active"><a href="#about">Thông tin chi tiết</a></li>
+                </ul>
+
+                <div class="tab-content">
+                  {!issupdateProfile ? (<div id="address" class="tab-pane fade in active">
+                    <ul class="job-detail-des">
+                      <li><span style={{ marginRight: 60, width: 150 }}>Họ và tên:</span>{profile.fullName}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>Email:</span>{profile.email}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>Số điện thoại:</span>{profile.phonenumber}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>Công việc hiện tại:</span>{profile.jobName}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>Địa chỉ:</span>{profile.address}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>giới tính:</span>{profile.gender ? ("Nam") : ("Nữ")}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>Tuổi:</span>{profile.age}</li>
+                      <li><span style={{ marginRight: 60, width: 150 }}>Miêu tả bản thân:</span><textarea>{profile.description}</textarea></li>
+                    </ul>
+                    <div class="col-sm-12">
+                      <button type="button" onClick={handleissupdateProfile} class="update-btn">Cập nhật thông tin cá nhân</button>
+                    </div>
+                  </div>) : (<div id="settings" class="tab-pane fade in active">
+                    <div class="row no-mrg">
+                      <div class="edit-pro">
+                        <div class="col-md-4 col-sm-6">
+                          <label>Ảnh đại diện</label>
+                          <input type="file" class="form-control" placeholder="Matthew" />
+                          <img src={profile.avatarURL} />
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>Họ và tên</label>
+                          <input type="text" value={updatedProfile.fullName} class="form-control" placeholder="Họ và tên" onChange={handleInputChange}/>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>Tuổi</label>
+                          <input min={1} type="number" class="form-control" placeholder="tuổi" value={updatedProfile.age} />
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>Email</label>
+                          <input type="email" class="form-control" placeholder="abc@gmail.com" value={updatedProfile.email} />
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>Số điện thoại</label>
+                          <input type="text" class="form-control" placeholder="+84 xxx xxx xxx" value={updatedProfile.phonenumber} />
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>Chọn địa chỉ</label>
+                          <input type="text" class="form-control" placeholder="địa chỉ" value={updatedProfile.address} />
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>Giới tính</label>
+                          <select class="form-control">
+                            <option>Nam</option>
+                            <option>Nữ</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>tình trạng hiện tại</label>
+                          <select class="form-control">
+                            <option>Thất nghiệp</option>
+                            <option>Đang đi học</option>
+                            <option>Đang đi làm</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                          <label>About you</label>
+                          <textarea class="form-control" value={updatedProfile.description} placeholder="Write Something"></textarea>
+                        </div>
+
+                        <div class="col-sm-2">
+                          <button type="button" class="update-btn">Cập nhật</button>
+                        </div>
+                        <div class="col-sm-2">
+                          <button type="button" style={{backgroundColor: "red"}} class="update-btn" onClick={handleissupdateProfileCancel}>Hủy</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 
