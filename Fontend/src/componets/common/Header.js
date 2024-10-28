@@ -108,6 +108,11 @@ const Header = () => {
     setDropdownVisible(false);
     navigate("/viewListJobsCreated");
   }
+
+  const handleViewListAppliedClick = () =>{
+    setDropdownVisible(false);
+    navigate("/ViewAllJobApplied");
+  }
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
@@ -182,6 +187,11 @@ const Header = () => {
                     {roleId == "2" && (
                       <div style={styles.dropdownItem} onClick={handleViewListCreatedClick}>
                         Danh sách công việc đã tạo
+                      </div>
+                    )}
+                    {roleId == "1" && (
+                      <div style={styles.dropdownItem} onClick={handleViewListAppliedClick}>
+                        Danh sách công việc đã ứng tuyển
                       </div>
                     )}
                     <div
