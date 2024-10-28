@@ -20,6 +20,7 @@ import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
 import PostJobs from './componets/jobs/ViewAllPostJob';
 import ApplyJob from './componets/jobs/ApplyJob';
+import ScheduleTable  from './componets/jobs/ScheduleTable';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -42,6 +43,7 @@ root.render(
         <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
         <Route path='/VerifyRegister' element={<VerifyRegister/>}/>{/*màn này để verifycode khi đăng ký */}
         <Route path='/viewalljob' element={<PostJobs/>}/>
+        <Route path='/lich' element={<ScheduleTable />}/>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
