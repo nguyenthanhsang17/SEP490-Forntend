@@ -44,6 +44,7 @@ function Login() {
       // Lưu token vào localStorage
       localStorage.setItem('token', result.token);
       localStorage.setItem('fullName', result.fullName);
+      localStorage.setItem('roleId', result.roleId);
       // Điều hướng đến trang chủ
       navigate('/'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
 

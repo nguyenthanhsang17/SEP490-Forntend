@@ -51,6 +51,7 @@ const Header = () => {
   const [showChangePassModal, setShowChangePassModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [roleId, setRoleId] = useState(null); // Add state for role_id
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,6 +59,9 @@ const Header = () => {
     setIsLoggedIn(!!token);
 
     const fullName = localStorage.getItem("fullName");
+    const role = localStorage.getItem("roleId"); // Retrieve role_id from local storage
+    setRoleId(role); // Store role_id in state
+    console.log("roleId:", role); // Kiểm tra giá trị roleId
     console.log("fullName:", fullName);
 
   
@@ -84,6 +88,7 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     localStorage.removeItem("fullName");
+    localStorage.removeItem("roleId");
     setIsLoggedIn(false);
     setDropdownVisible(false);
     navigate("/login"); // Redirect to login page after logout
@@ -174,9 +179,11 @@ const Header = () => {
                     <div style={styles.dropdownItem} onClick={handleProfileClick}>
                       Hồ sơ của bạn
                     </div>
-                    <div style={styles.dropdownItem} onClick={handleViewListCreatedClick}>
-                      Danh sách công việc đã tạo
-                    </div>
+                    {roleId == "2" && (
+                      <div style={styles.dropdownItem} onClick={handleViewListCreatedClick}>
+                        Danh sách công việc đã tạo
+                      </div>
+                    )}
                     <div
                       style={styles.dropdownItem}
                       onClick={openChangePassModal}
