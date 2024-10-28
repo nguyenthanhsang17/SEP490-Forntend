@@ -33,7 +33,7 @@ root.render(
         <Route path="/forgotPassword" element={<ForgotPassword />} /> {/* Trang đăng nhập*/}
         <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
         <Route path="/createPostJob" element={<CreatePostJob />} />
-        <Route path="/ViewAllJobApplied/:id" element={<ViewAllJobApplied />} />  {/* Xem danh sách các công việc đã ứng tuyển*/}
+        <Route path="/ViewAllJobApplied" element={<ViewAllJobApplied />} />  {/* Xem danh sách các công việc đã ứng tuyển*/}
         <Route path="/ViewAllJobseekerApply/:id" element={<ViewAllJobSeekerApply />} /> {/* Xem danh sách các ứng viên đã ứng tuyển*/}
         <Route path="/ViewJobSeekerDetail/:id/:apply_id" element={<ViewJobSeekerDetail />} /> {/* Xem chi tiết ứng viên đã ứng tuyển*/}
         <Route path="/viewListJobsCreated" element={<ViewListJobsCreated/>}/>
