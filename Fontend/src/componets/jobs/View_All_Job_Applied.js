@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useParams,useNavigate } from 'react-router-dom'; 
 
 function ViewAllJobApplied() {
-  const { id } = useParams();
+  
   const [jobs, setJobs] = useState([]);
   const [message, setMessage] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
@@ -17,26 +17,38 @@ function ViewAllJobApplied() {
   const navigate = useNavigate();
 
   const fetchJobs = async (page = 1) => {
-    try {
-      const response = await axios.get(`https://localhost:7077/api/JobJobSeeker/GetAllJobApplied/${id}`, {
-        params: {
-          pageNumber: page,
-          pageSize,
-        }
-      });
-      console.log("API response data:", response.data);
-      
-      setJobs(response.data.items || []);
-      setTotalPages(response.data.totalPages || 1);
-      setMessage(''); // Clear message on successful fetch
-    } catch (error) {
-      console.error('Error fetching the job data:', error);
-    }
+    const token = localStorage.getItem("token");
+            console.log("Token:", token); // Kiểm tra giá trị token
+
+            if (!token) {
+                console.log("No token found, cannot fetch CVs.");
+                navigate("/login");
+                return; // Không làm gì cả nếu không có token
+            }
+            try {
+              const response = await axios.get(`https://localhost:7077/api/JobJobSeeker/GetAllJobApplied/`, {
+                  params: {
+                      pageNumber: page,
+                      pageSize,
+                  },
+                  headers: {
+                      Authorization: `Bearer ${token}`,
+                  },
+              });
+              
+              console.log("API response data:", response.data);
+              
+              setJobs(response.data.items || []);
+              setTotalPages(response.data.totalPages || 1);
+              setMessage(''); // Clear message on successful fetch
+            } catch (error) {
+              console.error('Error fetching the job data:', error);
+            }
   };
 
   useEffect(() => {
     fetchJobs(pageNumber); 
-  }, [id, pageNumber]);
+  }, [ pageNumber]);
 
   const handleCancelApply = async (jobId) => {
     console.log(`Canceling application for job ID: ${jobId}`);
