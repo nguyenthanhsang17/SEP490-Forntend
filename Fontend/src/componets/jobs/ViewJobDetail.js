@@ -65,74 +65,72 @@ function ViewJobDetail() {
   };
 
   const GenerateSlotDTOs = ({ slotDTOs }) => {
-    return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <h2 style={{ color: '#333', marginBottom: '20px' }}>Job Schedule</h2>
-            {slotDTOs.map((slot, index) => (
-                <div
-                    key={slot.slotId}
-                    style={{
-                        border: '1px solid #ddd',
-                        borderRadius: '8px',
-                        marginBottom: '20px',
-                        padding: '10px',
-                        backgroundColor: '#f9f9f9',
-                    }}
-                >
-                    <h3 style={{ color: '#4a90e2' }}>Slot {index + 1}</h3>
-                    {slot.jobScheduleDTOs.length > 0 ? (
-                        slot.jobScheduleDTOs.map((schedule) => (
-                            <div
-                                key={schedule.scheduleId}
-                                style={{
-                                    padding: '10px',
-                                    borderBottom: '1px solid #ddd',
-                                }}
-                            >
-                                <h4>Day: {getDayOfWeek(schedule.dayOfWeek)}</h4>
-                                {schedule.workingHourDTOs.length > 0 ? (
-                                    <ul style={{ listStyle: 'none', paddingLeft: '0' }}>
-                                        {schedule.workingHourDTOs.map((workingHour) => (
-                                            <li
-                                                key={workingHour.workingHourId}
-                                                style={{
-                                                    backgroundColor: '#eaf3ff',
-                                                    margin: '5px 0',
-                                                    padding: '8px',
-                                                    borderRadius: '5px',
-                                                }}
-                                            >
-                                                {workingHour.startTime} - {workingHour.endTime}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p style={{ color: '#999' }}>No working hours available</p>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p style={{ color: '#999' }}>No schedules available for this slot</p>
-                    )}
-                </div>
-            ))}
-        </div>
-    );
-};
-
-// Updated helper function to convert `dayOfWeek` to the actual Vietnamese day names
-const getDayOfWeek = (dayOfWeek) => {
-    const days = {
-        2: 'Thứ 2',
-        3: 'Thứ 3',
-        4: 'Thứ 4',
-        5: 'Thứ 5',
-        6: 'Thứ 6',
-        7: 'Thứ 7',
-        8: 'Chủ Nhật',
+    const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
+    
+    // Định nghĩa thời gian cho từng ca
+    const shiftTimes = {
+      1: "08:00 - 12:00",
+      2: "13:00 - 17:00",
+      3: "17:30 - 21:30",  // Ví dụ cho Ca 3, có thể điều chỉnh theo yêu cầu
+      4: "22:00 - 02:00",  // Ví dụ cho Ca 4
+      // Thêm ca khác nếu cần
     };
-    return days[dayOfWeek] || 'Unknown Day';
-};
+  
+    // Hàm trợ giúp để tìm lịch làm việc cho từng ngày và từng ca
+    const findSchedule = (slot, day) => {
+      return slot.jobScheduleDTOs.find(
+        (schedule) => getDayOfWeek(schedule.dayOfWeek) === day
+      );
+    };
+  
+    return (
+      <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ backgroundColor: "#e0e0e0" }}>
+              <th style={tableStyles.header}>Ca</th>
+              {daysOfWeek.map((day, index) => (
+                <th key={index} style={tableStyles.header}>{day}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {slotDTOs.map((slot, index) => (
+              <tr key={slot.slotId} style={tableStyles.row}>
+                <td style={tableStyles.cell}>Ca {index + 1} ({shiftTimes[index + 1] || "Không xác định"})</td>
+                {daysOfWeek.map((day) => {
+                  const schedule = findSchedule(slot, day);
+                  return (
+                    <td key={day} style={tableStyles.cell}>
+                      {schedule ? (
+                        shiftTimes[index + 1] || "Không xác định"
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+  
+  // Hàm chuyển đổi dayOfWeek thành ngày trong tuần tiếng Việt
+  const getDayOfWeek = (dayOfWeek) => {
+    const days = {
+      2: 'Thứ 2',
+      3: 'Thứ 3',
+      4: 'Thứ 4',
+      5: 'Thứ 5',
+      6: 'Thứ 6',
+      7: 'Thứ 7',
+      8: 'Chủ Nhật',
+    };
+    return days[dayOfWeek] || 'Không xác định';
+  };
 
 
   return (
@@ -227,9 +225,13 @@ const getDayOfWeek = (dayOfWeek) => {
         </div>
       </section>
       <section className="map-section">
-      <div className="container">
-          <h2 className="detail-title">lịch làm việc</h2>
-          <GenerateSlotDTOs slotDTOs={jobDetails.slotDTOs} />
+        <div className="container">
+          <h2 className="detail-title">Lịch Làm Việc</h2>
+          {jobDetails.slotDTOs ? (
+            <GenerateSlotDTOs slotDTOs={jobDetails.slotDTOs} />
+          ) : (
+            <p style={{ color: '#999' }}>Không có lịch làm việc</p>
+          )}
         </div>
       </section>
 
@@ -254,6 +256,20 @@ const getDayOfWeek = (dayOfWeek) => {
       `}</style>
 
 // Styles defined as an object
+const tableStyles = {
+  header: {
+    padding: '10px',
+    borderBottom: '2px solid #ccc',
+    textAlign: 'left',
+  },
+  row: {
+    borderBottom: '1px solid #ddd',
+  },
+  cell: {
+    padding: '10px',
+  },
+};
+
 const styles = {
   loading: {
     textAlign: 'center',
@@ -264,13 +280,13 @@ const styles = {
   noJob: {
     textAlign: 'center',
     fontSize: '1.5rem',
-    color: '#e74c3c', // Màu đỏ cho thông báo không tìm thấy công việc
+    color: '#e74c3c',
     margin: '2rem 0',
   },
   expirationDate: {
     fontSize: '1.2rem',
     fontWeight: 'bold',
-    color: '#d9534f', // Màu đỏ đậm cho ngày hết hạn
+    color: '#d9534f',
   },
 };
 
