@@ -194,7 +194,7 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
   return (
     <div style={styles.modal}>
       <div style={styles.modalContent}>
-        <h2 style={styles.title}>Đổi mật khẩu</h2>
+        <h2 style={styles.title}>Đổi Mật Khẩu</h2>
         {notification && <div style={styles.notification}>{notification}</div>}
         {errorNotification && <div style={styles.errorNotification}>{errorNotification}</div>}
         <form onSubmit={handleChangePassword}>

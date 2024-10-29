@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from 'notistack'; // Import useSnackbar
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import "../assets/css/style.css";
@@ -11,13 +12,12 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
   const navigate = useNavigate();
   const [img, setimg] = useState("");
-
   const [file, setFile] = useState(null);
-  const [uploadStatus, setUploadStatus] = useState("");
+  const [updatedProfile, setUpdatedProfile] = useState({});
+  const { enqueueSnackbar } = useSnackbar(); // Initialize notistack
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -42,16 +42,14 @@ const Profile = () => {
         if (err.response && err.response.status === 401) {
           navigate("/login");
         } else {
-          setError(err.message);
+          enqueueSnackbar(err.message, { variant: 'error' }); // Show error notification
           setLoading(false);
         }
       }
     };
 
     fetchProfile();
-  }, [navigate]);
-
-  const [updatedProfile, setUpdatedProfile] = useState({});
+  }, [navigate, enqueueSnackbar]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,16 +58,16 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (file) {
-      await handleUpload();
-    }
     setLoading(true);
     setError(null);
-    setSuccess(null);
 
     const token = localStorage.getItem("token");
 
     try {
+      if (file) {
+        await handleUpload();
+      }
+
       await axios.put(
         "https://localhost:7077/api/Users/UpdateProfile",
         updatedProfile,
@@ -80,13 +78,13 @@ const Profile = () => {
           },
         }
       );
-      setSuccess("Cập nhật hồ sơ thành công!");
+      enqueueSnackbar("Cập nhật hồ sơ thành công!", { variant: 'success' }); // Show success notification
       setProfile(updatedProfile);
       localStorage.setItem("fullName", updatedProfile.fullName); // Update fullName in localStorage
       setIsUpdateProfile(false);
-      setLoading(false);
     } catch (err) {
-      setError("Không thể cập nhật hồ sơ. Vui lòng thử lại.");
+      enqueueSnackbar("Không thể cập nhật hồ sơ. Vui lòng thử lại.", { variant: 'error' }); // Show error notification
+    } finally {
       setLoading(false);
     }
   };
@@ -94,18 +92,14 @@ const Profile = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      setFile(e.target.files[0]);
-      console.log(file);
-      setimg(URL.createObjectURL(selectedFile)); // Tạo URL tạm thời cho ảnh
+      setFile(selectedFile);
+      setimg(URL.createObjectURL(selectedFile)); // Create a temporary URL for the image
     }
   };
 
-  console.log(img);
-
   const handleUpload = async () => {
     if (!file) {
-      console.log("No file selected");
-      setUploadStatus("Please select a file first.");
+      enqueueSnackbar("Please select a file first.", { variant: 'error' }); // Show error notification
       return;
     }
 
@@ -113,7 +107,6 @@ const Profile = () => {
     formData.append("file", file);
 
     try {
-      console.log("Uploading file...");
       const response = await axios.post("https://localhost:7077/api/Upload/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -121,29 +114,22 @@ const Profile = () => {
         },
       });
 
-      console.log("Upload response:", response.data);
       const mediaId = response.data.mediaid;
-      console.log("Media ID:", mediaId);
 
-      setUpdatedProfile(prev => {
-        const updated = {
-          ...prev,
-          avatar: mediaId
-        };
-        console.log("Updated profile:", updated);
-        return updated;
-      });
+      setUpdatedProfile(prev => ({
+        ...prev,
+        avatar: mediaId
+      }));
+      enqueueSnackbar("Upload successful!", { variant: 'success' }); // Show success notification
       return mediaId;
     } catch (error) {
-      console.error("Upload error:", error);
-      console.error("Error response:", error.response);
-      setUploadStatus(`Upload failed: ${error.response?.data || error.message}`);
+      enqueueSnackbar(`Upload failed: ${error.response?.data || error.message}`, { variant: 'error' }); //Show error notification
       throw error;
     }
   };
 
-  // if (loading) return <div className="loading">Đang tải...</div>;
-  // if (error) return <div className="error">Lỗi: {error}</div>;
+  if (loading) return <div className="loading">Đang tải...</div>;
+  if (error) return <div className="error">Lỗi: {error}</div>;
   if (!profile) return <div>No profile data</div>;
   return (
     <>
@@ -195,7 +181,7 @@ const Profile = () => {
                         <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Địa chỉ:</span> {profile.address}</li>
                         <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Giới tính:</span> {profile.gender ? "Nam" : "Nữ"}</li>
                         <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Tuổi:</span> {profile.age}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Miêu tả bản thân:</span> <textarea>{profile.description}</textarea></li>
+                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Miêu tả bản thân:</span> <textarea disabled>{profile.description}</textarea></li>
                       </ul>
                       <button type="button" onClick={() => setIsUpdateProfile(true)} className="update-btn">Cập nhật thông tin cá nhân</button>
                     </div>
@@ -219,7 +205,7 @@ const Profile = () => {
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Email</label>
-                              <input type="email" name="email" value={updatedProfile.email} className="form-control" onChange={handleInputChange} />
+                              <input disabled type="email" name="email" value={updatedProfile.email} className="form-control" onChange={handleInputChange} />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Số điện thoại</label>
