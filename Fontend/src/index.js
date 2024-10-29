@@ -8,20 +8,20 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
-import ViewJobDetail from './componets/jobs/ViewJobDetail';
-import CreatePostJob from './componets/jobs/CreatePostJob';
-import ViewAllJobApplied from './componets/jobs/View_All_Job_Applied';
-import ViewAllJobSeekerApply from './componets/jobs/View_All_Jobseeker_Apply';
-import ViewJobSeekerDetail from './componets/jobs/View_JobSeeker_Detail';
-import ViewJobCreatedDetail from './componets/jobs/ViewJobCreatedDetail';
-import ViewListJobsCreated from './componets/jobs/ViewListJobsCreated';
+import ViewJobDetail from './componets/jobseeker/ViewJobDetail';
+import CreatePostJob from './componets/jobseeker/CreatePostJob';
+import ViewAllJobApplied from './componets/jobseeker/View_All_Job_Applied';
+import ViewAllJobSeekerApply from './componets/jobseeker/View_All_Jobseeker_Apply';
+import ViewJobSeekerDetail from './componets/jobseeker/View_JobSeeker_Detail';
+import ViewJobCreatedDetail from './componets/jobseeker/ViewJobCreatedDetail';
+import ViewListJobsCreated from './componets/jobseeker/ViewListJobsCreated';
 import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
-import PostJobs from './componets/jobs/ViewAllPostJob';
-import ApplyJob from './componets/jobs/ApplyJob';
-import ScheduleTable from './componets/jobs/ScheduleTable';
+import PostJobs from './componets/jobseeker/ViewAllPostJob';
+import ApplyJob from './componets/jobseeker/ApplyJob';
+import ScheduleTable from './componets/jobseeker/ScheduleTable';
 import { SnackbarProvider } from 'notistack'; // Import SnackbarProvider
-
+import MemberCard from './componets/employee/ViewAllJobSeeker';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -46,6 +46,7 @@ root.render(
           <Route path='/VerifyRegister' element={<VerifyRegister />} /> {/* Màn này để verify code khi đăng ký */}
           <Route path='/viewalljob' element={<PostJobs />} />
           <Route path='/lich' element={<ScheduleTable />} />
+          <Route path='/viewAllJobSeeker' element={<MemberCard />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
