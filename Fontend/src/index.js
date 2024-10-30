@@ -9,12 +9,12 @@ import Login from './componets/accounts/Login';
 import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobseeker/ViewJobDetail';
-import CreatePostJob from './componets/jobseeker/CreatePostJob';
+import CreatePostJob from './componets/employee/CreatePostJob';
 import ViewAllJobApplied from './componets/jobseeker/View_All_Job_Applied';
 import ViewAllJobSeekerApply from './componets/jobseeker/View_All_Jobseeker_Apply';
 import ViewJobSeekerDetail from './componets/jobseeker/View_JobSeeker_Detail';
-import ViewJobCreatedDetail from './componets/jobseeker/ViewJobCreatedDetail';
-import ViewListJobsCreated from './componets/jobseeker/ViewListJobsCreated';
+import ViewJobCreatedDetail from './componets/employee/ViewJobCreatedDetail';
+import ViewListJobsCreated from './componets/employee/ViewListJobsCreated';
 import Profile from './componets/accounts/Profile';
 import VerifyRegister from "./componets/accounts/VerifyRegister";
 import PostJobs from './componets/jobseeker/ViewAllPostJob';
@@ -41,7 +41,6 @@ root.render(
           <Route path="/viewListJobsCreated" element={<ViewListJobsCreated />} />
           <Route path="/viewJobCreatedDetail/:id" element={<ViewJobCreatedDetail />} />
           <Route path="/ApplyJob/:job_id" element={<ApplyJob />} />
-          {/* Thêm các route khác nếu cần */}
           <Route path="/profile" element={<Profile />} /> {/* Thêm các route khác nếu cần */}
           <Route path='/VerifyRegister' element={<VerifyRegister />} /> {/* Màn này để verify code khi đăng ký */}
           <Route path='/viewalljob' element={<PostJobs />} />
