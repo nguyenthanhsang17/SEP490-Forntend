@@ -6,7 +6,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import '../assets/css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const ViewListJobsCreated = () => {
     const [jobs, setJobs] = useState([]);
@@ -311,6 +311,12 @@ const ViewListJobsCreated = () => {
                                 </div>
                             </div>
                         </form>
+                    </div>
+
+                    <div className="create-item">
+                        <button type="button" className="btn create-btn custom-create-btn">
+                            <FontAwesomeIcon icon={faPlus} /> Tạo bài đăng
+                        </button>
                     </div>
 
 

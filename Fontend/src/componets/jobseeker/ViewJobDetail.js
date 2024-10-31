@@ -48,13 +48,13 @@ function ViewJobDetail() {
       flexWrap: 'wrap',
       justifyContent: 'center', // Căn giữa các ảnh
     };
-  
+
     const imageItemStyle = {
       margin: '10px', // Khoảng cách giữa các ảnh
       maxWidth: '200px', // Độ rộng tối đa của ảnh
       height: 'auto', // Chiều cao tự động
     };
-  
+
     return (
       <div style={galleryStyle}>
         {imageUrls.map((url, index) => (
@@ -66,7 +66,7 @@ function ViewJobDetail() {
 
   const GenerateSlotDTOs = ({ slotDTOs }) => {
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
-    
+
     // Định nghĩa thời gian cho từng ca
     const shiftTimes = {
       1: "08:00 - 12:00",
@@ -75,14 +75,14 @@ function ViewJobDetail() {
       4: "22:00 - 02:00",  // Ví dụ cho Ca 4
       // Thêm ca khác nếu cần
     };
-  
+
     // Hàm trợ giúp để tìm lịch làm việc cho từng ngày và từng ca
     const findSchedule = (slot, day) => {
       return slot.jobScheduleDTOs.find(
         (schedule) => getDayOfWeek(schedule.dayOfWeek) === day
       );
     };
-  
+
     return (
       <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -117,7 +117,7 @@ function ViewJobDetail() {
       </div>
     );
   };
-  
+
   // Hàm chuyển đổi dayOfWeek thành ngày trong tuần tiếng Việt
   const getDayOfWeek = (dayOfWeek) => {
     const days = {
@@ -132,6 +132,18 @@ function ViewJobDetail() {
     return days[dayOfWeek] || 'Không xác định';
   };
 
+  const salaryTypeMap = {
+    "Theo giờ": "giờ",
+    "Theo ngày": "ngày",
+    "Theo công việc": "công việc",
+    "Theo tuần": "tuần",
+    "Theo tháng": "tháng",
+    "Lương cố định": "cố định",
+  };
+
+  const formatWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   return (
     <>
@@ -139,7 +151,7 @@ function ViewJobDetail() {
       <div className="clearfix"></div>
       <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
         <div className="container">
-          <h1>Chi tiết công việc</h1>
+          <h1>{jobDetails.jobTitle}</h1>
         </div>
       </section>
       <div className="clearfix"></div>
@@ -157,11 +169,12 @@ function ViewJobDetail() {
           <div className="row bottom-mrg">
             <div className="col-md-8 col-sm-8">
               <div className="detail-desc-caption">
-                <h4>{jobDetails.jobTitle}</h4>
-                <span className="designation">Người đăng: {jobDetails.authorName}</span>
+                <h4 className="designation">Người đăng: {jobDetails.authorName}</h4>
                 <ul>
                   <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người/{jobDetails.numberAppliedUser} đã ứng tuyển</span></li>
-                  <li><i className="fa fa-money"></i><span>{jobDetails.salaryTypeName}: {jobDetails.salary} VND</span></li>
+                  <li>
+                    Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
+                  </li>
                 </ul>
               </div>
             </div>

@@ -616,7 +616,7 @@ textarea.form-control {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     border-radius: 6px;
     padding: 10px;
@@ -626,9 +626,32 @@ textarea.form-control {
 }
 
 .search-btn:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 
 .form-control, .form-select {
     width: 100%;
 }
+
+.create-item {
+    margin-top: 20px; /* Khoảng cách giữa nút với khu vực tìm kiếm */
+    margin-bottom: 20px; /* Khoảng cách giữa nút với danh sách bài đăng */
+    display: flex;
+    justify-content: center; /* Canh giữa nút */
+}
+
+.custom-create-btn {
+    background-color: #28a745; /* Màu nền */
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-create-btn:hover {
+    background-color: #218838;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+

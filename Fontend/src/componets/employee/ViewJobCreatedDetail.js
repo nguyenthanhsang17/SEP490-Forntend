@@ -144,6 +144,19 @@ function ViewJobCreatedDetail() {
     6: "Bị cấm"
 };
 
+const salaryTypeMap = {
+  "Theo giờ": "giờ",
+  "Theo ngày": "ngày",
+  "Theo công việc": "công việc",
+  "Theo tuần": "tuần",
+  "Theo tháng": "tháng",
+  "Lương cố định": "cố định",
+};
+
+const formatWithCommas = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 // Hàm lấy nhãn trạng thái từ mã trạng thái
 const getStatusLabel = (status) => {
     return statusLabels[status] || "Không xác định";
@@ -155,10 +168,28 @@ const getStatusLabel = (status) => {
       <div className="clearfix"></div>
       <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
         <div className="container">
-          <h1>Chi tiết công việc đã tạo</h1>
+          <h1>{jobDetails.jobTitle}</h1>
         </div>
       </section>
       <div className="clearfix"></div>
+      {/* Nút Quay Lại */}
+      <div className="container">
+        <button
+          className="btn back-btn"
+          
+          style={{
+            margin: "20px 0",
+            padding: "10px 20px",
+            backgroundColor: "#28a745",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Quay lại
+        </button>
+      </div>
       <section className="detail-desc">
         <div className="container white-shadow">
           <div className="row">
@@ -173,11 +204,13 @@ const getStatusLabel = (status) => {
           <div className="row bottom-mrg">
             <div className="col-md-8 col-sm-8">
               <div className="detail-desc-caption">
-                <h4>{jobDetails.jobTitle}</h4>
-                <span>{jobDetails.jobCategoryName}</span>
+                <h4>{jobDetails.jobCategoryName}</h4>
+                <span></span>
                 <ul>
                   <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người/{jobDetails.numberAppliedUser} đã ứng tuyển</span></li>
-                  <li><i className="fa fa-money"></i><span>{jobDetails.salaryTypeName}: {jobDetails.salary} VND</span></li>
+                  <li>
+                    Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -202,6 +235,7 @@ const getStatusLabel = (status) => {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   <a href="#" className="footer-btn grn-btn" title="">Chỉnh sửa bài đăng</a>
+                  <a href="#" className="footer-btn blu-btn" title="">Danh sách ứng viên đã ứng tuyển</a>
                 </div>
               </div>
             </div>
