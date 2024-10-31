@@ -372,44 +372,7 @@ const JobListing = () => {
             </div>
           )))}
 
-          {/* {jobs.map((job) => (
-            <div class="item-click">
-              <article>
-                <div class="brows-job-list">
-                  <div class="col-md-1 col-sm-2 small-padding">
-                    <div class="brows-job-company-img" style={{ backgroundColor: "white" }}>
-                      <a href="job-detail.html"><img style={{ width: "100px" }} src={job.thumbnail} class="img-responsive" alt="" /></a>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-sm-5">
-                    <div class="brows-job-position">
-                      <a href="job-detail.html"><h3>{job.jobTitle}</h3></a>
-                      <p>
-                        <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
-                        <span class="job-type cl-success bg-trans-success">Full Time</span>
-                      </p>
-                      <p>
-                        <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
 
-                        <span class="job-type cl-success bg-trans-success">Cách bạn: {job.distance} km</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <div class="brows-job-location">
-                      <p><i class="fa fa-map-marker"></i>{job.address}</p>
-                    </div>
-                  </div>
-                  <div class="col-md-2 col-sm-2">
-                    <div class="brows-job-link">
-                      <a href="job-detail.html" style={{ marginRight: 10 }} class="btn btn-default">Ứng tuyển ngay</a><span style={{ marginLeft: 10 }}><FontAwesomeIcon icon={faHeart} /> </span>
-                    </div>
-                  </div>
-                </div>
-                {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
-              </article>
-            </div>
-          ))} */}
           
 
           <div class="row">
