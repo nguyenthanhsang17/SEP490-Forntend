@@ -23,7 +23,7 @@ const ViewListJobsCreated = () => {
     const [rangeSalaryMax, setRangeSalaryMax] = useState('');
     const [status, setStatus] = useState(-1);
     const [jobCategoryId, setJobCategoryId] = useState(0);
-    const [sortNumberApplied, setSortNumberApplied] = useState(1);
+    const [sortNumberApplied, setSortNumberApplied] = useState(0);
     const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
     const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
