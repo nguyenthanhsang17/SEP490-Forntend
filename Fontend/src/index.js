@@ -26,6 +26,7 @@ import MemberCard from './componets/employee/ViewAllJobSeeker';
 
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
+import Unauthorized from './componets/common/Unauthorized';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -83,6 +84,7 @@ root.render(
             path="/ViewJobSeekerDetail/:id/:apply_id"
             element={<PrivateRoute allowedRoles={["2"]}><ViewJobSeekerDetail /></PrivateRoute>}
           />
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
