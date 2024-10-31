@@ -21,7 +21,10 @@ import PostJobs from './componets/jobseeker/ViewAllPostJob';
 import ApplyJob from './componets/jobseeker/ApplyJob';
 import ScheduleTable from './componets/jobseeker/ScheduleTable';
 import { SnackbarProvider } from 'notistack'; // Import SnackbarProvider
+import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
 import MemberCard from './componets/employee/ViewAllJobSeeker';
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -46,6 +49,7 @@ root.render(
           <Route path='/viewalljob' element={<PostJobs />} />
           <Route path='/lich' element={<ScheduleTable />} />
           <Route path='/viewAllJobSeeker' element={<MemberCard />} />
+          <Route path='/verifyEmployerAccount' element={<VerifyEmployerAccount />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
