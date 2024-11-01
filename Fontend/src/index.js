@@ -23,6 +23,8 @@ import PostJobs from './componets/jobseeker/ViewAllPostJob';
 import ApplyJob from './componets/jobseeker/ApplyJob';
 import ScheduleTable from './componets/jobseeker/ScheduleTable';
 import MemberCard from './componets/employee/ViewAllJobSeeker';
+import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
+import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWishlist';
 
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
@@ -84,7 +86,12 @@ root.render(
             path="/ViewJobSeekerDetail/:id/:apply_id"
             element={<PrivateRoute allowedRoles={["2"]}><ViewJobSeekerDetail /></PrivateRoute>}
           />
+           <Route
+            path="/verifyEmployerAccount"
+            element={<PrivateRoute allowedRoles={["1"]}><VerifyEmployerAccount /></PrivateRoute>}
+          />
           <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

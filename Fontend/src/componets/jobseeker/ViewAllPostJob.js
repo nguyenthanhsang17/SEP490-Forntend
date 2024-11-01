@@ -59,7 +59,7 @@ const JobListing = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      
+
       try {
         const response = await axios.get('https://localhost:7077/api/PostJobs', {
           params: {
@@ -112,33 +112,33 @@ const JobListing = () => {
 
   const generatePagination = (pageNumber, totalPages) => {
     const paginationItems = [];
-  
+
     // Thêm nút "Previous"
     paginationItems.push(
       <li key="prev" className={pageNumber === 1 ? 'disabled' : ''}>
-        <a  onClick={() => pageNumber > 1 && setCurrentPage(pageNumber - 1)}>&laquo;</a>
+        <a onClick={() => pageNumber > 1 && setCurrentPage(pageNumber - 1)}>&laquo;</a>
       </li>
     );
-  
+
     // Tạo các nút phân trang
     for (let i = 1; i <= totalPages; i++) {
       paginationItems.push(
         <li key={i} className={pageNumber === i ? 'active' : ''}>
-          <a  onClick={() => setCurrentPage(i)}>{i}</a>
+          <a onClick={() => setCurrentPage(i)}>{i}</a>
         </li>
       );
     }
-  
+
     // Thêm nút "Next"
     paginationItems.push(
       <li key="next" className={pageNumber === totalPages ? 'disabled' : ''}>
-        <a  onClick={() => pageNumber < totalPages && setCurrentPage(pageNumber + 1)}>&raquo;</a>
+        <a onClick={() => pageNumber < totalPages && setCurrentPage(pageNumber + 1)}>&raquo;</a>
       </li>
     );
-  
+
     return paginationItems;
   };
-  
+
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     if (!lat1 || !lon1 || !lat2 || !lon2) return null;
@@ -170,7 +170,7 @@ const JobListing = () => {
       Latitude: userLocation.latitude,
       Longitude: userLocation.longitude,
     };
-    
+
     // In ra nội dung của params
     console.log(params);
   };
@@ -207,134 +207,118 @@ const JobListing = () => {
       <section class="brows-job-category">
         <div class="container">
           <div class="row extra-mrg">
-            <div class="wrap-search-filter">
-              <form>
-                <div className="row g-3">
-                  {/* Keyword Search */}
-                  <div className="col-md-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="từ khóa công việc..."
-                      value={jobKeyword}
-                      onChange={(e) => setJobKeyword(e.target.value)}
-                    />
-                  </div>
+          <div className="search-container">
+                            <form onSubmit={handleSearchSubmit}>
+                                <div className="search-grid">
+                                    {/* Keyword Search */}
+                                    <div className="search-item">
+                                        <input
+                                            type="text"
+                                            className="form-control search-input"
+                                            placeholder="Từ khóa công việc..."
+                                            value={jobKeyword}
+                                            onChange={(e) => setJobKeyword(e.target.value)}
+                                        />
+                                    </div>
 
-                  {/* Location */}
-                  <div className="col-md-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Địa chỉ..."
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
-                  </div>
+                                    {/* Job Category */}
+                                    <div className="search-item">
+                                        <select
+                                            className="form-control search-input"
+                                            value={jobCategoryId}
+                                            onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
+                                        >
+                                            <option value="0">Loại công việc</option>
+                                            <option value="1">Hành chính</option>
+                                            <option value="2">Bán hàng & Tiếp thị</option>
+                                            <option value="3">Dịch vụ khách hàng</option>
+                                            <option value="4">Nhân viên sự kiện</option>
+                                            <option value="5">Nhà hàng, khách sạn</option>
+                                            <option value="6">Bán lẻ</option>
+                                            <option value="7">Hậu cần & Giao hàng</option>
+                                            <option value="8">Lao động chân tay</option>
+                                            <option value="9">Sáng tạo & Truyền thông</option>
+                                            <option value="10">Hỗ trợ kỹ thuật</option>
+                                        </select>
+                                    </div>
 
-                  {/* Job Category */}
-                  <div className="col-md-2">
-                    <select
-                      className="form-control"
-                      value={jobCategoryId}
-                      onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
-                    >
-                      <option value="0">loại công việc</option>
-                      <option value="1">Hành chính</option>
-                      <option value="2">Bán hàng & Tiếp thị</option>
-                      <option value="3">Dịch vụ khách hàng</option>
-                      <option value="4">Nhân viên sự kiện</option>
-                      <option value="5">Nhà hàng, khách sạn</option>
-                      <option value="6">Bán lẻ</option>
-                      <option value="7">Hậu cần & Giao hàng</option>
-                      <option value="8">Lao động chân tay</option>
-                      <option value="9">Sáng tạo & Truyền thông</option>
-                      <option value="10">Hỗ trợ kỹ thuật</option>
+                                    {/* Salary Type */}
+                                    <div className="search-item">
+                                        <select
+                                            className="form-control search-input"
+                                            value={salaryTypesId}
+                                            onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
+                                        >
+                                            <option value="0">Tất cả các loại trả lương</option>
+                                            <option value="1">Theo giờ</option>
+                                            <option value="2">Theo ngày</option>
+                                            <option value="3">Theo công việc</option>
+                                            <option value="4">Theo tuần</option>
+                                            <option value="5">Theo tháng</option>
+                                            <option value="6">Lương cố định</option>
+                                        </select>
+                                    </div>
 
-                    </select>
-                  </div>
+                                    {/* Salary Range */}
+                                    <div className="search-item">
+                                        <input
+                                            type="number"
+                                            className="form-control search-input"
+                                            placeholder="Lương tối thiểu"
+                                            value={rangeSalaryMin}
+                                            onChange={(e) => setRangeSalaryMin(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="search-item">
+                                        <input
+                                            type="number"
+                                            className="form-control search-input"
+                                            placeholder="Lương tối đa"
+                                            value={rangeSalaryMax}
+                                            onChange={(e) => setRangeSalaryMax(e.target.value)}
+                                        />
+                                    </div>
 
-                  {/* Salary Type */}
-                  <div className="col-md-2">
-                    <select
-                      className="form-control"
-                      value={salaryTypesId}
-                      onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
-                    >
-                      <option value="0">Tất cả các loại trả lương</option>
-                      <option value="1">Theo giờ</option>
-                      <option value="2">Theo ngày</option>
-                      <option value="3">Theo công việc</option>
-                      <option value="4">Theo tuần</option>
-                      <option value="5">Theo tháng</option>
-                      <option value="6">Lương cố định</option>
-                    </select>
-                  </div>
-                  <div className="col-md-2">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Lương tối thiểu"
-                      value={rangeSalaryMin}
-                      onChange={(e) => setRangeSalaryMin(e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-2">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Lương tối đa"
-                      value={rangeSalaryMax}
-                      onChange={(e) => setRangeSalaryMax(e.target.value)}
-                    />
-                  </div>
+                                    {/* Urgent Recruitment */}
+                                    <div className="search-item">
+                                        <select
+                                            className="form-control search-input"
+                                            value={isUrgentRecruitment}
+                                            onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
+                                        >
+                                            <option value="-1">Tất cả</option>
+                                            <option value="1">Tuyển gấp</option>
+                                            <option value="0">Không tuyển gấp</option>
+                                        </select>
+                                    </div>
 
-                  {/* Urgent Recruitment */}
-                  <div className="col-md-2">
-                    <select
-                      className="form-select"
-                      value={isUrgentRecruitment}
-                      onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
-                    >
-                      <option value="-1">Tất cả</option>
-                      <option value="1">Tuyển gấp</option>
-                      <option value="0">Không tuyển gấp</option>
-                    </select>
-                  </div>
+                                    {/* Sort By */}
+                                    <div className="search-item">
+                                        <select
+                                            className="form-control search-input"
+                                            value={sortNumberApplied}
+                                            onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
+                                        >
+                                            <option value="0">Xắp xếp theo số người ứng tuyển</option>
+                                            <option value="1">Ứng tuyển tăng dần</option>
+                                            <option value="-1">Ứng tuyển giảm dần</option>
+                                        </select>
+                                    </div>
 
-                  {/* Sort By */}
-                  <div className="col-md-2">
-                    <select
-                      className="form-control"
-                      value={sortNumberApplied}
-                      onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
-                    >
-                      <option value="0">Xắp xếp theo số người ứng tuyển</option>
-                      <option value="1">Applications (Ascending)</option>
-                      <option value="-1">Applications (Descending)</option>
-                    </select>
-                  </div>
-
-                  {/* Search Button */}
-                  <div className="col-md-2">
-                    <button
-                      type="submit"
-                      className="form-control"
-                      style={{ width: 100, backgroundColor: "green", color: 'white' }}
-                      onClick={handleSearchSubmit}
-                    >
-                      <FontAwesomeIcon icon={faSearch} /> Search
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          {Notfoundjob? (<div className="not-found-message">
+                                    {/* Search Button */}
+                                    <div className="search-item">
+                                        <button type="submit" className="btn search-btn">
+                                            <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+          {Notfoundjob ? (<div className="not-found-message">
             <p>{Notfound}</p>
-          </div>):(jobs.map((job) => (
+          </div>) : (jobs.map((job) => (
             <div class="item-click" key={job.postId}
-            onClick={() => handleJobClick(job.postId)}>
+              onClick={() => handleJobClick(job.postId)}>
               <article>
                 <div class="brows-job-list">
                   <div class="col-md-1 col-sm-2 small-padding">
@@ -361,9 +345,25 @@ const JobListing = () => {
                       <p><i class="fa fa-map-marker"></i>{job.address}</p>
                     </div>
                   </div>
-                  <div class="col-md-2 col-sm-2">
-                    <div class="brows-job-link">
-                      <a href="" style={{ marginRight: 10 }} class="btn btn-default">Ứng tuyển ngay</a><span style={{ marginLeft: 10 }}><FontAwesomeIcon icon={faHeart} /> </span>
+                  <div className="col-md-2 col-sm-2">
+                    <div className="brows-job-link">
+                      <a href="" className="btn btn-apply"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                        }}>
+                        Ứng tuyển ngay
+                      </a>
+                      <div className="save-button-container">
+                        <button
+                           className="btn btn-save"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faHeart} className="icon-spacing"/>
+                        Lưu tin
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -373,18 +373,19 @@ const JobListing = () => {
           )))}
 
 
-          
+
 
           <div class="row">
             <ul class="pagination">
-            {generatePagination(pageNumber, totalPages)}
+              {generatePagination(pageNumber, totalPages)}
             </ul>
           </div>
         </div>
+        </div>
       </section >
-      <Footer/>
-      </>
-      );
+      <Footer />
+    </>
+  );
 };
 
-      export default JobListing;
+export default JobListing;
