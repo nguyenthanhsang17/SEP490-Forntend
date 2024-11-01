@@ -62,19 +62,27 @@ const Profile = () => {
     setError(null);
 
     const token = localStorage.getItem("token");
-
+    const formData = new FormData();
+    // Thêm các trường dữ liệu vào FormData
+    formData.append("FullName", updatedProfile.fullName);
+    formData.append("Age", updatedProfile.age);
+    formData.append("Phonenumber", updatedProfile.phonenumber);
+    formData.append("address", updatedProfile.address);
+    formData.append("gender", updatedProfile.gender);
+    formData.append("currentJob", updatedProfile.currentJob);
+    formData.append("description", updatedProfile.description);
+    // Thêm file nếu có
+    if (file) {
+        formData.append("AvatarURL", file);
+    }
     try {
-      if (file) {
-        await handleUpload();
-      }
-
       await axios.put(
         "https://localhost:7077/api/Users/UpdateProfile",
-        updatedProfile,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -94,37 +102,10 @@ const Profile = () => {
     if (selectedFile) {
       setFile(selectedFile);
       setimg(URL.createObjectURL(selectedFile)); // Create a temporary URL for the image
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      enqueueSnackbar("Please select a file first.", { variant: 'error' }); // Show error notification
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post("https://localhost:7077/api/Upload/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const mediaId = response.data.mediaid;
-
       setUpdatedProfile(prev => ({
         ...prev,
-        avatar: mediaId
+        Avatar: file
       }));
-      enqueueSnackbar("Upload successful!", { variant: 'success' }); // Show success notification
-      return mediaId;
-    } catch (error) {
-      enqueueSnackbar(`Upload failed: ${error.response?.data || error.message}`, { variant: 'error' }); //Show error notification
-      throw error;
     }
   };
 
@@ -145,7 +126,7 @@ const Profile = () => {
         <div className="container white -shadow">
           <div className="row">
             <div className="detail-pic">
-              <img src={profile.avatarURL} className="img" alt="" />
+              <img src={img} className="img" alt="" />
               <a href="#" className="detail-edit" title="edit"><i className="fa fa-pencil"></i></a>
             </div>
             <div className="detail-status">
