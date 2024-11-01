@@ -173,6 +173,10 @@ const ViewListJobsCreated = () => {
         }
     };
 
+    const chuyenman = () =>{
+        navigate("/createPostJob");
+    };
+
     if (loading) return <div className="loading">Loading...</div>;
     if (error) return <div className="error">{error}</div>;
 
@@ -314,7 +318,7 @@ const ViewListJobsCreated = () => {
                     </div>
 
                     <div className="create-item">
-                        <button type="button" className="btn create-btn custom-create-btn">
+                        <button type="button" className="btn create-btn custom-create-btn" onClick={chuyenman}>
                             <FontAwesomeIcon icon={faPlus} /> Tạo bài đăng
                         </button>
                     </div>

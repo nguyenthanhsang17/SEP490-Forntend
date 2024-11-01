@@ -8,6 +8,7 @@ import axios from 'axios'; // Đảm bảo đã cài đặt axios
 import Map from '../utils/Map';
 import MapChoose from '../utils/MapChoose';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import MapAutoComplete from '../utils/MapAutoComplete';
 function CreatePostJob() {
     const [jobTitle, setJobTitle] = useState('');
     const [jobDescription, setJobDescription] = useState('');
@@ -31,6 +32,14 @@ function CreatePostJob() {
     const [postJobDates, setPostJobDates] = useState([{ eventDate: '', startTime: '', endTime: '' }]);
     const [jsonOutput, setJsonOutput] = useState('');
     const [isLongTerm, setIsLongTerm] = useState(false);
+    const [location, setLocation] = useState({
+        addressDetail: '',
+        address: {},
+        latitude: 0,
+        longitude: 0,
+      });
+
+    const [sangsalary, Setsangsalary]  = useState(0);
 
     const handleToggle = () => {
         setIsLongTerm(!isLongTerm);
@@ -107,6 +116,7 @@ function CreatePostJob() {
         setPosition(newPosition);
         setLatitude(newPosition.lat);
         setLongitude(newPosition.lng);
+        console.log(newPosition);
     };
     //==================================================================
     const [schedules, setSchedules] = useState([]);
@@ -407,10 +417,6 @@ function CreatePostJob() {
             toast.error('Vui lòng nhập địa chỉ');
             return false;
         }
-        if (!expirationDate || expirationDate.trim() === '') {
-            toast.error('Vui lòng nhập ngày hết hạn');
-            return false;
-        }
 
         // Kiểm tra salary_types_id và JobCategory_Id phải > 0
         if (!salaryType || parseInt(salaryType) <= 0) {
@@ -562,6 +568,18 @@ function CreatePostJob() {
         }
     };
 
+    const handleLocationSubmit = (locationDetails) => {
+        setLocation(locationDetails);
+        console.log("Location submitted:", locationDetails);
+      };
+
+      const handleChange = (event) => {
+        // Xóa tất cả dấu phẩy để lấy giá trị số
+        const value = event.target.value.replace(/,/g, '');
+        const numericValue = Number(value) || 0; // Chuyển đổi sang số, mặc định là 0 nếu không hợp lệ
+        setFixSalary(numericValue); // Cập nhật giá trị fixSalary
+    };
+
     return (
         <>
             <Header />
@@ -611,6 +629,7 @@ function CreatePostJob() {
                                     value={salaryType}
                                     onChange={(e) => setSalaryType(e.target.value)}
                                 >
+                                    <option value="">Chọn kiểu trả lương</option>
                                     <option value="1">Theo giờ</option>
                                     <option value="2">Theo ngày</option>
                                     <option value="3">Theo công việc</option>
@@ -623,7 +642,7 @@ function CreatePostJob() {
                                 <input
                                     type="number"
                                     className="form-control"
-                                    placeholder="Lương cố định"
+                                    placeholder="Lương"
                                     value={fixSalary}
                                     onChange={(e) => setFixSalary(e.target.value)}
                                 />
@@ -657,48 +676,7 @@ function CreatePostJob() {
                                 />
                             </div>
 
-                            {/* <div className="input-group form-group">
-                                <input 
-                                    type="number" 
-                                    className="form-control" 
-                                    placeholder="Latitude"
-                                    value={latitude}
-                                    onChange={(e) => setLatitude(e.target.value)}
-                                />
-                            </div>
-
-                            <div className="input-group form-group">
-                                <input 
-                                    type="number" 
-                                    className="form-control" 
-                                    placeholder="Longitude"
-                                    value={longitude}
-                                    onChange={(e) => setLongitude(e.target.value)}
-                                />
-                            </div> */}
-
-                            <div className="input-group form-group">
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    placeholder="Ngày hết hạn"
-                                    value={expirationDate}
-                                    min={minDate}
-                                    onChange={(e) => setExpirationDate(e.target.value)}
-                                />
-                            </div>
-
-                            <div className="input-group form-group">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={isUrgentRecruitment}
-                                        onChange={(e) => setIsUrgentRecruitment(e.target.checked)}
-                                        style={{ marginRight: 10 }}
-                                    />
-                                    Tuyển dụng khẩn cấp
-                                </label>
-                            </div>
+                            
                             <div className="input-group form-group">
                                 <div className="image-upload-container" style={{
                                     display: 'flex',
@@ -777,6 +755,19 @@ function CreatePostJob() {
                                     )}
                                 </div>
                             </div>
+
+                            <div className="input-group form-group">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={isUrgentRecruitment}
+                                        onChange={(e) => setIsUrgentRecruitment(e.target.checked)}
+                                        style={{ marginRight: 10 }}
+                                    />
+                                    Tuyển dụng khẩn cấp
+                                </label>
+                            </div>
+                            
                             <div className="full-width">
                                 <label style={{
                                     position: 'relative',
@@ -1050,7 +1041,8 @@ function CreatePostJob() {
 
                             </div>
                             <div className="full-width">
-                                <MapChoose onPositionChange={handlePositionChange} />
+                                {/* <MapChoose onPositionChange={handlePositionChange} /> */}
+                                <MapAutoComplete onSubmit={handleLocationSubmit} onPositionChange={handlePositionChange} />
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
