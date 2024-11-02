@@ -25,6 +25,7 @@ import ScheduleTable from './componets/jobseeker/ScheduleTable';
 import MemberCard from './componets/employee/ViewAllJobSeeker';
 import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
 import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWishlist';
+import ViewAllJobSeekerInFavoriteList from './componets/employee/ViewAllJobSeekerInFavoriteList'
 
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
@@ -92,6 +93,7 @@ root.render(
           />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
+          <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

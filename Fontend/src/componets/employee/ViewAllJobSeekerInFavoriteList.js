@@ -7,7 +7,7 @@ import Header from '../common/Header';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-function ViewAllJobSeekerApply() {
+function ViewAllJobSeekerInFavoriteList() {
   const { id } = useParams();
   const [jobSeekers, setJobSeekers] = useState([]);
   const [genderFilter, setGenderFilter] = useState('');
@@ -175,4 +175,4 @@ function ViewAllJobSeekerApply() {
   );
 }
 
-export default ViewAllJobSeekerApply;
+export default ViewAllJobSeekerInFavoriteList;
