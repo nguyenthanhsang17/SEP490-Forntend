@@ -26,7 +26,7 @@ import MemberCard from './componets/employee/ViewAllJobSeeker';
 import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
 import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWishlist';
 import ViewAllJobSeekerInFavoriteList from './componets/employee/ViewAllJobSeekerInFavoriteList'
-
+import ReportPostJob from './componets/jobseeker/ReportPostJob'
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
@@ -94,6 +94,7 @@ root.render(
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
           <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
+          <Route path="/reportPostJob" element={<ReportPostJob />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

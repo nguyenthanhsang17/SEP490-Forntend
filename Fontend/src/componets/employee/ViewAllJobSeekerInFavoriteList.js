@@ -18,9 +18,9 @@ function ViewAllJobSeekerInFavoriteList() {
     const [totalPages, setTotalPages] = useState(0);
 
     const fetchJobSeekers = async () => {
-        console.log("Job ID:", id);
+        // console.log("Job ID:", id);
         try {
-            const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetAllJobseekerApply/${id}`, {
+            const response = await axios.get(``, {
                 params: {
                     pageNumber: pageNumber,
                     pageSize: 4, // Bạn có thể thay đổi kích thước trang nếu cần
@@ -146,6 +146,12 @@ function ViewAllJobSeekerInFavoriteList() {
                                         <p className="card-text"><strong>Giới tính:</strong> {seeker.gender ? 'Nam' : 'Nữ'}</p>
                                         <a href={`/ViewJobSeekerDetail/${seeker.userId}/${seeker.apply_id}`} className="btn btn-primary">
                                             Xem chi tiết
+                                        </a>
+                                        <a href="" className="btn btn-primary">
+                                            Bỏ lưu
+                                        </a>
+                                        <a href="" className="btn btn-primary">
+                                            Lưu
                                         </a>
                                     </div>
                                 </div>
