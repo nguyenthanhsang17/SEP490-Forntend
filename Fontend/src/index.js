@@ -12,9 +12,9 @@ import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobseeker/ViewJobDetail';
 import CreatePostJob from './componets/employee/CreatePostJob';
-import ViewAllJobApplied from './componets/jobseeker/View_All_Job_Applied';
-import ViewAllJobSeekerApply from './componets/jobseeker/View_All_Jobseeker_Apply';
-import ViewJobSeekerDetail from './componets/jobseeker/View_JobSeeker_Detail';
+import ViewAllJobApplied from './componets/employee/View_All_Job_Applied';
+import ViewAllJobSeekerApply from './componets/employee/View_All_Jobseeker_Apply';
+import ViewJobSeekerDetail from './componets/employee/View_JobSeeker_Detail';
 import ViewJobCreatedDetail from './componets/employee/ViewJobCreatedDetail';
 import ViewListJobsCreated from './componets/employee/ViewListJobsCreated';
 import Profile from './componets/accounts/Profile';
@@ -30,6 +30,7 @@ import ReportPostJob from './componets/jobseeker/ReportPostJob'
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
+import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -74,6 +75,10 @@ root.render(
           <Route
             path="/viewJobCreatedDetail/:id"
             element={<PrivateRoute allowedRoles={["2"]}><ViewJobCreatedDetail /></PrivateRoute>}
+          />
+           <Route
+            path="/viewDetailJobSeeker/:id"
+            element={<PrivateRoute allowedRoles={["2"]}><ViewJobDetailJobSeeker /></PrivateRoute>}
           />
           <Route
             path="/viewAllJobSeeker"
