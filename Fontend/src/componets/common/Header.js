@@ -146,105 +146,115 @@ const Header = () => {
                 src={logoImage}
                 className="logo logo-scrolled"
                 alt="Scrolled Logo"
+                style={{ marginTop: "40px" }}
               />
             </a>
           </div>
 
           <div className="collapse navbar-collapse" id="navbar-menu">
-        <ul
-          className="nav navbar-nav navbar-right"
-          data-in="fadeInDown"
-          data-out="fadeOutUp"
-        >
-          <li>
-            <a href="pricing.html">
-              <i className="fa fa-sign-in" aria-hidden="true"></i>
-              Giá
-            </a>
-          </li>
-
-          <li>
-            <a
-              style={styles.viewJobsLink}
-              onClick={handleViewAllJobsClick}
-              href="/viewalljob"
+            <ul
+              className="nav navbar-nav navbar-right"
+              data-in="fadeInDown"
+              data-out="fadeOutUp"
             >
-              <FaBriefcase style={styles.icon} />
-              Tất cả các công việc
-            </a>
-          </li>
+              <li>
+                <a href="pricing.html">
+                  <i className="fa fa-sign-in" aria-hidden="true"></i>
+                  Giá
+                </a>
+              </li>
 
-          {roleId === "2" && (
-            <li>
-              <a
-                style={styles.viewJobsLink}
-                onClick={handleViewAllCandidatesClick}
-                href="/viewAllJobSeeker"
-              >
-                <FaUsers style={styles.icon} />
-                Tất cả ứng viên
-              </a>
-            </li>
-          )}
-
-          {isLoggedIn ? (
-            <li className="left-br">
-              <button style={styles.profileButton} onClick={toggleDropdown}>
-                {localStorage.getItem("fullName") || "Họ và tên"}
-              </button>
-              <div
-                style={{
-                  ...styles.dropdown,
-                  ...(dropdownVisible ? styles.dropdownVisible : {}),
-                }}
-              >
-                <div style={styles.dropdownItem} onClick={handleProfileClick}>
-                  Hồ sơ của bạn
-                </div>
-                {roleId === "2" && (
-                  <div style={styles.dropdownItem} onClick={handleViewListCreatedClick}>
-                    Danh sách công việc đã tạo
-                  </div>
-                )}
-                {roleId === "1" && (
-                  <div style={styles.dropdownItem} onClick={handleViewListAppliedClick}>
-                    Danh sách công việc đã ứng tuyển
-                  </div>
-                )}
-                <div
-                  style={styles.dropdownItem}
-                  onClick={openChangePassModal}
+              <li>
+                <a
+                  style={styles.viewJobsLink}
+                  onClick={handleViewAllJobsClick}
+                  href="/viewalljob"
                 >
-                  Đổi mật khẩu
-                </div>
-                <div style={styles.dropdownItem} onClick={handleLogout}>
-                  Đăng xuất
-                </div>
-              </div>
-            </li>
-          ) : (
-            <li className="left-br">
-              <a
-                href="/login"
-                data-toggle="modal"
-                data-target="#signup"
-                className="signin"
-              >
-                Đăng Nhập Ngay
-              </a>
-            </li>
-          )}
-        </ul>
-      </div>
-    </div>
-  </nav>
+                  <FaBriefcase style={styles.icon} />
+                  Tất cả các công việc
+                </a>
+              </li>
 
-  <ChangePasswordModal
-    show={showChangePassModal}
-    handleClose={closeChangePassModal}
-  />
-  <div className="clearfix"></div>
-</div>
+              {roleId === "2" && (
+                <li>
+                  <a
+                    style={styles.viewJobsLink}
+                    onClick={handleViewAllCandidatesClick}
+                    href="/viewAllJobSeeker"
+                  >
+                    <FaUsers style={styles.icon} />
+                    Tất cả ứng viên
+                  </a>
+                </li>
+              )}
+
+              {isLoggedIn ? (
+                <li className="left-br">
+                  <button style={styles.profileButton} onClick={toggleDropdown}>
+                    {localStorage.getItem("fullName") || "Họ và tên"}
+                  </button>
+                  <div
+                    style={{
+                      ...styles.dropdown,
+                      ...(dropdownVisible ? styles.dropdownVisible : {}),
+                    }}
+                  >
+                    <div
+                      style={styles.dropdownItem}
+                      onClick={handleProfileClick}
+                    >
+                      Hồ sơ của bạn
+                    </div>
+                    {roleId === "2" && (
+                      <div
+                        style={styles.dropdownItem}
+                        onClick={handleViewListCreatedClick}
+                      >
+                        Danh sách công việc đã tạo
+                      </div>
+                    )}
+                    {roleId === "1" && (
+                      <div
+                        style={styles.dropdownItem}
+                        onClick={handleViewListAppliedClick}
+                      >
+                        Danh sách công việc đã ứng tuyển
+                      </div>
+                    )}
+                    <div
+                      style={styles.dropdownItem}
+                      onClick={openChangePassModal}
+                    >
+                      Đổi mật khẩu
+                    </div>
+                    <div style={styles.dropdownItem} onClick={handleLogout}>
+                      Đăng xuất
+                    </div>
+                  </div>
+                </li>
+              ) : (
+                <li className="left-br">
+                  <a
+                    href="/login"
+                    data-toggle="modal"
+                    data-target="#signup"
+                    className="signin"
+                  >
+                    Đăng Nhập Ngay
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <ChangePasswordModal
+        show={showChangePassModal}
+        handleClose={closeChangePassModal}
+      />
+      <div className="clearfix"></div>
+    </div>
   );
 };
 
