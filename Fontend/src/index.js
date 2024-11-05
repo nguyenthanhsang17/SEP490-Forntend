@@ -29,6 +29,7 @@ import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWish
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
+import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -73,6 +74,10 @@ root.render(
           <Route
             path="/viewJobCreatedDetail/:id"
             element={<PrivateRoute allowedRoles={["2"]}><ViewJobCreatedDetail /></PrivateRoute>}
+          />
+           <Route
+            path="/viewDetailJobSeeker/:id"
+            element={<PrivateRoute allowedRoles={["2"]}><ViewJobDetailJobSeeker /></PrivateRoute>}
           />
           <Route
             path="/viewAllJobSeeker"
