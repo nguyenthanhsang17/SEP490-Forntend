@@ -94,7 +94,7 @@ root.render(
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
           <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
-          <Route path="/reportPostJob" element={<ReportPostJob />} />
+          <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

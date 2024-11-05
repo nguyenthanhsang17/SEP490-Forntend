@@ -23,7 +23,7 @@ function VerifyEmployerAccount() {
 
   const handleIdCardImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 3) {
+    if (files.length > 5) {
       setErrorMessage('Vui lòng chọn tối đa 3 ảnh.');
       return;
     }
@@ -63,10 +63,10 @@ function VerifyEmployerAccount() {
         <img src={logoImage} alt="Logo" style={{ width: '250px', marginBottom: '5px' }} />
         <h2 style={{ marginBottom: '25px', fontFamily: 'Arial, sans-serif', color: '#333', fontSize: '1.5em' }}>Xác Thực Tài Khoản Nhà Tuyển Dụng</h2>
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Mã số căn cước công dân</label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh</label>
           <input
             type="text"
-            placeholder="012345"
+            placeholder="Tên cơ sở kinh doanh"
             value={businessName}
             onChange={handleBusinessNameChange}
             style={{
@@ -97,7 +97,7 @@ function VerifyEmployerAccount() {
             required
           />
           <span style={{ fontSize: '13px', color: '#777', display: 'block', marginBottom: '15px' }}>
-            Gửi ảnh 2 mặt căn cước công dân và ảnh địa chỉ của bạn (tối đa 3 ảnh)
+            Gửi ảnh 2 mặt căn cước công dân và ảnh địa chỉ của bạn (tối đa 5 ảnh)
           </span>
           
           <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ảnh CMND</label>

@@ -7,7 +7,7 @@ import Header from '../common/Header';
 import '../assets/css/style.css'; // Import CSS tùy chỉnh
 import logoImage from "../assets/img/banner-10.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
-import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
+import { faHeart, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
 
 
 
@@ -193,6 +193,29 @@ const JobListing = () => {
     return <div className="error">{error}</div>;
   }
 
+  const handleSaveToggle = (jobId) => {
+    setJobs((prevJobs) =>
+      prevJobs.map((job) =>
+        job.postId === jobId ? { ...job, isSaved: !job.isSaved } : job
+      )
+    );
+  };
+
+  const renderSaveButton = (job) => {
+    return (
+      <button
+        className="btn btn-save"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleSaveToggle(job.postId);
+        }}
+      >
+        <FontAwesomeIcon icon={job.isSaved ? faTrash : faHeart} className="icon-spacing" />
+        {job.isSaved ? 'Bỏ lưu' : 'Lưu tin'}
+      </button>
+    );
+  };
+
   return (
     <>
       <Header />
@@ -347,23 +370,10 @@ const JobListing = () => {
                   </div>
                   <div className="col-md-2 col-sm-2">
                     <div className="brows-job-link">
-                      <a href="" className="btn btn-apply"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Ngăn sự kiện onClick của item-click
-                        }}>
-                        Ứng tuyển ngay
-                      </a>
-                      <div className="save-button-container">
-                        <button
-                           className="btn btn-save"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Ngăn sự kiện onClick của item-click
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faHeart} className="icon-spacing"/>
-                        Lưu tin
-                        </button>
-                      </div>
+                    <a href="" className="btn btn-apply" onClick={(e) => e.stopPropagation()}>Ứng tuyển ngay</a>
+                          <div className="save-button-container">
+                            {renderSaveButton(job)}
+                          </div>
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"; // Import useParams
 import "../assets/css/style.css";
 import "../assets/plugins/css/plugins.css";
 import "../assets/css/colors/green-style.css";
@@ -7,15 +7,11 @@ import bannerImage from '../assets/img/banner-6.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
 
 function ReportPostJob() {
-    const [reportContent, setReportContent] = useState('');
     const [details, setDetails] = useState('');
     const [idCardImages, setIdCardImages] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
-
-    const handleReportContentChange = (e) => {
-        setReportContent(e.target.value);
-    };
+    const { id } = useParams(); // Get the Post ID from the URL
 
     const handleDetailsChange = (e) => {
         setDetails(e.target.value);
@@ -23,8 +19,8 @@ function ReportPostJob() {
 
     const handleIdCardImageChange = (e) => {
         const files = Array.from(e.target.files);
-        if (files.length > 3) {
-            setErrorMessage('Vui lòng chọn tối đa 3 ảnh.');
+        if (files.length > 5) {
+            setErrorMessage('Vui lòng chọn tối đa 5 ảnh.');
             return;
         }
         setIdCardImages(files);
@@ -33,12 +29,49 @@ function ReportPostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!reportContent || !details || idCardImages.length === 0) {
-            setErrorMessage('Vui lòng điền đầy đủ thông tin và chọn tối đa 3 ảnh.');
+        if (!details || idCardImages.length === 0) {
+            setErrorMessage('Vui lòng điền đầy đủ thông tin và chọn tối đa 5 ảnh.');
             return;
         }
-        navigate('/success');
+    
+        const formData = new FormData();
+        formData.append('Reason', details);
+        formData.append('PostId', id); // Use the Post ID from URL
+    
+        idCardImages.forEach((image) => {
+            formData.append('files', image);
+        });
+    
+        // Log to check FormData
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+    
+        const token = localStorage.getItem('token');
+    
+        try {
+            const response = await fetch('https://localhost:7077/api/PostJobs/ReportJob', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error('Đã xảy ra lỗi khi gửi báo cáo.');
+            }
+    
+            alert('Báo cáo thành công!');
+            navigate(`/viewJobDetail/${id}`);
+        } catch (error) {
+            console.error('Error submitting report:', error);
+            setErrorMessage('Đã xảy ra lỗi khi gửi báo cáo. Vui lòng thử lại sau.');
+        }
     };
+    
+    
+    
 
     return (
         <div style={{
@@ -62,23 +95,6 @@ function ReportPostJob() {
                 <img src={logoImage} alt="Logo" style={{ width: '250px', marginBottom: '5px' }} />
                 <h2 style={{ marginBottom: '25px', fontFamily: 'Arial, sans-serif', color: '#333', fontSize: '1.5em' }}>Báo cáo bài đăng</h2>
                 <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-                    <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tiêu đề</label>
-                    <input
-                        type="text"
-                        placeholder="Ví dụ: Công việc tuyển không tồn tại,...."
-                        value={reportContent}
-                        onChange={handleReportContentChange}
-                        style={{
-                            width: '100%',
-                            padding: '12px',
-                            margin: '10px 0 20px 0',
-                            border: '1px solid #ddd',
-                            borderRadius: '5px',
-                            fontSize: '1em',
-                        }}
-                        required
-                    />
-
                     <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Lí do</label>
                     <textarea
                         placeholder="Chi tiết"
@@ -91,13 +107,13 @@ function ReportPostJob() {
                             border: '1px solid #ddd',
                             borderRadius: '5px',
                             fontSize: '1em',
-                            resize: 'vertical', // Cho phép người dùng thay đổi kích thước dọc
+                            resize: 'vertical',
                         }}
                         required
                     />
 
                     <span style={{ fontSize: '13px', color: '#777', display: 'block', marginBottom: '15px' }}>
-                        Gửi ảnh hỗ trợ (tối đa 3 ảnh)
+                        Gửi ảnh hỗ trợ (tối đa 5 ảnh)
                     </span>
 
                     <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ảnh</label>
@@ -183,7 +199,6 @@ function ReportPostJob() {
                             Hủy
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
