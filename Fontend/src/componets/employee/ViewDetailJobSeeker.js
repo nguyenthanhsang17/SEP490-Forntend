@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
-
 import bannerImage from '../assets/img/banner-10.jpg';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
@@ -79,10 +78,12 @@ const ViewJobDetailJobSeeker = () => {
     }, [id, navigate]);
 
     const handleContactNow = () => {
+        // Implement the logic for contacting the job seeker
         alert(`Contacting ${jobSeeker.fullName}`);
     };
 
     const handleSave = () => {
+        // Implement the logic for saving the job seeker's details
         localStorage.setItem(`savedJobSeeker_${jobSeeker.userId}`, JSON.stringify(jobSeeker));
         alert(`${jobSeeker.fullName} has been saved.`);
     };
@@ -111,6 +112,7 @@ const ViewJobDetailJobSeeker = () => {
                                             <img 
                                                 src={jobSeeker.avatarURL} 
                                                 alt={`${jobSeeker.fullName}'s avatar`} 
+                                                style={{ width: '100px', height: '100px', borderRadius: '50%' }} // Adjust styles as needed
                                             />
                                         </li>
                                         <li>Tên: {jobSeeker.fullName}</li>
