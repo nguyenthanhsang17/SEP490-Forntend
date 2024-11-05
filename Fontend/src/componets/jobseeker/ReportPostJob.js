@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Import useParams
+import { useNavigate, useParams } from "react-router-dom";
 import "../assets/css/style.css";
 import "../assets/plugins/css/plugins.css";
 import "../assets/css/colors/green-style.css";
@@ -7,14 +7,14 @@ import bannerImage from '../assets/img/banner-6.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
 
 function ReportPostJob() {
-    const [details, setDetails] = useState('');
+    const [reason, setReason] = useState(''); // đổi tên từ details thành reason
     const [idCardImages, setIdCardImages] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the Post ID from the URL
+    const { id: postId } = useParams(); // đổi tên id thành postId
 
-    const handleDetailsChange = (e) => {
-        setDetails(e.target.value);
+    const handleReasonChange = (e) => {
+        setReason(e.target.value);
     };
 
     const handleIdCardImageChange = (e) => {
@@ -29,23 +29,18 @@ function ReportPostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!details || idCardImages.length === 0) {
+        if (!reason || idCardImages.length === 0) {
             setErrorMessage('Vui lòng điền đầy đủ thông tin và chọn tối đa 5 ảnh.');
             return;
         }
     
         const formData = new FormData();
-        formData.append('Reason', details);
-        formData.append('PostId', id); // Use the Post ID from URL
+        formData.append('Reason', reason);
+        formData.append('PostId', postId); // Đảm bảo tên trường trùng khớp với backend
     
         idCardImages.forEach((image) => {
-            formData.append('files', image);
+            formData.append('files', image); // Đảm bảo tên trường trùng khớp với backend
         });
-    
-        // Log to check FormData
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
     
         const token = localStorage.getItem('token');
     
@@ -63,15 +58,12 @@ function ReportPostJob() {
             }
     
             alert('Báo cáo thành công!');
-            navigate(`/viewJobDetail/${id}`);
+            navigate(`/viewJobDetail/${postId}`);
         } catch (error) {
             console.error('Error submitting report:', error);
             setErrorMessage('Đã xảy ra lỗi khi gửi báo cáo. Vui lòng thử lại sau.');
         }
     };
-    
-    
-    
 
     return (
         <div style={{
@@ -98,8 +90,8 @@ function ReportPostJob() {
                     <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Lí do</label>
                     <textarea
                         placeholder="Chi tiết"
-                        value={details}
-                        onChange={handleDetailsChange}
+                        value={reason}
+                        onChange={handleReasonChange}
                         style={{
                             width: '100%',
                             padding: '12px',
