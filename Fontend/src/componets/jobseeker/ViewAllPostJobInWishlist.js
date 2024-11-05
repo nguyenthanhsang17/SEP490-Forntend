@@ -13,6 +13,7 @@ import { faHeart, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'; 
 
 const ViewAllPostJobInWishlist = () => {
     const [jobs, setJobs] = useState([]);
+    const [sort, setSort] = useState(0); // Trạng thái sắp xếp, mặc định là "Cập nhật gần nhất"
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -33,6 +34,11 @@ const ViewAllPostJobInWishlist = () => {
     const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
     const navigate = useNavigate();
+
+    const handleSortChange = (e) => {
+        setSort(parseInt(e.target.value));
+        setCurrentPage(1); // Reset về trang đầu khi thay đổi sắp xếp
+    };
 
     useEffect(() => {
         // Get user's current location
@@ -59,9 +65,14 @@ const ViewAllPostJobInWishlist = () => {
 
     useEffect(() => {
         const fetchJobs = async () => {
-
             try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    navigate("/login");
+                    return;
+                }
                 const response = await axios.get('https://localhost:7077/api/WishJobs/getAllWishListJob', {
+                    headers: { Authorization: `Bearer ${token}` },
                     params: {
                         JobKeyWord: jobKeyword,
                         SalaryTypesId: salaryTypesId,
@@ -74,32 +85,20 @@ const ViewAllPostJobInWishlist = () => {
                         pageNumber: currentPage,
                         Latitude: userLocation.latitude,
                         Longitude: userLocation.longitude,
+                        sort: sort, // Gửi tham số sort
                     },
                 });
+
                 if (response.status === 200 && response.data.items) {
-                    const fetchedJobs = response.data.items || [];
-                    const jobsWithDistance = fetchedJobs.map(job => ({
-                        ...job,
-                        distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude),
-                    }));
-                    setJobs(jobsWithDistance);
+                    setJobs(response.data.items);
                     setTotalPages(response.data.totalPages || 0);
-                    SetNotfoundjob(false);
-                    SetpageNumber(response.data.pageNumber);
-                    setTotalPages(response.data.totalPages);
-                    console.log(response.data.pageNumber, response.data.totalPages);
                 } else {
                     SetNofound("Không tìm thấy công việc phù hợp");
                     SetNotfoundjob(true);
                     setJobs([]);
                 }
             } catch (err) {
-                if (err.response && err.response.status === 400) {
-                    SetNofound("Không tìm thấy công việc phù hợp");
-                    setJobs([]);
-                } else {
-                    setError('An error occurred while fetching jobs.');
-                }
+                setError('An error occurred while fetching jobs.');
             } finally {
                 setLoading(false);
             }
@@ -108,7 +107,33 @@ const ViewAllPostJobInWishlist = () => {
         if (userLocation.latitude && userLocation.longitude) {
             fetchJobs();
         }
-    }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation]);
+    }, [currentPage, sort, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation]);
+
+    const handleRemoveFromWishlist = async (postJobId) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/login");
+                return;
+            }
+
+            const response = await axios.delete('https://localhost:7077/api/WishJobs/DeleteWishJob', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json-patch+json',
+                },
+                data: { postJobId },
+            });
+
+            if (response.status === 200) {
+                alert(response.data.message); // Hiển thị thông báo xóa thành công
+                setJobs(jobs.filter((job) => job.postId !== postJobId)); // Xóa job khỏi danh sách
+            }
+        } catch (error) {
+            console.error("Error removing job from wishlist:", error);
+            alert("Xóa công việc khỏi danh sách mong muốn thất bại.");
+        }
+    };
 
     const generatePagination = (pageNumber, totalPages) => {
         const paginationItems = [];
@@ -154,37 +179,37 @@ const ViewAllPostJobInWishlist = () => {
         const distance = R * c; // Distance in km
         return distance.toFixed(2); // Return distance rounded to 2 decimal places
     };
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        setCurrentPage(1); // Reset to the first page on new search
-        const params = {
-            JobKeyWord: jobKeyword,
-            SalaryTypesId: salaryTypesId,
-            RangeSalaryMin: rangeSalaryMin,
-            RangeSalaryMax: rangeSalaryMax,
-            Address: address,
-            JobCategoryId: jobCategoryId,
-            SortNumberApplied: sortNumberApplied,
-            IsUrgentRecruitment: isUrgentRecruitment,
-            pageNumber: currentPage,
-            Latitude: userLocation.latitude,
-            Longitude: userLocation.longitude,
-        };
-
-        // In ra nội dung của params
-        console.log(params);
-    };
-
     const handleJobClick = (postId) => {
         navigate(`/viewJobDetail/${postId}`);
     };
 
-    const handlePageChange = (newPage) => {
-        if (newPage > 0 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
+    const searchContainerStyle = {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '20px',
     };
 
+    const prioritySortStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        padding: '10px 15px',
+        borderRadius: '8px',
+    };
+
+    const prioritySortLabelStyle = {
+        margin: '0 15px',
+        fontSize: '14px',
+        color: '#666',
+        cursor: 'pointer',
+    };
+
+    const prioritySortSpanStyle = {
+        marginRight: '10px',
+        fontWeight: 'bold',
+        color: '#333',
+    };
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -207,112 +232,50 @@ const ViewAllPostJobInWishlist = () => {
             <section class="brows-job-category">
                 <div class="container">
                     <div class="row extra-mrg">
-                        <div className="search-container">
-                            <form onSubmit={handleSearchSubmit}>
-                                <div className="search-grid">
-                                    {/* Keyword Search */}
-                                    <div className="search-item">
-                                        <input
-                                            type="text"
-                                            className="form-control search-input"
-                                            placeholder="Từ khóa công việc..."
-                                            value={jobKeyword}
-                                            onChange={(e) => setJobKeyword(e.target.value)}
-                                        />
-                                    </div>
-
-                                    {/* Job Category */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={jobCategoryId}
-                                            onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
-                                        >
-                                            <option value="0">Loại công việc</option>
-                                            <option value="1">Hành chính</option>
-                                            <option value="2">Bán hàng & Tiếp thị</option>
-                                            <option value="3">Dịch vụ khách hàng</option>
-                                            <option value="4">Nhân viên sự kiện</option>
-                                            <option value="5">Nhà hàng, khách sạn</option>
-                                            <option value="6">Bán lẻ</option>
-                                            <option value="7">Hậu cần & Giao hàng</option>
-                                            <option value="8">Lao động chân tay</option>
-                                            <option value="9">Sáng tạo & Truyền thông</option>
-                                            <option value="10">Hỗ trợ kỹ thuật</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Salary Type */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={salaryTypesId}
-                                            onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
-                                        >
-                                            <option value="0">Tất cả các loại trả lương</option>
-                                            <option value="1">Theo giờ</option>
-                                            <option value="2">Theo ngày</option>
-                                            <option value="3">Theo công việc</option>
-                                            <option value="4">Theo tuần</option>
-                                            <option value="5">Theo tháng</option>
-                                            <option value="6">Lương cố định</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Salary Range */}
-                                    <div className="search-item">
-                                        <input
-                                            type="number"
-                                            className="form-control search-input"
-                                            placeholder="Lương tối thiểu"
-                                            value={rangeSalaryMin}
-                                            onChange={(e) => setRangeSalaryMin(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="search-item">
-                                        <input
-                                            type="number"
-                                            className="form-control search-input"
-                                            placeholder="Lương tối đa"
-                                            value={rangeSalaryMax}
-                                            onChange={(e) => setRangeSalaryMax(e.target.value)}
-                                        />
-                                    </div>
-
-                                    {/* Urgent Recruitment */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={isUrgentRecruitment}
-                                            onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
-                                        >
-                                            <option value="-1">Tất cả</option>
-                                            <option value="1">Tuyển gấp</option>
-                                            <option value="0">Không tuyển gấp</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Sort By */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={sortNumberApplied}
-                                            onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
-                                        >
-                                            <option value="0">Xắp xếp theo số người ứng tuyển</option>
-                                            <option value="1">Ứng tuyển tăng dần</option>
-                                            <option value="-1">Ứng tuyển giảm dần</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Search Button */}
-                                    <div className="search-item">
-                                        <button type="submit" className="btn search-btn">
-                                            <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+                    <div className="search-container" style={searchContainerStyle}>
+                            <div className="priority-sort" style={prioritySortStyle}>
+                                <h4 style={prioritySortSpanStyle}>Ưu tiên hiển thị:</h4>
+                                <label style={prioritySortLabelStyle}>
+                                    <input
+                                        type="radio"
+                                        name="sort"
+                                        value="0"
+                                        checked={sort === 0}
+                                        onChange={handleSortChange}
+                                    />
+                                    Ưu tiên công việc phổ biến
+                                </label>
+                                <label style={prioritySortLabelStyle}>
+                                    <input
+                                        type="radio"
+                                        name="sort"
+                                        value="1"
+                                        checked={sort === 1}
+                                        onChange={handleSortChange}
+                                    />
+                                    Ưu tiên công việc lương cao
+                                </label>
+                                <label style={prioritySortLabelStyle}>
+                                    <input
+                                        type="radio"
+                                        name="sort"
+                                        value="2"
+                                        checked={sort === 2}
+                                        onChange={handleSortChange}
+                                    />
+                                    Ưu tiên công việc tuyển gấp
+                                </label>
+                                <label style={prioritySortLabelStyle}>
+                                    <input
+                                        type="radio"
+                                        name="sort"
+                                        value="3"
+                                        checked={sort === 3}
+                                        onChange={handleSortChange}
+                                    />
+                                    Ưu tiên công việc khoảng cách
+                                </label>
+                            </div>
                         </div>
                         {Notfoundjob ? (<div className="not-found-message">
                             <p>{Notfound}</p>
@@ -358,12 +321,14 @@ const ViewAllPostJobInWishlist = () => {
                                                         className="btn btn-save"
                                                         onClick={(e) => {
                                                             e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                                                            handleRemoveFromWishlist(job.postId); // Gọi hàm xóa công việc
                                                         }}
                                                     >
                                                         <FontAwesomeIcon icon={faTrash} className="icon-spacing" />
                                                         Bỏ lưu
                                                     </button>
                                                 </div>
+
                                             </div>
                                         </div>
 

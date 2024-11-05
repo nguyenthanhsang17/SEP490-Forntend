@@ -37,11 +37,29 @@ function ViewJobDetail() {
   const toggleSaveJob = async () => {
     if (jobDetails) {
       try {
-        if (jobDetails.isSaved) {
-          await axios.post(`https://localhost:7077/api/PostJobs/unSaveJob/${id}`);
-        } else {
-          await axios.post(`https://localhost:7077/api/PostJobs/saveJob/${id}`);
+        const token = localStorage.getItem('token'); // Ensure token is correctly retrieved
+  
+        if (!token) {
+          throw new Error("Authorization token not found. Please log in.");
         }
+  
+        const url = jobDetails.isSaved
+          ? `https://localhost:7077/api/WishJobs/DeleteWishJob`
+          : 'https://localhost:7077/api/WishJobs/AddWishJob';
+  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json-patch+json',
+        };
+  
+        const data = { postJobId: id };
+  
+        // Log the data being sent to verify its structure
+        console.log("Requesting URL:", url);
+        console.log("Headers:", headers);
+        console.log("Data:", data);
+  
+        await axios.post(url, data, { headers });
         setJobDetails((prevDetails) => ({ ...prevDetails, isSaved: !prevDetails.isSaved }));
       } catch (error) {
         console.error("Error toggling save status:", error);
@@ -49,6 +67,7 @@ function ViewJobDetail() {
       }
     }
   };
+  
 
   if (loading) {
     return <div style={styles.loading}>Loading...</div>;
@@ -214,30 +233,12 @@ function ViewJobDetail() {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
-                  <button
-                    className="button apply-button"
-                    title="Apply Now"
-                  >
-                    Ứng tuyển ngay
-                  </button>
-
-                  <button
-                    onClick={toggleSaveJob}
-                    className="button save-button"
-                    title={jobDetails.isSaved ? "Unsave" : "Save"}
-                  >
+                  <button className="button apply-button" title="Apply Now">Ứng tuyển ngay</button>
+                  <button onClick={toggleSaveJob} className="button save-button" title={jobDetails.isSaved ? "Unsave" : "Save"}>
                     <FontAwesomeIcon icon={jobDetails.isSaved ? faTrash : faHeart} /> {jobDetails.isSaved ? "Bỏ lưu" : "Lưu tin"}
                   </button>
-
-                  <button
-                    onClick={() => navigate(`/reportPostJob/${id}`)}
-                    className="button report-button"
-                    title="Report"
-                  >
-                    Báo cáo
-                  </button>
+                  <button onClick={() => navigate(`/reportPostJob/${id}`)} className="button report-button" title="Report">Báo cáo</button>
                 </div>
-
               </div>
             </div>
           </div>

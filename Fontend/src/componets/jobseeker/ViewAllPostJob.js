@@ -7,7 +7,7 @@ import Header from '../common/Header';
 import '../assets/css/style.css'; // Import CSS tùy chỉnh
 import logoImage from "../assets/img/banner-10.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
-import { faHeart, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
+import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
 
 
 
@@ -29,6 +29,8 @@ const JobListing = () => {
   const [jobCategoryId, setJobCategoryId] = useState(0);
   const [sortNumberApplied, setSortNumberApplied] = useState(0);
   const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
+  const [distance, Setdistance] = useState("");
+
 
   const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
@@ -74,13 +76,13 @@ const JobListing = () => {
             pageNumber: currentPage,
             Latitude: userLocation.latitude,
             Longitude: userLocation.longitude,
+            distance: distance==0?"":distance
           },
         });
         if (response.status === 200 && response.data.items) {
           const fetchedJobs = response.data.items || [];
           const jobsWithDistance = fetchedJobs.map(job => ({
             ...job,
-            distance: calculateDistance(userLocation.latitude, userLocation.longitude, job.latitude, job.longitude),
           }));
           setJobs(jobsWithDistance);
           setTotalPages(response.data.totalPages || 0);
@@ -108,7 +110,7 @@ const JobListing = () => {
     if (userLocation.latitude && userLocation.longitude) {
       fetchJobs();
     }
-  }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation]);
+  }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation, distance]);
 
   const generatePagination = (pageNumber, totalPages) => {
     const paginationItems = [];
@@ -169,6 +171,7 @@ const JobListing = () => {
       pageNumber: currentPage,
       Latitude: userLocation.latitude,
       Longitude: userLocation.longitude,
+      distance: distance
     };
 
     // In ra nội dung của params
@@ -185,6 +188,10 @@ const JobListing = () => {
     }
   };
 
+  const ungtuyen = (postId) => {
+    navigate(`/viewJobDetail/${postId}`);
+  };
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
@@ -193,28 +200,6 @@ const JobListing = () => {
     return <div className="error">{error}</div>;
   }
 
-  const handleSaveToggle = (jobId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job.postId === jobId ? { ...job, isSaved: !job.isSaved } : job
-      )
-    );
-  };
-
-  const renderSaveButton = (job) => {
-    return (
-      <button
-        className="btn btn-save"
-        onClick={(e) => {
-          e.stopPropagation();
-          handleSaveToggle(job.postId);
-        }}
-      >
-        <FontAwesomeIcon icon={job.isSaved ? faTrash : faHeart} className="icon-spacing" />
-        {job.isSaved ? 'Bỏ lưu' : 'Lưu tin'}
-      </button>
-    );
-  };
 
   return (
     <>
@@ -230,167 +215,193 @@ const JobListing = () => {
       <section class="brows-job-category">
         <div class="container">
           <div class="row extra-mrg">
-          <div className="search-container">
-                            <form onSubmit={handleSearchSubmit}>
-                                <div className="search-grid">
-                                    {/* Keyword Search */}
-                                    <div className="search-item">
-                                        <input
-                                            type="text"
-                                            className="form-control search-input"
-                                            placeholder="Từ khóa công việc..."
-                                            value={jobKeyword}
-                                            onChange={(e) => setJobKeyword(e.target.value)}
-                                        />
-                                    </div>
-
-                                    {/* Job Category */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={jobCategoryId}
-                                            onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
-                                        >
-                                            <option value="0">Loại công việc</option>
-                                            <option value="1">Hành chính</option>
-                                            <option value="2">Bán hàng & Tiếp thị</option>
-                                            <option value="3">Dịch vụ khách hàng</option>
-                                            <option value="4">Nhân viên sự kiện</option>
-                                            <option value="5">Nhà hàng, khách sạn</option>
-                                            <option value="6">Bán lẻ</option>
-                                            <option value="7">Hậu cần & Giao hàng</option>
-                                            <option value="8">Lao động chân tay</option>
-                                            <option value="9">Sáng tạo & Truyền thông</option>
-                                            <option value="10">Hỗ trợ kỹ thuật</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Salary Type */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={salaryTypesId}
-                                            onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
-                                        >
-                                            <option value="0">Tất cả các loại trả lương</option>
-                                            <option value="1">Theo giờ</option>
-                                            <option value="2">Theo ngày</option>
-                                            <option value="3">Theo công việc</option>
-                                            <option value="4">Theo tuần</option>
-                                            <option value="5">Theo tháng</option>
-                                            <option value="6">Lương cố định</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Salary Range */}
-                                    <div className="search-item">
-                                        <input
-                                            type="number"
-                                            className="form-control search-input"
-                                            placeholder="Lương tối thiểu"
-                                            value={rangeSalaryMin}
-                                            onChange={(e) => setRangeSalaryMin(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="search-item">
-                                        <input
-                                            type="number"
-                                            className="form-control search-input"
-                                            placeholder="Lương tối đa"
-                                            value={rangeSalaryMax}
-                                            onChange={(e) => setRangeSalaryMax(e.target.value)}
-                                        />
-                                    </div>
-
-                                    {/* Urgent Recruitment */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={isUrgentRecruitment}
-                                            onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
-                                        >
-                                            <option value="-1">Tất cả</option>
-                                            <option value="1">Tuyển gấp</option>
-                                            <option value="0">Không tuyển gấp</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Sort By */}
-                                    <div className="search-item">
-                                        <select
-                                            className="form-control search-input"
-                                            value={sortNumberApplied}
-                                            onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
-                                        >
-                                            <option value="0">Xắp xếp theo số người ứng tuyển</option>
-                                            <option value="1">Ứng tuyển tăng dần</option>
-                                            <option value="-1">Ứng tuyển giảm dần</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Search Button */}
-                                    <div className="search-item">
-                                        <button type="submit" className="btn search-btn">
-                                            <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-          {Notfoundjob ? (<div className="not-found-message">
-            <p>{Notfound}</p>
-          </div>) : (jobs.map((job) => (
-            <div class="item-click" key={job.postId}
-              onClick={() => handleJobClick(job.postId)}>
-              <article>
-                <div class="brows-job-list">
-                  <div class="col-md-1 col-sm-2 small-padding">
-                    <div class="brows-job-company-img" style={{ backgroundColor: "white" }}>
-                      <a href=""><img style={{ width: "100px" }} src={job.thumbnail} class="img-responsive" alt="" /></a>
-                    </div>
+            <div className="search-container">
+              <form onSubmit={handleSearchSubmit}>
+                <div className="search-grid">
+                  {/* Keyword Search */}
+                  <div className="search-item">
+                    <input
+                      type="text"
+                      className="form-control search-input"
+                      placeholder="Từ khóa công việc..."
+                      value={jobKeyword}
+                      onChange={(e) => setJobKeyword(e.target.value)}
+                    />
                   </div>
-                  <div class="col-md-6 col-sm-5">
-                    <div class="brows-job-position">
-                      <a href=""><h3>{job.jobTitle}</h3></a>
-                      <p>
-                        <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
-                        <span class="job-type cl-success bg-trans-success">Full Time</span>
-                      </p>
-                      <p>
-                        <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
 
-                        <span class="job-type cl-success bg-trans-success">Cách bạn: {job.distance} km</span>
-                      </p>
-                    </div>
+                  {/* Job Category */}
+                  <div className="search-item">
+                    <select
+                      className="form-control search-input"
+                      value={jobCategoryId}
+                      onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
+                    >
+                      <option value="0">Loại công việc</option>
+                      <option value="1">Hành chính</option>
+                      <option value="2">Bán hàng & Tiếp thị</option>
+                      <option value="3">Dịch vụ khách hàng</option>
+                      <option value="4">Nhân viên sự kiện</option>
+                      <option value="5">Nhà hàng, khách sạn</option>
+                      <option value="6">Bán lẻ</option>
+                      <option value="7">Hậu cần & Giao hàng</option>
+                      <option value="8">Lao động chân tay</option>
+                      <option value="9">Sáng tạo & Truyền thông</option>
+                      <option value="10">Hỗ trợ kỹ thuật</option>
+                    </select>
                   </div>
-                  <div class="col-md-3 col-sm-3">
-                    <div class="brows-job-location">
-                      <p><i class="fa fa-map-marker"></i>{job.address}</p>
-                    </div>
+
+                  {/* Salary Type */}
+                  <div className="search-item">
+                    <select
+                      className="form-control search-input"
+                      value={salaryTypesId}
+                      onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
+                    >
+                      <option value="0">Tất cả các loại trả lương</option>
+                      <option value="1">Theo giờ</option>
+                      <option value="2">Theo ngày</option>
+                      <option value="3">Theo công việc</option>
+                      <option value="4">Theo tuần</option>
+                      <option value="5">Theo tháng</option>
+                      <option value="6">Lương cố định</option>
+                    </select>
                   </div>
-                  <div className="col-md-2 col-sm-2">
-                    <div className="brows-job-link">
-                    <a href="" className="btn btn-apply" onClick={(e) => e.stopPropagation()}>Ứng tuyển ngay</a>
-                          <div className="save-button-container">
-                            {renderSaveButton(job)}
-                          </div>
-                    </div>
+
+                  {/* Salary Range */}
+                  <div className="search-item">
+                    <input
+                      type="number"
+                      className="form-control search-input"
+                      placeholder="Lương tối thiểu"
+                      value={rangeSalaryMin}
+                      onChange={(e) => setRangeSalaryMin(e.target.value)}
+                    />
+                  </div>
+                  <div className="search-item">
+                    <input
+                      type="number"
+                      className="form-control search-input"
+                      placeholder="Lương tối đa"
+                      value={rangeSalaryMax}
+                      onChange={(e) => setRangeSalaryMax(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Urgent Recruitment */}
+                  <div className="search-item">
+                    <select
+                      className="form-control search-input"
+                      value={isUrgentRecruitment}
+                      onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
+                    >
+                      <option value="-1">Tất cả</option>
+                      <option value="1">Tuyển gấp</option>
+                      <option value="0">Không tuyển gấp</option>
+                    </select>
+                  </div>
+
+                  {/* Sort By */}
+                  <div className="search-item">
+                    <select
+                      className="form-control search-input"
+                      value={sortNumberApplied}
+                      onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
+                    >
+                      <option value="0">Xắp xếp theo số người ứng tuyển</option>
+                      <option value="1">Ứng tuyển tăng dần</option>
+                      <option value="-1">Ứng tuyển giảm dần</option>
+                    </select>
+                  </div>
+
+                  <div className="search-item">
+                    <input
+                      type="number"
+                      className="form-control search-input"
+                      placeholder="Khoảng cách bạn mong muốn"
+                      value={distance}
+                      onChange={(e) => Setdistance(e.target.value)}
+                      min="0"
+                      step="0.5" // Giới hạn chỉ cho số nguyên
+                    />
+                  </div>
+
+
+                  {/* Search Button */}
+                  <div className="search-item">
+                    <button type="submit" className="btn search-btn">
+                      <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
+                    </button>
                   </div>
                 </div>
-                {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
-              </article>
+              </form>
             </div>
-          )))}
+            {Notfoundjob ? (<div className="not-found-message">
+              <p>{Notfound}</p>
+            </div>) : (jobs.map((job) => (
+              <div class="item-click" key={job.postId}
+                onClick={() => handleJobClick(job.postId)}>
+                <article>
+                  <div class="brows-job-list">
+                    <div class="col-md-1 col-sm-2 small-padding">
+                      <div class="brows-job-company-img" style={{ backgroundColor: "white" }}>
+                        <a href=""><img style={{ width: "100px" }} src={job.thumbnail} class="img-responsive" alt="" /></a>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-5">
+                      <div class="brows-job-position">
+                        <a href=""><h3>{job.jobTitle}</h3></a>
+                        <p>
+                          <span >{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
+                        </p>
+                        <p>
+                          <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
+
+                          <span class="job-type cl-success bg-trans-success">Cách bạn: {job.distance} km</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                      <div class="brows-job-location">
+                        <p><i class="fa fa-map-marker"></i>{job.address}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-2 col-sm-2">
+                      <div className="brows-job-link">
+                        <a href="" className="btn btn-apply"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Ngăn sự kiện onClick của item-click
+                          }}>
+                          Ứng tuyển ngay
+                        </a>
+                        <div className="save-button-container">
+                          <button
+                            className="btn btn-save"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faHeart} className="icon-spacing" />
+                            Lưu tin
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
+                </article>
+              </div>
+            )))}
 
 
 
 
-          <div class="row">
-            <ul class="pagination">
-              {generatePagination(pageNumber, totalPages)}
-            </ul>
+            <div class="row">
+              <ul class="pagination">
+                {generatePagination(pageNumber, totalPages)}
+              </ul>
+            </div>
           </div>
-        </div>
         </div>
       </section >
       <Footer />
