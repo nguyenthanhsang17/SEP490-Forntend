@@ -61,7 +61,7 @@ const ViewAllPostJobInWishlist = () => {
         const fetchJobs = async () => {
 
             try {
-                const response = await axios.get('https://localhost:7077/api/PostJobs', {
+                const response = await axios.get('https://localhost:7077/api/WishJobs/getAllWishListJob', {
                     params: {
                         JobKeyWord: jobKeyword,
                         SalaryTypesId: salaryTypesId,

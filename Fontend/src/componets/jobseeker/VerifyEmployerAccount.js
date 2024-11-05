@@ -60,7 +60,7 @@ function VerifyEmployerAccount() {
         alert('Yêu cầu của bạn đã được gửi!');
         navigate('/');
       } else {
-        setErrorMessage('Có lỗi xảy ra khi gửi yêu cầu xác thực.');
+        setErrorMessage('Đã đăng ký để trở thành nhà tuyển dụng, đợi duyệt.');
       }
     } catch (error) {
       setErrorMessage('Có lỗi xảy ra khi kết nối với máy chủ.');
