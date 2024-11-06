@@ -20,9 +20,16 @@ function ViewJobDetail() {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
+      const token = localStorage.getItem("token");
+      console.log("Token:", token); // Kiểm tra giá trị token // Lấy token từ localStorage hoặc cách khác
       try {
-        const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`);
+        const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}` // Thêm token vào header
+          }
+        });
         setJobDetails(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
         setError("Không thể tải chi tiết công việc. Vui lòng thử lại sau.");
@@ -38,36 +45,35 @@ function ViewJobDetail() {
     if (jobDetails) {
       try {
         const token = localStorage.getItem('token'); // Ensure token is correctly retrieved
-  
+
         if (!token) {
-          throw new Error("Authorization token not found. Please log in.");
+          navigate("/login");
         }
-  
-        const url = jobDetails.isSaved
-          ? `https://localhost:7077/api/WishJobs/DeleteWishJob`
-          : 'https://localhost:7077/api/WishJobs/AddWishJob';
-  
+
+        const url ='https://localhost:7077/api/WishJobs/AddWishJob';
+
         const headers = {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json-patch+json',
         };
-  
+
         const data = { postJobId: id };
-  
+
         // Log the data being sent to verify its structure
         console.log("Requesting URL:", url);
         console.log("Headers:", headers);
         console.log("Data:", data);
-  
+
         await axios.post(url, data, { headers });
-        setJobDetails((prevDetails) => ({ ...prevDetails, isSaved: !prevDetails.isSaved }));
+        setJobDetails((prevDetails) => ({ ...prevDetails, isWishJob: true }));
       } catch (error) {
         console.error("Error toggling save status:", error);
         setError("Không thể cập nhật trạng thái lưu. Vui lòng thử lại sau.");
       }
     }
   };
-  
+
+
 
   if (loading) {
     return <div style={styles.loading}>Loading...</div>;
@@ -234,9 +240,13 @@ function ViewJobDetail() {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   <button className="button apply-button" title="Apply Now">Ứng tuyển ngay</button>
-                  <button onClick={toggleSaveJob} className="button save-button" title={jobDetails.isSaved ? "Unsave" : "Save"}>
-                    <FontAwesomeIcon icon={jobDetails.isSaved ? faTrash : faHeart} /> {jobDetails.isSaved ? "Bỏ lưu" : "Lưu tin"}
-                  </button>
+                  {jobDetails.isWishJob ? (<button className="button save-button">
+                    <FontAwesomeIcon style={{color: "#ff6666"}} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
+                  </button>) : (<button onClick={toggleSaveJob} className="button save-button">
+                    <FontAwesomeIcon  icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
+                  </button>)}
+                  
+
                   <button onClick={() => navigate(`/reportPostJob/${id}`)} className="button report-button" title="Report">Báo cáo</button>
                 </div>
               </div>
