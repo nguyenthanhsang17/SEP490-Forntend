@@ -18,6 +18,7 @@ function ViewAllJobSeekerApply() {
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchJobSeekers = async () => {
+    console.log("Job ID:", id);  
     try {
       const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetAllJobseekerApply/${id}`, {
         params: {

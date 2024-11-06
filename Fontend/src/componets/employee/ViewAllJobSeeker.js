@@ -10,93 +10,66 @@ const MemberCard = () => {
     <>
       <Header />
       <div className="clearfix"></div>
-      <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
-        <div className="container">
-          <h1>Tất Cả Ứng Viên</h1>
-        </div>
-      </section>
-
+      
       <section className="member-card gray">
         <div className="container">
-          <div className="row">
-            <div className="col-md-12 col-sm-12">
-              <div className="search-filter">
-                <div className="col-md-4 col-sm-5">
-                  <div className="filter-form">
-                    <div className="input-group">
-                      <input type="text" className="form-control" placeholder="Search…" />
-                      <span className="input-group-btn">
-                        <button type="button" className="btn btn-default">Go</button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-8 col-sm-7">
-                  <div className="short-by pull-right">
-                    Short By
-                    <div className="dropdown">
-                      <a href="#" className="dropdown-toggle" data-toggle="dropdown">Dropdown <i className="fa fa-angle-down" aria-hidden="true" /></a>
-                      <ul className="dropdown-menu">
-                        <li><a href="#">Short By Date</a></li>
-                        <li><a href="#">Short By Views</a></li>
-                        <li><a href="#">Short By Popular</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <h1 className="text-center">Tất Cả Ứng Viên</h1>
+
+          {/* Search Filters */}
+          <div className="search-filter row">
+            <div className="col-md-3 col-sm-6">
+              <select className="form-control">
+                <option>Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+            <div className="col-md-3 col-sm-6">
+              <input type="text" className="form-control" placeholder="Enter Age" />
+            </div>
+            <div className="col-md-3 col-sm-6">
+              <select className="form-control">
+                <option>Current Job</option>
+                <option>Designer</option>
+                <option>Developer</option>
+                <option>Manager</option>
+              </select>
+            </div>
+            <div className="col-md-3 col-sm-6">
+              <select className="form-control">
+                <option>Status</option>
+                <option>Available</option>
+                <option>Pending</option>
+              </select>
+            </div>
+            <div className="col-md-12 text-center mt-3">
+              <button type="button" className="btn btn-success">Search</button>
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-md-4 col-sm-4">
-              <div className="manage-cndt">
-                <div className="cndt-status pending">Pending</div>
-                <div className="cndt-caption">
-                  <div className="cndt-pic">
-                    <img src="assets/img/client-1.jpg" className="img-responsive" alt="" />
+          {/* Candidate Cards */}
+          <div className="row mt-4">
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="col-md-4 col-sm-6 mb-4">
+                <div className="manage-cndt">
+                  <div className="cndt-caption text-center">
+                    <div className="cndt-pic">
+                      <img src="https://via.placeholder.com/100" className="img-responsive" alt="Avatar" />
+                    </div>
+                    <h4>Name: Mr. A</h4>
+                    <p>Age: 22</p>
+                    <p>Current Job: XXX</p>
+                    <p>Gender: Male</p>
+                    <button className="btn btn-info mt-2">View Detail</button>
                   </div>
-                  <h4>Charles Hopman</h4>
-                  <span>Web designer</span>
-                  <p>Our analysis team at Megriosft use end to end innovation process.</p>
                 </div>
-                <a href="#" title="" className="cndt-profile-btn">View Profile</a>
               </div>
-            </div>
-
-            <div className="col-md-4 col-sm-4">
-              <div className="manage-cndt">
-                <div className="cndt-status available">Available</div>
-                <div className="cndt-caption">
-                  <div className="cndt-pic">
-                    <img src="assets/img/client-2.jpg" className="img-responsive" alt="" />
-                  </div>
-                  <h4>Ethan Marion</h4>
-                  <span>IOS designer</span>
-                  <p>Our analysis team at Megriosft use end to end innovation process.</p>
-                </div>
-                <a href="#" title="" className="cndt-profile-btn">View Profile</a>
-              </div>
-            </div>
-
-            <div className="col-md-4 col-sm-4">
-              <div className="manage-cndt">
-                <div className="cndt-status pending">Pending</div>
-                <div className="cndt-caption">
-                  <div className="cndt-pic">
-                    <img src="assets/img/client-3.jpg" className="img-responsive" alt="" />
-                  </div>
-                  <h4>Zara Clow</h4>
-                  <span>UI/UX designer</span>
-                  <p>Our analysis team at Megriosft use end to end innovation process.</p>
-                </div>
-                <a href="#" title="" className="cndt-profile-btn">View Profile</a>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
-      <Footer/>
+      
+      <Footer />
     </>
   );
 };

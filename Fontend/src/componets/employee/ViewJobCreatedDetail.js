@@ -235,7 +235,7 @@ const getStatusLabel = (status) => {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   <a href="#" className="footer-btn grn-btn" title="">Chỉnh sửa bài đăng</a>
-                  <a href="#" className="footer-btn blu-btn" title="">Danh sách ứng viên đã ứng tuyển</a>
+                  <a href={`/ViewAllJobseekerApply/${id}`} className="footer-btn blu-btn" title="">Danh sách ứng viên đã ứng tuyển</a>
                 </div>
               </div>
             </div>

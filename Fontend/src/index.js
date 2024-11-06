@@ -12,9 +12,9 @@ import ForgotPassword from './componets/accounts/ForgotPassword';
 import HomePage from './componets/common/HomePage';
 import ViewJobDetail from './componets/jobseeker/ViewJobDetail';
 import CreatePostJob from './componets/employee/CreatePostJob';
-import ViewAllJobApplied from './componets/jobseeker/View_All_Job_Applied';
-import ViewAllJobSeekerApply from './componets/jobseeker/View_All_Jobseeker_Apply';
-import ViewJobSeekerDetail from './componets/jobseeker/View_JobSeeker_Detail';
+import ViewAllJobApplied from './componets/employee/View_All_Job_Applied';
+import ViewAllJobSeekerApply from './componets/employee/View_All_Jobseeker_Apply';
+import ViewJobSeekerDetail from './componets/employee/View_JobSeeker_Detail';
 import ViewJobCreatedDetail from './componets/employee/ViewJobCreatedDetail';
 import ViewListJobsCreated from './componets/employee/ViewListJobsCreated';
 import Profile from './componets/accounts/Profile';
@@ -25,10 +25,12 @@ import ScheduleTable from './componets/jobseeker/ScheduleTable';
 import MemberCard from './componets/employee/ViewAllJobSeeker';
 import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
 import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWishlist';
-
+import ViewAllJobSeekerInFavoriteList from './componets/employee/ViewAllJobSeekerInFavoriteList'
+import ReportPostJob from './componets/jobseeker/ReportPostJob'
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
+import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -74,6 +76,10 @@ root.render(
             path="/viewJobCreatedDetail/:id"
             element={<PrivateRoute allowedRoles={["2"]}><ViewJobCreatedDetail /></PrivateRoute>}
           />
+           <Route
+            path="/viewDetailJobSeeker/:id"
+            element={<PrivateRoute allowedRoles={["2"]}><ViewJobDetailJobSeeker /></PrivateRoute>}
+          />
           <Route
             path="/viewAllJobSeeker"
             element={<PrivateRoute allowedRoles={["2"]}><MemberCard /></PrivateRoute>}
@@ -92,6 +98,8 @@ root.render(
           />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
+          <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
+          <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
