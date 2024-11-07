@@ -67,71 +67,65 @@ function ViewJobCreatedDetail() {
 
   const GenerateSlotDTOs = ({ slotDTOs }) => {
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
-    
-    // Định nghĩa thời gian cho từng ca
+
+    // Định nghĩa các ca làm việc
     const shiftTimes = {
       1: "08:00 - 12:00",
       2: "13:00 - 17:00",
-      3: "17:30 - 21:30",  // Ví dụ cho Ca 3, có thể điều chỉnh theo yêu cầu
-      4: "22:00 - 02:00",  // Ví dụ cho Ca 4
-      // Thêm ca khác nếu cần
+      3: "17:30 - 21:30",
+      4: "22:00 - 02:00",
     };
-  
-    // Hàm trợ giúp để tìm lịch làm việc cho từng ngày và từng ca
-    const findSchedule = (slot, day) => {
-      return slot.jobScheduleDTOs.find(
-        (schedule) => getDayOfWeek(schedule.dayOfWeek) === day
-      );
+
+    const getWorkingHoursForDayAndShift = (dayOfWeek, shiftStartTime) => {
+      // Tìm slot có chứa lịch làm việc cho ngày cụ thể
+      const scheduleForDay = slotDTOs
+        .flatMap(slot => slot.jobScheduleDTOs)
+        .find(schedule => schedule.dayOfWeek === dayOfWeek);
+
+      if (!scheduleForDay) return null; // Nếu không tìm thấy lịch cho ngày này, trả về null
+
+      // Lấy danh sách các giờ làm việc cho ca hiện tại (khớp với thời gian bắt đầu của ca)
+      const workingHours = scheduleForDay.workingHourDTOs
+        .filter(hour => hour.startTime.startsWith(shiftStartTime))
+        .map(hour => `${hour.startTime} - ${hour.endTime}`);
+
+      return workingHours.length > 0 ? workingHours : null;
     };
-  
+
     return (
       <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ backgroundColor: "#e0e0e0" }}>
-              <th style={tableStyles.header}>Ca</th>
+              <th style={tableStyles.header}>Ca làm việc</th>
               {daysOfWeek.map((day, index) => (
                 <th key={index} style={tableStyles.header}>{day}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {slotDTOs.map((slot, index) => (
-              <tr key={slot.slotId} style={tableStyles.row}>
-                <td style={tableStyles.cell}>Ca {index + 1} ({shiftTimes[index + 1] || "Không xác định"})</td>
-                {daysOfWeek.map((day) => {
-                  const schedule = findSchedule(slot, day);
-                  return (
-                    <td key={day} style={tableStyles.cell}>
-                      {schedule ? (
-                        shiftTimes[index + 1] || "Không xác định"
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+            {Object.entries(shiftTimes).map(([shift, time]) => {
+              const [shiftStartTime] = time.split(" - "); // Lấy thời gian bắt đầu của ca
+              return (
+                <tr key={shift} style={tableStyles.row}>
+                  <td style={tableStyles.cell}>Ca {shift} </td>
+                  {daysOfWeek.map((day, dayIndex) => {
+                    const workingHours = getWorkingHoursForDayAndShift(dayIndex + 2, shiftStartTime);
+                    return (
+                      <td key={dayIndex} style={tableStyles.cell}>
+                        {workingHours ? workingHours.join(", ") : "-"}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
     );
   };
   
-  // Hàm chuyển đổi dayOfWeek thành ngày trong tuần tiếng Việt
-  const getDayOfWeek = (dayOfWeek) => {
-    const days = {
-      2: 'Thứ 2',
-      3: 'Thứ 3',
-      4: 'Thứ 4',
-      5: 'Thứ 5',
-      6: 'Thứ 6',
-      7: 'Thứ 7',
-      8: 'Chủ Nhật',
-    };
-    return days[dayOfWeek] || 'Không xác định';
-  };
   
   // Định nghĩa ánh xạ trạng thái
   const statusLabels = {
@@ -283,7 +277,6 @@ const getStatusLabel = (status) => {
           )}
         </div>
       </section>
-
       <Footer />
     </>
   );

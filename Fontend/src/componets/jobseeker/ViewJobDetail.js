@@ -50,7 +50,7 @@ function ViewJobDetail() {
           navigate("/login");
         }
 
-        const url ='https://localhost:7077/api/WishJobs/AddWishJob';
+        const url = 'https://localhost:7077/api/WishJobs/AddWishJob';
 
         const headers = {
           Authorization: `Bearer ${token}`,
@@ -111,7 +111,8 @@ function ViewJobDetail() {
 
   const GenerateSlotDTOs = ({ slotDTOs }) => {
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
-    
+
+    // Định nghĩa các ca làm việc
     const shiftTimes = {
       1: "08:00 - 12:00",
       2: "13:00 - 17:00",
@@ -119,58 +120,54 @@ function ViewJobDetail() {
       4: "22:00 - 02:00",
     };
 
-    const findSchedule = (slot, day) => {
-      return slot.jobScheduleDTOs.find(
-        (schedule) => getDayOfWeek(schedule.dayOfWeek) === day
-      );
+    const getWorkingHoursForDayAndShift = (dayOfWeek, shiftStartTime) => {
+      // Tìm slot có chứa lịch làm việc cho ngày cụ thể
+      const scheduleForDay = slotDTOs
+        .flatMap(slot => slot.jobScheduleDTOs)
+        .find(schedule => schedule.dayOfWeek === dayOfWeek);
+
+      if (!scheduleForDay) return null; // Nếu không tìm thấy lịch cho ngày này, trả về null
+
+      // Lấy danh sách các giờ làm việc cho ca hiện tại (khớp với thời gian bắt đầu của ca)
+      const workingHours = scheduleForDay.workingHourDTOs
+        .filter(hour => hour.startTime.startsWith(shiftStartTime))
+        .map(hour => `${hour.startTime} - ${hour.endTime}`);
+
+      return workingHours.length > 0 ? workingHours : null;
     };
 
     return (
       <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#e0e0e0" }}>
-            <th style={tableStyles.header}>Ca</th>
-            {daysOfWeek.map((day, index) => (
-              <th key={index} style={tableStyles.header}>{day}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(shiftTimes).map(([shift, time], index) => (
-            <tr key={shift} style={tableStyles.row}>
-              <td style={tableStyles.cell}>Ca {shift} ({time})</td>
-              {daysOfWeek.map((day, dayIndex) => {
-                const slot = slotDTOs.find(
-                  (slot) =>
-                    slot.shift === parseInt(shift) &&
-                    getDayOfWeek(slot.dayOfWeek) === day
-                );
-                return (
-                  <td key={dayIndex} style={tableStyles.cell}>
-                    {slot ? time : "-"}
-                  </td>
-                );
-              })}
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ backgroundColor: "#e0e0e0" }}>
+              <th style={tableStyles.header}>Ca làm việc</th>
+              {daysOfWeek.map((day, index) => (
+                <th key={index} style={tableStyles.header}>{day}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {Object.entries(shiftTimes).map(([shift, time]) => {
+              const [shiftStartTime] = time.split(" - "); // Lấy thời gian bắt đầu của ca
+              return (
+                <tr key={shift} style={tableStyles.row}>
+                  <td style={tableStyles.cell}>Ca {shift} </td>
+                  {daysOfWeek.map((day, dayIndex) => {
+                    const workingHours = getWorkingHoursForDayAndShift(dayIndex + 2, shiftStartTime);
+                    return (
+                      <td key={dayIndex} style={tableStyles.cell}>
+                        {workingHours ? workingHours.join(", ") : "-"}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     );
-  };
-
-  const getDayOfWeek = (dayOfWeek) => {
-    const days = {
-      2: 'Thứ 2',
-      3: 'Thứ 3',
-      4: 'Thứ 4',
-      5: 'Thứ 5',
-      6: 'Thứ 6',
-      7: 'Thứ 7',
-      8: 'Chủ Nhật',
-    };
-    return days[dayOfWeek] || 'Không xác định';
   };
 
   const salaryTypeMap = {
@@ -241,11 +238,11 @@ function ViewJobDetail() {
                 <div className="detail-pannel-footer-btn pull-right">
                   <button className="button apply-button" title="Apply Now">Ứng tuyển ngay</button>
                   {jobDetails.isWishJob ? (<button className="button save-button">
-                    <FontAwesomeIcon style={{color: "#ff6666"}} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
+                    <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
                   </button>) : (<button onClick={toggleSaveJob} className="button save-button">
-                    <FontAwesomeIcon  icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
+                    <FontAwesomeIcon icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
                   </button>)}
-                  
+
 
                   <button onClick={() => navigate(`/reportPostJob/${id}`)} className="button report-button" title="Report">Báo cáo</button>
                 </div>
@@ -295,6 +292,9 @@ function ViewJobDetail() {
           )}
         </div>
       </section>
+
+
+
 
       <Footer />
     </>
