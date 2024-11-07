@@ -49,8 +49,8 @@ root.render(
           <Route path="/VerifyRegister" element={<VerifyRegister />} />
           <Route path="/viewAllJob" element={<PostJobs />} />
           <Route path="/lich" element={<ScheduleTable />} />
-          <Route path='/ViewAllPost' element={<ViewAllPostJob />} />
-          <Route path='/ViewDetail/:job_id/:status' element={<PostJobDetail />} />
+          {/* <Route path='/ViewAllPost' element={<ViewAllPostJob />} />
+          <Route path='/ViewDetail/:job_id/:status' element={<PostJobDetail />} /> */}
           <Route
             path="/viewJobDetail/:id"
             element={<ViewJobDetail />}
@@ -58,12 +58,22 @@ root.render(
           {/* Job Seeker-Only Routes */}
           
           <Route
+            path="/ViewAllPost"
+            element={<PrivateRoute allowedRoles={["3,4"]}><ViewAllPostJob /></PrivateRoute>}
+          />
+
+          <Route
+            path="/ViewDetail/:job_id/:status"
+            element={<PrivateRoute allowedRoles={["3,4"]}><PostJobDetail /></PrivateRoute>}
+          />
+
+          <Route
             path="/ViewAllJobApplied"
-            element={<PrivateRoute allowedRoles={["1"]}><ViewAllJobApplied /></PrivateRoute>}
+            element={<PrivateRoute allowedRoles={["1,2"]}><ViewAllJobApplied /></PrivateRoute>}
           />
           <Route
             path="/ApplyJob/:job_id"
-            element={<PrivateRoute allowedRoles={["1"]}><ApplyJob /></PrivateRoute>}
+            element={<PrivateRoute allowedRoles={["1,2"]}><ApplyJob /></PrivateRoute>}
           />
 
           {/* Employer-Only Routes */}
