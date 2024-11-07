@@ -8,6 +8,7 @@ import '../assets/css/style.css'; // Import CSS tùy chỉnh
 import logoImage from "../assets/img/banner-10.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
 import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
+import { useSnackbar } from 'notistack'; // Import useSnackbar
 
 
 
@@ -30,6 +31,8 @@ const JobListing = () => {
   const [sortNumberApplied, setSortNumberApplied] = useState(0);
   const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
   const [distance, Setdistance] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const [savedJobs, setSavedJobs] = useState({});
 
 
   const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
@@ -60,23 +63,34 @@ const JobListing = () => {
   }, []);
 
   useEffect(() => {
-    const fetchJobs = async () => {
+    const initialSavedJobs = {};
+    jobs.forEach(job => {
+      if (job.isWishlist === 1) {
+        initialSavedJobs[job.postId] = true;
+      }
+    });
+    setSavedJobs(initialSavedJobs);
+  }, [jobs]); 
 
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const token = localStorage.getItem("token");
+      console.log("Token:", token); // Kiểm tra giá trị token
       try {
         const response = await axios.get('https://localhost:7077/api/PostJobs', {
+          headers: {
+            Authorization: `Bearer ${token}`,  // Thêm token vào header
+          },
           params: {
             JobKeyWord: jobKeyword,
             SalaryTypesId: salaryTypesId,
-            RangeSalaryMin: rangeSalaryMin,
-            RangeSalaryMax: rangeSalaryMax,
             Address: address,
             JobCategoryId: jobCategoryId,
             SortNumberApplied: sortNumberApplied,
-            IsUrgentRecruitment: isUrgentRecruitment,
             pageNumber: currentPage,
             Latitude: userLocation.latitude,
             Longitude: userLocation.longitude,
-            distance: distance==0?"":distance
+            distance: distance == 0 ? "" : distance
           },
         });
         if (response.status === 200 && response.data.items) {
@@ -162,12 +176,9 @@ const JobListing = () => {
     const params = {
       JobKeyWord: jobKeyword,
       SalaryTypesId: salaryTypesId,
-      RangeSalaryMin: rangeSalaryMin,
-      RangeSalaryMax: rangeSalaryMax,
       Address: address,
       JobCategoryId: jobCategoryId,
       SortNumberApplied: sortNumberApplied,
-      IsUrgentRecruitment: isUrgentRecruitment,
       pageNumber: currentPage,
       Latitude: userLocation.latitude,
       Longitude: userLocation.longitude,
@@ -177,6 +188,44 @@ const JobListing = () => {
     // In ra nội dung của params
     console.log(params);
   };
+
+  const addwishlist = async (postJobId) => {
+    const token = localStorage.getItem("token");
+    console.log("Token:", token); // Kiểm tra giá trị token // Lấy token từ localStorage hoặc cách khác
+
+    if (!token) {
+      navigate("/login");
+    }
+
+    const data = {
+      PostJobId: postJobId,  // Dữ liệu cần gửi
+    };
+
+    console.log(data);
+
+    try {
+      const response = await axios.post(
+        'https://localhost:7077/api/WishJobs/AddWishJob',  // Địa chỉ API
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        }
+      );
+
+      // Xử lý kết quả trả về
+      if (response.status === 200) {
+        console.log(response.data.Message); // "Thêm công việc vào mục yêu thích"
+        enqueueSnackbar("đã thêm việc làm đã lưu, Vui lòng truy cập Công việc đã lưu", { variant: 'success' });
+        setSavedJobs(prev => ({ ...prev, [postJobId]: true }));
+      }
+    } catch (error) {
+      console.error("Lỗi khi gọi API:", error.response?.data?.Message || error.message);
+    }
+  }
+
 
   const handleJobClick = (postId) => {
     navigate(`/viewJobDetail/${postId}`);
@@ -267,39 +316,6 @@ const JobListing = () => {
                     </select>
                   </div>
 
-                  {/* Salary Range */}
-                  <div className="search-item">
-                    <input
-                      type="number"
-                      className="form-control search-input"
-                      placeholder="Lương tối thiểu"
-                      value={rangeSalaryMin}
-                      onChange={(e) => setRangeSalaryMin(e.target.value)}
-                    />
-                  </div>
-                  <div className="search-item">
-                    <input
-                      type="number"
-                      className="form-control search-input"
-                      placeholder="Lương tối đa"
-                      value={rangeSalaryMax}
-                      onChange={(e) => setRangeSalaryMax(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Urgent Recruitment */}
-                  <div className="search-item">
-                    <select
-                      className="form-control search-input"
-                      value={isUrgentRecruitment}
-                      onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
-                    >
-                      <option value="-1">Tất cả</option>
-                      <option value="1">Tuyển gấp</option>
-                      <option value="0">Không tuyển gấp</option>
-                    </select>
-                  </div>
-
                   {/* Sort By */}
                   <div className="search-item">
                     <select
@@ -324,8 +340,6 @@ const JobListing = () => {
                       step="0.5" // Giới hạn chỉ cho số nguyên
                     />
                   </div>
-
-
                   {/* Search Button */}
                   <div className="search-item">
                     <button type="submit" className="btn search-btn">
@@ -375,15 +389,29 @@ const JobListing = () => {
                           Ứng tuyển ngay
                         </a>
                         <div className="save-button-container">
-                          <button
+                          {savedJobs[job.postId]||job.isWishlist === 1 ? (<button
                             className="btn btn-save"
                             onClick={(e) => {
                               e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                              
                             }}
                           >
-                            <FontAwesomeIcon icon={faHeart} className="icon-spacing" />
-                            Lưu tin
-                          </button>
+                            <FontAwesomeIcon icon={faHeart} className="icon-spacing" style={{ color: 'red' }} />
+                            Đã Lưu
+                          </button>) : (
+                            <button
+                              className="btn btn-save"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                                addwishlist(job.postId);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faHeart} className="icon-spacing" style={{ color: 'gray' }} />
+                              Lưu Tin
+                            </button>
+                          )
+
+                          }
                         </div>
                       </div>
                     </div>
