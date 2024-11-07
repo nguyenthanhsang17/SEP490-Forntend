@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
@@ -9,6 +10,7 @@ import Footer from '../common/Footer';
 const MemberCard = () => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // State for filter inputs
   const [keyword, setKeyword] = useState("");
@@ -48,13 +50,17 @@ const MemberCard = () => {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.error("Unauthorized: Please log in again.");
-        // Optional: Redirect to login page or show a notification
       } else {
         console.error("Error fetching candidates:", error);
       }
     } finally {
       setLoading(false);
     }
+  };
+
+  // Navigate to candidate detail page
+  const handleViewDetail = (id) => {
+    navigate(`/viewDetailJobSeeker/${id}`);
   };
 
   // Initial fetch when component mounts
@@ -65,12 +71,14 @@ const MemberCard = () => {
   return (
     <>
       <Header />
-      <div className="clearfix"></div>
-      
+         <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
+        <div className="container">
+          <h1>Tất Cả Ứng Viên</h1>
+        </div>
+      </section>
+    
       <section className="member-card gray">
         <div className="container">
-          <h1 className="text-center">Tất Cả Ứng Viên</h1>
-
           {/* Search Filters */}
           <div className="search-filter row">
             <div className="col-md-3 col-sm-6">
@@ -157,9 +165,19 @@ const MemberCard = () => {
                         </div>
                         <h4>Name: {candidate.fullName}</h4>
                         <p>Age: {candidate.age}</p>
+                        <p>Phone: {candidate.phonenumber}</p>
+                        <p>Address: {candidate.address}</p>
                         <p>Current Job: {candidate.currentJob}</p>
                         <p>Gender: {candidate.gender ? "Male" : "Female"}</p>
-                        <button className="btn btn-info mt-2">View Detail</button>
+                        <p>Applied: {candidate.numberApplied}</p>
+                        <p>Accepted Applications: {candidate.numberAppliedAccept}</p>
+                        <p>Favorite: {candidate.isFavorite ? "Yes" : "No"}</p>
+                        <button 
+                          className="btn btn-info mt-2" 
+                          onClick={() => handleViewDetail(candidate.userId)}
+                        >
+                          View Detail
+                        </button>
                       </div>
                     </div>
                   </div>
