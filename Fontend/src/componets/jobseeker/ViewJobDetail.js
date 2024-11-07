@@ -105,7 +105,7 @@ function ViewJobDetail() {
 
   const GenerateSlotDTOs = ({ slotDTOs }) => {
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
-
+    
     const shiftTimes = {
       1: "08:00 - 12:00",
       2: "13:00 - 17:00",
@@ -121,36 +121,36 @@ function ViewJobDetail() {
 
     return (
       <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ backgroundColor: "#e0e0e0" }}>
-              <th style={tableStyles.header}>Ca</th>
-              {daysOfWeek.map((day, index) => (
-                <th key={index} style={tableStyles.header}>{day}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {slotDTOs.map((slot, index) => (
-              <tr key={slot.slotId} style={tableStyles.row}>
-                <td style={tableStyles.cell}>Ca {index + 1} ({shiftTimes[index + 1] || "Không xác định"})</td>
-                {daysOfWeek.map((day) => {
-                  const schedule = findSchedule(slot, day);
-                  return (
-                    <td key={day} style={tableStyles.cell}>
-                      {schedule ? (
-                        shiftTimes[index + 1] || "Không xác định"
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr style={{ backgroundColor: "#e0e0e0" }}>
+            <th style={tableStyles.header}>Ca</th>
+            {daysOfWeek.map((day, index) => (
+              <th key={index} style={tableStyles.header}>{day}</th>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(shiftTimes).map(([shift, time], index) => (
+            <tr key={shift} style={tableStyles.row}>
+              <td style={tableStyles.cell}>Ca {shift} ({time})</td>
+              {daysOfWeek.map((day, dayIndex) => {
+                const slot = slotDTOs.find(
+                  (slot) =>
+                    slot.shift === parseInt(shift) &&
+                    getDayOfWeek(slot.dayOfWeek) === day
+                );
+                return (
+                  <td key={dayIndex} style={tableStyles.cell}>
+                    {slot ? time : "-"}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
     );
   };
 
