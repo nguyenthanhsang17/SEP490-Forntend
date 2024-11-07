@@ -29,6 +29,7 @@ function ViewAllJobSeekerApply() {
           applyStatus: applyFilter,
         }
       });
+      console.log(response)
       setJobSeekers(response.data.items);
       setTotalPages(response.data.totalPages);
     } catch (error) {

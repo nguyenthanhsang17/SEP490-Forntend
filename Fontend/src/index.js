@@ -30,6 +30,8 @@ import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWish
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
 import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
+import ViewAllPostJob from './componets/staff/ViewAllPostJob';
+import PostJobDetail from './componets/staff/PostJobDetail'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -47,6 +49,8 @@ root.render(
           <Route path="/VerifyRegister" element={<VerifyRegister />} />
           <Route path="/viewAllJob" element={<PostJobs />} />
           <Route path="/lich" element={<ScheduleTable />} />
+          <Route path='/ViewAllPost' element={<ViewAllPostJob />} />
+          <Route path='/ViewDetail/:job_id/:status' element={<PostJobDetail />} />
           <Route
             path="/viewJobDetail/:id"
             element={<ViewJobDetail />}
