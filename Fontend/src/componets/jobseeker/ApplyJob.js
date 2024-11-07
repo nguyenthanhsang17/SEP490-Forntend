@@ -37,7 +37,7 @@ function ApplyJob() {
                 setCvs(response.data);
                 setLoading(false);
             } catch (err) {
-                console.error("Error fetching CVs:", err); // In ra lỗi chi tiết
+                console.error("Error fetching CVs:", err); 
                 setError(err.message);
                 setLoading(false);
             }
@@ -64,7 +64,7 @@ function ApplyJob() {
         cvItems: {
             display: 'flex',
             flexDirection: 'column',
-            gap: '15px', // Khoảng cách giữa các mục CV
+            gap: '15px', 
         },
         cvItem: {
             backgroundColor: '#ffffff',
@@ -75,7 +75,7 @@ function ApplyJob() {
         cvItemTitle: {
             fontSize: '1.5rem',
             marginBottom: '10px',
-            color: '#007bff', // Màu xanh cho tiêu đề CV
+            color: '#007bff', 
         },
         cvDetail: {
             padding: '10px 0',
@@ -87,7 +87,7 @@ function ApplyJob() {
         },
         cvDetailDescription: {
             margin: '5px 0 0',
-            color: '#777', // Màu xám cho mô tả
+            color: '#777', 
         },
         applyButton: {
             marginTop: '10px',
@@ -120,13 +120,13 @@ function ApplyJob() {
         console.log("Button clicked for CV ID:", cvId);
         const token = localStorage.getItem("token");
         const applyJobDTO = {
-            PostId: job_id, // job_id từ URL
+            PostId: job_id, 
             CvId: cvId,
         };
 
         try {
             const response = await axios.post(
-                "https://localhost:7077/api/ApplyJobs/ApplyJob", // Đường dẫn đến API ứng tuyển
+                "https://localhost:7077/api/ApplyJobs/ApplyJob", 
                 applyJobDTO,
                 {
                     headers: {
