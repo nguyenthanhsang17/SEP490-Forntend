@@ -8,6 +8,8 @@ import '../assets/css/style.css'; // Import CSS tùy chỉnh
 import logoImage from "../assets/img/banner-10.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
 import { faHeart, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 
 
@@ -38,6 +40,12 @@ const ViewAllPostJobInWishlist = () => {
     const handleSortChange = (e) => {
         setSort(parseInt(e.target.value));
         setCurrentPage(1); // Reset về trang đầu khi thay đổi sắp xếp
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     useEffect(() => {
@@ -232,7 +240,7 @@ const ViewAllPostJobInWishlist = () => {
             <section class="brows-job-category">
                 <div class="container">
                     <div class="row extra-mrg">
-                    <div className="search-container" style={searchContainerStyle}>
+                        <div className="search-container" style={searchContainerStyle}>
                             <div className="priority-sort" style={prioritySortStyle}>
                                 <h4 style={prioritySortSpanStyle}>Ưu tiên hiển thị:</h4>
                                 <label style={prioritySortLabelStyle}>
@@ -342,10 +350,22 @@ const ViewAllPostJobInWishlist = () => {
 
 
 
-                        <div class="row">
-                            <ul class="pagination">
-                                {generatePagination(pageNumber, totalPages)}
-                            </ul>
+                        <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined />}
+                                disabled={currentPage === 1}
+                                onClick={() => handlePageChange(currentPage - 1)}
+                            />
+                            <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                                {currentPage} / {totalPages} trang
+                            </span>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined />}
+                                disabled={currentPage === totalPages}
+                                onClick={() => handlePageChange(currentPage + 1)}
+                            />
                         </div>
                     </div>
                 </div>

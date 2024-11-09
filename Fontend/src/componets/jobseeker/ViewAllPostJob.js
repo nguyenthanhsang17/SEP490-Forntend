@@ -34,6 +34,7 @@ const JobListing = () => {
   const [distance, Setdistance] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const [savedJobs, setSavedJobs] = useState({});
+  
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -75,7 +76,7 @@ const JobListing = () => {
       }
     });
     setSavedJobs(initialSavedJobs);
-  }, [jobs]); 
+  }, [jobs]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -394,11 +395,11 @@ const JobListing = () => {
                           Ứng tuyển ngay
                         </a>
                         <div className="save-button-container">
-                          {savedJobs[job.postId]||job.isWishlist === 1 ? (<button
+                          {savedJobs[job.postId] || job.isWishlist === 1 ? (<button
                             className="btn btn-save"
                             onClick={(e) => {
                               e.stopPropagation(); // Ngăn sự kiện onClick của item-click
-                              
+
                             }}
                           >
                             <FontAwesomeIcon icon={faHeart} className="icon-spacing" style={{ color: 'red' }} />
@@ -429,7 +430,7 @@ const JobListing = () => {
 
 
 
-<div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+            <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
               <Button
                 shape="circle"
                 icon={<LeftOutlined />}
