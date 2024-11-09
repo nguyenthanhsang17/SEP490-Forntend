@@ -1,33 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import bannerImage from '../assets/img/banner-10.jpg';
-import Footer from '../common/Footer';
-import Header from '../common/Header';
-import '../assets/css/style.css'; // Import CSS tùy chỉnh
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import bannerImage from "../assets/img/banner-10.jpg";
+import Footer from "../common/Footer";
+import Header from "../common/Header";
+import "../assets/css/style.css"; // Import CSS tùy chỉnh
 import logoImage from "../assets/img/banner-10.jpg";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
-import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
-import { useSnackbar } from 'notistack'; // Import useSnackbar
-import { Button } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Thêm FontAwesome
+import { faHeart, faSearch } from "@fortawesome/free-solid-svg-icons"; // Icon hiện/ẩn mật khẩu
+import { useSnackbar } from "notistack"; // Import useSnackbar
+import { Button } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const JobListing = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [Notfound, SetNofound] = useState("");
   const [Notfoundjob, SetNotfoundjob] = useState(false);
   const [pageNumber, SetpageNumber] = useState(1);
   // Search filter states
-  const [jobKeyword, setJobKeyword] = useState('');
+  const [jobKeyword, setJobKeyword] = useState("");
   const [salaryTypesId, setSalaryTypesId] = useState(0);
-  const [rangeSalaryMin, setRangeSalaryMin] = useState('');
-  const [rangeSalaryMax, setRangeSalaryMax] = useState('');
-  const [address, setAddress] = useState('');
+  const [rangeSalaryMin, setRangeSalaryMin] = useState("");
+  const [rangeSalaryMax, setRangeSalaryMax] = useState("");
+  const [address, setAddress] = useState("");
   const [jobCategoryId, setJobCategoryId] = useState(0);
   const [sortNumberApplied, setSortNumberApplied] = useState(0);
   const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
@@ -41,7 +40,10 @@ const JobListing = () => {
     }
   };
 
-  const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
+  const [userLocation, setUserLocation] = useState({
+    latitude: null,
+    longitude: null,
+  });
 
   const navigate = useNavigate();
 
@@ -57,11 +59,13 @@ const JobListing = () => {
             });
           },
           (error) => {
-            setError('Unable to retrieve your location.');
+            console.warn("Location access denied or unavailable.");
+            setUserLocation(null); // Set to null if location access is denied
           }
         );
       } else {
-        setError('Geolocation is not supported by this browser.');
+        setError("Geolocation is not supported by this browser.");
+        setUserLocation(null);
       }
     };
 
@@ -70,7 +74,7 @@ const JobListing = () => {
 
   useEffect(() => {
     const initialSavedJobs = {};
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       if (job.isWishlist === 1) {
         initialSavedJobs[job.postId] = true;
       }
@@ -81,34 +85,43 @@ const JobListing = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       const token = localStorage.getItem("token");
-      console.log("Token:", token); // Kiểm tra giá trị token
+      console.log("Token:", token); // Check the token value
+
       try {
-        const response = await axios.get('https://localhost:7077/api/PostJobs', {
-          headers: {
-            Authorization: `Bearer ${token}`,  // Thêm token vào header
-          },
-          params: {
-            JobKeyWord: jobKeyword,
-            SalaryTypesId: salaryTypesId,
-            Address: address,
-            JobCategoryId: jobCategoryId,
-            SortNumberApplied: sortNumberApplied,
-            pageNumber: currentPage,
-            Latitude: userLocation.latitude,
-            Longitude: userLocation.longitude,
-            distance: distance == 0 ? "" : distance
-          },
-        });
+        // Set params based on whether userLocation is available
+        const params = {
+          JobKeyWord: jobKeyword,
+          SalaryTypesId: salaryTypesId,
+          Address: address,
+          JobCategoryId: jobCategoryId,
+          SortNumberApplied: sortNumberApplied,
+          pageNumber: currentPage,
+          ...(userLocation
+            ? {
+                // Include location data only if available
+                Latitude: userLocation.latitude,
+                Longitude: userLocation.longitude,
+                distance: distance === 0 ? "" : distance,
+              }
+            : {}),
+        };
+
+        const response = await axios.get(
+          "https://localhost:7077/api/PostJobs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Add token to header
+            },
+            params,
+          }
+        );
+
         if (response.status === 200 && response.data.items) {
           const fetchedJobs = response.data.items || [];
-          const jobsWithDistance = fetchedJobs.map(job => ({
-            ...job,
-          }));
-          setJobs(jobsWithDistance);
+          setJobs(fetchedJobs);
           setTotalPages(response.data.totalPages || 0);
           SetNotfoundjob(false);
           SetpageNumber(response.data.pageNumber);
-          setTotalPages(response.data.totalPages);
           console.log(response.data.pageNumber, response.data.totalPages);
         } else {
           SetNofound("Không tìm thấy công việc phù hợp");
@@ -120,32 +133,40 @@ const JobListing = () => {
           SetNofound("Không tìm thấy công việc phù hợp");
           setJobs([]);
         } else {
-          setError('An error occurred while fetching jobs.');
+          setError("An error occurred while fetching jobs.");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    if (userLocation.latitude && userLocation.longitude) {
-      fetchJobs();
-    }
-  }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation, distance]);
-
+    fetchJobs();
+  }, [
+    currentPage,
+    jobKeyword,
+    salaryTypesId,
+    address,
+    jobCategoryId,
+    sortNumberApplied,
+    userLocation,
+    distance,
+  ]);
   const generatePagination = (pageNumber, totalPages) => {
     const paginationItems = [];
 
     // Thêm nút "Previous"
     paginationItems.push(
-      <li key="prev" className={pageNumber === 1 ? 'disabled' : ''}>
-        <a onClick={() => pageNumber > 1 && setCurrentPage(pageNumber - 1)}>&laquo;</a>
+      <li key="prev" className={pageNumber === 1 ? "disabled" : ""}>
+        <a onClick={() => pageNumber > 1 && setCurrentPage(pageNumber - 1)}>
+          &laquo;
+        </a>
       </li>
     );
 
     // Tạo các nút phân trang
     for (let i = 1; i <= totalPages; i++) {
       paginationItems.push(
-        <li key={i} className={pageNumber === i ? 'active' : ''}>
+        <li key={i} className={pageNumber === i ? "active" : ""}>
           <a onClick={() => setCurrentPage(i)}>{i}</a>
         </li>
       );
@@ -153,14 +174,19 @@ const JobListing = () => {
 
     // Thêm nút "Next"
     paginationItems.push(
-      <li key="next" className={pageNumber === totalPages ? 'disabled' : ''}>
-        <a onClick={() => pageNumber < totalPages && setCurrentPage(pageNumber + 1)}>&raquo;</a>
+      <li key="next" className={pageNumber === totalPages ? "disabled" : ""}>
+        <a
+          onClick={() =>
+            pageNumber < totalPages && setCurrentPage(pageNumber + 1)
+          }
+        >
+          &raquo;
+        </a>
       </li>
     );
 
     return paginationItems;
   };
-
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     if (!lat1 || !lon1 || !lat2 || !lon2) return null;
@@ -170,8 +196,10 @@ const JobListing = () => {
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c; // Distance in km
     return distance.toFixed(2); // Return distance rounded to 2 decimal places
@@ -188,7 +216,7 @@ const JobListing = () => {
       pageNumber: currentPage,
       Latitude: userLocation.latitude,
       Longitude: userLocation.longitude,
-      distance: distance
+      distance: distance,
     };
 
     // In ra nội dung của params
@@ -204,19 +232,19 @@ const JobListing = () => {
     }
 
     const data = {
-      PostJobId: postJobId,  // Dữ liệu cần gửi
+      PostJobId: postJobId, // Dữ liệu cần gửi
     };
 
     console.log(data);
 
     try {
       const response = await axios.post(
-        'https://localhost:7077/api/WishJobs/AddWishJob',  // Địa chỉ API
+        "https://localhost:7077/api/WishJobs/AddWishJob", // Địa chỉ API
         data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
         }
       );
@@ -224,14 +252,19 @@ const JobListing = () => {
       // Xử lý kết quả trả về
       if (response.status === 200) {
         console.log(response.data.Message); // "Thêm công việc vào mục yêu thích"
-        enqueueSnackbar("đã thêm việc làm đã lưu, Vui lòng truy cập Công việc đã lưu", { variant: 'success' });
-        setSavedJobs(prev => ({ ...prev, [postJobId]: true }));
+        enqueueSnackbar(
+          "đã thêm việc làm đã lưu, Vui lòng truy cập Công việc đã lưu",
+          { variant: "success" }
+        );
+        setSavedJobs((prev) => ({ ...prev, [postJobId]: true }));
       }
     } catch (error) {
-      console.error("Lỗi khi gọi API:", error.response?.data?.Message || error.message);
+      console.error(
+        "Lỗi khi gọi API:",
+        error.response?.data?.Message || error.message
+      );
     }
-  }
-
+  };
 
   const handleJobClick = (postId) => {
     navigate(`/viewJobDetail/${postId}`);
@@ -255,13 +288,16 @@ const JobListing = () => {
     return <div className="error">{error}</div>;
   }
 
-
   return (
     <>
       <Header />
 
-
-      <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
+      <section
+        className="inner-header-title"
+        style={{
+          backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)`,
+        }}
+      >
         <div className="container">
           <h1>Tất Cả Công Việc</h1>
         </div>
@@ -289,7 +325,9 @@ const JobListing = () => {
                     <select
                       className="form-control search-input"
                       value={jobCategoryId}
-                      onChange={(e) => setJobCategoryId(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        setJobCategoryId(parseInt(e.target.value))
+                      }
                     >
                       <option value="0">Loại công việc</option>
                       <option value="1">Hành chính</option>
@@ -310,7 +348,9 @@ const JobListing = () => {
                     <select
                       className="form-control search-input"
                       value={salaryTypesId}
-                      onChange={(e) => setSalaryTypesId(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        setSalaryTypesId(parseInt(e.target.value))
+                      }
                     >
                       <option value="0">Tất cả các loại trả lương</option>
                       <option value="1">Theo giờ</option>
@@ -327,7 +367,9 @@ const JobListing = () => {
                     <select
                       className="form-control search-input"
                       value={sortNumberApplied}
-                      onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        setSortNumberApplied(parseInt(e.target.value))
+                      }
                     >
                       <option value="0">Xắp xếp theo số người ứng tuyển</option>
                       <option value="1">Ứng tuyển tăng dần</option>
@@ -355,89 +397,142 @@ const JobListing = () => {
                 </div>
               </form>
             </div>
-            {Notfoundjob ? (<div className="not-found-message">
-              <p>{Notfound}</p>
-            </div>) : (jobs.map((job) => (
-              <div class="item-click" key={job.postId}
-                onClick={() => handleJobClick(job.postId)}>
-                <article>
-                  <div class="brows-job-list">
-                    <div class="col-md-1 col-sm-2 small-padding">
-                      <div class="brows-job-company-img" style={{ backgroundColor: "white" }}>
-                        <a href=""><img style={{ width: "100px" }} src={job.thumbnail} class="img-responsive" alt="" /></a>
+            {Notfoundjob ? (
+              <div className="not-found-message">
+                <p>{Notfound}</p>
+              </div>
+            ) : (
+              jobs.map((job) => (
+                <div
+                  class="item-click"
+                  key={job.postId}
+                  onClick={() => handleJobClick(job.postId)}
+                >
+                  <article>
+                    <div class="brows-job-list">
+                      <div class="col-md-1 col-sm-2 small-padding">
+                        <div
+                          class="brows-job-company-img"
+                          style={{ backgroundColor: "white" }}
+                        >
+                          <a href="">
+                            <img
+                              style={{ width: "100px" }}
+                              src={job.thumbnail}
+                              class="img-responsive"
+                              alt=""
+                            />
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                    <div class="col-md-6 col-sm-5">
-                      <div class="brows-job-position">
-                        <a href=""><h3>{job.jobTitle}</h3></a>
-                        <p>
-                          <span >{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
-                        </p>
-                        <p>
-                          <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
+                      <div className="col-md-6 col-sm-5">
+                        <div className="brows-job-position">
+                          <a href="#">
+                            <h3>{job.jobTitle}</h3>
+                          </a>
+                          <p>
+                            <span>{job.jobCategoryName}</span>
+                            <span className="brows-job-sallery">
+                              <i className="fa fa-money"></i>{" "}
+                              {job.salary + " VND"}
+                            </span>
+                          </p>
+                          <p>
+                            <span>Số người cần tuyển: {job.numberPeople}</span>
+                            <span className="brows-job-sallery">
+                              Số người đã ứng tuyển: {job.numberOfApplicants}
+                            </span>
 
-                          <span class="job-type cl-success bg-trans-success">Cách bạn: {job.distance} km</span>
-                        </p>
+                            {/* Display distance if userLocation and job.distance are available */}
+                            <span className="job-type cl-success bg-trans-success">
+                              {userLocation && job.distance
+                                ? `Cách bạn: ${job.distance} km`
+                                : "Khoảng cách không khả dụng"}
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div class="col-md-3 col-sm-3">
-                      <div class="brows-job-location">
-                        <p><i class="fa fa-map-marker"></i>{job.address}</p>
+                      <div class="col-md-3 col-sm-3">
+                        <div class="brows-job-location">
+                          <p>
+                            <i class="fa fa-map-marker"></i>
+                            {job.address}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="col-md-2 col-sm-2">
-                      <div className="brows-job-link">
-                        <a href="" className="btn btn-apply"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Ngăn sự kiện onClick của item-click
-                          }}>
-                          Ứng tuyển ngay
-                        </a>
-                        <div className="save-button-container">
-                          {savedJobs[job.postId] || job.isWishlist === 1 ? (<button
-                            className="btn btn-save"
+                      <div className="col-md-2 col-sm-2">
+                        <div className="brows-job-link">
+                          <a
+                            href=""
+                            className="btn btn-apply"
                             onClick={(e) => {
-                              e.stopPropagation(); // Ngăn sự kiện onClick của item-click
-
+                              e.stopPropagation();
+                              // Ngăn sự kiện onClick của item-click
                             }}
                           >
-                            <FontAwesomeIcon icon={faHeart} className="icon-spacing" style={{ color: 'red' }} />
-                            Đã Lưu
-                          </button>) : (
-                            <button
-                              className="btn btn-save"
-                              onClick={(e) => {
-                                e.stopPropagation(); // Ngăn sự kiện onClick của item-click
-                                addwishlist(job.postId);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faHeart} className="icon-spacing" style={{ color: 'gray' }} />
-                              Lưu Tin
-                            </button>
-                          )
-
-                          }
+                            Ứng tuyển ngay
+                          </a>
+                          <div className="save-button-container">
+                            {savedJobs[job.postId] || job.isWishlist === 1 ? (
+                              <button
+                                className="btn btn-save"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faHeart}
+                                  className="icon-spacing"
+                                  style={{ color: "red" }}
+                                />
+                                Đã Lưu
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-save"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                                  addwishlist(job.postId);
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faHeart}
+                                  className="icon-spacing"
+                                  style={{ color: "gray" }}
+                                />
+                                Lưu Tin
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
-                </article>
-              </div>
-            )))}
+                    {job.isUrgentRecruitment ? (
+                      <span class="tg-themetag tg-featuretag">Premium</span>
+                    ) : (
+                      ""
+                    )}
+                  </article>
+                </div>
+              ))
+            )}
 
-
-
-
-            <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+            <div
+              className="pagination-container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "20px",
+              }}
+            >
               <Button
                 shape="circle"
                 icon={<LeftOutlined />}
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               />
-              <span style={{ margin: '0 10px', fontSize: '16px' }}>
+              <span style={{ margin: "0 10px", fontSize: "16px" }}>
                 {currentPage} / {totalPages} trang
               </span>
               <Button
@@ -449,7 +544,7 @@ const JobListing = () => {
             </div>
           </div>
         </div>
-      </section >
+      </section>
       <Footer />
     </>
   );
