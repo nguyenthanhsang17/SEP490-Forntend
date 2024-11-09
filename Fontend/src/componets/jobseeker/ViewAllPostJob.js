@@ -9,7 +9,8 @@ import logoImage from "../assets/img/banner-10.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
 import { faHeart, faSearch } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
 import { useSnackbar } from 'notistack'; // Import useSnackbar
-
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 
 const JobListing = () => {
@@ -33,7 +34,11 @@ const JobListing = () => {
   const [distance, Setdistance] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const [savedJobs, setSavedJobs] = useState({});
-
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
@@ -231,11 +236,11 @@ const JobListing = () => {
     navigate(`/viewJobDetail/${postId}`);
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage > 0 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
+  // const handlePageChange = (newPage) => {
+  //   if (newPage > 0 && newPage <= totalPages) {
+  //     setCurrentPage(newPage);
+  //   }
+  // };
 
   const ungtuyen = (postId) => {
     navigate(`/viewJobDetail/${postId}`);
@@ -424,10 +429,22 @@ const JobListing = () => {
 
 
 
-            <div class="row">
-              <ul class="pagination">
-                {generatePagination(pageNumber, totalPages)}
-              </ul>
+<div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+              <Button
+                shape="circle"
+                icon={<LeftOutlined />}
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+              />
+              <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                {currentPage} / {totalPages} trang
+              </span>
+              <Button
+                shape="circle"
+                icon={<RightOutlined />}
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(currentPage + 1)}
+              />
             </div>
           </div>
         </div>
