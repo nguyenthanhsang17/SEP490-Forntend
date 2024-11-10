@@ -7,9 +7,9 @@ import bannerImage from '../assets/img/banner-6.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
 
 function VerifyEmployerAccount() {
-  const [businessName, setBusinessName] = useState('');
-  const [address, setAddress] = useState('');
-  const [idCardImages, setIdCardImages] = useState([]);
+  const [BussinessName, setBusinessName] = useState('');
+  const [BussinessAddress, setBusinessAddress] = useState('');
+  const [files, setFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
@@ -18,29 +18,55 @@ function VerifyEmployerAccount() {
   };
 
   const handleAddressChange = (e) => {
-    setAddress(e.target.value);
+    setBusinessAddress(e.target.value);
   };
 
-  const handleIdCardImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 3) {
-      setErrorMessage('Vui lòng chọn tối đa 3 ảnh.');
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length > 5) {
+      setErrorMessage('Vui lòng chọn tối đa 5 ảnh.');
       return;
     }
-    setIdCardImages(files);
+    setFiles(selectedFiles);
     setErrorMessage(''); // Clear error if the selection is valid
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!businessName || !address || idCardImages.length === 0) {
-      setErrorMessage('Vui lòng điền đầy đủ thông tin và chọn tối đa 3 ảnh.');
+    
+    if (!BussinessName || !BussinessAddress || files.length === 0) {
+      setErrorMessage('Vui lòng điền đầy đủ thông tin và chọn tối đa 5 ảnh.');
       return;
     }
-
-    navigate('/success');
+  
+    const formData = new FormData();
+    formData.append("BussinessName", BussinessName);
+    formData.append("BussinessAddress", BussinessAddress);
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+    
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('https://localhost:7077/api/Users/VerifyEmployerAccount', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData
+      });
+  
+      if (response.ok) {
+        alert('Yêu cầu của bạn đã được gửi!');
+        navigate('/');
+      } else {
+        setErrorMessage('Đã đăng ký để trở thành nhà tuyển dụng, đợi duyệt.');
+      }
+    } catch (error) {
+      setErrorMessage('Có lỗi xảy ra khi kết nối với máy chủ.');
+    }
   };
-
+  
   return (
     <div style={{ 
       backgroundImage: `url(${bannerImage})`,
@@ -63,11 +89,11 @@ function VerifyEmployerAccount() {
         <img src={logoImage} alt="Logo" style={{ width: '250px', marginBottom: '5px' }} />
         <h2 style={{ marginBottom: '25px', fontFamily: 'Arial, sans-serif', color: '#333', fontSize: '1.5em' }}>Xác Thực Tài Khoản Nhà Tuyển Dụng</h2>
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Mã số căn cước công dân</label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh</label>
           <input
             type="text"
-            placeholder="012345"
-            value={businessName}
+            placeholder="Tên cơ sở kinh doanh"
+            value={BussinessName}
             onChange={handleBusinessNameChange}
             style={{
               width: '100%',
@@ -84,7 +110,7 @@ function VerifyEmployerAccount() {
           <input
             type="text"
             placeholder="Địa chỉ"
-            value={address}
+            value={BussinessAddress}
             onChange={handleAddressChange}
             style={{
               width: '100%',
@@ -97,7 +123,7 @@ function VerifyEmployerAccount() {
             required
           />
           <span style={{ fontSize: '13px', color: '#777', display: 'block', marginBottom: '15px' }}>
-            Gửi ảnh 2 mặt căn cước công dân và ảnh địa chỉ của bạn (tối đa 3 ảnh)
+            Gửi ảnh 2 mặt căn cước công dân và ảnh địa chỉ của bạn (tối đa 5 ảnh)
           </span>
           
           <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ảnh CMND</label>
@@ -106,7 +132,7 @@ function VerifyEmployerAccount() {
               type="file"
               accept="image/*"
               multiple
-              onChange={handleIdCardImageChange}
+              onChange={handleFileChange}
               style={{
                 width: '100%',
                 padding: '12px',
@@ -117,18 +143,18 @@ function VerifyEmployerAccount() {
             />
           </div>
 
-          {idCardImages.length > 0 && (
+          {files.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-              {idCardImages.map((image, index) => (
+              {files.map((file, index) => (
                 <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
                   <img
-                    src={URL.createObjectURL(image)}
+                    src={URL.createObjectURL(file)}
                     alt={`Selected ${index + 1}`}
                     style={{ width: '60px', height: '60px', borderRadius: '5px', marginRight: '10px' }}
                   />
                   <button
                     type="button"
-                    onClick={() => setIdCardImages(idCardImages.filter((_, i) => i !== index))}
+                    onClick={() => setFiles(files.filter((_, i) => i !== index))}
                     style={{
                       color: 'red',
                       background: 'none',

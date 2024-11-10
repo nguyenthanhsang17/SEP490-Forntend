@@ -7,6 +7,8 @@ import Header from '../common/Header';
 import '../assets/css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const ViewListJobsCreated = () => {
     const [jobs, setJobs] = useState([]);
@@ -121,7 +123,6 @@ const ViewListJobsCreated = () => {
             SalaryTypesId: salaryTypesId,
             RangeSalaryMin: rangeSalaryMin,
             RangeSalaryMax: rangeSalaryMax,
-            //   Address: address,
             JobCategoryId: jobCategoryId,
             SortNumberApplied: sortNumberApplied,
             IsUrgentRecruitment: isUrgentRecruitment,
@@ -129,12 +130,11 @@ const ViewListJobsCreated = () => {
             Latitude: userLocation.latitude,
             Longitude: userLocation.longitude,
         };
-
-        // In ra nội dung của params
         console.log(params);
     };
-    const handleJobClick = (postId) => {
-        navigate(`/viewJobCreatedDetail/${postId}`);
+
+    const handleJobClick = (job) => {
+        navigate(`/viewJobCreatedDetail/${job.postId}`);
     };
 
     // Định nghĩa ánh xạ trạng thái
@@ -148,33 +148,40 @@ const ViewListJobsCreated = () => {
         6: "Bị cấm"
     };
 
-    // Hàm lấy nhãn trạng thái từ mã trạng thái
     const getStatusLabel = (status) => {
         return statusLabels[status] || "Không xác định";
     };
 
     const togglePostVisibility = async (job) => {
+        console.log("Toggling visibility for job:", job);
         try {
             const token = localStorage.getItem("token");
-            const apiEndpoint = job.isVisible
+            const apiEndpoint = job.status === 2
                 ? `https://localhost:7077/api/PostJobs/HidePostJob/${job.postId}`
                 : `https://localhost:7077/api/PostJobs/ShowPostJob/${job.postId}`;
 
-            await axios.put(apiEndpoint, null, {
+            const response = await axios.put(apiEndpoint, null, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log("API response:", response.data);
 
-            // Cập nhật trạng thái hiển thị của công việc sau khi gọi API thành công
+            // Tải lại danh sách công việc sau khi thay đổi trạng thái
             setJobs(jobs.map(j =>
-                j.postId === job.postId ? { ...j, isVisible: !j.isVisible } : j
+                j.postId === job.postId ? { ...j, status: job.status === 2 ? 5 : 2 } : j
             ));
         } catch (error) {
             console.error("Failed to toggle job visibility:", error);
         }
     };
 
-    const chuyenman = () =>{
+    const chuyenman = () => {
         navigate("/createPostJob");
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     if (loading) return <div className="loading">Loading...</div>;
@@ -317,22 +324,23 @@ const ViewListJobsCreated = () => {
                         </form>
                     </div>
 
+
+
                     <div className="create-item">
                         <button type="button" className="btn create-btn custom-create-btn" onClick={chuyenman}>
                             <FontAwesomeIcon icon={faPlus} /> Tạo bài đăng
                         </button>
                     </div>
 
-
                     {jobs.length ? (
                         jobs.map((job) => (
-                            <div className="item-click" key={job.postId} onClick={() => handleJobClick(job.postId)}>
+                            <div className="item-click" key={job.postId} onClick={() => handleJobClick(job)}>
                                 <article>
                                     <div className="brows-job-list">
                                         <div className="col-md-1 col-sm-2 small-padding">
                                             <div className="brows-job-company-img">
                                                 <img
-                                                    src={job.thumbnail || 'https://via.placeholder.com/100'} // Ảnh mặc định nếu thiếu ảnh thumbnail
+                                                    src={job.thumbnail || 'https://via.placeholder.com/100'}
                                                     className="img-responsive"
                                                     alt={job.jobTitle}
                                                     style={{ width: "100px" }}
@@ -359,20 +367,38 @@ const ViewListJobsCreated = () => {
                                         </div>
                                         <div className="col-md-3 col-sm-3">
                                             <div className="brows-job-location">
-                                                {/* Hiển thị trạng thái công việc */}
                                                 <p>{getStatusLabel(job.status)}</p>
                                             </div>
                                         </div>
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
                                                 <button
-                                                    className="btn btn-default"
+                                                    className="btn btn-toggle-visibility"
                                                     onClick={(e) => {
-                                                        e.stopPropagation(); // Ngăn sự kiện onClick của item-click
-                                                        togglePostVisibility(job); // Gọi hàm để ẩn/hiện bài viết
+                                                        e.stopPropagation();
+                                                        // Kiểm tra trạng thái bài viết trước khi cho phép chỉnh sửa
+                                                        if (job.status === 0 || job.status === 1) {
+                                                            // sendRequest(job);
+                                                        } else {
+                                                            alert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc chờ phê duyệt.");
+                                                        }
                                                     }}
                                                 >
-                                                    {/* Hiển thị nội dung nút dựa trên trạng thái và isVisible */}
+                                                    {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-toggle-visibility"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        // Kiểm tra trạng thái bài viết trước khi cho phép chỉnh sửa
+                                                        if (job.status === 2 || job.status === 5) {
+                                                            togglePostVisibility(job);
+                                                        } else {
+                                                            alert("Chỉ có thể chỉnh sửa bài viết đã đăng hoặc đã ẩn.");
+                                                        }
+                                                    }}
+                                                >
                                                     {job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
                                                 </button>
                                             </div>
@@ -386,8 +412,23 @@ const ViewListJobsCreated = () => {
                         <div>{notFoundMessage}</div>
                     )}
 
-
-                    <ul className="pagination">{generatePagination(currentPage, totalPages)}</ul>
+                    <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+                        <Button
+                            shape="circle"
+                            icon={<LeftOutlined />}
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                        />
+                        <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                            {currentPage} / {totalPages} trang
+                        </span>
+                        <Button
+                            shape="circle"
+                            icon={<RightOutlined />}
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        />
+                    </div>
                 </div>
             </section>
             <Footer />

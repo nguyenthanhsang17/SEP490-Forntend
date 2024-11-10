@@ -25,15 +25,19 @@ import ScheduleTable from './componets/jobseeker/ScheduleTable';
 import MemberCard from './componets/employee/ViewAllJobSeeker';
 import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
 import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWishlist';
-
+import ViewAllJobSeekerInFavoriteList from './componets/employee/ViewAllJobSeekerInFavoriteList'
+import ReportPostJob from './componets/jobseeker/ReportPostJob'
+import ManagementCV  from './componets/jobseeker/ManagementCV';
 // Import PrivateRoute
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
 import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
 import ViewAllPostJob from './componets/staff/ViewAllPostJob';
 import PostJobDetail from './componets/staff/PostJobDetail'
+
 import EmployerRequests from './componets/staff/ViewEmployerRequest'
 import EmployerRequestDetail from './componets/staff/ViewEmployerRequestDetail'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
@@ -116,6 +120,9 @@ root.render(
           />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
+          <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
+          <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
+          <Route path='/ManagementCV'element={<ManagementCV />}  />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

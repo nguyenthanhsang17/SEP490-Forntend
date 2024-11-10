@@ -718,3 +718,71 @@ textarea.form-control {
 .icon-spacing {
     margin-right: 5px; /* Điều chỉnh khoảng cách giữa biểu tượng và chữ */
 }
+
+/* Add to your style.css file */
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin: 0 10px;
+  }
+  
+  .button:hover {
+    transform: scale(1.05);
+  }
+  
+  .apply-button {
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+  }
+  
+  .apply-button:hover {
+    background-color: #218838; /* Darker green */
+  }
+  
+  .save-button {
+    background-color: #007bff; /* Blue */
+    color: white;
+    border: none;
+  }
+  
+  .save-button:hover {
+    background-color: #0069d9; /* Darker blue */
+  }
+  
+  .report-button {
+    background-color: #dc3545; /* Red */
+    color: white;
+    border: none;
+  }
+  
+  .report-button:hover {
+    background-color: #c82333; /* Darker red */
+  }
+  
+  .btn-toggle-visibility {
+    background-color: #28a745; /* Màu nền chính của nút */
+    color: #fff; /* Màu chữ */
+    padding: 8px 16px; /* Khoảng cách bên trong nút */
+    border: none;
+    border-radius: 4px; /* Bo góc */
+    font-size: 14px; /* Kích thước chữ */
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng chuyển màu và thu phóng */
+}
+
+.btn-toggle-visibility:hover {
+    background-color: #218838; /* Màu nền khi hover */
+    transform: scale(1.05); /* Tăng nhẹ kích thước khi hover */
+}
+
+.btn-toggle-visibility:active {
+    background-color: #218838; /* Màu nền khi nhấn */
+    transform: scale(0.98); /* Giảm nhẹ kích thước khi nhấn */
+}
