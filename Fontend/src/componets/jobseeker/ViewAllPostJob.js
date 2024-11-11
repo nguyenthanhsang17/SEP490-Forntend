@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import bannerImage from "../assets/img/banner-10.jpg";
+
 import Footer from "../common/Footer";
 import Header from "../common/Header";
 import "../assets/css/style.css"; // Import CSS tùy chỉnh
-import logoImage from "../assets/img/banner-10.jpg";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Thêm FontAwesome
 import { faHeart, faSearch } from "@fortawesome/free-solid-svg-icons"; // Icon hiện/ẩn mật khẩu
 import { useSnackbar } from "notistack"; // Import useSnackbar
@@ -18,9 +18,9 @@ const JobListing = () => {
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [Notfound, SetNofound] = useState("");
-  const [Notfoundjob, SetNotfoundjob] = useState(false);
-  const [pageNumber, SetpageNumber] = useState(1);
+  const [notFound, setNotFound] = useState("");         // For not found message
+  const [notFoundJob, setNotFoundJob] = useState(false); // For not found flag
+  const [pageNumber, setPageNumber] = useState(1); 
   // Search filter states
   const [jobKeyword, setJobKeyword] = useState("");
   const [salaryTypesId, setSalaryTypesId] = useState(0);
@@ -46,7 +46,8 @@ const JobListing = () => {
   });
 
   const navigate = useNavigate();
-
+ // Check if the user is logged in
+ const isLoggedIn = !!localStorage.getItem("token");
   useEffect(() => {
     // Get user's current location
     const getLocation = () => {
@@ -86,7 +87,7 @@ const JobListing = () => {
     const fetchJobs = async () => {
       const token = localStorage.getItem("token");
       console.log("Token:", token); // Check the token value
-
+  
       try {
         // Set params based on whether userLocation is available
         const params = {
@@ -98,39 +99,39 @@ const JobListing = () => {
           pageNumber: currentPage,
           ...(userLocation
             ? {
-                // Include location data only if available
                 Latitude: userLocation.latitude,
                 Longitude: userLocation.longitude,
-                distance: distance === 0 ? "" : distance,
+                distance: distance || "",
               }
             : {}),
         };
-
-        const response = await axios.get(
-          "https://localhost:7077/api/PostJobs",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Add token to header
-            },
-            params,
-          }
-        );
-
+  
+        // Prepare the headers object conditionally
+        const headers = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+  
+        const response = await axios.get("https://localhost:7077/api/PostJobs", {
+          headers,
+          params,
+        });
+  
         if (response.status === 200 && response.data.items) {
           const fetchedJobs = response.data.items || [];
           setJobs(fetchedJobs);
           setTotalPages(response.data.totalPages || 0);
-          SetNotfoundjob(false);
-          SetpageNumber(response.data.pageNumber);
+          setNotFoundJob(false);
+          setPageNumber(response.data.pageNumber);
           console.log(response.data.pageNumber, response.data.totalPages);
         } else {
-          SetNofound("Không tìm thấy công việc phù hợp");
-          SetNotfoundjob(true);
+          setNotFound("Không tìm thấy công việc phù hợp");
+          setNotFoundJob(true);
           setJobs([]);
         }
       } catch (err) {
         if (err.response && err.response.status === 400) {
-          SetNofound("Không tìm thấy công việc phù hợp");
+          setNotFound("Không tìm thấy công việc phù hợp");
           setJobs([]);
         } else {
           setError("An error occurred while fetching jobs.");
@@ -139,7 +140,7 @@ const JobListing = () => {
         setLoading(false);
       }
     };
-
+  
     fetchJobs();
   }, [
     currentPage,
@@ -151,6 +152,7 @@ const JobListing = () => {
     userLocation,
     distance,
   ]);
+  
   const generatePagination = (pageNumber, totalPages) => {
     const paginationItems = [];
 
@@ -225,21 +227,20 @@ const JobListing = () => {
 
   const addwishlist = async (postJobId) => {
     const token = localStorage.getItem("token");
-    console.log("Token:", token); // Kiểm tra giá trị token // Lấy token từ localStorage hoặc cách khác
-
+  
     if (!token) {
-      navigate("/login");
+      enqueueSnackbar("Vui lòng đăng nhập để lưu công việc.", { variant: "warning" });
+      navigate("/login"); // Redirect to login if user is not authenticated
+      return;
     }
-
+  
     const data = {
-      PostJobId: postJobId, // Dữ liệu cần gửi
+      PostJobId: postJobId,
     };
-
-    console.log(data);
-
+  
     try {
       const response = await axios.post(
-        "https://localhost:7077/api/WishJobs/AddWishJob", // Địa chỉ API
+        "https://localhost:7077/api/WishJobs/AddWishJob",
         data,
         {
           headers: {
@@ -248,21 +249,13 @@ const JobListing = () => {
           },
         }
       );
-
-      // Xử lý kết quả trả về
+  
       if (response.status === 200) {
-        console.log(response.data.Message); // "Thêm công việc vào mục yêu thích"
-        enqueueSnackbar(
-          "đã thêm việc làm đã lưu, Vui lòng truy cập Công việc đã lưu",
-          { variant: "success" }
-        );
+        enqueueSnackbar("Đã thêm công việc vào mục yêu thích.", { variant: "success" });
         setSavedJobs((prev) => ({ ...prev, [postJobId]: true }));
       }
     } catch (error) {
-      console.error(
-        "Lỗi khi gọi API:",
-        error.response?.data?.Message || error.message
-      );
+      console.error("Lỗi khi thêm vào mục yêu thích:", error.response?.data?.Message || error.message);
     }
   };
 
@@ -287,7 +280,14 @@ const JobListing = () => {
   if (error) {
     return <div className="error">{error}</div>;
   }
-
+  const handleApplyClick = (postId) => {
+    if (!isLoggedIn) {
+      enqueueSnackbar("Vui lòng đăng nhập để ứng tuyển.", { variant: "info" });
+      navigate("/login");
+    } else {
+      navigate(`/viewJobDetail/${postId}`);
+    }
+  };
   return (
     <>
       <Header />
@@ -397,9 +397,9 @@ const JobListing = () => {
                 </div>
               </form>
             </div>
-            {Notfoundjob ? (
+            {notFoundJob ? (
               <div className="not-found-message">
-                <p>{Notfound}</p>
+                <p>{notFound}</p>
               </div>
             ) : (
               jobs.map((job) => (
@@ -468,6 +468,7 @@ const JobListing = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               // Ngăn sự kiện onClick của item-click
+                              handleApplyClick(job.postId);
                             }}
                           >
                             Ứng tuyển ngay
