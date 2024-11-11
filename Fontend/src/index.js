@@ -32,8 +32,12 @@ import ManagementCV  from './componets/jobseeker/ManagementCV';
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
 import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
+<<<<<<< HEAD
+import EditPostJob from './componets/employee/EditPostJob';
+=======
 import ViewAllPostJob from './componets/staff/ViewAllPostJob';
 import PostJobDetail from './componets/staff/PostJobDetail'
+>>>>>>> 74d1c7ba8eeef74d77eda88fcb6bdebe74c0f324
 
 import EmployerRequests from './componets/staff/ViewEmployerRequest'
 import EmployerRequestDetail from './componets/staff/ViewEmployerRequestDetail'
@@ -123,6 +127,7 @@ root.render(
           <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
           <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
           <Route path='/ManagementCV'element={<ManagementCV />}  />
+          <Route path='/EditPostJob/:id'element={<EditPostJob />}  />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

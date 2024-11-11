@@ -292,6 +292,7 @@ const JobListing = () => {
     <>
       <Header />
 
+
       <section
         className="inner-header-title"
         style={{
