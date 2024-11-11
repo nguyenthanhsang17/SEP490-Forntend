@@ -676,7 +676,7 @@ function EditPostJob() {
             <Header />
             <section className="inner-header-title blank">
                 <div className="container">
-                    <h1>Tạo bài đăng tuyển</h1>
+                    <h1>Chỉnh sửa bài đăng tuyển</h1>
                 </div>
             </section>
             <div className="clearfix"></div>
