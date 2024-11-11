@@ -765,24 +765,36 @@ textarea.form-control {
     background-color: #c82333; /* Darker red */
   }
   
-  .btn-toggle-visibility {
-    background-color: #28a745; /* Màu nền chính của nút */
-    color: #fff; /* Màu chữ */
-    padding: 8px 16px; /* Khoảng cách bên trong nút */
-    border: none;
-    border-radius: 4px; /* Bo góc */
-    font-size: 14px; /* Kích thước chữ */
+ /* Cố định chiều rộng và căn giữa nội dung của các nút */
+.btn-toggle-visibility {
+    width: 160px; /* Chọn chiều rộng phù hợp để các nút đều nhau */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px; /* Đảm bảo padding đều */
+    font-size: 14px;
     font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng chuyển màu và thu phóng */
+    border-radius: 4px;
 }
 
-.btn-toggle-visibility:hover {
-    background-color: #218838; /* Màu nền khi hover */
-    transform: scale(1.05); /* Tăng nhẹ kích thước khi hover */
+/* Màu sắc tùy chỉnh */
+.btn-approval {
+    background-color: #4CAF50; /* Màu xanh lá */
+    color: white;
 }
 
-.btn-toggle-visibility:active {
-    background-color: #218838; /* Màu nền khi nhấn */
-    transform: scale(0.98); /* Giảm nhẹ kích thước khi nhấn */
+.btn-visibility {
+    background-color: #007bff; /* Màu xanh */
+    color: white;
 }
+
+/* Hiệu ứng hover */
+.btn-approval:hover {
+    background-color: #45a049;
+}
+
+.btn-visibility:hover {
+    background-color: #0069d9;
+}
+
+

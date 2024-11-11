@@ -373,35 +373,36 @@ const ViewListJobsCreated = () => {
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
                                                 <button
-                                                    className="btn btn-toggle-visibility"
+                                                    className="btn btn-toggle-visibility btn-approval"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        // Kiểm tra trạng thái bài viết trước khi cho phép chỉnh sửa
                                                         if (job.status === 0 || job.status === 1) {
                                                             // sendRequest(job);
                                                         } else {
                                                             alert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc chờ phê duyệt.");
                                                         }
                                                     }}
+                                                    title={job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 >
                                                     {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 </button>
 
                                                 <button
-                                                    className="btn btn-toggle-visibility"
+                                                    className="btn btn-toggle-visibility btn-visibility"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        // Kiểm tra trạng thái bài viết trước khi cho phép chỉnh sửa
                                                         if (job.status === 2 || job.status === 5) {
                                                             togglePostVisibility(job);
                                                         } else {
                                                             alert("Chỉ có thể chỉnh sửa bài viết đã đăng hoặc đã ẩn.");
                                                         }
                                                     }}
+                                                    title={job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
                                                 >
                                                     {job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
                                                 </button>
                                             </div>
+
                                         </div>
                                     </div>
                                     {job.isUrgentRecruitment && <span className="tg-themetag tg-featuretag">Tuyển gấp</span>}
