@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import bannerImage from '../assets/img/banner-10.jpg';
+
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import '../assets/css/style.css'; // Import CSS tùy chỉnh
-import logoImage from "../assets/img/banner-10.jpg";
+import { useSnackbar } from 'notistack'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
 import { faHeart, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
-
-
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const ViewAllPostJobInWishlist = () => {
+    const { enqueueSnackbar } = useSnackbar();
     const [jobs, setJobs] = useState([]);
-    const [sort, setSort] = useState(0); // Trạng thái sắp xếp, mặc định là "Cập nhật gần nhất"
+    const [sort, setSort] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const [Notfound, SetNofound] = useState("");
-    const [Notfoundjob, SetNotfoundjob] = useState(false);
-    const [pageNumber, SetpageNumber] = useState(1);
+    const [notFound, setNotFound] = useState(""); // Correct variable
+    const [notFoundJob, setNotFoundJob] = useState(false); // Correct variable
+    const [pageNumber, setPageNumber] = useState(1);// Fixed to camelCase
     // Search filter states
     const [jobKeyword, setJobKeyword] = useState('');
     const [salaryTypesId, setSalaryTypesId] = useState(0);
@@ -40,6 +41,12 @@ const ViewAllPostJobInWishlist = () => {
         setCurrentPage(1); // Reset về trang đầu khi thay đổi sắp xếp
     };
 
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+
     useEffect(() => {
         // Get user's current location
         const getLocation = () => {
@@ -51,9 +58,7 @@ const ViewAllPostJobInWishlist = () => {
                             longitude: position.coords.longitude,
                         });
                     },
-                    (error) => {
-                        setError('Unable to retrieve your location.');
-                    }
+                    () => setError('Unable to retrieve your location.')
                 );
             } else {
                 setError('Geolocation is not supported by this browser.');
@@ -85,20 +90,23 @@ const ViewAllPostJobInWishlist = () => {
                         pageNumber: currentPage,
                         Latitude: userLocation.latitude,
                         Longitude: userLocation.longitude,
-                        sort: sort, // Gửi tham số sort
+                        sort,
                     },
                 });
-
+    
                 if (response.status === 200 && response.data.items) {
                     setJobs(response.data.items);
                     setTotalPages(response.data.totalPages || 0);
+                    setNotFoundJob(false);
                 } else {
-                    SetNofound("Không tìm thấy công việc phù hợp");
-                    SetNotfoundjob(true);
+                    setNotFound("Không tìm thấy công việc phù hợp"); // Use `setNotFound`
+                    setNotFoundJob(true);
                     setJobs([]);
                 }
             } catch (err) {
-                setError('An error occurred while fetching jobs.');
+                console.error("Error fetching jobs:", err);
+                enqueueSnackbar("An error occurred while fetching jobs.", { variant: 'error' });
+                setError(err.message || 'An unknown error occurred.');
             } finally {
                 setLoading(false);
             }
@@ -107,7 +115,21 @@ const ViewAllPostJobInWishlist = () => {
         if (userLocation.latitude && userLocation.longitude) {
             fetchJobs();
         }
-    }, [currentPage, sort, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, address, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation]);
+    }, [
+        currentPage, 
+        sort, 
+        jobKeyword, 
+        salaryTypesId, 
+        rangeSalaryMin, 
+        rangeSalaryMax, 
+        address, 
+        jobCategoryId, 
+        sortNumberApplied, 
+        isUrgentRecruitment, 
+        userLocation.latitude, 
+        userLocation.longitude,
+    ]);
+    
 
     const handleRemoveFromWishlist = async (postJobId) => {
         try {
@@ -126,12 +148,11 @@ const ViewAllPostJobInWishlist = () => {
             });
 
             if (response.status === 200) {
-                alert(response.data.message); // Hiển thị thông báo xóa thành công
-                setJobs(jobs.filter((job) => job.postId !== postJobId)); // Xóa job khỏi danh sách
+                enqueueSnackbar(response.data.message, { variant: 'success' });
+                setJobs(jobs.filter((job) => job.postId !== postJobId));
             }
         } catch (error) {
-            console.error("Error removing job from wishlist:", error);
-            alert("Xóa công việc khỏi danh sách mong muốn thất bại.");
+            enqueueSnackbar("Xóa công việc khỏi danh sách mong muốn thất bại.", { variant: 'error' });
         }
     };
 
@@ -232,7 +253,7 @@ const ViewAllPostJobInWishlist = () => {
             <section class="brows-job-category">
                 <div class="container">
                     <div class="row extra-mrg">
-                    <div className="search-container" style={searchContainerStyle}>
+                        <div className="search-container" style={searchContainerStyle}>
                             <div className="priority-sort" style={prioritySortStyle}>
                                 <h4 style={prioritySortSpanStyle}>Ưu tiên hiển thị:</h4>
                                 <label style={prioritySortLabelStyle}>
@@ -277,8 +298,8 @@ const ViewAllPostJobInWishlist = () => {
                                 </label>
                             </div>
                         </div>
-                        {Notfoundjob ? (<div className="not-found-message">
-                            <p>{Notfound}</p>
+                        {notFoundJob ? (<div className="not-found-message">
+                            <p>{notFound}</p>
                         </div>) : (jobs.map((job) => (
                             <div class="item-click" key={job.postId}
                                 onClick={() => handleJobClick(job.postId)}>
@@ -341,12 +362,28 @@ const ViewAllPostJobInWishlist = () => {
 
 
 
+{jobs.length > 0 && (
+    <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+        <Button
+            shape="circle"
+            icon={<LeftOutlined />}
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+        />
+        <span style={{ margin: '0 10px', fontSize: '16px' }}>
+            {currentPage} / {totalPages} trang
+        </span>
+        <Button
+            shape="circle"
+            icon={<RightOutlined />}
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+        />
+    </div>
+)}
 
-                        <div class="row">
-                            <ul class="pagination">
-                                {generatePagination(pageNumber, totalPages)}
-                            </ul>
-                        </div>
+
+
                     </div>
                 </div>
             </section >

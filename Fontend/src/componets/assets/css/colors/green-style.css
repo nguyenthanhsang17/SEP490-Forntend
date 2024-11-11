@@ -786,3 +786,123 @@ textarea.form-control {
     background-color: #218838; /* Màu nền khi nhấn */
     transform: scale(0.98); /* Giảm nhẹ kích thước khi nhấn */
 }
+/* MemberCard.css */
+
+.candidate-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  .candidate-card:hover {
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .candidate-image img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+  }
+  
+  .candidate-info h5 {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .candidate-info p {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .btn {
+    border-radius: 6px;
+    padding: 10px 15px;
+  }
+  
+  .btn-primary {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #218838;
+  }
+  
+  .btn-secondary {
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: bold;
+    border: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .search-filter {
+    margin-bottom: 20px;
+  }
+  
+  .search-filter .form-control {
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease;
+  }
+  
+  .search-filter .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .inner-header-title {
+    padding: 50px 0;
+    color: white;
+    text-align: center;
+  }
+  
+  .inner-header-title h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  /* MemberCard.css */
+
+.candidate-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    display: flex; /* Ensure it uses flexbox */
+    justify-content: space-between; /* Space between image/info and buttons */
+    align-items: center; /* Align items vertically */
+  }
+  
+  .candidate-image img {
+    width: 100px; /* Increased size */
+    height: 100px; /* Increased size */
+    border-radius: 8px;
+  }
+  
+  .candidate-actions {
+    margin-left: auto; /* Pushes actions to the right */
+  }
+  
+  .candidate-actions .btn {
+    width: 100%; /* Makes buttons take full width of the container */
+  }
+  
+  .candidate-info {
+    flex: 1; /* Allow info to take up remaining space */
+    padding-right: 20px; /* Add padding to the right for better spacing */
+  }

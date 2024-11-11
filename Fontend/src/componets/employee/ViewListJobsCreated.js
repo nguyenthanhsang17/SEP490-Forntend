@@ -7,6 +7,8 @@ import Header from '../common/Header';
 import '../assets/css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const ViewListJobsCreated = () => {
     const [jobs, setJobs] = useState([]);
@@ -132,7 +134,7 @@ const ViewListJobsCreated = () => {
     };
 
     const handleJobClick = (job) => {
-            navigate(`/viewJobCreatedDetail/${job.postId}`);
+        navigate(`/viewJobCreatedDetail/${job.postId}`);
     };
 
     // Định nghĩa ánh xạ trạng thái
@@ -174,6 +176,12 @@ const ViewListJobsCreated = () => {
 
     const chuyenman = () => {
         navigate("/createPostJob");
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     if (loading) return <div className="loading">Loading...</div>;
@@ -364,7 +372,21 @@ const ViewListJobsCreated = () => {
                                         </div>
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
-                                                <span>Điều chỉnh trạng thái</span>
+                                                <button
+                                                    className="btn btn-toggle-visibility"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        // Kiểm tra trạng thái bài viết trước khi cho phép chỉnh sửa
+                                                        if (job.status === 0 || job.status === 1) {
+                                                            // sendRequest(job);
+                                                        } else {
+                                                            alert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc chờ phê duyệt.");
+                                                        }
+                                                    }}
+                                                >
+                                                    {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
+                                                </button>
+
                                                 <button
                                                     className="btn btn-toggle-visibility"
                                                     onClick={(e) => {
@@ -373,7 +395,7 @@ const ViewListJobsCreated = () => {
                                                         if (job.status === 2 || job.status === 5) {
                                                             togglePostVisibility(job);
                                                         } else {
-                                                            alert("Chỉ có thể chỉnh sửa bài viết đã hoàn tất.");
+                                                            alert("Chỉ có thể chỉnh sửa bài viết đã đăng hoặc đã ẩn.");
                                                         }
                                                     }}
                                                 >
@@ -390,7 +412,23 @@ const ViewListJobsCreated = () => {
                         <div>{notFoundMessage}</div>
                     )}
 
-                    <ul className="pagination">{generatePagination(currentPage, totalPages)}</ul>
+                    <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+                        <Button
+                            shape="circle"
+                            icon={<LeftOutlined />}
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                        />
+                        <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                            {currentPage} / {totalPages} trang
+                        </span>
+                        <Button
+                            shape="circle"
+                            icon={<RightOutlined />}
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        />
+                    </div>
                 </div>
             </section>
             <Footer />

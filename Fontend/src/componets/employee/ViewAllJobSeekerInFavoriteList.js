@@ -7,6 +7,8 @@ import Header from '../common/Header';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PiTextbox } from 'react-icons/pi';
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 function ViewAllJobSeekerInFavoriteList() {
     const { id } = useParams();
@@ -21,7 +23,14 @@ function ViewAllJobSeekerInFavoriteList() {
     const [totalPages, setTotalPages] = useState(0);
     const [sort, setSort] = useState(null);
     const [descriptionFilter, setDescriptionFilter] = useState(''); // New state for description filter
+    const [currentPage, setCurrentPage] = useState(1);
 
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
 
     const fetchJobSeekers = async () => {
         try {
@@ -77,7 +86,7 @@ function ViewAllJobSeekerInFavoriteList() {
         <>
             <Header />
             <div className="container job-seeker-list" style={{ paddingTop: '100px' }}>
-                
+
                 <h2 className="text-center">Danh sách ứng viên</h2>
 
                 <div
@@ -183,16 +192,22 @@ function ViewAllJobSeekerInFavoriteList() {
                     )}
                 </div>
 
-                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            className={`btn ${pageNumber === index + 1 ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setPageNumber(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
+                <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+                    <Button
+                        shape="circle"
+                        icon={<LeftOutlined />}
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                    />
+                    <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                        {currentPage} / {totalPages} trang
+                    </span>
+                    <Button
+                        shape="circle"
+                        icon={<RightOutlined />}
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                    />
                 </div>
 
             </div>

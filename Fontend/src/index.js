@@ -32,8 +32,15 @@ import ManagementCV  from './componets/jobseeker/ManagementCV';
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
 import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
+<<<<<<< HEAD
 import EditPostJob from './componets/employee/EditPostJob';
+=======
+import ViewAllPostJob from './componets/staff/ViewAllPostJob';
+import PostJobDetail from './componets/staff/PostJobDetail'
+>>>>>>> 74d1c7ba8eeef74d77eda88fcb6bdebe74c0f324
 
+import EmployerRequests from './componets/staff/ViewEmployerRequest'
+import EmployerRequestDetail from './componets/staff/ViewEmployerRequestDetail'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -51,6 +58,12 @@ root.render(
           <Route path="/VerifyRegister" element={<VerifyRegister />} />
           <Route path="/viewAllJob" element={<PostJobs />} />
           <Route path="/lich" element={<ScheduleTable />} />
+          <Route path="/ViewEmployerRequests" element={<EmployerRequests />} />
+          <Route path="/ViewEmployerRequestsDetail/:id" element={<EmployerRequestDetail />} />
+          
+
+          {/* <Route path='/ViewAllPost' element={<ViewAllPostJob />} />
+          <Route path='/ViewDetail/:job_id/:status' element={<PostJobDetail />} /> */}
           <Route
             path="/viewJobDetail/:id"
             element={<ViewJobDetail />}
@@ -58,12 +71,22 @@ root.render(
           {/* Job Seeker-Only Routes */}
           
           <Route
+            path="/ViewAllPost"
+            element={<PrivateRoute allowedRoles={["3,4"]}><ViewAllPostJob /></PrivateRoute>}
+          />
+
+          <Route
+            path="/ViewDetail/:job_id/:status"
+            element={<PrivateRoute allowedRoles={["3,4"]}><PostJobDetail /></PrivateRoute>}
+          />
+
+          <Route
             path="/ViewAllJobApplied"
-            element={<PrivateRoute allowedRoles={["1"]}><ViewAllJobApplied /></PrivateRoute>}
+            element={<PrivateRoute allowedRoles={["1,2"]}><ViewAllJobApplied /></PrivateRoute>}
           />
           <Route
             path="/ApplyJob/:job_id"
-            element={<PrivateRoute allowedRoles={["1"]}><ApplyJob /></PrivateRoute>}
+            element={<PrivateRoute allowedRoles={["1,2"]}><ApplyJob /></PrivateRoute>}
           />
 
           {/* Employer-Only Routes */}
