@@ -253,8 +253,6 @@ const JobListing = () => {
   return (
     <>
       <Header />
-
-
       <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
         <div className="container">
           <h1>Tất Cả Công Việc</h1>

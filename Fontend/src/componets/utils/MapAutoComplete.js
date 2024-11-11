@@ -128,7 +128,7 @@ const MapAutoComplete = ({ onSubmit, onPositionChange }) => {
     onPositionChange({
         lat: e.latlng.lat,
         lng: e.latlng.lng
-      });
+      }, address);
   };
 
   const handleMarkerDragEnd = (e) => {
@@ -138,7 +138,7 @@ const MapAutoComplete = ({ onSubmit, onPositionChange }) => {
     onPositionChange({
         lat: newPosition.lat,
         lng: newPosition.lng
-      });
+      }, address);
   };
 
   return (
@@ -148,9 +148,7 @@ const MapAutoComplete = ({ onSubmit, onPositionChange }) => {
         center={position}
         zoom={20}
         style={{ height: "55vh", width: "100%" }}
-        whenCreated={(map) => {
-          map.on("click", handleMapClick);
-        }}
+        
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

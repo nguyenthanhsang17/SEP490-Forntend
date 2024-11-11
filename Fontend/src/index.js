@@ -32,6 +32,7 @@ import ManagementCV  from './componets/jobseeker/ManagementCV';
 import PrivateRoute from './PrivateRoute';
 import Unauthorized from './componets/common/Unauthorized';
 import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
+import EditPostJob from './componets/employee/EditPostJob';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -103,6 +104,7 @@ root.render(
           <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
           <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
           <Route path='/ManagementCV'element={<ManagementCV />}  />
+          <Route path='/EditPostJob/:id'element={<EditPostJob />}  />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

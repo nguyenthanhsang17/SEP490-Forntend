@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSnackbar } from 'notistack'; // Import useSnackbar
+import Footer from '../common/Footer';
+import Header from '../common/Header';
 const ManagementCV = () => {
     const [cvs, setCvs] = useState([]); // Danh sách CV đã lưu
     const [cvForms, setCvForms] = useState([]); // Danh sách form đang mở
@@ -105,12 +107,14 @@ const ManagementCV = () => {
     }
 
     return (
-        <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "2rem" }}>
+        <>
+        <Header />
+        <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "2rem", marginTop: "100px" }}>
             <div style={{ maxWidth: "1200px", margin: "0 auto", backgroundColor: "white", borderRadius: "16px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", overflow: "hidden" }}>
                 {/* Header */}
                 <div style={{ backgroundColor: "#1e40af", padding: "2rem", color: "white" }}>
                     <h2 style={{ fontSize: "2rem", fontWeight: "bold", margin: 0 }}>Quản lý CV của bạn</h2>
-                    <p style={{ marginTop: "0.5rem", opacity: 0.8 }}>Tạo và quản lý CV chuyên nghiệp</p>
+                    <p style={{ marginTop: "0.5rem", color: "white" }}>Tạo và quản lý CV chuyên nghiệp</p>
                 </div>
 
                 {/* Main Content */}
@@ -136,7 +140,7 @@ const ManagementCV = () => {
                     <button
                         onClick={LuuVaoDB}
                         style={{
-                            backgroundColor: "#3b82f6",
+                            backgroundColor: "#1cbcb4",
                             color: "white",
                             padding: "0.75rem 1.5rem",
                             borderRadius: "8px",
@@ -145,6 +149,7 @@ const ManagementCV = () => {
                             fontSize: "1rem",
                             fontWeight: "500",
                             marginBottom: "1rem",
+                            marginLeft: "1rem"
                         }}
                     >
                         Lưu tất cả
@@ -342,6 +347,8 @@ const ManagementCV = () => {
                 </div>
             </div>
         </div>
+        <Footer />
+        </>
     );
 };
 
