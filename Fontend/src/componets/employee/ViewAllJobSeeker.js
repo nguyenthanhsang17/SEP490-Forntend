@@ -167,7 +167,7 @@ const MemberCard = () => {
               className="btn btn-primary mb-2"
               onClick={() => handleViewDetail(candidate.userId)}
             >
-              Ứng tuyển ngay
+              Liên Hệ Ngay
             </button>
             <button 
               className="btn btn-secondary"
