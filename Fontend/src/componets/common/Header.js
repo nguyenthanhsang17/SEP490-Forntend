@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import ChangePasswordModal from "../accounts/ChangePasswordModal"; // Assuming you have this component
-import { FaBriefcase, FaUsers } from "react-icons/fa"; // Import the icon for candidates
+import { FaBriefcase, FaBlog, FaHeart, FaList, FaUsers } from "react-icons/fa";
 
 const styles = {
   wrapper: {
@@ -138,7 +138,7 @@ const Header = () => {
           </button>
           <div
             className="navbar-header"
-            style={{ position: "relative", top: "-90px" }}
+            style={{ position: "relative", top: "-93px" }}
           >
             <a className="navbar-brand" href="/">
               <img src={logoImage} className="logo logo-display" alt="Logo" />
@@ -158,20 +158,21 @@ const Header = () => {
               data-out="fadeOutUp"
             >
               <li>
-                <a href="pricing.html">
-                  <i className="fa fa-sign-in" aria-hidden="true"></i>
-                  Giá
+                <a
+                  style={styles.viewJobsLink}
+                  onClick={handleViewAllJobsClick}
+                  href="/blog"
+                >
+                  <FaBlog style={styles.icon} /> Blog
                 </a>
               </li>
-
               <li>
                 <a
                   style={styles.viewJobsLink}
                   onClick={handleViewAllJobsClick}
                   href="/viewalljob"
                 >
-                  <FaBriefcase style={styles.icon} />
-                  Tất cả các công việc
+                  <FaBriefcase style={styles.icon} /> Tất cả các công việc
                 </a>
               </li>
 
@@ -182,12 +183,12 @@ const Header = () => {
                     onClick={handleViewAllCandidatesClick}
                     href="/viewAllJobSeeker"
                   >
-                    <FaUsers style={styles.icon} />
-                    Tất cả ứng viên
+                    <FaUsers style={styles.icon} /> Tất cả ứng viên
                   </a>
                 </li>
               )}
 
+              {/* Dropdown với tên người dùng */}
               {isLoggedIn ? (
                 <li className="left-br">
                   <button style={styles.profileButton} onClick={toggleDropdown}>
@@ -227,6 +228,23 @@ const Header = () => {
                     >
                       Đổi mật khẩu
                     </div>
+
+                    {/* Thêm Wishlist và Favorite List vào dropdown */}
+                    <div
+                      style={styles.dropdownItem}
+                      onClick={() => navigate("/viewAllPostJobInWishlist")}
+                    >
+                      <FaHeart style={{ marginRight: "5px" }} />
+                      Danh sách yêu thích
+                    </div>
+                    <div
+                      style={styles.dropdownItem}
+                      onClick={() => navigate("/viewAllJobSeekerInFavoriteList")}
+                    >
+                      <FaList style={{ marginRight: "5px" }} />
+                      Danh sách ưa thích
+                    </div>
+
                     <div style={styles.dropdownItem} onClick={handleLogout}>
                       Đăng xuất
                     </div>
