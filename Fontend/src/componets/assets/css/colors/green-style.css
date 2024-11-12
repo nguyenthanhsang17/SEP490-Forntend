@@ -906,3 +906,22 @@ textarea.form-control {
     flex: 1; /* Allow info to take up remaining space */
     padding-right: 20px; /* Add padding to the right for better spacing */
   }
+  .floating-icons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+  }
+  
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0078FF; /* Màu nền của Messenger */
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+  }

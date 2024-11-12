@@ -38,6 +38,7 @@ import PostJobDetail from './componets/staff/PostJobDetail';
 
 import EmployerRequests from './componets/staff/ViewEmployerRequest'
 import EmployerRequestDetail from './componets/staff/ViewEmployerRequestDetail'
+import ChatList from './componets/common/ChatList';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -124,6 +125,7 @@ root.render(
           <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
           <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
           <Route path='/ManagementCV'element={<ManagementCV />}  />
+          <Route path='/ChatList'element={<ChatList />}  />
           <Route path='/EditPostJob/:id'element={<EditPostJob />}  />
         </Routes>
       </SnackbarProvider>
