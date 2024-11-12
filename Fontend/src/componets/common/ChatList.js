@@ -80,9 +80,19 @@ const styles = {
   messageText: {
     fontSize: '14px',
   },
+  searchInput: {
+    width: '100%',
+    padding: '8px',
+    borderRadius: '4px',
+    border: '1px solid #4e4f50',
+    marginBottom: '10px',
+    backgroundColor: '#3a3b3c',
+    color: 'white',
+  },
 };
 
 const ChatList = () => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [chats] = useState([
     { id: 1, name: 'Nguyễn Văn A', lastMessage: 'Xin chào!', isOnline: true },
     { id: 2, name: 'Trần Thị B', lastMessage: 'Hẹn gặp lại!', isOnline: false },
@@ -95,17 +105,28 @@ const ChatList = () => {
     { id: 3, text: '@mọi người Discord', sender: 'Tôi', time: '20:44', isMine: true },
   ]);
 
+  const filteredChats = chats.filter(chat =>
+    chat.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div style={styles.container}>
       {/* Sidebar for Chat List */}
       <div style={styles.sidebar}>
         <h2 style={styles.header}>Danh Sách Trò Chuyện</h2>
+        <input
+          type="text"
+          placeholder="Tìm kiếm..."
+          style={styles.searchInput}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <ul style={styles.chatList}>
-          {chats.map(chat => (
+          {filteredChats.map(chat => (
             <li
               key={chat.id}
               style={styles.chatItem}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.chatItemHover.backgroundColor}
+              onMouseOver={(e ) => e.currentTarget.style.backgroundColor = styles.chatItemHover.backgroundColor}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.chatItem.backgroundColor}
             >
               <div style={styles.profilePic}></div>

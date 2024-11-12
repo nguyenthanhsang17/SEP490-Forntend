@@ -39,6 +39,8 @@ import PostJobDetail from './componets/staff/PostJobDetail';
 import EmployerRequests from './componets/staff/ViewEmployerRequest'
 import EmployerRequestDetail from './componets/staff/ViewEmployerRequestDetail'
 import ChatList from './componets/common/ChatList';
+import AdminDashboard from './componets/admin/AdminDashBoard';
+import PaymentScreen from './componets/utils/Payment';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -120,6 +122,10 @@ root.render(
             path="/verifyEmployerAccount"
             element={<PrivateRoute allowedRoles={["1"]}><VerifyEmployerAccount /></PrivateRoute>}
           />
+          <Route
+            path="/AdminDashBoard"
+            element={<PrivateRoute allowedRoles={["4"]}><AdminDashboard /></PrivateRoute>}
+          />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
           <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
@@ -127,6 +133,8 @@ root.render(
           <Route path='/ManagementCV'element={<ManagementCV />}  />
           <Route path='/ChatList'element={<ChatList />}  />
           <Route path='/EditPostJob/:id'element={<EditPostJob />}  />
+          
+          <Route path='/Payment'element={<PaymentScreen />}  />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
