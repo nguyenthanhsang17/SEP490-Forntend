@@ -51,6 +51,16 @@ function EditPostJob() {
 
     const [isOn, setIsOn] = useState(false);
 
+
+    const [imagesData, setImagesData] = useState([
+        // Sẽ chứa cả URL và ID
+        ...(JobDetail.imagesURL || []).map((url, index) => ({
+            url: url,
+            id: JobDetail.imagesURLIds ? JobDetail.imagesURLIds[index] : null
+        })),
+        // Các ảnh local sẽ có id là null ban đầu
+    ]);
+
     ///================================================
 
     const handleAddPostJobDate = () => {
@@ -75,17 +85,17 @@ function EditPostJob() {
         }
 
         const formattedPostJobDates = postJobDates.map((date, index) => ({
-            postId: Postid,
+            postId: id,
             eventDate: new Date(date.eventDate).toISOString(),
             startTime: date.startTime,
             endTime: date.endTime
         }));
 
         console.log(formattedPostJobDates);
-
+        console.log(JSON.stringify(formattedPostJobDates, null, 2));
         try {
-            const response = await fetch('https://localhost:7077/api/JobPostDates', {
-                method: 'POST',
+            const response = await fetch(`https://localhost:7077/api/JobPostDates/UpdateJobPostDate/${id}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -139,6 +149,7 @@ function EditPostJob() {
         const LoadJobFirst = async () => {
             try {
                 const token = localStorage.getItem("token");
+                console.log(token);
                 const response = await axios.get(
                     `https://localhost:7077/api/PostJobs/GetJobDetailForUpdate/${id}`,
                     {
@@ -152,10 +163,10 @@ function EditPostJob() {
                 if (response.status === 200) {
 
                     SetJobDetail(response.data);
+                    console.log("call 1 lan");
                 }
             } catch (error) {
                 console.error('Lỗi khi lưu lịch làm việc:', error);
-                alert('Có lỗi xảy ra khi lưu lịch làm việc!');
             } finally {
                 setIsLoading(false);
             }
@@ -166,9 +177,30 @@ function EditPostJob() {
     useEffect(() => {
         if (JobDetail) {
             //console.log("JobDetail state:", JSON.stringify(JobDetail, null, 2));
+            console.log("job thay dỏi r")
+        }
+    }, [JobDetail.postId,
+    JobDetail.jobTitle,
+    JobDetail.jobDescription,
+    JobDetail.salaryTypesId,
+    JobDetail.salary,
+    JobDetail.numberPeople,
+    JobDetail.address,
+    JobDetail.latitude,
+    JobDetail.longitude,
+    JobDetail.isUrgentRecruitment,
+    JobDetail.jobCategoryId]);
+
+    useEffect(() => {
+        if (JobDetail && JobDetail.imagesURL && JobDetail.imagesURL.length > 0) {
+            const updatedImagesData = JobDetail.imagesURL.map((url, index) => ({
+                url: url,
+                id: JobDetail.imagesURLIds ? JobDetail.imagesURLIds[index] : null
+            }));
+
+            setImagesData(updatedImagesData);
         }
     }, [JobDetail]);
-
 
     const addNewSchedule = () => {
         setSchedules([...schedules, {
@@ -250,20 +282,20 @@ function EditPostJob() {
                 return;
             }
 
-            // const response = await axios.post(
-            //     'https://localhost:7077/api/Slot',
-            //     dataToSend,
-            //     {
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //             // Thêm các headers khác nếu cần (như Authorization)
-            //         }
-            //     }
-            // );
+            const response = await axios.put(
+                'https://localhost:7077/api/Slot/UpdateSlot/' + id,
+                dataToSend,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Thêm các headers khác nếu cần (như Authorization)
+                    }
+                }
+            );
 
-            // if (response.status === 200) {
-            //     alert('Lưu lịch làm việc thành công!');
-            // }
+            if (response.status === 200) {
+                alert('Lưu lịch làm việc thành công!');
+            }
         } catch (error) {
             console.error('Lỗi khi lưu lịch làm việc:', error);
             alert('Có lỗi xảy ra khi lưu lịch làm việc!');
@@ -392,22 +424,33 @@ function EditPostJob() {
         setSelectedImages(selectedImages.filter((_, i) => i !== index));
     };
 
-    const uploadImages = async (postId) => {
-        if (selectedImages.length === 0) {
-            alert('Không có ảnh để upload!');
-            return;
-        }
-
+    const uploadImages = async () => {
         setIsLoading(true);
         const formData = new FormData();
 
-        selectedImages.forEach(image => {
-            formData.append('files', image.file);
-        });
+        formData.append('postid', id);
+
+        // Kiểm tra trước khi append
+        if (selectedImages && selectedImages.length > 0) {
+            selectedImages.forEach((imageObj) => {
+                if (imageObj.file) {
+                    console.log("Appending actual file:", imageObj.file);
+                    formData.append('files', imageObj.file); // chỉ append imageObj.file
+                } else {
+                    console.error("Image object missing file property:", imageObj);
+                }
+            });
+        }
+
+        if (imagesData && imagesData.length > 0) {
+            imagesData.forEach((imageId) => {
+                formData.append('imageIds', imageId.id);
+            });
+        }
 
         try {
-            const response = await axios.post(
-                'https://localhost:7077/api/Upload/UploadMultipleFilesForJob?postid=' + postId,
+            const response = await axios.put(
+                'https://localhost:7077/api/Upload/UpdateImagePostjob',
                 formData,
                 {
                     headers: {
@@ -418,10 +461,28 @@ function EditPostJob() {
 
             if (response.status === 200) {
                 alert('Upload ảnh thành công!');
-                // Xử lý kết quả từ API nếu cần
             }
         } catch (error) {
-            console.error('Error uploading images:', error);
+            // Log toàn bộ thông tin lỗi
+            console.error('Full Error:', error);
+            console.error('Error Response:', error.response);
+            console.error('Error Request:', error.request);
+            console.error('Error Message:', error.message);
+
+            // Hiển thị lỗi chi tiết từ server
+            if (error.response) {
+                console.error('Error Data:', error.response.data);
+                console.error('Error Status:', error.response.status);
+                console.error('Error Headers:', error.response.headers);
+
+                alert(`Lỗi: ${error.response.data.message || 'Có lỗi xảy ra'}`);
+            } else if (error.request) {
+                console.error('No response received', error.request);
+                alert('Không nhận được phản hồi từ server');
+            } else {
+                console.error('Error', error.message);
+                alert('Có lỗi trong quá trình gửi yêu cầu');
+            }
             alert('Có lỗi xảy ra trong quá trình upload ảnh.');
         } finally {
             setIsLoading(false);
@@ -439,57 +500,48 @@ function EditPostJob() {
 
     const validateJobData = () => {
         // Kiểm tra các trường không được null hoặc khoảng trắng
-        if (!jobTitle || jobTitle.trim() === '') {
+        if (!JobDetail.jobTitle || JobDetail.jobTitle.trim() === '') {
             toast.error('Vui lòng nhập tiêu đề công việc');
             return false;
         }
-        if (!jobDescription || jobDescription.trim() === '') {
+        if (!JobDetail.jobDescription || JobDetail.jobDescription.trim() === '') {
             toast.error('Vui lòng nhập mô tả công việc');
             return false;
         }
-        if (!fixSalary || fixSalary.trim() === '') {
+        if (!JobDetail.salary || JobDetail.salary === 0) {
             toast.error('Vui lòng nhập lương');
             return false;
         }
-        if (!numberPeople || numberPeople.trim() === '') {
+        if (!JobDetail.numberPeople || JobDetail.numberPeople == 0) {
             toast.error('Vui lòng nhập số lượng người cần tuyển');
             return false;
         }
-        if (!address || address.trim() === '') {
+        if (!JobDetail.address || JobDetail.address.trim() === '') {
             toast.error('Vui lòng nhập địa chỉ');
             return false;
         }
 
         // Kiểm tra salary_types_id và JobCategory_Id phải > 0
-        if (!salaryType || parseInt(salaryType) <= 0) {
+        if (!JobDetail.salaryTypesId || parseInt(JobDetail.salaryTypesId) <= 0) {
             toast.error('Vui lòng chọn loại lương');
             return false;
         }
-        if (!jobCategory || parseInt(jobCategory) <= 0) {
+        if (!JobDetail.jobCategoryId || parseInt(JobDetail.jobCategoryId) <= 0) {
             toast.error('Vui lòng chọn loại công việc');
             return false;
         }
         // Kiểm tra định dạng số
-        if (isNaN(fixSalary) || parseFloat(fixSalary) <= 0) {
+        if (isNaN(JobDetail.salary) || parseFloat(JobDetail.salary) <= 0) {
             toast.error('Lương phải là số dương');
             return false;
         }
 
-        if (isNaN(numberPeople) || parseInt(numberPeople) <= 0) {
+        if (isNaN(JobDetail.numberPeople) || parseInt(JobDetail.numberPeople) <= 0) {
             toast.error('Số lượng người cần tuyển phải là số dương');
             return false;
         }
-
-        // Kiểm tra định dạng ngày
-        const currentDate = new Date();
-        const expDate = new Date(expirationDate);
-        if (expDate <= currentDate) {
-            toast.error('Ngày hết hạn phải lớn hơn ngày hiện tại');
-            return false;
-        }
-
         // Kiểm tra định dạng tọa độ
-        if (isNaN(latitude) || isNaN(longitude)) {
+        if (isNaN(JobDetail.latitude) || isNaN(JobDetail.longitude)) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
         }
@@ -506,18 +558,18 @@ function EditPostJob() {
         }
 
         const jobData = {
-            jobTitle: jobTitle,
-            jobDescription: jobDescription,
-            salaryTypesId: salaryType,
-            salary: fixSalary,
-            NumberPeople: numberPeople,
-            Address: address,
-            latitude: latitude,
-            longitude: longitude,
-            ExpirationDate: expirationDate,
+            postId: JobDetail.postId,
+            jobTitle: JobDetail.jobTitle,
+            jobDescription: JobDetail.jobDescription,
+            salaryTypesId: JobDetail.salaryTypesId,
+            salary: JobDetail.salary,
+            numberPeople: JobDetail.numberPeople,
+            address: JobDetail.address,
+            latitude: JobDetail.latitude,
+            longitude: JobDetail.longitude,
             status: 0,
-            IsUrgentRecruitment: isUrgentRecruitment,
-            jobCategoryId: jobCategory
+            isUrgentRecruitment: JobDetail.isUrgentRecruitment,
+            jobCategoryId: JobDetail.jobCategoryId
         };
         console.log(JSON.stringify(jobData, null, 2));
 
@@ -525,8 +577,8 @@ function EditPostJob() {
         console.log(token);
 
         try {
-            const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
-                method: 'POST',
+            const response = await fetch('https://localhost:7077/api/PostJobs/UpdatePostJob', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -535,16 +587,16 @@ function EditPostJob() {
             });
             if (response.ok) {
                 const id = await response.json(); // Lấy trực tiếp giá trị id
-                console.log("PostId: " + id);
-                SetPostID(id);
-                const sang = formatDataForApi();
-                console.log(JSON.stringify(sang, null, 2));
-                uploadImages(id);
-                if (isLongTerm) {
-                    saveSchedule();
-                } else {
-                    handlePublishPostJobDates(id);
-                }
+                // console.log("PostId: " + id);
+                // SetPostID(id);
+                // const sang = formatDataForApi();
+                // console.log(JSON.stringify(sang, null, 2));
+                // uploadImages(id);
+                // if (isLongTerm) {
+                //     saveSchedule();
+                // } else {
+                //     handlePublishPostJobDates(id);
+                // }
             } else {
                 console.error('Error creating job:', response.statusText);
             }
@@ -562,28 +614,32 @@ function EditPostJob() {
             return;
         }
 
+
+
         const jobData = {
-            jobTitle: jobTitle,
-            jobDescription: jobDescription,
-            salaryTypesId: salaryType,
-            salary: fixSalary,
-            NumberPeople: numberPeople,
-            Address: address,
-            latitude: latitude,
-            longitude: longitude,
-            ExpirationDate: expirationDate,
-            status: 1,
-            IsUrgentRecruitment: isUrgentRecruitment,
-            jobCategoryId: jobCategory
+            postId: JobDetail.postId,
+            jobTitle: JobDetail.jobTitle,
+            jobDescription: JobDetail.jobDescription,
+            salaryTypesId: JobDetail.salaryTypesId,
+            salary: JobDetail.salary,
+            numberPeople: JobDetail.numberPeople,
+            address: JobDetail.address,
+            latitude: JobDetail.latitude,
+            longitude: JobDetail.longitude,
+            status: 0,
+            isUrgentRecruitment: JobDetail.isUrgentRecruitment,
+            jobCategoryId: JobDetail.jobCategoryId
         };
         console.log(JSON.stringify(jobData, null, 2));
 
         const token = localStorage.getItem('token');
         console.log(token);
 
+        console.log(isLongTerm);
+
         try {
-            const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
-                method: 'POST',
+            const response = await fetch('https://localhost:7077/api/PostJobs/UpdatePostJob', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -596,12 +652,14 @@ function EditPostJob() {
                 SetPostID(id);
                 const sang = formatDataForApi();
                 console.log(JSON.stringify(sang, null, 2));
-                uploadImages(id);
-                if (isLongTerm) {
-                    saveSchedule();
-                } else {
-                    handlePublishPostJobDates(id);
-                }
+                uploadImages();
+                // //uploadImages(id);
+                // if (isLongTerm) {
+                //     saveSchedule();
+                // } else {
+                //     handlePublishPostJobDates(id);
+                // }
+                saveSchedule();
             } else {
                 console.error('Error creating job:', response.statusText);
             }
@@ -653,22 +711,23 @@ function EditPostJob() {
             setIsLongTerm(JobDetail.isLongterm);
 
         }
-    }, [JobDetail]);
+    }, [JobDetail.slotDTOs, JobDetail.isLongterm]);
 
     useEffect(() => {
-        if(JobDetail.jobPostDateDTOs&&JobDetail.jobPostDateDTOs.length > 0){
+        if (JobDetail.jobPostDateDTOs && JobDetail.jobPostDateDTOs.length > 0) {
             const postJobDatess = JobDetail.jobPostDateDTOs.map((postJobDates, postJobDatesindex) => (
                 {
                     postId: id,
                     eventDate: postJobDates.eventDate.slice(0, 10),
                     startTime: postJobDates.startTime,
-                    endTime : postJobDates.endTime,
+                    endTime: postJobDates.endTime,
                 }
             ));
             console.log(postJobDatess)
             setPostJobDates(postJobDatess);
+            setIsLongTerm(JobDetail.isLongterm);
         }
-    }, [JobDetail, id]);
+    }, [JobDetail.jobPostDateDTOs, id]);
 
 
     return (
@@ -691,7 +750,13 @@ function EditPostJob() {
                                     className="form-control"
                                     placeholder="Tiêu đề công việc"
                                     value={JobDetail.jobTitle}
-                                    onChange={(e) => setJobTitle(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            jobTitle: newValue
+                                        }));
+                                    }}
                                 />
                             </div>
 
@@ -699,7 +764,13 @@ function EditPostJob() {
                                 <select
                                     className="form-control"
                                     value={JobDetail.jobCategoryId}
-                                    onChange={(e) => setJobCategory(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            jobCategoryId: newValue
+                                        }));
+                                    }}
                                 >
                                     <option value="">Chọn loại công việc</option>
                                     <option value="1">Hành chính</option>
@@ -718,7 +789,13 @@ function EditPostJob() {
                                 <select
                                     className="form-control"
                                     value={JobDetail.salaryTypesId}
-                                    onChange={(e) => setSalaryType(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            salaryTypesId: newValue
+                                        }));
+                                    }}
                                 >
                                     <option value="">Chọn kiểu trả lương</option>
                                     <option value="1">Theo giờ</option>
@@ -732,10 +809,17 @@ function EditPostJob() {
                             <div className="input-group form-group">
                                 <input
                                     type="number"
+                                    min={0}
                                     className="form-control"
                                     placeholder="Lương"
                                     value={JobDetail.salary}
-                                    onChange={(e) => setFixSalary(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            salary: newValue
+                                        }));
+                                    }}
                                 />
                             </div>
                             <div className="input-group form-group">
@@ -743,8 +827,15 @@ function EditPostJob() {
                                     type="number"
                                     className="form-control"
                                     placeholder="Số lượng người cần tuyển"
+                                    min={0}
                                     value={JobDetail.numberPeople}
-                                    onChange={(e) => setNumberPeople(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            numberPeople: newValue
+                                        }));
+                                    }}
                                 />
                             </div>
 
@@ -753,7 +844,13 @@ function EditPostJob() {
                                     className="form-control"
                                     placeholder="Mô tả công việc"
                                     value={JobDetail.jobDescription}
-                                    onChange={(e) => setJobDescription(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            jobDescription: newValue
+                                        }));
+                                    }}
                                 ></textarea>
                             </div>
 
@@ -762,8 +859,14 @@ function EditPostJob() {
                                     type="text"
                                     className="form-control"
                                     placeholder="Địa chỉ"
-                                    value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
+                                    value={JobDetail.address}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            address: newValue
+                                        }));
+                                    }}
                                 />
                             </div>
 
@@ -779,10 +882,10 @@ function EditPostJob() {
                                     padding: '10px 0'
                                 }}>
                                     {/* Hiển thị ảnh từ API */}
-                                    {JobDetail.imagesURL && JobDetail.imagesURL.map((imageUrl, index) => (
+                                    {imagesData && imagesData.map((image, index) => (
                                         <div key={index} style={{ position: 'relative', minWidth: '100px', height: '100px', flexShrink: 0 }}>
                                             <img
-                                                src={imageUrl}
+                                                src={image.url}
                                                 alt={`Job Image ${index + 1}`}
                                                 style={{
                                                     width: '100px',
@@ -792,13 +895,28 @@ function EditPostJob() {
                                                 }}
                                             />
                                             <button
+                                                type='button'
                                                 onClick={() => {
-                                                    // Xử lý xóa ảnh từ API
-                                                    const updatedImagesURL = JobDetail.imagesURL.filter((_, i) => i !== index);
-                                                    SetJobDetail(prev => ({
-                                                        ...prev,
-                                                        imagesURL: updatedImagesURL
-                                                    }));
+                                                    // Tìm index của URL trong mảng JobDetail.imagesURL
+                                                    const urlIndex = JobDetail.imagesURL.findIndex(url => url === image.url);
+
+                                                    if (urlIndex !== -1) {
+                                                        const updatedImagesURL = JobDetail.imagesURL.filter((_, i) => i !== urlIndex);
+                                                        const updatedImagesURLIds = JobDetail.imagesURLIds.filter((_, i) => i !== urlIndex);
+
+                                                        SetJobDetail(prev => ({
+                                                            ...prev,
+                                                            imagesURL: updatedImagesURL,
+                                                            imagesURLIds: updatedImagesURLIds
+                                                        }));
+                                                    }
+
+                                                    // Cập nhật imagesData
+                                                    const updatedImagesData = imagesData.filter((_, i) => i !== index);
+                                                    setImagesData(updatedImagesData);
+                                                    console.log(imagesData);
+                                                    console.log(imagesData);
+                                                    console.log(JobDetail);
                                                 }}
                                                 style={{
                                                     position: 'absolute',
@@ -835,7 +953,12 @@ function EditPostJob() {
                                                 }}
                                             />
                                             <button
-                                                onClick={() => handleImageRemove(index)}
+                                                type='button'
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Ngăn sự kiện lan truyền
+                                                    e.preventDefault(); // Ngăn hành vi mặc định
+                                                    handleImageRemove(index)
+                                                }}
                                                 style={{
                                                     position: 'absolute',
                                                     top: '-10px',
@@ -858,7 +981,7 @@ function EditPostJob() {
                                     ))}
 
                                     {/* Nút thêm ảnh */}
-                                    {(JobDetail.imagesURL ? JobDetail.imagesURL.length : 0) + selectedImages.length < 5 && (
+                                    {(imagesData ? imagesData.length : 0) + selectedImages.length < 5 && (
                                         <label
                                             className="upload-button"
                                             style={{
@@ -895,7 +1018,7 @@ function EditPostJob() {
                                         onChange={(e) => setIsUrgentRecruitment(e.target.checked)}
                                         style={{ marginRight: 10 }}
                                     />
-                                    Tuyển dụng khẩn cấp
+                                    Đăng bài viết nổi bật
                                 </label>
                             </div>
 
@@ -1173,11 +1296,16 @@ function EditPostJob() {
                             </div>
                             <div className="full-width">
                                 {/* <MapChoose onPositionChange={handlePositionChange} /> */}
-                                <MapAutoComplete onSubmit={handleLocationSubmit} onPositionChange={handlePositionChange} />
+                                {/* <MapAutoComplete onSubmit={handleLocationSubmit} onPositionChange={handlePositionChange} initialPosition={[JobDetail.latitude, JobDetail.longitude]} /> */}
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
-                                    <button type='button' onClick={saveSchedule} style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" >Lưu thay đổi</button>
+                                    <button type='button' onClick={luujob} style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" >Lưu thay đổi</button>
+                                </div>
+                            </div>
+                            <div className="input-group form-group">
+                                <div display="flex">
+                                    <button type='button' onClick={handleSubmit} style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" >Đăng Bài</button>
                                 </div>
                             </div>
                         </form>
