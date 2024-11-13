@@ -139,7 +139,7 @@ function ViewAllJobSeekerInFavoriteList() {
                             alignSelf: 'start',
                         }}
                     >
-                        Tìm kiếm
+                        Tìm kiếm 
                     </button>
                 </div>
 
@@ -177,7 +177,10 @@ function ViewAllJobSeekerInFavoriteList() {
                                         <p className="card-text"><strong>Tuổi:</strong> {seeker.age}</p>
                                         <p className="card-text"><strong>Công việc hiện tại:</strong> {seeker.currentJob}</p>
                                         <p className="card-text"><strong>Giới tính:</strong> {seeker.gender ? 'Nam' : 'Nữ'}</p>
-                                        <a href={`/ViewJobSeekerDetail/${seeker.userId}`} className="btn btn-primary">
+                                        <p className="card-text"><strong>Mô tả:</strong> {seeker.descriptionFavorite}</p>
+                                        <p className="card-text"><strong>Số công việc đã chấp nhận:</strong> {seeker.numberAppliedAccept}</p>
+                                        <p className="card-text"><strong>Số công việc đã ứng tuyển:</strong> {seeker.numberApplied}</p>
+                                        <a href={`/viewDetailJobSeeker/${seeker.userId}`} className="btn btn-primary">
                                             Xem chi tiết
                                         </a>
                                         <button onClick={() => handleDelete(seeker.userId)} className="btn btn-danger" style={{ marginLeft: '10px' }}>

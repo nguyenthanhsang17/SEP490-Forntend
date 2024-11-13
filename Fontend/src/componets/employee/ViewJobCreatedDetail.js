@@ -125,8 +125,8 @@ function ViewJobCreatedDetail() {
       </div>
     );
   };
-  
-  
+
+
   // Định nghĩa ánh xạ trạng thái
   const statusLabels = {
     0: "Bản nháp",
@@ -136,25 +136,25 @@ function ViewJobCreatedDetail() {
     4: "Đã xóa",
     5: "Đã ẩn",
     6: "Bị cấm"
-};
+  };
 
-const salaryTypeMap = {
-  "Theo giờ": "giờ",
-  "Theo ngày": "ngày",
-  "Theo công việc": "công việc",
-  "Theo tuần": "tuần",
-  "Theo tháng": "tháng",
-  "Lương cố định": "cố định",
-};
+  const salaryTypeMap = {
+    "Theo giờ": "giờ",
+    "Theo ngày": "ngày",
+    "Theo công việc": "công việc",
+    "Theo tuần": "tuần",
+    "Theo tháng": "tháng",
+    "Lương cố định": "cố định",
+  };
 
-const formatWithCommas = (number) => {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+  const formatWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
-// Hàm lấy nhãn trạng thái từ mã trạng thái
-const getStatusLabel = (status) => {
+  // Hàm lấy nhãn trạng thái từ mã trạng thái
+  const getStatusLabel = (status) => {
     return statusLabels[status] || "Không xác định";
-};
+  };
 
   return (
     <>
@@ -170,7 +170,7 @@ const getStatusLabel = (status) => {
       <div className="container">
         <button
           className="btn back-btn"
-          
+
           style={{
             margin: "20px 0",
             padding: "10px 20px",
@@ -191,7 +191,7 @@ const getStatusLabel = (status) => {
               <img src={jobDetails.imagePostJobs[0]} className="img" alt="Company Logo" />
             </div>
             <div className="detail-status">
-            <span>{getStatusLabel(jobDetails.status)}</span>
+              <span>{getStatusLabel(jobDetails.status)}</span>
             </div>
           </div>
 
@@ -228,10 +228,25 @@ const getStatusLabel = (status) => {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
-                  <a href="#" className="footer-btn grn-btn" title="">Chỉnh sửa bài đăng</a>
-                  <a href={`/ViewAllJobseekerApply/${id}`} className="footer-btn blu-btn" title="">Danh sách ứng viên đã ứng tuyển</a>
+                  <a
+                    href="#"
+                    className={`footer-btn grn-btn ${jobDetails.status === 1 ? 'disabled' : ''}`}
+                    title=""
+                    style={{ pointerEvents: jobDetails.status === 1 ? 'none' : 'auto' }}
+                  >
+                    Chỉnh sửa bài đăng
+                  </a>
+                  <a
+                    href={`/ViewAllJobseekerApply/${id}`}
+                    className={`footer-btn blu-btn ${jobDetails.status === 1 || jobDetails.status === 0 ? 'disabled' : ''}`}
+                    title=""
+                    style={{ pointerEvents: jobDetails.status === 1 || jobDetails.status === 0 ? 'none' : 'auto' }}
+                  >
+                    Danh sách ứng viên đã ứng tuyển
+                  </a>
                 </div>
               </div>
+
             </div>
           </div>
         </div>

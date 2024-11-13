@@ -184,25 +184,49 @@ const Profile = () => {
                 <div className="tab-content">
                   {!isUpdateProfile ? (
                     <div id="address" className="tab-pane fade in active">
-                      <ul className="job-detail-des">
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Họ và tên:</span> {profile.fullName}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Email:</span> {profile.email}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Số điện thoại:</span> {profile.phonenumber}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Công việc hiện tại:</span> {profile.jobName}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Địa chỉ:</span> {profile.address}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Giới tính:</span> {profile.gender ? "Nam" : "Nữ"}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Tuổi:</span> {profile.age}</li>
-                        <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Miêu tả bản thân:</span> <textarea disabled>{profile.description}</textarea></li>
-                      </ul>
-                      <button type="button" onClick={() => setIsUpdateProfile(true)} className="update-btn">Cập nhật thông tin cá nhân</button>
+                    <ul className="job-detail-des">
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Họ và tên:</span> {profile.fullName}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Email:</span> {profile.email}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Số điện thoại:</span> {profile.phonenumber}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Công việc hiện tại:</span> {profile.jobName}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Địa chỉ:</span> {profile.address}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Giới tính:</span> {profile.gender ? "Nam" : "Nữ"}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Tuổi:</span> {profile.age}</li>
+                      <li><span className="label1" style={{ marginRight: 60, width: 150 }}>Miêu tả bản thân:</span> <textarea disabled>{profile.description}</textarea></li>
+                    </ul>
+                    
+                    {/* Nút ManageCV và Verify Employer Account */}
+                    <div className="button-group">
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => navigate("/ManagementCV")}
+                        style={{ marginRight: "10px" }}
+                      >
+                        Manage CV
+                      </button>
+                  
+                      {profile.roleId === 1 && (
+                        <button
+                          className="btn btn-success"
+                          onClick={() => navigate("/verifyEmployerAccount")}
+                        >
+                          Verify Employer Account
+                        </button>
+                      )}
                     </div>
+                  
+                    <button type="button" onClick={() => setIsUpdateProfile(true)} className="update-btn">
+                      Cập nhật thông tin cá nhân
+                    </button>
+                  </div>
+                  
                   ) : (
                     <div id="settings" className="tab-pane fade in active">
                       <form onSubmit={handleSubmit}>
                         <div className="row no-mrg">
                           <div className="edit-pro">
                             <div className="col-md-4 col-sm-6">
-                              <label>Ả nh đại diện</label>
+                              <label>Ảnh đại diện</label>
                               <input type="file" className="form-control" onChange={handleFileChange} />
                               <img style={{ width: 250, height: 330 }} src={img} alt="Avatar Preview" />
                             </div>

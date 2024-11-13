@@ -20,13 +20,8 @@ function ViewJobDetail() {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
-      const token = localStorage.getItem("token");
-      console.log("Token:", token); // Kiểm tra giá trị token // Lấy token từ localStorage hoặc cách khác
       try {
         const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}` // Thêm token vào header
-          }
         });
         setJobDetails(response.data);
         console.log(response.data);
@@ -236,17 +231,52 @@ function ViewJobDetail() {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
-                  <button className="button apply-button" title="Apply Now">Ứng tuyển ngay</button>
-                  {jobDetails.isWishJob ? (<button className="button save-button">
-                    <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
-                  </button>) : (<button onClick={toggleSaveJob} className="button save-button">
-                    <FontAwesomeIcon icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
-                  </button>)}
+                  {/* Nút Ứng tuyển ngay */}
+                  <button
+                    className="button apply-button"
+                    title="Ứng tuyển ngay"
+                    onClick={() => {
+                      const token = localStorage.getItem('token');
+                      if (!token) {
+                        navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                      } else {
+                        // Thêm logic để ứng tuyển vào công việc ở đây
+                        console.log("Đang ứng tuyển vào công việc...");
+                      }
+                    }}
+                  >
+                    Ứng tuyển ngay
+                  </button>
 
+                  {/* Nút Lưu tin */}
+                  {jobDetails.isWishJob ? (
+                    <button className="button save-button">
+                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
+                    </button>
+                  ) : (
+                    <button onClick={toggleSaveJob} className="button save-button">
+                      <FontAwesomeIcon icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
+                    </button>
+                  )}
 
-                  <button onClick={() => navigate(`/reportPostJob/${id}`)} className="button report-button" title="Report">Báo cáo</button>
+                  {/* Nút Báo cáo */}
+                  <button
+                    onClick={() => {
+                      const token = localStorage.getItem('token');
+                      if (!token) {
+                        navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                      } else {
+                        navigate(`/reportPostJob/${id}`);
+                      }
+                    }}
+                    className="button report-button"
+                    title="Báo cáo"
+                  >
+                    Báo cáo
+                  </button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
