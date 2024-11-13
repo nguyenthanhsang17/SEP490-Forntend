@@ -276,16 +276,7 @@ const ViewAllPostJobInWishlist = () => {
                                     />
                                     Ưu tiên công việc lương cao
                                 </label>
-                                <label style={prioritySortLabelStyle}>
-                                    <input
-                                        type="radio"
-                                        name="sort"
-                                        value="2"
-                                        checked={sort === 2}
-                                        onChange={handleSortChange}
-                                    />
-                                    Ưu tiên công việc tuyển gấp
-                                </label>
+                                
                                 <label style={prioritySortLabelStyle}>
                                     <input
                                         type="radio"
@@ -294,7 +285,7 @@ const ViewAllPostJobInWishlist = () => {
                                         checked={sort === 3}
                                         onChange={handleSortChange}
                                     />
-                                    Ưu tiên công việc khoảng cách
+                                    Ưu tiên công việc khoảng cách gần nhất
                                 </label>
                             </div>
                         </div>
@@ -331,7 +322,7 @@ const ViewAllPostJobInWishlist = () => {
                                         </div>
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
-                                                <a href="" className="btn btn-apply"
+                                                <a href={`/ApplyJob/${job.postId}`} className="btn btn-apply"
                                                     onClick={(e) => {
                                                         e.stopPropagation(); // Ngăn sự kiện onClick của item-click
                                                     }}>

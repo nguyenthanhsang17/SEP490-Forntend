@@ -233,6 +233,7 @@ function ViewJobDetail() {
                 <div className="detail-pannel-footer-btn pull-right">
                   {/* Nút Ứng tuyển ngay */}
                   <button
+                    
                     className="button apply-button"
                     title="Ứng tuyển ngay"
                     onClick={() => {
@@ -241,6 +242,7 @@ function ViewJobDetail() {
                         navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
                       } else {
                         // Thêm logic để ứng tuyển vào công việc ở đây
+                        navigate(`/ApplyJob/${id}`);
                         console.log("Đang ứng tuyển vào công việc...");
                       }
                     }}

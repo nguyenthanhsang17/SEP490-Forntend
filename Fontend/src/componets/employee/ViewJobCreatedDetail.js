@@ -229,7 +229,7 @@ function ViewJobCreatedDetail() {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   <a
-                    href="#"
+                    href={`/EditPostJob/${id}`}
                     className={`footer-btn grn-btn ${jobDetails.status === 1 ? 'disabled' : ''}`}
                     title=""
                     style={{ pointerEvents: jobDetails.status === 1 ? 'none' : 'auto' }}
