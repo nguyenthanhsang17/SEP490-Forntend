@@ -56,14 +56,40 @@ const Profile = () => {
     setUpdatedProfile({ ...updatedProfile, [name]: value });
   };
 
+  const validateFields = () => {
+    const { fullName, age, phonenumber, address, description } = updatedProfile;
+    if (!fullName || !age || !phonenumber || !address || !description) {
+      enqueueSnackbar("Vui lòng điền tất cả các trường bắt buộc.", { variant: 'error' });
+      return false;
+    }
+    
+    const phoneRegex = /^0\d{9}$/; // Example: 10-digit phone number
+    if (!phoneRegex.test(phonenumber)) {
+      enqueueSnackbar("Số điện thoại không hợp lệ. Vui lòng nhập lại.", { variant: 'error' });
+      return false;
+    }
+
+    if (age < 18 || age > 120) {
+      enqueueSnackbar("Tuổi không hợp lệ. Vui lòng nhập lại.", { variant: 'error' });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    if (!validateFields()) {
+      setLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem("token");
     const formData = new FormData();
-    // Thêm các trường dữ liệu vào FormData
+    // Add fields to FormData
     formData.append("FullName", updatedProfile.fullName);
     formData.append("Age", updatedProfile.age);
     formData.append("Phonenumber", updatedProfile.phonenumber);
@@ -71,10 +97,11 @@ const Profile = () => {
     formData.append("gender", updatedProfile.gender);
     formData.append("currentJob", updatedProfile.currentJob);
     formData.append("description", updatedProfile.description);
-    // Thêm file nếu có
+    // Add file if exists
     if (file) {
-        formData.append("AvatarURL", file);
+      formData.append("AvatarURL", file);
     }
+
     try {
       await axios.put(
         "https://localhost:7077/api/Users/UpdateProfile",
@@ -104,7 +131,7 @@ const Profile = () => {
       setimg(URL.createObjectURL(selectedFile)); // Create a temporary URL for the image
       setUpdatedProfile(prev => ({
         ...prev,
-        Avatar: file
+        Avatar: selectedFile
       }));
     }
   };
@@ -172,17 +199,17 @@ const Profile = () => {
                         <div className="row no-mrg">
                           <div className="edit-pro">
                             <div className="col-md-4 col-sm-6">
-                              <label>Ảnh đại diện</label>
+                              <label>Ả nh đại diện</label>
                               <input type="file" className="form-control" onChange={handleFileChange} />
-                              <img style={{ width: 250, height: 330 }} src={img} />
+                              <img style={{ width: 250, height: 330 }} src={img} alt="Avatar Preview" />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Họ và tên</label>
-                              <input type="text" name="fullName" value={updatedProfile.fullName} className="form-control" onChange={handleInputChange} />
+                              <input type="text" name="fullName" value={updatedProfile.fullName} className="form-control" onChange={handleInputChange} required />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Tuổi</label>
-                              <input type="number" min={1} name="age" value={updatedProfile.age} className="form-control" onChange={handleInputChange} />
+                              <input type="number" min={1} name="age" value={updatedProfile.age} className="form-control" onChange={handleInputChange} required />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Email</label>
@@ -190,11 +217,11 @@ const Profile = () => {
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Số điện thoại</label>
-                              <input type="text" name="phonenumber" value={updatedProfile.phonenumber} className="form-control" onChange={handleInputChange} />
+                              <input type="text" name="phonenumber" value={updatedProfile.phonenumber} className="form-control" onChange={handleInputChange} required />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Địa chỉ</label>
-                              <input type="text" name="address" value={updatedProfile.address} className="form-control" onChange={handleInputChange} />
+                              <input type="text" name="address" value={updatedProfile.address} className="form-control" onChange={handleInputChange} required />
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Giới tính</label>
@@ -205,15 +232,15 @@ const Profile = () => {
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Tình trạng hiện tại</label>
-                              <select name="currentJob" className="form-control" value={profile.currentJob} onChange={handleInputChange}>
-                                <option value={1} >Thất nghiệp</option>
-                                <option value={2} >Đang đi học</option>
-                                <option value={3} >Đang đi làm</option>
+                              <select name="currentJob" className="form-control" value={updatedProfile.currentJob} onChange={handleInputChange}>
+                                <option value={1}>Thất nghiệp</option>
+                                <option value={2}>Đang đi học</option>
+                                <option value={3}>Đang đi làm</option>
                               </select>
                             </div>
                             <div className="col-md-4 col-sm-6">
                               <label>Miêu tả bản thân</label>
-                              <textarea name="description" value={updatedProfile.description} className="form-control" onChange={handleInputChange}></textarea>
+                              <textarea name="description" value={updatedProfile.description} className="form-control" onChange={handleInputChange} required></textarea>
                             </div>
                             <div className="col-sm-2">
                               <button type="submit" className="update-btn">Cập nhật</button>
