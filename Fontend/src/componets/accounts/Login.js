@@ -36,41 +36,48 @@ function Login() {
     setIsLoading(true);
 
     const loginData = {
-      userName: email,
-      password: password,
+        userName: email,
+        password: password,
     };
 
     try {
-      const response = await fetch("https://localhost:7077/api/Users/Login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+        const response = await fetch("https://localhost:7077/api/Users/Login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(loginData),
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.Message || "Đăng nhập không thành công");
-      }
+        if (!response.ok) {
+            throw new Error(result.Message || "Đăng nhập không thành công");
+        }
 
-      console.log("Đăng nhập thành công:", result);
+        console.log("Đăng nhập thành công:", result);
 
-      localStorage.setItem('token', result.token);
-      localStorage.setItem('fullName', result.fullName);
-      localStorage.setItem('roleId', result.roleId);
-      localStorage.setItem('userId', result.userId);
-      
-      navigate('/');
+        // Lưu token và thông tin người dùng vào localStorage
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('fullName', result.fullName);
+        localStorage.setItem('roleId', result.roleId);
+        localStorage.setItem('userId', result.userId);
+
+        // Điều hướng dựa trên roleId
+        if (result.roleId === 4) {
+            navigate('/AdminDashboard');
+        } else {
+            navigate('/'); // Điều hướng đến trang khác nếu không phải Admin
+        }
 
     } catch (error) {
-      setError(error.message);
-      console.error("Lỗi:", error);
+        setError(error.message);
+        console.error("Lỗi:", error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
 
   const handleGoogleLogin = () => {
     console.log("Google login clicked");

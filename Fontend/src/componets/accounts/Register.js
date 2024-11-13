@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import $ from 'jquery';
+import { useNavigate } from "react-router-dom";
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
 import bannerImage from '../assets/img/banner-10.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -17,53 +16,68 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Họ và tên không được để trống.";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email không được để trống.";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = "Email không đúng định dạng.";
+      }
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = "Mật khẩu không được để trống.";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Mật khẩu và xác nhận mật khẩu không khớp.";
+    }
+
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (formData.password !== formData.confirmPassword) {
-      alert("Mật khẩu và xác nhận mật khẩu không khớp.");
+
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-    console.log(formData);
+
+    setErrors({});
     try {
-      const response = await fetch("https://localhost:7077/api/Users/ResgisterUser ", {
+      const response = await fetch("https://localhost:7077/api/Users/RegisterUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) {
-        setError(result.message);
-        throw new Error(result.message || "Đăng Ký không thành công");
-      } else {
-        setError(''); // Clear any previous error message
-        setSuccessMessage("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.");
-        navigate('/VerifyRegister');
+        throw new Error(result.message || "Đăng ký không thành công.");
       }
-  
-      console.log("Đăng ký thành công:", result);
-  
+
+      setSuccessMessage("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.");
+      navigate('/VerifyRegister');
     } catch (error) {
-      setSuccessMessage(''); // Clear success message if there's an error
-      setError(error.message);
-      console.error("Lỗi:", error);
+      setSuccessMessage('');
+      setErrors({ global: error.message });
     }
   };
 
@@ -76,16 +90,8 @@ const Signup = () => {
   };
 
   const handleLoginRedirect = () => {
-    navigate('/login'); // Navigate to the login page
+    navigate('/login');
   };
-
-  useEffect(() => {
-    if (typeof $.fn.styleSwitcher === "function") {
-      $('#styleOptions').styleSwitcher();
-    } else {
-      console.error("styleSwitcher is not defined");
-    }
-  }, []);
 
   const styles = {
     body: {
@@ -111,8 +117,7 @@ const Signup = () => {
       marginBottom: '15px',
       padding: '10px',
       border: '1px solid #ccc',
-      borderRadius: '20px', // Rounded corners
-      backgroundColor: '#e6ffe6', // Light green background color
+      borderRadius: '20px',
     },
     passwordInput: {
       position: 'relative',
@@ -130,24 +135,28 @@ const Signup = () => {
       backgroundColor: '#4facfe',
       color: '#fff',
       border: 'none',
-      borderRadius: '20px', // Rounded corners
+      borderRadius: '20px',
       cursor: 'pointer',
-      transition : 'background-color 0 .3s',
     },
     loginButton: {
       width: '100%',
       padding: '10px',
-      backgroundColor: '#07b107', // Changed button color
+      backgroundColor: '#07b107',
       color: '#fff',
       border: 'none',
-      borderRadius: '20px', // Rounded corners
+      borderRadius: '20px',
       cursor: 'pointer',
-      transition: 'background-color 0.3s',
       marginTop: '10px',
     },
-    note: {
-      fontSize: '12px', // Smaller font size for notes
-      marginBottom: '5px',
+    error: {
+      color: 'red',
+      fontSize: '12px',
+      marginBottom: '10px',
+    },
+    success: {
+      color: 'green',
+      fontSize: '14px',
+      marginBottom: '10px',
     },
   };
 
@@ -158,25 +167,27 @@ const Signup = () => {
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
         <form onSubmit={handleSubmit}>
-          <span style={styles.note}>Họ và tên</span>
+          <span>Họ và tên</span>
           <input
             type="text"
             style={styles.input}
             name="fullName"
             placeholder="Họ và tên"
             value={formData.fullName}
-            onChange={handleChange}
+            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
           />
-          <span style={styles.note}>Email</span>
+          {errors.fullName && <div style={styles.error}>{errors.fullName}</div>}
+          <span>Email</span>
           <input
             type="email"
             style={styles.input}
             name="email"
             placeholder="Email"
             value={formData.email}
-            onChange={handleChange}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
-          <span style={styles.note}>Mật khẩu</span>
+          {errors.email && <div style={styles.error}>{errors.email}</div>}
+          <span>Mật khẩu</span>
           <div style={styles.passwordInput}>
             <input
               type={showPassword ? "text" : "password"}
@@ -184,13 +195,14 @@ const Signup = () => {
               name="password"
               placeholder="Mật khẩu"
               value={formData.password}
-              onChange={handleChange}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
             <span onClick={togglePasswordVisibility} style={styles.icon}>
               <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
             </span>
           </div>
-          <span style={styles.note}>Xác nhận mật khẩu</span>
+          {errors.password && <div style={styles.error}>{errors.password}</div>}
+          <span>Xác nhận mật khẩu</span>
           <div style={styles.passwordInput}>
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -198,24 +210,17 @@ const Signup = () => {
               name="confirmPassword"
               placeholder="Xác nhận mật khẩu"
               value={formData.confirmPassword}
-              onChange={handleChange}
+              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
             />
             <span onClick={toggleConfirmPasswordVisibility} style={styles.icon}>
               <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
             </span>
           </div>
-  
-          {/* Error message */}
-          {error && <div style={{ color: 'red', fontSize: '14px' }}>{error}</div>}
-          {/* Success message */}
-          {successMessage && <div style={{ color: 'green', fontSize: '14px' }}>{successMessage}</div>}
-  
-          <button style={styles.button} type="submit">
-            Đăng Ký Tài Khoản
-          </button>
-          <button style={styles.loginButton} onClick={handleLoginRedirect}>
-            Đăng Nhập Ngay
-          </button>
+          {errors.confirmPassword && <div style={styles.error}>{errors.confirmPassword}</div>}
+          {errors.global && <div style={styles.error}>{errors.global}</div>}
+          {successMessage && <div style={styles.success}>{successMessage}</div>}
+          <button style={styles.button} type="submit">Đăng Ký Tài Khoản</button>
+          <button style={styles.loginButton} onClick={handleLoginRedirect}>Đăng Nhập Ngay</button>
         </form>
       </div>
     </div>

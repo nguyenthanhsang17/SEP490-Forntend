@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import 'font-awesome/css/font-awesome.min.css';
+import "../assets/css/colors/green-style.css";
 
 class Footer extends React.Component {
+  state = {
+    isLoggedIn: false
+  };
+
+  componentDidMount() {
+    // Check if the user is logged in by looking for a token or some indicator
+    const token = localStorage.getItem('token'); // Adjust based on your authentication method
+    if (token) {
+      this.setState({ isLoggedIn: true });
+    }
+  }
+
   render() {
+    const { isLoggedIn } = this.state;
+
     return (
       <footer className="footer">
         <div className="row no-padding">
@@ -11,7 +27,7 @@ class Footer extends React.Component {
                 <h3 className="widgettitle widget-title">Về Job Stock</h3>
                 <div className="textwidget">
                   <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem.</p>
-                  <p>7860 North Park Place<br/>San Francisco, CA 94120</p>
+                  <p>7860 North Park Place<br />San Francisco, CA 94120</p>
                   <p><strong>Email:</strong> Support@careerdesk</p>
                   <p><strong>Gọi:</strong> <a href="tel:+15555555555">555-555-1234</a></p>
                   <ul className="footer-social">
@@ -74,6 +90,20 @@ class Footer extends React.Component {
             <p><a target="_blank" href="https://www.templateshub.net">2024</a></p>
           </div>
         </div>
+
+        {/* Floating Chat Icon - Only visible if logged in */}
+        {isLoggedIn && (
+          <div className="floating-icons">
+            <a 
+              href="/ChatList" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="icon messenger-icon"
+            >
+              <i className="fa fa-comments"></i> {/* Messenger icon */}
+            </a>
+          </div>
+        )}
       </footer>
     );
   }

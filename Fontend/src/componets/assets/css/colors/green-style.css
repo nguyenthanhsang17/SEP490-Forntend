@@ -907,3 +907,110 @@ textarea.form-control {
     flex: 1; /* Allow info to take up remaining space */
     padding-right: 20px; /* Add padding to the right for better spacing */
   }
+  .floating-icons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+  }
+  
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0078FF; /* Màu nền của Messenger */
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+  }
+  .dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f9fafb;
+  }
+  
+  .sidebar {
+    width: 200px;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #7f56d9;
+    margin-bottom: 30px;
+  }
+  
+  .sidebar-menu .menu-item {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-search {
+    width: 400px;
+    border-radius: 8px;
+  }
+  
+  .dashboard-cards,
+  .dashboard-charts {
+    margin-bottom: 20px;
+  }
+  
+  .orders-card,
+  .top-products-card {
+    margin-bottom: 20px;
+  }
+  .vnpay-payment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 20px;
+  }
+  
+  .qr-code-container {
+    margin: 20px 0;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .qr-code-image {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+  }
+  
+  .refresh-button {
+    margin-top: 20px;
+  }
+  
+  
+  
+  
+  
