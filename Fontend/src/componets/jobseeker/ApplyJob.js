@@ -137,13 +137,13 @@ function ApplyJob() {
 
             if (response.status === 200) {
                 setApplyStatus('Ứng tuyển thành công!');
-                navigate("/ViewAllJobApplied/" + job_id);
+                navigate("/ViewAllJobApplied");
             } else {
                 setApplyStatus('Có lỗi xảy ra. Vui lòng thử lại.');
             }
         } catch (err) {
             console.error("Error applying for job:", err);
-            setApplyStatus('Có lỗi xảy ra. Vui lòng thử lại.');
+            setApplyStatus('Bạn đã ứng tuyển, không thể ứng tuyển lại nữa.');
         }
     };
 
