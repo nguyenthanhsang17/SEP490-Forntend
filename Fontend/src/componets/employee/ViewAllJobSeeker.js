@@ -7,12 +7,14 @@ import '../assets/css/colors/green-style.css';
 import Header from '../common/Header';
 import Footer from '../common/Footer';
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 
 const MemberCard = () => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // State for filter inputs
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState(0);
   const [currentJob, setCurrentJob] = useState(0);
@@ -26,6 +28,7 @@ const MemberCard = () => {
   // Fetch data from API based on filters
   const fetchCandidates = async () => {
     setLoading(true);
+
     const token = localStorage.getItem("token");
 
     try {
@@ -44,6 +47,7 @@ const MemberCard = () => {
           gender
         }
       });
+
       setCandidates(response.data.items || []);
     } catch (error) {
       console.error("Error fetching candidates:", error);
@@ -52,13 +56,14 @@ const MemberCard = () => {
     }
   };
 
+  // Navigate to candidate detail page
   const handleViewDetail = (id) => {
     navigate(`/viewDetailJobSeeker/${id}`);
   };
 
   const handleAddToFavorites = async (id) => {
     const token = localStorage.getItem("token");
-
+  
     Swal.fire({
       title: 'Lưu thông tin liên hệ',
       input: "text",
@@ -82,8 +87,12 @@ const MemberCard = () => {
               },
             }
           );
+          
           Swal.fire('Thành công', 'Ứng viên đã được lưu vào danh sách yêu thích', 'success');
+          
+          // Reload data after successful save
           fetchCandidates();
+  
         } catch (error) {
           Swal.showValidationMessage(`Không thể lưu ứng viên: ${error}`);
         }
@@ -91,12 +100,13 @@ const MemberCard = () => {
       allowOutsideClick: () => !Swal.isLoading(),
     });
   };
+  
 
   useEffect(() => {
     const initialSaved = {};
-    candidates.forEach((candidate) => {
-      if (candidate.isFavorite === 1) {
-        initialSaved[candidate.userId] = true;
+    candidates.forEach((candidates) => {
+      if (candidates.isFavorite === 1) {
+        initialSaved[candidates.userId] = true;
       }
     });
     setSaved(initialSaved);
@@ -195,7 +205,7 @@ const MemberCard = () => {
                         <img
                           src={candidate.avatarURL || "https://via.placeholder.com/100"}
                           alt="Avatar"
-                          style={{ width: '100px', height: '100px', borderRadius: '8px' }}
+                          style={{ width: '100px', height: '100px', borderRadius: '8px' }} // Increased size
                         />
                       </div>
                       <div className="candidate-info" style={{ flex: 1 }}>
@@ -206,38 +216,46 @@ const MemberCard = () => {
                         <p style={{ color: '#666', margin: '0', fontSize: '14px' }}>Công Việc Hiện Tại: {candidate.currentJob}</p>
                         <p style={{ color: '#666', margin: '0', fontSize: '14px' }}>Giới Tính: {candidate.gender ? "Nam" : "Nữ"}</p>
                       </div>
-                      <div className="candidate-actions d-flex flex-column align-items-end">
+                      <div className="candidate-actions d-flex flex-column align-items-end"> {/* Align buttons to the right */}
                         <button
                           className="btn btn-primary mb-2"
                           onClick={() => handleViewDetail(candidate.userId)}
                         >
                           Liên Hệ Ngay
                         </button>
+                        {/* <button
+                          className="btn btn-secondary"
+                          onClick={() => handleAddToFavorites(candidate.userId)}
+                        >
+                          Lưu thông tin liên hệ
+                        </button> */}
                         {saved[candidate.userId] || candidate.isFavorite === 1 ? (
-                          <button
-                            className="btn btn-save"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <FontAwesomeIcon
-                              icon={faHeart}
-                              className="icon-spacing"
-                              style={{ color: "red" }}
-                            />
-                            Đã Lưu thông tin
-                          </button>
-                        ) : (
-                          <button
-                            className="btn btn-save"
-                            onClick={() => handleAddToFavorites(candidate.userId)}
-                          >
-                            <FontAwesomeIcon
-                              icon={faHeart}
-                              className="icon-spacing"
-                              style={{ color: "gray" }}
-                            />
-                            Lưu thông tin liên hệ
-                          </button>
-                        )}
+                              <button
+                                className="btn btn-save"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faHeart}
+                                  className="icon-spacing"
+                                  style={{ color: "red" }}
+                                />
+                                Đã lưu thông tin
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-save"
+                                onClick={() => handleAddToFavorites(candidate.userId)}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faHeart}
+                                  className="icon-spacing"
+                                  style={{ color: "gray" }}
+                                />
+                                Lưu thông tin liên hệ
+                              </button>
+                            )}
                       </div>
                     </div>
                   </div>
