@@ -95,7 +95,10 @@ root.render(
               </PrivateRoute>
             }
           />
-
+<Route
+            path="/verifyEmployerAccount"
+            element={<PrivateRoute allowedRoles={[1]}><VerifyEmployerAccount /></PrivateRoute>}
+          />
           {/* Employer-Only Routes */}
           <Route
             path="/createPostJob"
