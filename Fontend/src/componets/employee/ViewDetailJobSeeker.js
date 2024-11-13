@@ -6,11 +6,15 @@ import bannerImage from '../assets/img/banner-10.jpg';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 const ViewJobDetailJobSeeker = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [jobSeeker, setJobSeeker] = useState(null);
+    const [isSaved, setIsSaved] = useState(false);
 
     useEffect(() => {
         const fetchJobSeekerDetails = async () => {
@@ -57,6 +61,7 @@ const ViewJobDetailJobSeeker = () => {
                         }))
                     };
                     setJobSeeker(filteredData);
+                    setIsSaved(localStorage.getItem(`savedJobSeeker_${data.userId}`) ? true : false); // Check if already saved
                 } else if (response.status === 401) {
                     navigate("/login");
                 }
@@ -73,8 +78,29 @@ const ViewJobDetailJobSeeker = () => {
     };
 
     const handleSave = () => {
-        localStorage.setItem(`savedJobSeeker_${jobSeeker.userId}`, JSON.stringify(jobSeeker));
-        alert(`${jobSeeker.fullName} has been saved.`);
+        if (isSaved) {
+            Swal.fire('Thông báo', 'Ứng viên đã có trong danh sách yêu thích.', 'info');
+            return;
+        }
+        
+        Swal.fire({
+            title: 'Lưu thông tin liên hệ',
+            input: 'text',
+            inputLabel: 'Nhập mô tả',
+            showCancelButton: true,
+            confirmButtonText: 'Lưu',
+            cancelButtonText: 'Hủy',
+            preConfirm: (description) => {
+                if (description) {
+                    const savedData = { ...jobSeeker, description };
+                    localStorage.setItem(`savedJobSeeker_${jobSeeker.userId}`, JSON.stringify(savedData));
+                    setIsSaved(true);
+                    Swal.fire('Thành công', `${jobSeeker.fullName} đã được lưu vào danh sách yêu thích.`, 'success');
+                } else {
+                    Swal.showValidationMessage('Bạn cần nhập mô tả để lưu.');
+                }
+            }
+        });
     };
 
     return (
@@ -120,8 +146,16 @@ const ViewJobDetailJobSeeker = () => {
                                         <button className="btn btn-primary contact-btn" onClick={handleContactNow}>
                                             Liên Hệ Ngay
                                         </button>
-                                        <button className="btn btn-secondary save-btn" onClick={handleSave}>
-                                            Lưu
+                                        <button
+                                            className="btn btn-save"
+                                            onClick={handleSave}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faHeart}
+                                                className="icon-spacing"
+                                                style={{ color: isSaved ? 'red' : 'gray' }}
+                                            />
+                                            {isSaved ? 'Đã Lưu' : 'Lưu thông tin liên hệ'}
                                         </button>
                                     </div>
                                 )}
@@ -171,7 +205,7 @@ const ViewJobDetailJobSeeker = () => {
                     background-color: #218838;
                 }
 
-                .save-btn {
+                .btn-save {
                     background-color: #007bff;
                     color: white;
                     border: none;
@@ -183,7 +217,7 @@ const ViewJobDetailJobSeeker = () => {
                     border-radius: 5px;
                 }
 
-                .save-btn:hover {
+                .btn-save:hover {
                     background-color: #0069d9;
                 }
 
