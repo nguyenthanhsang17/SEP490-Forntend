@@ -18,9 +18,9 @@ const JobListing = () => {
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [notFound, setNotFound] = useState("");         // For not found message
+  const [notFound, setNotFound] = useState(""); // For not found message
   const [notFoundJob, setNotFoundJob] = useState(false); // For not found flag
-  const [pageNumber, setPageNumber] = useState(1); 
+  const [pageNumber, setPageNumber] = useState(1);
   // Search filter states
   const [jobKeyword, setJobKeyword] = useState("");
   const [salaryTypesId, setSalaryTypesId] = useState(0);
@@ -33,7 +33,7 @@ const JobListing = () => {
   const [distance, Setdistance] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const [savedJobs, setSavedJobs] = useState({});
-  
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -46,8 +46,8 @@ const JobListing = () => {
   });
 
   const navigate = useNavigate();
- // Check if the user is logged in
- const isLoggedIn = !!localStorage.getItem("token");
+  // Check if the user is logged in
+  const isLoggedIn = !!localStorage.getItem("token");
   useEffect(() => {
     // Get user's current location
     const getLocation = () => {
@@ -87,7 +87,7 @@ const JobListing = () => {
     const fetchJobs = async () => {
       const token = localStorage.getItem("token");
       console.log("Token:", token); // Check the token value
-  
+
       try {
         // Set params based on whether userLocation is available
         const params = {
@@ -105,18 +105,21 @@ const JobListing = () => {
               }
             : {}),
         };
-  
+
         // Prepare the headers object conditionally
         const headers = {};
         if (token) {
           headers.Authorization = `Bearer ${token}`;
         }
-  
-        const response = await axios.get("https://localhost:7077/api/PostJobs", {
-          headers,
-          params,
-        });
-  
+
+        const response = await axios.get(
+          "https://localhost:7077/api/PostJobs",
+          {
+            headers,
+            params,
+          }
+        );
+
         if (response.status === 200 && response.data.items) {
           const fetchedJobs = response.data.items || [];
           setJobs(fetchedJobs);
@@ -140,7 +143,7 @@ const JobListing = () => {
         setLoading(false);
       }
     };
-  
+
     fetchJobs();
   }, [
     currentPage,
@@ -152,7 +155,7 @@ const JobListing = () => {
     userLocation,
     distance,
   ]);
-  
+
   const generatePagination = (pageNumber, totalPages) => {
     const paginationItems = [];
 
@@ -227,17 +230,19 @@ const JobListing = () => {
 
   const addwishlist = async (postJobId) => {
     const token = localStorage.getItem("token");
-  
+
     if (!token) {
-      enqueueSnackbar("Vui lòng đăng nhập để lưu công việc.", { variant: "warning" });
+      enqueueSnackbar("Vui lòng đăng nhập để lưu công việc.", {
+        variant: "warning",
+      });
       navigate("/login"); // Redirect to login if user is not authenticated
       return;
     }
-  
+
     const data = {
       PostJobId: postJobId,
     };
-  
+
     try {
       const response = await axios.post(
         "https://localhost:7077/api/WishJobs/AddWishJob",
@@ -249,13 +254,18 @@ const JobListing = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
-        enqueueSnackbar("Đã thêm công việc vào mục yêu thích.", { variant: "success" });
+        enqueueSnackbar("Đã thêm công việc vào mục yêu thích.", {
+          variant: "success",
+        });
         setSavedJobs((prev) => ({ ...prev, [postJobId]: true }));
       }
     } catch (error) {
-      console.error("Lỗi khi thêm vào mục yêu thích:", error.response?.data?.Message || error.message);
+      console.error(
+        "Lỗi khi thêm vào mục yêu thích:",
+        error.response?.data?.Message || error.message
+      );
     }
   };
 
@@ -291,7 +301,6 @@ const JobListing = () => {
   return (
     <>
       <Header />
-
 
       <section
         className="inner-header-title"
@@ -463,17 +472,25 @@ const JobListing = () => {
                       </div>
                       <div className="col-md-2 col-sm-2">
                         <div className="brows-job-link">
-                          <a
-                            href=""
+                          <button
                             className="btn btn-apply"
+                            title="Ứng tuyển ngay"
                             onClick={(e) => {
-                              e.stopPropagation();
-                              // Ngăn sự kiện onClick của item-click
-                              handleApplyClick(job.postId);
+                              e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+                              const token = localStorage.getItem("token");
+                              if (!token) {
+                                navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                              } else {
+                                navigate(`/ApplyJob/${job.postId}`); // Chuyển hướng đến trang ứng tuyển với ID công việc
+                                console.log(
+                                  `Đang ứng tuyển vào công việc với ID: ${job.postId}`
+                                );
+                              }
                             }}
                           >
                             Ứng tuyển ngay
-                          </a>
+                          </button>
+
                           <div className="save-button-container">
                             {savedJobs[job.postId] || job.isWishlist === 1 ? (
                               <button
