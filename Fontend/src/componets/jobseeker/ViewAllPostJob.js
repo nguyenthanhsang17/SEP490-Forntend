@@ -474,21 +474,14 @@ const JobListing = () => {
                         <div className="brows-job-link">
                           <button
                             className="btn btn-apply"
-                            title="Ứng tuyển ngay"
+                            title="Xem Chi Tiết"
                             onClick={(e) => {
                               e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
-                              const token = localStorage.getItem("token");
-                              if (!token) {
-                                navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
-                              } else {
-                                navigate(`/ApplyJob/${job.postId}`); // Chuyển hướng đến trang ứng tuyển với ID công việc
-                                console.log(
-                                  `Đang ứng tuyển vào công việc với ID: ${job.postId}`
-                                );
-                              }
+                              navigate(`/viewJobDetail/${job.postId}`); // Chuyển hướng đến trang chi tiết công việc với ID công việc
+                              
                             }}
                           >
-                            Ứng tuyển ngay
+                            Xem Chi Tiết
                           </button>
 
                           <div className="save-button-container">
