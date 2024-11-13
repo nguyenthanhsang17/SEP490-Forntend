@@ -97,6 +97,8 @@ const Profile = () => {
     formData.append("gender", updatedProfile.gender);
     formData.append("currentJob", updatedProfile.currentJob);
     formData.append("description", updatedProfile.description);
+
+    console.log(updatedProfile);
     // Add file if exists
     if (file) {
       formData.append("AvatarURL", file);
@@ -118,6 +120,7 @@ const Profile = () => {
       localStorage.setItem("fullName", updatedProfile.fullName); // Update fullName in localStorage
       setIsUpdateProfile(false);
     } catch (err) {
+      console.log(err.response.data) ;
       enqueueSnackbar("Không thể cập nhật hồ sơ. Vui lòng thử lại.", { variant: 'error' }); // Show error notification
     } finally {
       setLoading(false);
