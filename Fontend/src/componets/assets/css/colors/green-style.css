@@ -1014,7 +1014,82 @@ textarea.form-control {
     opacity: 0.6;
     cursor: not-allowed;
   }
+  .button-group {
+    display: flex; /* Hiển thị các nút trên cùng một hàng */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 20px; /* Khoảng cách giữa các nút */
+    margin-top: 20px; /* Khoảng cách trên */
+  }
   
+  .manage-btn,
+  .verify-btn,
+  .update-btn {
+    display: flex; /* Sử dụng flexbox */
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    width: 200px; /* Chiều rộng cố định */
+    height: 50px; /* Chiều cao cố định */
+    font-size: 16px; /* Kích thước chữ */
+    font-weight: bold; /* Đậm chữ */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center; /* Căn chỉnh văn bản */
+  }
+  
+  .manage-btn {
+    background-color: #74f601; /* Màu xanh lá */
+    color: white;
+  }
+  
+  .verify-btn {
+    background-color: #ff6f00; /* Màu xanh dương */
+    color: white;
+  }
+  
+  .update-btn {
+    background-color: #ff9800; /* Màu cam */
+    color: white;
+  }
+  
+  .manage-btn:hover,
+  .verify-btn:hover,
+  .update-btn:hover {
+    opacity: 0.8; /* Hiệu ứng hover */
+  }
+  .update-btn1 {
+    display: inline-block;
+    width: 120px; /* Chiều rộng cố định */
+    height: 40px; /* Chiều cao cố định */
+    line-height: 40px; /* Đảm bảo chữ căn giữa */
+    text-align: center; /* Căn giữa nội dung */
+    font-size: 16px; /* Kích thước chữ */
+    font-weight: bold; /* Chữ đậm */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 20px; /* Khoảng cách giữa các nút */
+  }
+  
+  .update-btn1 {
+    background-color: #4caf50; /* Màu xanh lá */
+    color: white;
+  }
+  
+  .cancel-btn {
+    background-color: #f44336; /* Màu đỏ */
+    color: white;
+  }
+  
+  .update-btn1:hover,
+  .cancel-btn:hover {
+    opacity: 0.8; /* Hiệu ứng hover */
+  }
+  
+  
+  
+
   
   
   
