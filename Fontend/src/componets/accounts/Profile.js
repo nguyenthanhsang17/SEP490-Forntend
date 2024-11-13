@@ -210,7 +210,7 @@ const Profile = () => {
                           className="btn btn-success"
                           onClick={() => navigate("/verifyEmployerAccount")}
                         >
-                          Verify Employer Account
+                          Xác minh nhà tuyển dụng
                         </button>
                       )}
                     </div>
