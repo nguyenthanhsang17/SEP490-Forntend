@@ -1,11 +1,14 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children, allowedRoles }) => {
-  const roleId = localStorage.getItem('roleId'); // Retrieve role from localStorage
+  const userRole = parseInt(localStorage.getItem("roleId"), 10); // Lấy role từ localStorage và chuyển thành số
 
-  // Check if the user's role is included in allowedRoles
-  return allowedRoles.includes(roleId) ? children : <Navigate to="/unauthorized" replace />;
+  // Kiểm tra xem userRole có nằm trong danh sách allowedRoles
+  const isAuthorized = allowedRoles.includes(userRole);
+
+
+  return isAuthorized ? children : <Navigate to="/unauthorized" />;
 };
 
 export default PrivateRoute;
