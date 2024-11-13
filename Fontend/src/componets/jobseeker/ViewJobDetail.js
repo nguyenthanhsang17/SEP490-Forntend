@@ -20,13 +20,8 @@ function ViewJobDetail() {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
-      const token = localStorage.getItem("token");
-      console.log("Token:", token); // Kiểm tra giá trị token // Lấy token từ localStorage hoặc cách khác
       try {
         const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}` // Thêm token vào header
-          }
         });
         setJobDetails(response.data);
         console.log(response.data);
