@@ -57,13 +57,29 @@ const Profile = () => {
   };
 
   const validateFields = () => {
-    const { fullName, age, phonenumber, address, description } = updatedProfile;
+    const { fullName, age, phonenumber, address, description, gender, currentJob } = updatedProfile;
     if (!fullName || !age || !phonenumber || !address || !description) {
       enqueueSnackbar("Vui lòng điền tất cả các trường bắt buộc.", {
         variant: "error",
       });
       return false;
     }
+
+    if (gender == null) {
+      enqueueSnackbar("Vui lòng chọn giới tính", {
+        variant: "error",
+      });
+      return false;
+    }
+
+    if (currentJob == null) {
+      enqueueSnackbar("Vui lòng chọn tình trạng hiện tại", {
+        variant: "error",
+      });
+      return false;
+    }
+
+
 
     const phoneRegex = /^0\d{9}$/; // Example: 10-digit phone number
     if (!phoneRegex.test(phonenumber)) {
@@ -103,6 +119,8 @@ const Profile = () => {
     formData.append("gender", updatedProfile.gender);
     formData.append("currentJob", updatedProfile.currentJob);
     formData.append("description", updatedProfile.description);
+
+    console.log(updatedProfile);
     // Add file if exists
     if (file) {
       formData.append("AvatarURL", file);
@@ -124,9 +142,11 @@ const Profile = () => {
       localStorage.setItem("fullName", updatedProfile.fullName); // Update fullName in localStorage
       setIsUpdateProfile(false);
     } catch (err) {
+      console.log(err.response.data) ;
       enqueueSnackbar("Không thể cập nhật hồ sơ. Vui lòng thử lại.", {
         variant: "error",
       }); // Show error notification
+
     } finally {
       setLoading(false);
     }
@@ -167,9 +187,9 @@ const Profile = () => {
           <div className="row">
             <div className="detail-pic">
               <img src={img} className="img" alt="" />
-              
-              
-              
+
+
+
             </div>
             <div className="detail-status">
               <span>
@@ -255,7 +275,11 @@ const Profile = () => {
                           >
                             Giới tính:
                           </span>{" "}
-                          {profile.gender ? "Nam" : "Nữ"}
+                          {(() => {
+                            if (profile.gender == true) return "Nam";
+                            if (profile.gender == false) return "Nữ";
+                            return "Chưa xác định";
+                          })()}
                         </li>
                         <li>
                           <span
@@ -283,6 +307,7 @@ const Profile = () => {
                           className="manage-btn"
                           onClick={() => navigate("/ManagementCV")}
                         >
+                          Xác minh nhà tuyển dụng
                           Quản lý CV
                         </button>
 
@@ -381,10 +406,11 @@ const Profile = () => {
                               <label>Giới tính</label>
                               <select
                                 name="gender"
-                                value={updatedProfile.gender}
+                                value={updatedProfile.gender ?? ""}
                                 className="form-control"
                                 onChange={handleInputChange}
                               >
+                                <option value="">Chọn giới tính</option>
                                 <option value="true">Nam</option>
                                 <option value="false">Nữ</option>
                               </select>
@@ -394,9 +420,10 @@ const Profile = () => {
                               <select
                                 name="currentJob"
                                 className="form-control"
-                                value={updatedProfile.currentJob}
+                                value={updatedProfile.currentJob ?? ""}
                                 onChange={handleInputChange}
                               >
+                                <option value={1}>Chọn Tình trạng hiện tại</option>
                                 <option value={1}>Thất nghiệp</option>
                                 <option value={2}>Đang đi học</option>
                                 <option value={3}>Đang đi làm</option>
