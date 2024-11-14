@@ -718,3 +718,379 @@ textarea.form-control {
 .icon-spacing {
     margin-right: 5px; /* Điều chỉnh khoảng cách giữa biểu tượng và chữ */
 }
+
+/* Add to your style.css file */
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin: 0 10px;
+  }
+  
+  .button:hover {
+    transform: scale(1.05);
+  }
+  
+  .apply-button {
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+  }
+  
+  .apply-button:hover {
+    background-color: #218838; /* Darker green */
+  }
+  
+  .save-button {
+    background-color: #007bff; /* Blue */
+    color: white;
+    border: none;
+  }
+  
+  .save-button:hover {
+    background-color: #0069d9; /* Darker blue */
+  }
+  
+  .report-button {
+    background-color: #dc3545; /* Red */
+    color: white;
+    border: none;
+  }
+  
+  .report-button:hover {
+    background-color: #c82333; /* Darker red */
+  }
+  
+ /* Cố định chiều rộng và căn giữa nội dung của các nút */
+.btn-toggle-visibility {
+    width: 160px; /* Chọn chiều rộng phù hợp để các nút đều nhau */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px; /* Đảm bảo padding đều */
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+/* Màu sắc tùy chỉnh */
+.btn-approval {
+    background-color: #4CAF50; /* Màu xanh lá */
+    color: white;
+}
+
+.btn-visibility {
+    background-color: #007bff; /* Màu xanh */
+    color: white;
+}
+/* MemberCard.css */
+
+.candidate-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  .candidate-card:hover {
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .candidate-image img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+  }
+  
+  .candidate-info h5 {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .candidate-info p {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .btn {
+    border-radius: 6px;
+    padding: 10px 15px;
+  }
+  
+  .btn-primary {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #218838;
+  }
+  
+  .btn-secondary {
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: bold;
+    border: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .search-filter {
+    margin-bottom: 20px;
+  }
+  
+  .search-filter .form-control {
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease;
+  }
+  
+  .search-filter .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .inner-header-title {
+    padding: 50px 0;
+    color: white;
+    text-align: center;
+  }
+  
+  .inner-header-title h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  /* MemberCard.css */
+
+.candidate-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    display: flex; /* Ensure it uses flexbox */
+    justify-content: space-between; /* Space between image/info and buttons */
+    align-items: center; /* Align items vertically */
+  }
+  
+  .candidate-image img {
+    width: 100px; /* Increased size */
+    height: 100px; /* Increased size */
+    border-radius: 8px;
+  }
+  
+  .candidate-actions {
+    margin-left: auto; /* Pushes actions to the right */
+  }
+  
+  .candidate-actions .btn {
+    width: 100%; /* Makes buttons take full width of the container */
+  }
+  
+  .candidate-info {
+    flex: 1; /* Allow info to take up remaining space */
+    padding-right: 20px; /* Add padding to the right for better spacing */
+  }
+  .floating-icons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+  }
+  
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0078FF; /* Màu nền của Messenger */
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+  }
+  .dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f9fafb;
+  }
+  
+  .sidebar {
+    width: 200px;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #7f56d9;
+    margin-bottom: 30px;
+  }
+  
+  .sidebar-menu .menu-item {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-search {
+    width: 400px;
+    border-radius: 8px;
+  }
+  
+  .dashboard-cards,
+  .dashboard-charts {
+    margin-bottom: 20px;
+  }
+  
+  .orders-card,
+  .top-products-card {
+    margin-bottom: 20px;
+  }
+  .vnpay-payment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 20px;
+  }
+  
+  .qr-code-container {
+    margin: 20px 0;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .qr-code-image {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+  }
+  
+  .refresh-button {
+    margin-top: 20px;
+  }
+  
+  .disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .button-group {
+    display: flex; /* Hiển thị các nút trên cùng một hàng */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 20px; /* Khoảng cách giữa các nút */
+    margin-top: 20px; /* Khoảng cách trên */
+  }
+  
+  .manage-btn,
+  .verify-btn,
+  .update-btn {
+    display: flex; /* Sử dụng flexbox */
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    width: 200px; /* Chiều rộng cố định */
+    height: 50px; /* Chiều cao cố định */
+    font-size: 16px; /* Kích thước chữ */
+    font-weight: bold; /* Đậm chữ */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center; /* Căn chỉnh văn bản */
+  }
+  
+  .manage-btn {
+    background-color: #74f601; /* Màu xanh lá */
+    color: white;
+  }
+  
+  .verify-btn {
+    background-color: #ff6f00; /* Màu xanh dương */
+    color: white;
+  }
+  
+  .update-btn {
+    background-color: #ff9800; /* Màu cam */
+    color: white;
+  }
+  
+  .manage-btn:hover,
+  .verify-btn:hover,
+  .update-btn:hover {
+    opacity: 0.8; /* Hiệu ứng hover */
+  }
+  .update-btn1 {
+    display: inline-block;
+    width: 120px; /* Chiều rộng cố định */
+    height: 40px; /* Chiều cao cố định */
+    line-height: 40px; /* Đảm bảo chữ căn giữa */
+    text-align: center; /* Căn giữa nội dung */
+    font-size: 16px; /* Kích thước chữ */
+    font-weight: bold; /* Chữ đậm */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 20px; /* Khoảng cách giữa các nút */
+  }
+  
+  .update-btn1 {
+    background-color: #4caf50; /* Màu xanh lá */
+    color: white;
+  }
+  
+  .cancel-btn {
+    background-color: #f44336; /* Màu đỏ */
+    color: white;
+  }
+  
+  .update-btn1:hover,
+  .cancel-btn:hover {
+    opacity: 0.8; /* Hiệu ứng hover */
+  }
+  
+  
+  
+
+  
+  
+  
+  

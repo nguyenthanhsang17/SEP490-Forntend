@@ -1,80 +1,78 @@
-// Footer.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import 'font-awesome/css/font-awesome.min.css';
+import "../assets/css/colors/green-style.css";
 
 class Footer extends React.Component {
+  state = {
+    isLoggedIn: false
+  };
+
+  componentDidMount() {
+    // Check if the user is logged in by looking for a token or some indicator
+    const token = localStorage.getItem('token'); // Adjust based on your authentication method
+    if (token) {
+      this.setState({ isLoggedIn: true });
+    }
+  }
+
   render() {
+    const { isLoggedIn } = this.state;
+
     return (
-      <footer class="footer">
-        <div class="row no-padding">
-          <div class="container">
-            <div class="col-md-3 col-sm-12">
-              <div class="footer-widget">
-                <h3 class="widgettitle widget-title">About Job Stock</h3>
-                <div class="textwidget">
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem.</p>
-                  <p>7860 North Park Place<br/>San Francisco, CA 94120</p>
-                  <p><strong>Email:</strong> Support@careerdesk</p>
-                  <p><strong>Call:</strong> <a href="tel:+15555555555">555-555-1234</a></p>
-                  <ul class="footer-social">
-                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+      <footer className="footer">
+        <div className="row no-padding">
+          <div className="container">
+            <div className="col-md-8 col-sm-12">
+              <div className="footer-widget">
+                <h3 className="widgettitle widget-title">Về VJN</h3>
+                <div className="textwidget">
+                  <p>Nền tảng tuyển dụng và tìm việc bán thời gian trực tuyến.</p>
+                  <p>Đại học fpt, Hòa lạc</p>
+                  <p><strong>Email:</strong> quickjobvjn2024@gmail.com</p>
+                  <p><strong>Gọi:</strong> <a href="tel:+15555555555">0369354782</a></p>
+                  <ul className="footer-social">
+                    <li><a href="#"><i className="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i className="fa fa-google-plus"></i></a></li>
+                    <li><a href="#"><i className="fa fa-twitter"></i></a></li>
+                    <li><a href="#"><i className="fa fa-instagram"></i></a></li>
+                    <li><a href="#"><i className="fa fa-linkedin"></i></a></li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-3 col-sm-4">
-              <div class="footer-widget">
-                <h3 class="widgettitle widget-title">All Navigation</h3>
-                <div class="textwidget">
-                  <ul class="footer-navigation">
-                    <li><a href="manage-company.html" title="">Front-end Design</a></li>
-                    <li><a href="manage-company.html" title="">Android Developer</a></li>
-                    <li><a href="manage-company.html" title="">CMS Development</a></li>
-                    <li><a href="manage-company.html" title="">PHP Development</a></li>
-                    <li><a href="manage-company.html" title="">IOS Developer</a></li>
-                    <li><a href="manage-company.html" title="">Iphone Developer</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
 
-            <div class="col-md-3 col-sm-4">
-              <div class="footer-widget">
-                <h3 class="widgettitle widget-title">All Categories</h3>
-                <div class="textwidget">
-                  <ul class="footer-navigation">
-                    <li><a href="manage-company.html" title="">Front-end Design</a></li>
-                    <li><a href="manage-company.html" title="">Android Developer</a></li>
-                    <li><a href="manage-company.html" title="">CMS Development</a></li>
-                    <li><a href="manage-company.html" title="">PHP Development</a></li>
-                    <li><a href="manage-company.html" title="">IOS Developer</a></li>
-                    <li><a href="manage-company.html" title="">Iphone Developer</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-4">
-              <div class="footer-widget">
-                <h3 class="widgettitle widget-title">Connect With Us</h3>
-                <div class="textwidget">
-                  <p><strong>Phone:</strong> +1 (234) 567-8900</p>
-                  <p><strong>Email:</strong> contact@yourwebsite.com</p>
+            <div className="col-md-4 col-sm-4">
+              <div className="footer-widget">
+                <h3 className="widgettitle widget-title">Kết Nối Với Chúng Tôi</h3>
+                <div className="textwidget">
+                  <p><strong>Điện Thoại:</strong> +84 369354782</p>
+                  <p><strong>Email:</strong> quickjobvjn2024@gmail.com</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="row copyright">
-          <div class="container">
+        <div className="row copyright">
+          <div className="container">
             <p><a target="_blank" href="https://www.templateshub.net">2024</a></p>
           </div>
         </div>
+
+        {/* Floating Chat Icon - Only visible if logged in */}
+        {isLoggedIn && (
+          <div className="floating-icons">
+            <a 
+              href="/ChatList" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="icon messenger-icon"
+            >
+              <i className="fa fa-comments"></i> {/* Messenger icon */}
+            </a>
+          </div>
+        )}
       </footer>
     );
   }

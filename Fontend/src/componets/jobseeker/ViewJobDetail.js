@@ -7,22 +7,27 @@ import bannerImage from '../assets/img/banner-10.jpg';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import Map from '../utils/Map';
-import { useParams } from 'react-router-dom'; // Import useParams
+import { useParams, useNavigate } from 'react-router-dom'; // Single import statement
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function ViewJobDetail() {
   const [jobDetails, setJobDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // State for error message
-  const { id } = useParams(); // Lấy ID từ URL
+  const [error, setError] = useState(null);
+  const { id } = useParams();
+  const navigate = useNavigate(); // Moved navigate to top-level only
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`);
+        const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, {
+        });
         setJobDetails(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
-        setError("Không thể tải chi tiết công việc. Vui lòng thử lại sau."); // Set error message
+        setError("Không thể tải chi tiết công việc. Vui lòng thử lại sau.");
       } finally {
         setLoading(false);
       }
@@ -31,28 +36,63 @@ function ViewJobDetail() {
     fetchJobDetails();
   }, [id]);
 
+  const toggleSaveJob = async () => {
+    if (jobDetails) {
+      try {
+        const token = localStorage.getItem('token'); // Ensure token is correctly retrieved
+
+        if (!token) {
+          navigate("/login");
+        }
+
+        const url = 'https://localhost:7077/api/WishJobs/AddWishJob';
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json-patch+json',
+        };
+
+        const data = { postJobId: id };
+
+        // Log the data being sent to verify its structure
+        console.log("Requesting URL:", url);
+        console.log("Headers:", headers);
+        console.log("Data:", data);
+
+        await axios.post(url, data, { headers });
+        setJobDetails((prevDetails) => ({ ...prevDetails, isWishJob: true }));
+      } catch (error) {
+        console.error("Error toggling save status:", error);
+        setError("Không thể cập nhật trạng thái lưu. Vui lòng thử lại sau.");
+      }
+    }
+  };
+
+
+
   if (loading) {
     return <div style={styles.loading}>Loading...</div>;
   }
 
   if (error) {
-    return <div style={styles.noJob}>{error}</div>; // Hiển thị thông báo lỗi
+    return <div style={styles.noJob}>{error}</div>;
   }
 
   if (!jobDetails) {
     return <div style={styles.noJob}>No job details found.</div>;
   }
+
   const ImageGallery = ({ imageUrls }) => {
     const galleryStyle = {
       display: 'flex',
       flexWrap: 'wrap',
-      justifyContent: 'center', // Căn giữa các ảnh
+      justifyContent: 'center',
     };
 
     const imageItemStyle = {
-      margin: '10px', // Khoảng cách giữa các ảnh
-      maxWidth: '200px', // Độ rộng tối đa của ảnh
-      height: 'auto', // Chiều cao tự động
+      margin: '10px',
+      maxWidth: '200px',
+      height: 'auto',
     };
 
     return (
@@ -67,20 +107,28 @@ function ViewJobDetail() {
   const GenerateSlotDTOs = ({ slotDTOs }) => {
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
 
-    // Định nghĩa thời gian cho từng ca
+    // Định nghĩa các ca làm việc
     const shiftTimes = {
       1: "08:00 - 12:00",
       2: "13:00 - 17:00",
-      3: "17:30 - 21:30",  // Ví dụ cho Ca 3, có thể điều chỉnh theo yêu cầu
-      4: "22:00 - 02:00",  // Ví dụ cho Ca 4
-      // Thêm ca khác nếu cần
+      3: "17:30 - 21:30",
+      4: "22:00 - 02:00",
     };
 
-    // Hàm trợ giúp để tìm lịch làm việc cho từng ngày và từng ca
-    const findSchedule = (slot, day) => {
-      return slot.jobScheduleDTOs.find(
-        (schedule) => getDayOfWeek(schedule.dayOfWeek) === day
-      );
+    const getWorkingHoursForDayAndShift = (dayOfWeek, shiftStartTime) => {
+      // Tìm slot có chứa lịch làm việc cho ngày cụ thể
+      const scheduleForDay = slotDTOs
+        .flatMap(slot => slot.jobScheduleDTOs)
+        .find(schedule => schedule.dayOfWeek === dayOfWeek);
+
+      if (!scheduleForDay) return null; // Nếu không tìm thấy lịch cho ngày này, trả về null
+
+      // Lấy danh sách các giờ làm việc cho ca hiện tại (khớp với thời gian bắt đầu của ca)
+      const workingHours = scheduleForDay.workingHourDTOs
+        .filter(hour => hour.startTime.startsWith(shiftStartTime))
+        .map(hour => `${hour.startTime} - ${hour.endTime}`);
+
+      return workingHours.length > 0 ? workingHours : null;
     };
 
     return (
@@ -88,48 +136,33 @@ function ViewJobDetail() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ backgroundColor: "#e0e0e0" }}>
-              <th style={tableStyles.header}>Ca</th>
+              <th style={tableStyles.header}>Ca làm việc</th>
               {daysOfWeek.map((day, index) => (
                 <th key={index} style={tableStyles.header}>{day}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {slotDTOs.map((slot, index) => (
-              <tr key={slot.slotId} style={tableStyles.row}>
-                <td style={tableStyles.cell}>Ca {index + 1} ({shiftTimes[index + 1] || "Không xác định"})</td>
-                {daysOfWeek.map((day) => {
-                  const schedule = findSchedule(slot, day);
-                  return (
-                    <td key={day} style={tableStyles.cell}>
-                      {schedule ? (
-                        shiftTimes[index + 1] || "Không xác định"
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+            {Object.entries(shiftTimes).map(([shift, time]) => {
+              const [shiftStartTime] = time.split(" - "); // Lấy thời gian bắt đầu của ca
+              return (
+                <tr key={shift} style={tableStyles.row}>
+                  <td style={tableStyles.cell}>Ca {shift} </td>
+                  {daysOfWeek.map((day, dayIndex) => {
+                    const workingHours = getWorkingHoursForDayAndShift(dayIndex + 2, shiftStartTime);
+                    return (
+                      <td key={dayIndex} style={tableStyles.cell}>
+                        {workingHours ? workingHours.join(", ") : "-"}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
     );
-  };
-
-  // Hàm chuyển đổi dayOfWeek thành ngày trong tuần tiếng Việt
-  const getDayOfWeek = (dayOfWeek) => {
-    const days = {
-      2: 'Thứ 2',
-      3: 'Thứ 3',
-      4: 'Thứ 4',
-      5: 'Thứ 5',
-      6: 'Thứ 6',
-      7: 'Thứ 7',
-      8: 'Chủ Nhật',
-    };
-    return days[dayOfWeek] || 'Không xác định';
   };
 
   const salaryTypeMap = {
@@ -149,7 +182,7 @@ function ViewJobDetail() {
     <>
       <Header />
       <div className="clearfix"></div>
-      <section className="inner-header-title" style={{ backgroundImage: `url(https://www.bamboohr.com/blog/media_1daae868cd79a86de31a4e676368a22d1d4c2cb22.jpeg?width=750&format=jpeg&optimize=medium)` }}>
+      <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
         <div className="container">
           <h1>{jobDetails.jobTitle}</h1>
         </div>
@@ -198,10 +231,54 @@ function ViewJobDetail() {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
-                  <a href="#" className="footer-btn grn-btn" title="">Ứng tuyển ngay</a>
-                  <a href="#" className="footer-btn blu-btn" title="">Lưu tin</a>
+                  {/* Nút Ứng tuyển ngay */}
+                  <button
+                    
+                    className="button apply-button"
+                    title="Ứng tuyển ngay"
+                    onClick={() => {
+                      const token = localStorage.getItem('token');
+                      if (!token) {
+                        navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                      } else {
+                        // Thêm logic để ứng tuyển vào công việc ở đây
+                        navigate(`/ApplyJob/${id}`);
+                        console.log("Đang ứng tuyển vào công việc...");
+                      }
+                    }}
+                  >
+                    Ứng tuyển ngay
+                  </button>
+
+                  {/* Nút Lưu tin */}
+                  {jobDetails.isWishJob ? (
+                    <button className="button save-button">
+                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
+                    </button>
+                  ) : (
+                    <button onClick={toggleSaveJob} className="button save-button">
+                      <FontAwesomeIcon icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
+                    </button>
+                  )}
+
+                  {/* Nút Báo cáo */}
+                  <button
+                    onClick={() => {
+                      const token = localStorage.getItem('token');
+                      if (!token) {
+                        navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                      } else {
+                        navigate(`/reportPostJob/${id}`);
+                      }
+                    }}
+                    className="button report-button"
+                    title="Báo cáo"
+                  >
+                    Báo cáo
+                  </button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -225,18 +302,18 @@ function ViewJobDetail() {
         </div>
       </section>
 
-      {/* Hiển thị bản đồ */}
       <section className="map-section">
         <div className="container">
           <h2 className="detail-title">Vị trí công việc</h2>
           <Map
             latitude={jobDetails.latitude}
             longitude={jobDetails.longitude}
-            employerLatitude={jobDetails.employerLatitude} // Add this line
-            employerLongitude={jobDetails.employerLongitude} // Add this line
+            employerLatitude={jobDetails.employerLatitude}
+            employerLongitude={jobDetails.employerLongitude}
           />
         </div>
       </section>
+
       <section className="map-section">
         <div className="container">
           <h2 className="detail-title">Lịch Làm Việc</h2>
@@ -248,27 +325,14 @@ function ViewJobDetail() {
         </div>
       </section>
 
+
+
+
       <Footer />
     </>
   );
 }
-<style jsx>{`
-        /* src/ImageGallery.css */
-.image-gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* Căn giữa các ảnh */
-}
 
-.image-item {
-  margin: 10px; /* Khoảng cách giữa các ảnh */
-  max-width: 200px; /* Độ rộng tối đa của ảnh */
-  height: auto; /* Chiều cao tự động */
-}
-
-      `}</style>
-
-// Styles defined as an object
 const tableStyles = {
   header: {
     padding: '10px',

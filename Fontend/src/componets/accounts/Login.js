@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
@@ -11,51 +11,73 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); 
   
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
 
+    if (!validateEmail(email)) {
+      setError("Email không hợp lệ.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Mật khẩu phải có ít nhất 6 ký tự.");
+      return;
+    }
+
+    setIsLoading(true);
+
     const loginData = {
-      userName: email,
-      password: password,
+        userName: email,
+        password: password,
     };
 
     try {
-      const response = await fetch("https://localhost:7077/api/Users/Login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+        const response = await fetch("https://localhost:7077/api/Users/Login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(loginData),
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.Message || "Đăng nhập không thành công");
-      }
+        if (!response.ok) {
+            throw new Error(result.Message || "Đăng nhập không thành công");
+        }
 
-      console.log("Đăng nhập thành công:", result);
+        console.log("Đăng nhập thành công:", result);
 
-      // Lưu token vào localStorage
-      localStorage.setItem('token', result.token);
-      localStorage.setItem('fullName', result.fullName);
-      localStorage.setItem('roleId', result.roleId);
-      localStorage.setItem('userId', result.userId);
-      // Điều hướng đến trang chủ
-      navigate('/'); // Thay '/home' bằng đường dẫn đến trang chủ của bạn
+        // Lưu token và thông tin người dùng vào localStorage
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('fullName', result.fullName);
+        localStorage.setItem('roleId', result.roleId);
+        localStorage.setItem('userId', result.userId);
+
+        // Điều hướng dựa trên roleId
+        if (result.roleId === 4) {
+            navigate('/AdminDashboard');
+        } else {
+            navigate('/'); // Điều hướng đến trang khác nếu không phải Admin
+        }
 
     } catch (error) {
-      setError(error.message);
-      console.error("Lỗi:", error);
+        setError(error.message);
+        console.error("Lỗi:", error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
 
   const handleGoogleLogin = () => {
     console.log("Google login clicked");
@@ -83,14 +105,36 @@ function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Mật khẩu"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div className="password-field" style={{ position: "relative" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    placeholder="Mật khẩu"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    style={{ paddingRight: "2.5rem" }} // thêm khoảng trống bên phải
+                  />
+                  <span
+                    className="password-toggle-icon"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      right: "-150px",
+                      top: "10%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      fontSize: "1.2rem", // Điều chỉnh kích thước icon cho phù hợp
+                      color: "#888" // Màu sắc icon
+                    }}
+                  >
+                    {showPassword ? (
+                      <i className="fa fa-eye-slash"></i>
+                    ) : (
+                      <i className="fa fa-eye"></i>
+                    )}
+                  </span>
+                </div>
                 <button className="btn btn-login btn-block" type="submit" disabled={isLoading}>
                   {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>

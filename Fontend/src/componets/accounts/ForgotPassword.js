@@ -1,41 +1,37 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import '../assets/css/style.css'; // Import CSS tùy chỉnh
-import '../assets/css/colors/green-style.css'; // Import CSS chủ đề
-import logoImage from '../assets/img/Nice Job Logo-Photoroom.png'; // Logo
-import bannerImage from '../assets/img/banner-2.jpg'; // Ảnh nền
+import { useNavigate } from "react-router-dom";
+import '../assets/css/style.css';
+import '../assets/css/colors/green-style.css';
+import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
+import bannerImage from '../assets/img/banner-2.jpg';
 
 function ForgotPassword() {
-  const [email, setEmail] = useState(''); // Quản lý email
-  const [code, setCode] = useState(''); // Quản lý mã xác thực
-  const [password, setPassword] = useState(''); // Quản lý mật khẩu
-  const [confirmPassword, setConfirmPassword] = useState(''); // Quản lý xác nhận mật khẩu
-  const [emailVerified, setEmailVerified] = useState(false); // Trạng thái email đã được xác minh
-  const [errorMessage, setErrorMessage] = useState(''); // Quản lý lỗi
-  const [loading, setLoading] = useState(false); // Quản lý trạng thái loading
-  
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); 
+
   const navigate = useNavigate();
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  const handleCodeChange = (e) => {
-    setCode(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  // Hàm xử lý khi nhấn nút Submit để kiểm tra email
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    if (!validateEmail(email)) {
+      setErrorMessage("Email không hợp lệ.");
+      return;
+    }
+
     try {
-      // Gọi API kiểm tra email tồn tại
       const response = await fetch('https://localhost:7077/api/Email/SendMailToForgotPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,13 +41,11 @@ function ForgotPassword() {
       const result = await response.json();
 
       if (response.ok) {
-  
-          console.log(result.message);
-          setEmailVerified(true);
-          setEmail(email);
-          setErrorMessage('');
+        console.log(result.message);
+        setEmailVerified(true);
+        setEmail(email);
+        setErrorMessage('');
       } else {
-        // Nếu phản hồi không thành công (không trong phạm vi 200-299)
         setErrorMessage(result.message);
       }
     } catch (error) {
@@ -60,38 +54,33 @@ function ForgotPassword() {
     }
   };
 
-   // Hàm xử lý khi nhấn nút Submit để kiểm tra email
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   setLoading(true); // Bắt đầu trạng thái loading
-
-  //   // Mô phỏng gọi API với setTimeout
-  //   setTimeout(() => {
-  //     setLoading(false); // Kết thúc trạng thái loading
-  //     if (email === 'test@example.com') {
-  //       // Giả lập email tồn tại
-  //       setEmailVerified(true);
-  //       setErrorMessage('');
-  //     } else {
-  //       // Giả lập email không tồn tại
-  //       setErrorMessage('Email không tồn tại!');
-  //     }
-  //   }, 2000); // Giả lập thời gian phản hồi là 2 giây
-  // };
-
-  // Hàm xử lý khi người dùng hoàn tất nhập mã code và mật khẩu
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    if (!code) {
+      setErrorMessage("Mã xác thực không được để trống.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMessage("Mật khẩu phải có ít nhất 6 ký tự.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Mật khẩu xác nhận không khớp.");
+      return;
+    }
 
     const requestData = {
-      toEmail: email,      
-      opt: code,         
-      password: password,     
-      confirmPassword: confirmPassword 
+      toEmail: email,
+      opt: code,
+      password: password,
+      confirmPassword: confirmPassword
     };
 
     try {
-      // Gọi API kiểm tra email tồn tại
       const response = await fetch('https://localhost:7077/api/Users/VerifycodeForgotPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,18 +90,14 @@ function ForgotPassword() {
       const result = await response.json();
 
       if (response.ok) {
-          console.log(result.message);
-          setEmailVerified(true);
-          setErrorMessage('');
-
-          navigate('/login');
-
+        console.log(result.message);
+        setErrorMessage('');
+        navigate('/login');
       } else {
-        // Nếu phản hồi không thành công (không trong phạm vi 200-299)
         setErrorMessage(result.message);
       }
     } catch (error) {
-      console.error("Có lỗi xảy ra khi kiểm tra email:", error);
+      console.error("Có lỗi xảy ra khi đặt lại mật khẩu:", error);
       setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
     }
   };
@@ -127,44 +112,98 @@ function ForgotPassword() {
                 <img src={logoImage} className="img-responsive" alt="Logo" />
               </a>
               {!emailVerified ? (
-                // Form kiểm tra email
                 <form onSubmit={handleSubmit}>
                   <input
                     type="email"
                     className="form-control"
                     placeholder="Nhập email của bạn"
                     value={email}
-                    onChange={handleEmailChange}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                   <button className="btn btn-login" type="submit">Xác nhận Email</button>
                   {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </form>
               ) : (
-                // Form nhập mã xác thực và mật khẩu
                 <form onSubmit={handleResetPassword}>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Nhập mã xác thực được gửi về email của bạn"
                     value={code}
-                    onChange={handleCodeChange}
+                    onChange={(e) => setCode(e.target.value)}
+                    required
                   />
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Nhập mật khẩu mới"
-                    value={password}
-                    onChange={handlePasswordChange}
-                  />
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Xác nhận mật khẩu"
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
-                  />
-                  <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
                   
+                  {/* Password Field with Eye Icon */}
+                  <div className="password-field" style={{ position: "relative", marginBottom: "20px" }}>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="form-control"
+                      placeholder="Nhập mật khẩu mới"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      style={{
+                        paddingRight: "2.5rem"
+                      }}
+                    />
+                    <span
+                      className="password-toggle-icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        right: "-150px",
+                        top: "10%",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        fontSize: "1.2rem",
+                        color: "#888"
+                      }}
+                    >
+                      {showPassword ? (
+                        <i className="fa fa-eye-slash"></i>
+                      ) : (
+                        <i className="fa fa-eye"></i>
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Confirm Password Field with Eye Icon */}
+                  <div className="password-field" style={{ position: "relative" }}>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="form-control"
+                      placeholder="Xác nhận mật khẩu"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      style={{
+                        paddingRight: "2.5rem"
+                      }}
+                    />
+                    <span
+                      className="password-toggle-icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        right: "-150px",
+                        top: "10%",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        fontSize: "1.2rem",
+                        color: "#888"
+                      }}
+                    >
+                      {showPassword ? (
+                        <i className="fa fa-eye-slash"></i>
+                      ) : (
+                        <i className="fa fa-eye"></i>
+                      )}
+                    </span>
+                  </div>
+
+                  <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
                   {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </form>
               )}

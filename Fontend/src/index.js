@@ -1,40 +1,48 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { SnackbarProvider } from 'notistack';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
+import reportWebVitals from "./reportWebVitals";
 
 // Import Components
-import Register from './componets/accounts/Register';
-import Login from './componets/accounts/Login';
-import ForgotPassword from './componets/accounts/ForgotPassword';
-import HomePage from './componets/common/HomePage';
-import ViewJobDetail from './componets/jobseeker/ViewJobDetail';
-import CreatePostJob from './componets/employee/CreatePostJob';
-import ViewAllJobApplied from './componets/employee/View_All_Job_Applied';
-import ViewAllJobSeekerApply from './componets/employee/View_All_Jobseeker_Apply';
-import ViewJobSeekerDetail from './componets/employee/View_JobSeeker_Detail';
-import ViewJobCreatedDetail from './componets/employee/ViewJobCreatedDetail';
-import ViewListJobsCreated from './componets/employee/ViewListJobsCreated';
-import Profile from './componets/accounts/Profile';
-import VerifyRegister from './componets/accounts/VerifyRegister';
-import PostJobs from './componets/jobseeker/ViewAllPostJob';
-import ApplyJob from './componets/jobseeker/ApplyJob';
-import ScheduleTable from './componets/jobseeker/ScheduleTable';
-import MemberCard from './componets/employee/ViewAllJobSeeker';
-import VerifyEmployerAccount from './componets/jobseeker/VerifyEmployerAccount';
-import ViewAllPostJobInWishlist from './componets/jobseeker/ViewAllPostJobInWishlist';
-
+import Register from "./componets/accounts/Register";
+import Login from "./componets/accounts/Login";
+import ForgotPassword from "./componets/accounts/ForgotPassword";
+import HomePage from "./componets/common/HomePage";
+import ViewJobDetail from "./componets/jobseeker/ViewJobDetail";
+import CreatePostJob from "./componets/employee/CreatePostJob";
+import ViewAllJobApplied from "./componets/employee/View_All_Job_Applied";
+import ViewAllJobSeekerApply from "./componets/employee/View_All_Jobseeker_Apply";
+import ViewJobSeekerDetail from "./componets/employee/View_JobSeeker_Detail";
+import ViewJobCreatedDetail from "./componets/employee/ViewJobCreatedDetail";
+import ViewListJobsCreated from "./componets/employee/ViewListJobsCreated";
+import Profile from "./componets/accounts/Profile";
+import VerifyRegister from "./componets/accounts/VerifyRegister";
+import PostJobs from "./componets/jobseeker/ViewAllPostJob";
+import ApplyJob from "./componets/jobseeker/ApplyJob";
+import ScheduleTable from "./componets/jobseeker/ScheduleTable";
+import MemberCard from "./componets/employee/ViewAllJobSeeker";
+import VerifyEmployerAccount from "./componets/jobseeker/VerifyEmployerAccount";
+import ViewAllPostJobInWishlist from "./componets/jobseeker/ViewAllPostJobInWishlist";
+import ViewAllJobSeekerInFavoriteList from "./componets/employee/ViewAllJobSeekerInFavoriteList";
+import ReportPostJob from "./componets/jobseeker/ReportPostJob";
+import ManagementCV from "./componets/jobseeker/ManagementCV";
 // Import PrivateRoute
-import PrivateRoute from './PrivateRoute';
-import Unauthorized from './componets/common/Unauthorized';
-import ViewJobDetailJobSeeker from './componets/employee/ViewDetailJobSeeker';
-import ViewAllPostJob from './componets/staff/ViewAllPostJob';
-import PostJobDetail from './componets/staff/PostJobDetail'
-import EmployerRequests from './componets/staff/ViewEmployerRequest'
-import EmployerRequestDetail from './componets/staff/ViewEmployerRequestDetail'
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import PrivateRoute from "./PrivateRoute";
+import Unauthorized from "./componets/common/Unauthorized";
+import ViewJobDetailJobSeeker from "./componets/employee/ViewDetailJobSeeker";
+import EditPostJob from "./componets/employee/EditPostJob";
+import ViewAllPostJob from "./componets/staff/ViewAllPostJob";
+import PostJobDetail from "./componets/staff/PostJobDetail";
+
+import EmployerRequests from "./componets/staff/ViewEmployerRequest";
+import EmployerRequestDetail from "./componets/staff/ViewEmployerRequestDetail";
+import ChatList from "./componets/common/ChatList";
+import AdminDashboard from "./componets/admin/AdminDashBoard";
+import PaymentScreen from "./componets/utils/Payment";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
@@ -52,70 +60,123 @@ root.render(
           <Route path="/lich" element={<ScheduleTable />} />
           <Route path="/ViewEmployerRequests" element={<EmployerRequests />} />
           <Route path="/ViewEmployerRequestsDetail/:id" element={<EmployerRequestDetail />} />
-          
+          <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
 
-          {/* <Route path='/ViewAllPost' element={<ViewAllPostJob />} />
-          <Route path='/ViewDetail/:job_id/:status' element={<PostJobDetail />} /> */}
-          <Route
-            path="/viewJobDetail/:id"
-            element={<ViewJobDetail />}
-          />
           {/* Job Seeker-Only Routes */}
-          
           <Route
             path="/ViewAllPost"
-            element={<PrivateRoute allowedRoles={["3"]}><ViewAllPostJob /></PrivateRoute>}
-          />
 
+            element={
+              <PrivateRoute allowedRoles={[3, 4]}>
+                <ViewAllPostJob />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/ViewDetail/:job_id/:status"
-            element={<PrivateRoute allowedRoles={["3"]}><PostJobDetail /></PrivateRoute>}
+           element={
+              <PrivateRoute allowedRoles={[3, 4]}>
+                <PostJobDetail />
+              </PrivateRoute>
+            }
           />
-
           <Route
             path="/ViewAllJobApplied"
-            element={<PrivateRoute allowedRoles={["1,2"]}><ViewAllJobApplied /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[1, 2]}>
+                <ViewAllJobApplied />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/ApplyJob/:job_id"
-            element={<PrivateRoute allowedRoles={["1,2"]}><ApplyJob /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[1, 2]}>
+                <ApplyJob />
+              </PrivateRoute>
+            }
           />
-
+<Route
+            path="/verifyEmployerAccount"
+            element={<PrivateRoute allowedRoles={[1]}><VerifyEmployerAccount /></PrivateRoute>}
+          />
           {/* Employer-Only Routes */}
           <Route
             path="/createPostJob"
-            element={<PrivateRoute allowedRoles={["2"]}><CreatePostJob /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <CreatePostJob />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/viewListJobsCreated"
-            element={<PrivateRoute allowedRoles={["2"]}><ViewListJobsCreated /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <ViewListJobsCreated />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/viewJobCreatedDetail/:id"
-            element={<PrivateRoute allowedRoles={["2"]}><ViewJobCreatedDetail /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <ViewJobCreatedDetail />
+              </PrivateRoute>
+            }
           />
-           <Route
+          <Route
             path="/viewDetailJobSeeker/:id"
-            element={<PrivateRoute allowedRoles={["2"]}><ViewJobDetailJobSeeker /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <ViewJobDetailJobSeeker />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/viewAllJobSeeker"
-            element={<PrivateRoute allowedRoles={["2"]}><MemberCard /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <MemberCard />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/ViewAllJobseekerApply/:id"
-            element={<PrivateRoute allowedRoles={["2"]}><ViewAllJobSeekerApply /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <ViewAllJobSeekerApply />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/ViewJobSeekerDetail/:id/:apply_id"
-            element={<PrivateRoute allowedRoles={["2"]}><ViewJobSeekerDetail /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[2]}>
+                <ViewJobSeekerDetail />
+              </PrivateRoute>
+            }
           />
-           <Route
-            path="/verifyEmployerAccount"
-            element={<PrivateRoute allowedRoles={["1"]}><VerifyEmployerAccount /></PrivateRoute>}
+
+          {/* Admin-Only Routes */}
+          <Route
+            path="/AdminDashBoard"
+            element={
+              <PrivateRoute allowedRoles={[4]}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
           />
+
+          {/* Miscellaneous Routes */}
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
+          <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
+          <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
+          <Route path="/ManagementCV" element={<ManagementCV />} />
+          <Route path="/ChatList" element={<ChatList />} />
+          <Route path="/EditPostJob/:id" element={<EditPostJob />} />
+          <Route path="/Payment" element={<PaymentScreen />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

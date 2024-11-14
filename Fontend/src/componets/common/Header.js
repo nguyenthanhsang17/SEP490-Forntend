@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import ChangePasswordModal from "../accounts/ChangePasswordModal"; // Assuming you have this component
-import { FaBriefcase, FaUsers } from "react-icons/fa"; // Import the icon for candidates
+import { FaBriefcase, FaBlog, FaHeart, FaList, FaUsers } from "react-icons/fa";
 
 const styles = {
   wrapper: {
-    // Your styles here
+    width: "100%",
+    backgroundColor: "#fff",
+    boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
   },
   navbar: {
-    // Your navbar styles here
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "10px 20px",
+    position: "relative",
   },
   profileButton: {
     marginLeft: "20px",
@@ -20,13 +26,22 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
     position: "relative",
+    transition: "background-color 0.3s ease",
+  },
+  profileButtonHover: {
+    backgroundColor: "#3b8ddb",
   },
   dropdown: {
     display: "none",
     position: "absolute",
     backgroundColor: "#fff",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
     zIndex: 1,
+    borderRadius: "5px",
+    top: "100%",
+    left: "0",
+    width: "200px",
+    padding: "10px 0",
   },
   dropdownVisible: {
     display: "block",
@@ -34,6 +49,14 @@ const styles = {
   dropdownItem: {
     padding: "10px 15px",
     cursor: "pointer",
+    color: "#333",
+    textDecoration: "none",
+    display: "block",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+  },
+  dropdownItemHover: {
+    backgroundColor: "#f0f0f0",
+    color: "#000",
   },
   viewJobsLink: {
     display: "flex",
@@ -41,11 +64,34 @@ const styles = {
     padding: "10px 15px",
     color: "#333",
     textDecoration: "none",
+    transition: "color 0.3s ease",
+    position: "relative",
+  },
+  viewJobsLinkHover: {
+    color: "#4facfe",
   },
   icon: {
     marginRight: "5px",
+    fontSize: "16px",
+  },
+  dropdownMenu: {
+    display: "none",
+    position: "absolute",
+    top: "100%",
+    left: "0",
+    backgroundColor: "#fff",
+    border: "1px solid #ccc",
+    padding: "10px 0",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    zIndex: 1,
+    borderRadius: "5px",
+    width: "200px",
+  },
+  dropdownMenuHover: {
+    display: "block",
   },
 };
+
 
 const Header = () => {
   const [showChangePassModal, setShowChangePassModal] = useState(false);
@@ -138,7 +184,7 @@ const Header = () => {
           </button>
           <div
             className="navbar-header"
-            style={{ position: "relative", top: "-90px" }}
+            style={{ position: "relative", top: "-93px" }}
           >
             <a className="navbar-brand" href="/">
               <img src={logoImage} className="logo logo-display" alt="Logo" />
@@ -158,36 +204,72 @@ const Header = () => {
               data-out="fadeOutUp"
             >
               <li>
-                <a href="pricing.html">
-                  <i className="fa fa-sign-in" aria-hidden="true"></i>
-                  Giá
-                </a>
-              </li>
-
-              <li>
                 <a
                   style={styles.viewJobsLink}
                   onClick={handleViewAllJobsClick}
-                  href="/viewalljob"
+                  href="/blog"
                 >
-                  <FaBriefcase style={styles.icon} />
-                  Tất cả các công việc
+                  <FaBlog style={styles.icon} /> Blog
                 </a>
               </li>
+              {/* Tất cả các công việc với dropdown */}
+<li className="dropdown"
+    onMouseEnter={(e) =>
+      (e.currentTarget.querySelector(".dropdown-menu").style.display = "block")
+    }
+    onMouseLeave={(e) =>
+      (e.currentTarget.querySelector(".dropdown-menu").style.display = "none")
+    }
+>
+  <a
+    style={styles.viewJobsLink}
+    href="/viewalljob"
+  >
+    <FaBriefcase style={styles.icon} /> Tất cả các công việc
+  </a>
+  <ul className="dropdown-menu" style={styles.dropdownMenu}>
+    <li>
+      <a
+        style={styles.dropdownItem}
+        onClick={() => navigate("/viewAllPostJobInWishlist")}
+      >
+        <FaHeart style={styles.icon} /> Công việc yêu thích
+      </a>
+    </li>
+  </ul>
+</li>
 
-              {roleId === "2" && (
-                <li>
-                  <a
-                    style={styles.viewJobsLink}
-                    onClick={handleViewAllCandidatesClick}
-                    href="/viewAllJobSeeker"
-                  >
-                    <FaUsers style={styles.icon} />
-                    Tất cả ứng viên
-                  </a>
-                </li>
-              )}
+{/* Tất cả ứng viên với dropdown */}
+{roleId === "2" && (
+  <li className="dropdown"
+      onMouseEnter={(e) =>
+        (e.currentTarget.querySelector(".dropdown-menu").style.display = "block")
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.querySelector(".dropdown-menu").style.display = "none")
+      }
+  >
+    <a
+      style={styles.viewJobsLink}
+      href="/viewAllJobSeeker"
+    >
+      <FaUsers style={styles.icon} /> Tất cả ứng viên
+    </a>
+    <ul className="dropdown-menu" style={styles.dropdownMenu}>
+      <li>
+        <a
+          style={styles.dropdownItem}
+          onClick={() => navigate("/viewAllJobSeekerInFavoriteList")}
+        >
+          <FaList style={styles.icon} /> Ứng viên ưa thích
+        </a>
+      </li>
+    </ul>
+  </li>
+)}
 
+
+              {/* Dropdown với tên người dùng */}
               {isLoggedIn ? (
                 <li className="left-br">
                   <button style={styles.profileButton} onClick={toggleDropdown}>
@@ -227,6 +309,10 @@ const Header = () => {
                     >
                       Đổi mật khẩu
                     </div>
+
+                    {/* Thêm Wishlist và Favorite List vào dropdown */}
+                    
+
                     <div style={styles.dropdownItem} onClick={handleLogout}>
                       Đăng xuất
                     </div>
