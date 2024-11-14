@@ -65,6 +65,7 @@ root.render(
           {/* Job Seeker-Only Routes */}
           <Route
             path="/ViewAllPost"
+
             element={
               <PrivateRoute allowedRoles={[3, 4]}>
                 <ViewAllPostJob />
@@ -73,7 +74,7 @@ root.render(
           />
           <Route
             path="/ViewDetail/:job_id/:status"
-            element={
+           element={
               <PrivateRoute allowedRoles={[3, 4]}>
                 <PostJobDetail />
               </PrivateRoute>

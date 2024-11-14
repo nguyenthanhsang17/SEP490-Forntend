@@ -48,7 +48,11 @@ function EmployerRequestDetail() {
             return;
         }
         try {
-            await axios.post(`https://localhost:7077/api/Users/Reject/${id}`, { reason });
+            await axios.post(`https://localhost:7077/api/Users/Reject/${id}`, reason, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             alert('Đã từ chối');
             fetchEmployerDetail(); // Làm mới thông tin
         } catch (error) {
@@ -80,8 +84,8 @@ function EmployerRequestDetail() {
     return (
         <>
             <Header />
-            <h1>Chi tiết đơn đăng ký nhà tuyển dụng</h1>
             <div className="container">
+            <h1>Chi tiết đơn đăng ký nhà tuyển dụng</h1>
                 {/* Phần thông tin doanh nghiệp */}
                 <div className="details-container">
                     <h2>Thông tin doanh nghiệp</h2>
@@ -135,6 +139,11 @@ function EmployerRequestDetail() {
                             </div>
                             <div className="info-item">
                                 <strong>Giới tính:</strong> {employerDetail.user?.gender || 'N/A'}
+                                { 
+                                                             employerDetail.user === 0 
+                                                             ? 'Nữ' 
+                                                             : 'Nam'
+                                                        }
                             </div>
                         </div>
                     </div>
