@@ -250,38 +250,6 @@ const ViewListJobsCreated = () => {
                                     </select>
                                 </div>
 
-                                {/* Salary Range */}
-                                <div className="search-item">
-                                    <input
-                                        type="number"
-                                        className="form-control search-input"
-                                        placeholder="Lương tối thiểu"
-                                        value={rangeSalaryMin}
-                                        onChange={(e) => setRangeSalaryMin(e.target.value)}
-                                    />
-                                </div>
-                                <div className="search-item">
-                                    <input
-                                        type="number"
-                                        className="form-control search-input"
-                                        placeholder="Lương tối đa"
-                                        value={rangeSalaryMax}
-                                        onChange={(e) => setRangeSalaryMax(e.target.value)}
-                                    />
-                                </div>
-
-                                {/* Urgent Recruitment */}
-                                <div className="search-item">
-                                    <select
-                                        className="form-control search-input"
-                                        value={isUrgentRecruitment}
-                                        onChange={(e) => setIsUrgentRecruitment(parseInt(e.target.value))}
-                                    >
-                                        <option value="-1">Tất cả</option>
-                                        <option value="1">Tuyển gấp</option>
-                                        <option value="0">Không tuyển gấp</option>
-                                    </select>
-                                </div>
 
                                 {/* Urgent Recruitment */}
                                 <div className="search-item">

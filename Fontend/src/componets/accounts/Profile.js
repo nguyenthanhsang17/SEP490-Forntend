@@ -171,9 +171,9 @@ const Profile = () => {
           <div className="row">
             <div className="detail-pic">
               <img src={img} className="img" alt="" />
-              <a href="#" className="detail-edit" title="edit">
-                <i className="fa fa-pencil"></i>
-              </a>
+              
+              
+              
             </div>
             <div className="detail-status">
               <span>
