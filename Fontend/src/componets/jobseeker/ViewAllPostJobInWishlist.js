@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import '../assets/css/style.css'; // Import CSS tùy chỉnh
-import { useSnackbar } from 'notistack'; 
+import { useSnackbar } from 'notistack';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Thêm FontAwesome
 import { faHeart, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'; // Icon hiện/ẩn mật khẩu
 import { Button } from 'antd';
@@ -93,7 +93,7 @@ const ViewAllPostJobInWishlist = () => {
                         sort,
                     },
                 });
-    
+
                 if (response.status === 200 && response.data.items) {
                     setJobs(response.data.items);
                     setTotalPages(response.data.totalPages || 0);
@@ -116,20 +116,20 @@ const ViewAllPostJobInWishlist = () => {
             fetchJobs();
         }
     }, [
-        currentPage, 
-        sort, 
-        jobKeyword, 
-        salaryTypesId, 
-        rangeSalaryMin, 
-        rangeSalaryMax, 
-        address, 
-        jobCategoryId, 
-        sortNumberApplied, 
-        isUrgentRecruitment, 
-        userLocation.latitude, 
+        currentPage,
+        sort,
+        jobKeyword,
+        salaryTypesId,
+        rangeSalaryMin,
+        rangeSalaryMax,
+        address,
+        jobCategoryId,
+        sortNumberApplied,
+        isUrgentRecruitment,
+        userLocation.latitude,
         userLocation.longitude,
     ]);
-    
+
 
     const handleRemoveFromWishlist = async (postJobId) => {
         try {
@@ -276,7 +276,7 @@ const ViewAllPostJobInWishlist = () => {
                                     />
                                     Ưu tiên công việc lương cao
                                 </label>
-                                
+
                                 <label style={prioritySortLabelStyle}>
                                     <input
                                         type="radio"
@@ -351,30 +351,25 @@ const ViewAllPostJobInWishlist = () => {
                             </div>
                         )))}
 
-
-
-{jobs.length > 0 && (
-    <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
-        <Button
-            shape="circle"
-            icon={<LeftOutlined />}
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-        />
-        <span style={{ margin: '0 10px', fontSize: '16px' }}>
-            {currentPage} / {totalPages} trang
-        </span>
-        <Button
-            shape="circle"
-            icon={<RightOutlined />}
-            disabled={currentPage === totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-        />
-    </div>
-)}
-
-
-
+                        {jobs.length > 0 && (
+                            <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+                                <Button
+                                    shape="circle"
+                                    icon={<LeftOutlined />}
+                                    disabled={currentPage === 1}
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                />
+                                <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                                    {currentPage} / {totalPages} trang
+                                </span>
+                                <Button
+                                    shape="circle"
+                                    icon={<RightOutlined />}
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </section >

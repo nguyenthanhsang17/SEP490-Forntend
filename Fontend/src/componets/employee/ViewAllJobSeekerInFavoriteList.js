@@ -139,9 +139,10 @@ function ViewAllJobSeekerInFavoriteList() {
                             alignSelf: 'start',
                         }}
                     >
-                        Tìm kiếm 
+                        Tìm kiếm
                     </button>
                 </div>
+
 
                 <div className="row justify-content-center">
                     {jobSeekers.length > 0 ? (
@@ -195,23 +196,26 @@ function ViewAllJobSeekerInFavoriteList() {
                     )}
                 </div>
 
-                <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
-                    <Button
-                        shape="circle"
-                        icon={<LeftOutlined />}
-                        disabled={currentPage === 1}
-                        onClick={() => handlePageChange(currentPage - 1)}
-                    />
-                    <span style={{ margin: '0 10px', fontSize: '16px' }}>
-                        {currentPage} / {totalPages} trang
-                    </span>
-                    <Button
-                        shape="circle"
-                        icon={<RightOutlined />}
-                        disabled={currentPage === totalPages}
-                        onClick={() => handlePageChange(currentPage + 1)}
-                    />
-                </div>
+                {jobSeekers.length > 0 && (
+                    <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+                        <Button
+                            shape="circle"
+                            icon={<LeftOutlined />}
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                        />
+                        <span style={{ margin: '0 10px', fontSize: '16px' }}>
+                            {currentPage} / {totalPages} trang
+                        </span>
+                        <Button
+                            shape="circle"
+                            icon={<RightOutlined />}
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        />
+                    </div>
+                )}
+
 
             </div>
             <Footer />
