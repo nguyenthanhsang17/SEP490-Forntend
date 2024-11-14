@@ -64,12 +64,12 @@ root.render(
           
           <Route
             path="/ViewAllPost"
-            element={<PrivateRoute allowedRoles={["3,4"]}><ViewAllPostJob /></PrivateRoute>}
+            element={<PrivateRoute allowedRoles={["3"]}><ViewAllPostJob /></PrivateRoute>}
           />
 
           <Route
             path="/ViewDetail/:job_id/:status"
-            element={<PrivateRoute allowedRoles={["3,4"]}><PostJobDetail /></PrivateRoute>}
+            element={<PrivateRoute allowedRoles={["3"]}><PostJobDetail /></PrivateRoute>}
           />
 
           <Route

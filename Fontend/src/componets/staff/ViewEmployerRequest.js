@@ -97,7 +97,15 @@ function EmployerRequests() {
                                 <strong>Điện thoại:</strong> {employer.user?.phonenumber || 'N/A'}
                             </div>
                             <div className="employer-info">
-                                <strong>Trạng thái:</strong> {employer.status?.phonenumber || 'N/A'}
+                            <strong>Trạng thái:</strong> { 
+                                                             employer.status === 0 
+                                                             ? 'Đang chờ phê duyệt' 
+                                                             : employer.status === 1 
+                                                             ? 'Đã duyệt' 
+                                                             : employer.status === 2 
+                                                             ? 'Bị từ chối' 
+                                                             : 'Không xác định'
+                                                        }
                             </div>
                             <div className="employer-info">
                                 <a href={'/ViewEmployerRequestsDetail/' + employer.registerEmployerId} className="view-detail-button">
