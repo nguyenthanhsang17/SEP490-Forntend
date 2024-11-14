@@ -66,60 +66,51 @@ function ViewJobCreatedDetail() {
   };
 
   const GenerateSlotDTOs = ({ slotDTOs }) => {
-    const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
-
-    // Định nghĩa các ca làm việc
-    const shiftTimes = {
-      1: "08:00 - 12:00",
-      2: "13:00 - 17:00",
-      3: "17:30 - 21:30",
-      4: "22:00 - 02:00",
-    };
-
-    const getWorkingHoursForDayAndShift = (dayOfWeek, shiftStartTime) => {
-      // Tìm slot có chứa lịch làm việc cho ngày cụ thể
+    const daysOfWeek = [
+      { name: "Thứ 2", icon: "📅" },
+      { name: "Thứ 3", icon: "📅" },
+      { name: "Thứ 4", icon: "📅" },
+      { name: "Thứ 5", icon: "📅" },
+      { name: "Thứ 6", icon: "📅" },
+      { name: "Thứ 7", icon: "📅" },
+      { name: "Chủ Nhật", icon: "🌞" }
+    ];
+  
+    // Hàm lấy lịch làm việc cho từng ngày
+    const getWorkingHoursForDay = (dayOfWeek) => {
       const scheduleForDay = slotDTOs
         .flatMap(slot => slot.jobScheduleDTOs)
         .find(schedule => schedule.dayOfWeek === dayOfWeek);
-
-      if (!scheduleForDay) return null; // Nếu không tìm thấy lịch cho ngày này, trả về null
-
-      // Lấy danh sách các giờ làm việc cho ca hiện tại (khớp với thời gian bắt đầu của ca)
-      const workingHours = scheduleForDay.workingHourDTOs
-        .filter(hour => hour.startTime.startsWith(shiftStartTime))
-        .map(hour => `${hour.startTime} - ${hour.endTime}`);
-
-      return workingHours.length > 0 ? workingHours : null;
+  
+      if (!scheduleForDay) return null;
+  
+      // Trả về tất cả các khoảng thời gian trong ngày
+      return scheduleForDay.workingHourDTOs.map(hour => `${hour.startTime} - ${hour.endTime}`);
     };
-
+  
     return (
-      <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div style={styles.container}>
+        <table style={styles.table}>
           <thead>
-            <tr style={{ backgroundColor: "#e0e0e0" }}>
-              <th style={tableStyles.header}>Ca làm việc</th>
+            <tr style={styles.tableHeaderRow}>
               {daysOfWeek.map((day, index) => (
-                <th key={index} style={tableStyles.header}>{day}</th>
+                <th key={index} style={styles.tableHeader}>
+                  {day.icon} {day.name}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {Object.entries(shiftTimes).map(([shift, time]) => {
-              const [shiftStartTime] = time.split(" - "); // Lấy thời gian bắt đầu của ca
-              return (
-                <tr key={shift} style={tableStyles.row}>
-                  <td style={tableStyles.cell}>Ca {shift} </td>
-                  {daysOfWeek.map((day, dayIndex) => {
-                    const workingHours = getWorkingHoursForDayAndShift(dayIndex + 2, shiftStartTime);
-                    return (
-                      <td key={dayIndex} style={tableStyles.cell}>
-                        {workingHours ? workingHours.join(", ") : "-"}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            <tr>
+              {daysOfWeek.map((day, dayIndex) => {
+                const workingHours = getWorkingHoursForDay(dayIndex + 2); // Ngày bắt đầu từ 2 (Thứ 2)
+                return (
+                  <td key={dayIndex} style={styles.tableCell}>
+                    {workingHours ? workingHours.join(" ") : "-"}
+                  </td>
+                );
+              })}
+            </tr>
           </tbody>
         </table>
       </div>
@@ -297,32 +288,44 @@ function ViewJobCreatedDetail() {
   );
 }
 
-const tableStyles = {
-  header: {
-    padding: '10px',
-    borderBottom: '2px solid #ccc',
-    textAlign: 'left',
-  },
-  row: {
-    borderBottom: '1px solid #ddd',
-  },
-  cell: {
-    padding: '10px',
-  },
-};
-
 const styles = {
-  loading: {
-    textAlign: 'center',
-    fontSize: '1.5rem',
-    color: '#555',
-    margin: '2rem 0',
+  container: {
+    padding: "20px",
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#f7f7f7",
+    borderRadius: "10px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
   },
-  noJob: {
-    textAlign: 'center',
-    fontSize: '1.5rem',
-    color: '#e74c3c',
-    margin: '2rem 0',
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "20px",
+    borderRadius: "8px",
+    overflow: "hidden",
+  },
+  tableHeaderRow: {
+    backgroundColor: "#3e8e41",
+  },
+  tableHeader: {
+    padding: "12px",
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+    border: "1px solid #3e8e41",
+  },
+  tableRowEven: {
+    backgroundColor: "#f9f9f9",
+  },
+  tableRowOdd: {
+    backgroundColor: "#eaf2e3",
+  },
+  tableCell: {
+    padding: "10px",
+    textAlign: "center",
+    borderBottom: "1px solid #ddd",
+    fontSize: "15px",
+    color: "#555",
+    borderRight: "1px solid #ddd",
   },
   expirationDate: {
     fontSize: '1.2rem',
@@ -330,5 +333,6 @@ const styles = {
     color: '#d9534f',
   },
 };
+
 
 export default ViewJobCreatedDetail;

@@ -108,7 +108,8 @@ function PostJobDetail() {
                 alert("Bài viết đã bị cấm.");
                 navigate(`/ViewDetail/${job_id}/6`); // Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
             } else {
-                const result = await response.json();
+                const result = await response.json(banReason);
+                console.log()
                 alert(result.Message || "Có lỗi khi cấm bài viết");
             }
         } catch (error) {
