@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
@@ -14,92 +15,118 @@ const ViewJobDetailJobSeeker = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [jobSeeker, setJobSeeker] = useState(null);
-    const [isSaved, setIsSaved] = useState(false);
+    const [saved, setSaved] = useState({});
+
+    // Fetch dữ liệu chi tiết ứng viên từ API và cập nhật trạng thái "saved" dựa trên isFavorite
+    const fetchJobSeekerDetails = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://localhost:7077/api/JobJobSeeker/GetJobSeekerDetail/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const filteredData = {
+                    userId: data.userId,
+                    email: data.email,
+                    avatarURL: data.avatarURL,
+                    fullName: data.fullName,
+                    age: data.age,
+                    phonenumber: data.phonenumber,
+                    currentJob: data.currentJob,
+                    description: data.description,
+                    address: data.address,
+                    gender: data.gender,
+                    roleId: data.roleId,
+                    numberAppiled: data.numberAppiled,
+                    numberAppiledAccept: data.numberAppiledAccept,
+                    isFavorite: data.isFavorite,
+                    cvDTOs: data.cvDTOs.map(cv => ({
+                        cvId: cv.cvId,
+                        userId: cv.userId,
+                        nameCv: cv.nameCv,
+                        itemOfCvs: cv.itemOfCvs.map(item => ({
+                            itemOfCvId: item.itemOfCvId,
+                            cvId: item.cvId,
+                            itemName: item.itemName,
+                            itemDescription: item.itemDescription
+                        }))
+                    }))
+                };
+                setJobSeeker(filteredData);
+
+                // Cập nhật trạng thái "saved" nếu ứng viên đã được đánh dấu là yêu thích
+                if (data.isFavorite === 1) {
+                    setSaved((prevSaved) => ({
+                        ...prevSaved,
+                        [data.userId]: true
+                    }));
+                }
+            } else if (response.status === 401) {
+                navigate("/login");
+            }
+        } catch (error) {
+            console.error("Failed to fetch job seeker details:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchJobSeekerDetails = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                navigate("/login");
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://localhost:7077/api/JobJobSeeker/GetJobSeekerDetail/${id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const filteredData = {
-                        userId: data.userId,
-                        email: data.email,
-                        avatarURL: data.avatarURL,
-                        fullName: data.fullName,
-                        age: data.age,
-                        phonenumber: data.phonenumber,
-                        currentJob: data.currentJob,
-                        description: data.description,
-                        address: data.address,
-                        gender: data.gender,
-                        roleId: data.roleId,
-                        numberAppiled: data.numberAppiled,
-                        numberAppiledAccept: data.numberAppiledAccept,
-                        cvDTOs: data.cvDTOs.map(cv => ({
-                            cvId: cv.cvId,
-                            userId: cv.userId,
-                            nameCv: cv.nameCv,
-                            itemOfCvs: cv.itemOfCvs.map(item => ({
-                                itemOfCvId: item.itemOfCvId,
-                                cvId: item.cvId,
-                                itemName: item.itemName,
-                                itemDescription: item.itemDescription
-                            }))
-                        }))
-                    };
-                    setJobSeeker(filteredData);
-                    setIsSaved(localStorage.getItem(`savedJobSeeker_${data.userId}`) ? true : false); // Check if already saved
-                } else if (response.status === 401) {
-                    navigate("/login");
-                }
-            } catch (error) {
-                console.error("Failed to fetch job seeker details:", error);
-            }
-        };
-
         fetchJobSeekerDetails();
     }, [id, navigate]);
 
     const handleContactNow = () => {
-        alert(`Contacting ${jobSeeker.fullName}`);
+        if (jobSeeker) {
+            alert(`Contacting ${jobSeeker.fullName}`);
+        }
     };
 
-    const handleSave = () => {
-        if (isSaved) {
-            Swal.fire('Thông báo', 'Ứng viên đã có trong danh sách yêu thích.', 'info');
-            return;
-        }
-        
+    const handleAddToFavorites = async (id) => {
+        const token = localStorage.getItem("token");
+
         Swal.fire({
             title: 'Lưu thông tin liên hệ',
-            input: 'text',
-            inputLabel: 'Nhập mô tả',
+            input: "text",
+            inputLabel: "Nhập mô tả",
             showCancelButton: true,
-            confirmButtonText: 'Lưu',
-            cancelButtonText: 'Hủy',
-            preConfirm: (description) => {
-                if (description) {
-                    const savedData = { ...jobSeeker, description };
-                    localStorage.setItem(`savedJobSeeker_${jobSeeker.userId}`, JSON.stringify(savedData));
-                    setIsSaved(true);
-                    Swal.fire('Thành công', `${jobSeeker.fullName} đã được lưu vào danh sách yêu thích.`, 'success');
-                } else {
-                    Swal.showValidationMessage('Bạn cần nhập mô tả để lưu.');
+            confirmButtonText: 'Có',
+            cancelButtonText: 'Không',
+            showLoaderOnConfirm: true,
+            preConfirm: async (description) => {
+                try {
+                    const payload = {
+                        jobSeekerId: id,
+                        description: description
+                    };
+                    await axios.post(
+                        'https://localhost:7077/api/FavoriteLists/AddFavorite',
+                        payload,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    Swal.fire('Thành công', 'Ứng viên đã được lưu vào danh sách yêu thích', 'success');
+
+                    // Cập nhật trạng thái đã lưu thành công
+                    setSaved((prevSaved) => ({
+                        ...prevSaved,
+                        [id]: true
+                    }));
+                } catch (error) {
+                    Swal.showValidationMessage(`Không thể lưu ứng viên: ${error}`);
                 }
-            }
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
         });
     };
 
@@ -119,11 +146,13 @@ const ViewJobDetailJobSeeker = () => {
                 <div className="container white-shadow">
                     <div className="row bottom-mrg align-items-center">
                         <div className="col-md-4 col-sm-4 text-center">
-                            <img 
-                                src={jobSeeker?.avatarURL} 
-                                alt={`${jobSeeker?.fullName}'s avatar`} 
-                                style={{ width: '150px', height: '150px', borderRadius: '50%' }} 
-                            />
+                            {jobSeeker && (
+                                <img
+                                    src={jobSeeker.avatarURL || ""}
+                                    alt={`${jobSeeker.fullName || "Avatar"}'s avatar`}
+                                    style={{ width: '150px', height: '150px', borderRadius: '50%' }}
+                                />
+                            )}
                         </div>
                         <div className="col-md-8 col-sm-8">
                             <div className="detail-desc-caption">
@@ -141,23 +170,32 @@ const ViewJobDetailJobSeeker = () => {
                                 ) : (
                                     <p>Đang tải thông tin ứng viên...</p>
                                 )}
-                                {jobSeeker && (
-                                    <div className="button-group mt-4">
-                                        <button className="btn btn-primary contact-btn" onClick={handleContactNow}>
-                                            Liên Hệ Ngay
-                                        </button>
+                                {jobSeeker && (saved[jobSeeker.userId] || jobSeeker.isFavorite === 1) ? (
+                                    <button
+                                        className="btn btn-save"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faHeart}
+                                            className="icon-spacing"
+                                            style={{ color: "red" }}
+                                        />
+                                        Đã lưu thông tin
+                                    </button>
+                                ) : (
+                                    jobSeeker && (
                                         <button
                                             className="btn btn-save"
-                                            onClick={handleSave}
+                                            onClick={() => handleAddToFavorites(jobSeeker.userId)}
                                         >
                                             <FontAwesomeIcon
                                                 icon={faHeart}
                                                 className="icon-spacing"
-                                                style={{ color: isSaved ? 'red' : 'gray' }}
+                                                style={{ color: "gray" }}
                                             />
-                                            {isSaved ? 'Đã Lưu' : 'Lưu thông tin liên hệ'}
+                                            Lưu thông tin liên hệ
                                         </button>
-                                    </div>
+                                    )
                                 )}
                             </div>
                         </div>
@@ -189,72 +227,6 @@ const ViewJobDetailJobSeeker = () => {
                 </div>
             </section>
             <Footer />
-            <style jsx>{`
-                .contact-btn {
-                    background-color: #28a745;
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                    border-radius: 5px;
-                }
-
-                .contact-btn:hover {
-                    background-color: #218838;
-                }
-
-                .btn-save {
-                    background-color: #007bff;
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                    margin-left: 10px;
-                    border-radius: 5px;
-                }
-
-                .btn-save:hover {
-                    background-color: #0069d9;
-                }
-
-                .designation, .detail-title {
-                    font-size: 24px;
-                    font-weight: bold;
-                    color: #333;
-                    margin-bottom: 15px;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    border-bottom: 2px solid #28a745;
-                    padding-bottom: 5px;
-                }
-
-                .inner-header-title h1 {
-                    font-size: 36px;
-                    font-weight: bold;
-                    color: #ffffff;
-                    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-                }
-
-                .job-seeker-info {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                }
-
-                .job-seeker-info li {
-                    font-size: 16px;
-                    margin-bottom: 5px;
-                    color: #555;
-                }
-
-                .job-seeker-info li strong {
-                    color: #333;
-                }
-            `}</style>
         </>
     );
 };
