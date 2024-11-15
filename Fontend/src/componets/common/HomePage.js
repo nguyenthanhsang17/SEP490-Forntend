@@ -163,8 +163,9 @@ const HomePage = () => {
                     <div className="working-process text-center">
                       <h4>{step}</h4>
                       <p>
-                        Đăng công việc để cho chúng tôi biết về dự án của bạn.
-                        Chúng tôi sẽ nhanh chóng kết nối bạn với những freelancer phù hợp.
+                        {index === 0 && "Đăng ký tài khoản, xác minh và cập nhật hồ sơ cá nhân để sẵn sàng tìm kiếm công việc."}
+                        {index === 1 && "Khám phá các công việc phù hợp, xem chi tiết và lưu những công việc yêu thích."}
+                        {index === 2 && "Ứng tuyển nhanh chóng, theo dõi trạng thái và quản lý tiến trình ứng tuyển của bạn."}
                       </p>
                     </div>
                   </div>
@@ -194,9 +195,8 @@ const HomePage = () => {
                     <div className="freelance-container style-2">
                       <div className="freelance-box">
                         <span
-                          className={`freelance-status ${
-                            job.isUrgentRecruitment ? "urgent" : ""
-                          }`}
+                          className={`freelance-status ${job.isUrgentRecruitment ? "urgent" : ""
+                            }`}
                         >
                           {job.isUrgentRecruitment ? "Khẩn Cấp" : "Có Sẵn"}
                         </span>

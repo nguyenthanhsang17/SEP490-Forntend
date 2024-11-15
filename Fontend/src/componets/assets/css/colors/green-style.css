@@ -1096,6 +1096,30 @@ textarea.form-control {
   .cancel-button:hover {
     background-color: #c9302c;
   }
+  .shadow-effect {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    padding: 15px;
+    border-radius: 8px; /* Làm góc bo tròn */
+    background-color: white; /* Màu nền */
+  }
+  
+  .shadow-effect:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px); /* Hiệu ứng đẩy lên khi hover */
+    border-left: 5px solid green; /* Viền màu xanh xuất hiện khi hover */
+  }
+  .candidate-actions button {
+    font-size: 14px; /* Giảm kích thước chữ */
+    padding: 5px 10px; /* Giảm kích thước padding */
+    margin-top: 10px; /* Tạo khoảng cách trên dưới */
+    width: 150px; /* Đặt chiều rộng cố định */
+    text-align: center;
+    border-radius: 5px; /* Bo tròn nút */
+  }
+  
+  .candidate-actions button:first-child {
+    margin-top: 0; /* Loại bỏ khoảng cách cho nút đầu tiên */
+  }
   
   
   
