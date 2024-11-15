@@ -22,6 +22,12 @@ function ForgotPassword() {
     return emailRegex.test(email);
   };
 
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    return passwordRegex.test(password);
+  };
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -59,48 +65,49 @@ function ForgotPassword() {
     setErrorMessage("");
 
     if (!code) {
-      setErrorMessage("Mã xác thực không được để trống.");
-      return;
+        setErrorMessage("Mã xác thực không được để trống.");
+        return;
     }
 
-    if (password.length < 6) {
-      setErrorMessage("Mật khẩu phải có ít nhất 6 ký tự.");
-      return;
+    if (!validatePassword(password)) {
+        setErrorMessage("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.");
+        return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage("Mật khẩu xác nhận không khớp.");
-      return;
+        setErrorMessage("Mật khẩu xác nhận không khớp.");
+        return;
     }
 
     const requestData = {
-      toEmail: email,
-      opt: code,
-      password: password,
-      confirmPassword: confirmPassword
+        toEmail: email,
+        opt: code,
+        password: password,
+        confirmPassword: confirmPassword
     };
 
     try {
-      const response = await fetch('https://localhost:7077/api/Users/VerifycodeForgotPassword', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData),
-      });
+        const response = await fetch('https://localhost:7077/api/Users/VerifycodeForgotPassword', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData),
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (response.ok) {
-        console.log(result.message);
-        setErrorMessage('');
-        navigate('/login');
-      } else {
-        setErrorMessage(result.message);
-      }
+        if (response.ok) {
+            console.log(result.message);
+            setErrorMessage('');
+            navigate('/login');
+        } else {
+            setErrorMessage(result.message);
+        }
     } catch (error) {
-      console.error("Có lỗi xảy ra khi đặt lại mật khẩu:", error);
-      setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
+        console.error("Có lỗi xảy ra khi đặt lại mật khẩu:", error);
+        setErrorMessage('Đã xảy ra lỗi, vui lòng thử lại!');
     }
-  };
+};
+
 
   return (
     <div className="simple-bg-screen" style={{ backgroundImage: `url(${bannerImage})` }}>
@@ -204,7 +211,8 @@ function ForgotPassword() {
                   </div>
 
                   <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
-                  {errorMessage && <p className="error-message">{errorMessage}</p>}
+                  {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
+
                 </form>
               )}
             </div>

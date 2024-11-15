@@ -1087,6 +1087,16 @@ textarea.form-control {
     opacity: 0.8; /* Hiệu ứng hover */
   }
   
+  .cancel-button {
+    background-color: #d9534f;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c9302c;
+  }
+  
   
   
 
