@@ -408,7 +408,7 @@ function ViewJobCreatedDetail() {
                     <button
                       className="btn btn-secondary"
                       style={{
-                        backgroundColor: "#6c757d", // Xám
+                        backgroundColor: "#28a745", // Xanh lá sáng
                         border: "none",
                         color: "#fff",
                       }}
