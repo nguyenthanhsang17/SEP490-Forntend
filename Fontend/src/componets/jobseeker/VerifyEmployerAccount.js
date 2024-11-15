@@ -169,7 +169,6 @@ function VerifyEmployerAccount() {
               ))}
             </div>
           )}
-
           {errorMessage && <p style={{ color: 'red', marginTop: '15px', fontSize: '0.9em' }}>{errorMessage}</p>}
 
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>

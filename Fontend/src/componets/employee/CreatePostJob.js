@@ -42,7 +42,7 @@ function CreatePostJob() {
         latitude: 0,
         longitude: 0,
     });
-
+    const [istaojob, Setistaojob] = useState(false);
     const [sangsalary, Setsangsalary] = useState(0);
 
     const handleToggle = () => {
@@ -496,7 +496,6 @@ function CreatePostJob() {
     const luujob = async (e) => {
         e.preventDefault();
 
-
         if (!validateJobData()) {
             return;
         }
@@ -539,8 +538,7 @@ function CreatePostJob() {
             alert('Chưa có ảnh !!!');
             return 0;
         }
-
-
+        Setistaojob(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -576,12 +574,14 @@ function CreatePostJob() {
                 }
 
                 showAlert("Tạo Công việc Thành công");
-
+                Setistaojob(true);
             } else {
-                showAlert();
+                showAlert("Tạo Công việc Thất bại");
+                Setistaojob(false);
             }
         } catch (error) {
             console.error('Error:', error);
+            Setistaojob(false);
         }
     };
 
@@ -600,7 +600,6 @@ function CreatePostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
 
         if (!validateJobData()) {
             return;
@@ -649,7 +648,7 @@ function CreatePostJob() {
             return 0;
         }
 
-
+        Setistaojob(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -667,30 +666,32 @@ function CreatePostJob() {
                 console.log(JSON.stringify(sang, null, 2));
                 const uploadstatus = await uploadImages(id);
                 if (uploadstatus === 0) {
-                    enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                    enqueueSnackbar("Tạo công việc thất bại", { variant: 'error' });
                     return;
                 }
                 if (isLongTerm) {
                     const uploadSchedule = await saveSchedule();
                     if (uploadSchedule === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'error' });
                         return;
                     }
                 } else {
                     const uploadJobdate = await handlePublishPostJobDates(id);
                     if (uploadJobdate === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'error' });
                         return;
                     }
                 }
-
+                Setistaojob(true);
                 showAlert("Tạo Công việc Thành công");
 
             } else {
-                showAlert();
+                enqueueSnackbar("Tạo công việc thất bại", { variant: 'error' });
+                Setistaojob(false);
             }
         } catch (error) {
             console.error('Error:', error);
+            Setistaojob(false);
         }
     };
 
@@ -1184,12 +1185,12 @@ function CreatePostJob() {
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
-                                    <button style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" onClick={handleSubmit} >Đăng công việc</button>
+                                    <button disabled={istaojob} style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" onClick={handleSubmit} >Đăng công việc</button>
                                 </div>
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
-                                    <button style={{ backgroundColor: "orange", width: "50%" }} className="btn btn-success btn-primary small-btn" onClick={luujob} >Lưu công việc</button>                                </div>
+                                    <button disabled={istaojob} style={{ backgroundColor: "orange", width: "50%" }} className="btn btn-success btn-primary small-btn" onClick={luujob} >Lưu công việc</button>                                </div>
                             </div>
                         </form>
                     </div>

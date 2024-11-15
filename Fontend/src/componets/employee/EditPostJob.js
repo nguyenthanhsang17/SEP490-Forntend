@@ -9,6 +9,7 @@ import Map from '../utils/Map';
 import MapChoose from '../utils/MapChoose';
 import MapAutoComplete from '../utils/MapAutoComplete';
 import Swal from 'sweetalert2';
+import GeocodingMap from '../utils/GeocodingMap';
 import { useParams, useNavigate } from 'react-router-dom'; // Single import statement
 function EditPostJob() {
     const [jobTitle, setJobTitle] = useState('');
@@ -272,6 +273,13 @@ function EditPostJob() {
         })).filter(schedule => schedule.jobScheduleCreateDTO.length > 0);
     };
 
+    const handlePositionChangeToado = (lat, lon) => {
+        const latitude_a = parseFloat(lat);
+        const longitude_a = parseFloat(lon);
+        setLatitude(latitude_a);
+        setLongitude(longitude_a);
+    };
+
     //Hàm gọi API để lưu lịch làm việc
     const saveSchedule = async () => {
         try {
@@ -428,6 +436,9 @@ function EditPostJob() {
 
     const uploadImages = async () => {
         setIsLoading(true);
+        const check1 = false;
+        const check2 = false;
+
         const formData = new FormData();
 
         formData.append('postid', id);
@@ -442,12 +453,18 @@ function EditPostJob() {
                     console.error("Image object missing file property:", imageObj);
                 }
             });
+            check1 = true;
         }
 
         if (imagesData && imagesData.length > 0) {
             imagesData.forEach((imageId) => {
                 formData.append('imageIds', imageId.id);
             });
+            check2 = true;
+        }
+
+        if (check1 === false && check2 == false) {
+            return 0;
         }
 
         try {
@@ -462,7 +479,7 @@ function EditPostJob() {
             );
 
             if (response.status === 200) {
-                alert('Upload ảnh thành công!');
+                return 1;
             }
         } catch (error) {
             // Log toàn bộ thông tin lỗi
@@ -626,6 +643,43 @@ function EditPostJob() {
         if (!validateJobData()) {
             return;
         }
+        const check1 = false;
+        const check2 = false;
+        if (selectedImages && selectedImages.length > 0) {
+            check1 = true;
+        }
+
+        if (imagesData && imagesData.length > 0) {
+            check2 = true;
+        }
+
+        if (check1 === false && check2 == false) {
+            alert('Chưa nhập đầy đủ các thông tin về ảnh để cập nhật');
+            return;
+        }
+
+        if (isLongTerm) {
+            const dataToSend = formatDataForApi();
+            console.log("slot de cap nhat");
+            console.log(JSON.stringify(dataToSend, null, 2));
+            if (!dataToSend) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
+                return;
+            }
+        } else {
+            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
+                return;
+            }
+        }
+
+        const dataToSend = formatDataForApi();
+        console.log("slot de cap nhat");
+        console.log(JSON.stringify(dataToSend, null, 2));
+        if (!dataToSend) {
+            alert('Chưa nhập thông tin đầy đủ lịch làm việc');
+            return;
+        }
 
 
 
@@ -667,15 +721,14 @@ function EditPostJob() {
                 const sang = formatDataForApi();
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages();
-                uploadImages(id);
                 if (isLongTerm) {
                     saveSchedule();
                 } else {
                     handlePublishPostJobDates(id);
                 }
-                saveSchedule();
+                showAlert("");
             } else {
-                console.error('Error creating job:', response.statusText);
+                console.error('Error Update job:', response.statusText);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -1307,8 +1360,7 @@ function EditPostJob() {
 
                             </div>
                             <div className="full-width">
-                                {/* <MapChoose onPositionChange={handlePositionChange} /> */}
-                                {/* <MapAutoComplete onSubmit={handleLocationSubmit} onPositionChange={handlePositionChange} initialPosition={[JobDetail.latitude, JobDetail.longitude]} /> */}
+                                <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} />
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
