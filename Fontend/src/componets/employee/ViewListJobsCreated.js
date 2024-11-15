@@ -212,33 +212,73 @@ const ViewListJobsCreated = () => {
 
     const handleRequest = async (job) => {
         try {
-            const token = localStorage.getItem("token");
-            const apiEndpoint = `https://localhost:7077/api/PostJobs/RequestForPublicPost/${job.postId}`;
-            const response = await axios.put(apiEndpoint, null, {
-                headers: { Authorization: `Bearer ${token}` },
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn gửi yêu cầu duyệt bài không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
             });
-            await showAlert("Đã gửi yêu cầu duyệt bài thành công.");
-            setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 1 } : j));
+
+            if (result.isConfirmed) {
+                const token = localStorage.getItem("token");
+                const apiEndpoint = `https://localhost:7077/api/PostJobs/RequestForPublicPost/${job.postId}`;
+                await axios.put(apiEndpoint, null, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                await Swal.fire({
+                    title: 'Đã gửi yêu cầu duyệt bài thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+                setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 1 } : j));
+            }
         } catch (error) {
             console.error("Failed to send request:", error);
-            await showAlert("Gửi yêu cầu duyệt bài không thành công.");
+            await Swal.fire({
+                title: 'Gửi yêu cầu duyệt bài không thành công!',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
     };
 
+
     const handleCancelRequest = async (job) => {
         try {
-            const token = localStorage.getItem("token");
-            const apiEndpoint = `https://localhost:7077/api/PostJobs/CancelRequestForPublicPost/${job.postId}`;
-            const response = await axios.put(apiEndpoint, null, {
-                headers: { Authorization: `Bearer ${token}` },
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn hủy yêu cầu duyệt bài không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
             });
-            await showAlert("Đã hủy yêu cầu duyệt bài thành công.");
-            setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 0 } : j));
+
+            if (result.isConfirmed) {
+                const token = localStorage.getItem("token");
+                const apiEndpoint = `https://localhost:7077/api/PostJobs/CancelRequestForPublicPost/${job.postId}`;
+                await axios.put(apiEndpoint, null, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                await Swal.fire({
+                    title: 'Đã hủy yêu cầu duyệt bài thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+                setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 0 } : j));
+            }
         } catch (error) {
             console.error("Failed to cancel request:", error);
-            await showAlert("Hủy yêu cầu duyệt bài không thành công.");
+            await Swal.fire({
+                title: 'Hủy yêu cầu duyệt bài không thành công!',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
     };
+
 
 
     const chuyenman = () => {
@@ -412,17 +452,22 @@ const ViewListJobsCreated = () => {
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         if (job.status === 0) {
-                                                            handleRequest(job); // Gửi yêu cầu duyệt bài
+                                                            handleRequest(job); // Gửi yêu cầu duyệt bài (có xác nhận)
                                                         } else if (job.status === 1) {
-                                                            handleCancelRequest(job); // Hủy yêu cầu duyệt bài
+                                                            handleCancelRequest(job); // Hủy yêu cầu duyệt bài (có xác nhận)
                                                         } else {
-                                                            showAlert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc Chờ phê duyệt.");
+                                                            Swal.fire({
+                                                                title: "Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc Chờ phê duyệt.",
+                                                                icon: "info",
+                                                                confirmButtonText: "Ok",
+                                                            });
                                                         }
                                                     }}
                                                     title={job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 >
                                                     {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 </button>
+
 
 
 
