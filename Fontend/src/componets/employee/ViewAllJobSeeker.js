@@ -233,7 +233,7 @@ const MemberCard = () => {
               {candidates.length > 0 ? (
                 candidates.map((candidate) => (
                   <div key={candidate.userId} className="col-md-12 mb-4">
-                    <div className="candidate-card d-flex align-items-center p-3">
+                    <div className="candidate-card shadow-effect d-flex align-items-center p-3">
                       <div
                         className="candidate-image"
                         style={{ marginRight: "20px" }}
@@ -248,7 +248,7 @@ const MemberCard = () => {
                             width: "100px",
                             height: "100px",
                             borderRadius: "8px",
-                          }} // Increased size
+                          }}
                         />
                       </div>
                       <div className="candidate-info" style={{ flex: 1 }}>
@@ -265,7 +265,18 @@ const MemberCard = () => {
                             fontSize: "14px",
                           }}
                         >
-                          Tuổi: {candidate.age}
+                          <strong>Tuổi:</strong> {candidate.age}
+                        </p>
+
+                        <p
+                          style={{
+                            color: "#666",
+                            margin: "0",
+                            fontSize: "14px",
+                          }}
+                        >
+                          <strong>Số Điện Thoại:</strong>{" "}
+                          {candidate.phonenumber}
                         </p>
                         <p
                           style={{
@@ -274,7 +285,7 @@ const MemberCard = () => {
                             fontSize: "14px",
                           }}
                         >
-                          Số Điện Thoại: {candidate.phonenumber}
+                          <strong>Địa Chỉ:</strong> {candidate.address}
                         </p>
                         <p
                           style={{
@@ -283,7 +294,8 @@ const MemberCard = () => {
                             fontSize: "14px",
                           }}
                         >
-                          Địa Chỉ: {candidate.address}
+                          <strong>Công Việc Hiện Tại:</strong>{" "}
+                          {candidate.currentJob}
                         </p>
                         <p
                           style={{
@@ -292,39 +304,32 @@ const MemberCard = () => {
                             fontSize: "14px",
                           }}
                         >
-                          Công Việc Hiện Tại: {candidate.currentJob}
-                        </p>
-                        <p
-                          style={{
-                            color: "#666",
-                            margin: "0",
-                            fontSize: "14px",
-                          }}
-                        >
-                          Giới Tính: {candidate.gender ? "Nam" : "Nữ"}
+                          <strong>Giới Tính:</strong>{" "}
+                          {candidate.gender ? "Nam" : "Nữ"}
                         </p>
                       </div>
                       <div className="candidate-actions d-flex flex-column align-items-end">
-                        {" "}
-                        {/* Align buttons to the right */}
                         <button
-                          className="btn btn-primary mb-2"
+                          className="btn btn-primary"
+                          style={{
+                            padding: "6px 12px", // Giảm padding để làm nhỏ nút
+                            fontSize: "12px", // Giảm kích thước font
+                            marginBottom: "5px", // Cách đều các nút
+                          }}
                           onClick={() => handleViewDetail(candidate.userId)}
                         >
                           Liên Hệ Ngay
                         </button>
-                        {/* <button
-                          className="btn btn-secondary"
-                          onClick={() => handleAddToFavorites(candidate.userId)}
-                        >
-                          Lưu thông tin liên hệ
-                        </button> */}
                         {saved[candidate.userId] ||
                         candidate.isFavorite === 1 ? (
                           <button
                             className="btn btn-save"
+                            style={{
+                              padding: "6px 12px", // Giảm padding
+                              fontSize: "12px", // Giảm kích thước font
+                            }}
                             onClick={(e) => {
-                              e.stopPropagation(); // Ngăn sự kiện onClick của item-click
+                              e.stopPropagation();
                             }}
                           >
                             <FontAwesomeIcon
@@ -337,6 +342,10 @@ const MemberCard = () => {
                         ) : (
                           <button
                             className="btn btn-save"
+                            style={{
+                              padding: "6px 12px", // Giảm padding
+                              fontSize: "12px", // Giảm kích thước font
+                            }}
                             onClick={() =>
                               handleAddToFavorites(candidate.userId)
                             }

@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import Swal from 'sweetalert2';
 
 const ViewListJobsCreated = () => {
     const [jobs, setJobs] = useState([]);
@@ -30,6 +31,19 @@ const ViewListJobsCreated = () => {
     const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
     const navigate = useNavigate();
+    const showAlert = async (text, redirect = false) => {
+        const result = await Swal.fire({
+            title: text,
+            icon: 'info',
+            showCancelButton: redirect,
+            confirmButtonText: redirect ? 'Đi đến danh sách công việc' : 'Ok',
+        });
+
+        if (redirect && result.isConfirmed) {
+            navigate("/viewListJobsCreated");
+        }
+    };
+
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -153,26 +167,119 @@ const ViewListJobsCreated = () => {
     };
 
     const togglePostVisibility = async (job) => {
-        console.log("Toggling visibility for job:", job);
+        const action = job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết";
+        const apiEndpoint = job.status === 2
+            ? `https://localhost:7077/api/PostJobs/HidePostJob/${job.postId}`
+            : `https://localhost:7077/api/PostJobs/ShowPostJob/${job.postId}`;
+
         try {
-            const token = localStorage.getItem("token");
-            const apiEndpoint = job.status === 2
-                ? `https://localhost:7077/api/PostJobs/HidePostJob/${job.postId}`
-                : `https://localhost:7077/api/PostJobs/ShowPostJob/${job.postId}`;
-
-            const response = await axios.put(apiEndpoint, null, {
-                headers: { Authorization: `Bearer ${token}` },
+            // Hiển thị xác nhận trước khi thực hiện
+            const result = await Swal.fire({
+                title: `Bạn có chắc muốn ${action.toLowerCase()} không?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
             });
-            console.log("API response:", response.data);
 
-            // Tải lại danh sách công việc sau khi thay đổi trạng thái
-            setJobs(jobs.map(j =>
-                j.postId === job.postId ? { ...j, status: job.status === 2 ? 5 : 2 } : j
-            ));
+            if (result.isConfirmed) {
+                const token = localStorage.getItem("token");
+                await axios.put(apiEndpoint, null, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                // Cập nhật trạng thái bài viết sau khi API thành công
+                setJobs(jobs.map(j =>
+                    j.postId === job.postId ? { ...j, status: job.status === 2 ? 5 : 2 } : j
+                ));
+
+                await Swal.fire({
+                    title: `${action} thành công!`,
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+            }
         } catch (error) {
-            console.error("Failed to toggle job visibility:", error);
+            console.error(`Failed to ${action.toLowerCase()}:`, error);
+            await Swal.fire({
+                title: `${action} không thành công!`,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
     };
+
+
+    const handleRequest = async (job) => {
+        try {
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn gửi yêu cầu duyệt bài không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+
+            if (result.isConfirmed) {
+                const token = localStorage.getItem("token");
+                const apiEndpoint = `https://localhost:7077/api/PostJobs/RequestForPublicPost/${job.postId}`;
+                await axios.put(apiEndpoint, null, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                await Swal.fire({
+                    title: 'Đã gửi yêu cầu duyệt bài thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+                setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 1 } : j));
+            }
+        } catch (error) {
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: 'Gửi yêu cầu duyệt bài không thành công!',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
+        }
+    };
+
+
+    const handleCancelRequest = async (job) => {
+        try {
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn hủy yêu cầu duyệt bài không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+
+            if (result.isConfirmed) {
+                const token = localStorage.getItem("token");
+                const apiEndpoint = `https://localhost:7077/api/PostJobs/CancelRequestForPublicPost/${job.postId}`;
+                await axios.put(apiEndpoint, null, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                await Swal.fire({
+                    title: 'Đã hủy yêu cầu duyệt bài thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+                setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 0 } : j));
+            }
+        } catch (error) {
+            console.error("Failed to cancel request:", error);
+            await Swal.fire({
+                title: 'Hủy yêu cầu duyệt bài không thành công!',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
+        }
+    };
+
+
 
     const chuyenman = () => {
         navigate("/createPostJob");
@@ -344,16 +451,25 @@ const ViewListJobsCreated = () => {
                                                     className="btn btn-toggle-visibility btn-approval"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        if (job.status === 0 || job.status === 1) {
-                                                            // sendRequest(job);
+                                                        if (job.status === 0) {
+                                                            handleRequest(job); // Gửi yêu cầu duyệt bài (có xác nhận)
+                                                        } else if (job.status === 1) {
+                                                            handleCancelRequest(job); // Hủy yêu cầu duyệt bài (có xác nhận)
                                                         } else {
-                                                            alert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc chờ phê duyệt.");
+                                                            Swal.fire({
+                                                                title: "Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc Chờ phê duyệt.",
+                                                                icon: "info",
+                                                                confirmButtonText: "Ok",
+                                                            });
                                                         }
                                                     }}
                                                     title={job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 >
                                                     {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 </button>
+
+
+
 
                                                 <button
                                                     className="btn btn-toggle-visibility btn-visibility"
@@ -362,13 +478,18 @@ const ViewListJobsCreated = () => {
                                                         if (job.status === 2 || job.status === 5) {
                                                             togglePostVisibility(job);
                                                         } else {
-                                                            alert("Chỉ có thể chỉnh sửa bài viết đã đăng hoặc đã ẩn.");
+                                                            Swal.fire({
+                                                                title: "Chỉ có thể chỉnh sửa bài viết đã đăng hoặc đã ẩn.",
+                                                                icon: "info",
+                                                                confirmButtonText: "Ok",
+                                                            });
                                                         }
                                                     }}
                                                     title={job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
                                                 >
                                                     {job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
                                                 </button>
+
                                             </div>
 
                                         </div>
