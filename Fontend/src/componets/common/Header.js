@@ -163,6 +163,18 @@ const Header = () => {
     navigate("/viewAllJobSeeker"); // Adjust the route as necessary
   };
 
+  const handleManageAllPostJob = () => {
+    setDropdownVisible(false);
+    navigate("/ViewAllPost"); // Adjust the route as necessary
+  };
+
+
+
+  const handleRequestEmployer = () => {
+    setDropdownVisible(false);
+    navigate("/ViewEmployerRequests"); // Adjust the route as necessary
+  };
+
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
@@ -303,6 +315,25 @@ const Header = () => {
                         Danh sách công việc đã ứng tuyển
                       </div>
                     )}
+                    {roleId === "3" && (
+                      <div
+                        style={styles.dropdownItem}
+                        onClick={handleManageAllPostJob}
+                      >
+                        Xem  tất cả bài đăng 
+                      </div>
+                    )}
+
+
+                    {roleId === "3" && (
+                      <div
+                        style={styles.dropdownItem}
+                        onClick={handleRequestEmployer}
+                      >
+                        Xem các yêu cầu trở thành nhà tuyển dụng
+                      </div>
+                    )}
+
                     <div
                       style={styles.dropdownItem}
                       onClick={openChangePassModal}
