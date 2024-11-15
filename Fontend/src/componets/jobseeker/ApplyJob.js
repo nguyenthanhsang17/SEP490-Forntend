@@ -15,6 +15,11 @@ function ApplyJob() {
 
     useEffect(() => {
         const fetchCvs = async () => {
+            const roleid = localStorage.getItem("roleId")
+            if(roleid=0){
+                alert.log("Hãy cập nhật hồ sơ trước khi ứng tuyển")
+                navigate("/profile");
+            }
             const token = localStorage.getItem("token");
             console.log("Token:", token); // Kiểm tra giá trị token
 
@@ -165,7 +170,7 @@ function ApplyJob() {
                 <div style={styles.cvItems}>
                     {cvs.map((cv, index) => (
                         <div key={cv.cvId} style={styles.cvItem}>
-                            <h3 style={styles.cvItemTitle}>CV số {index + 1}</h3>
+                            <h3 style={styles.cvItemTitle}> {cv.nameCv}</h3>
                             {cv.itemOfCvs.map(item => (
                                 <div key={item.itemOfCvId} style={styles.cvDetail}>
                                     <h4 style={styles.cvDetailTitle}>{item.itemName}</h4>
@@ -181,6 +186,8 @@ function ApplyJob() {
                         </div>
                     ))}
                 </div>
+
+                <h2 style={styles.title}>Chưa có cv? <a href='./ManagementCV'>Tạo mới</a> </h2>
             </div>
             <Footer />
         </>
