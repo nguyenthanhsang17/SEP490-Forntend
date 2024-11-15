@@ -21,10 +21,16 @@ function ViewJobDetail() {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, {
-        });
-        setJobDetails(response.data);
-        console.log(response.data);
+        const token = localStorage.getItem('token'); // Ensure token is correctly retrieved
+
+       
+        const headers = {
+          Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
+        };
+  
+        const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, { headers });
+        setJobDetails(response.data); // Lưu dữ liệu công việc vào state
+        console.log(response.data.isWishJob);
       } catch (error) {
         console.error("Error fetching job details:", error);
         setError("Không thể tải chi tiết công việc. Vui lòng thử lại sau.");
@@ -36,7 +42,9 @@ function ViewJobDetail() {
     fetchJobDetails();
   }, [id]);
 
+
   const toggleSaveJob = async () => {
+    
     if (jobDetails) {
       try {
         const token = localStorage.getItem('token'); // Ensure token is correctly retrieved
@@ -244,11 +252,11 @@ function ViewJobDetail() {
                   {/* Nút Lưu tin */}
                   {jobDetails.isWishJob ? (
                     <button className="button save-button">
-                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isSaved ? faTrash : faHeart} /> Đã Lưu
+                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isWishJob ? faHeart : faHeart} /> Đã Lưu
                     </button>
                   ) : (
                     <button onClick={toggleSaveJob} className="button save-button">
-                      <FontAwesomeIcon icon={jobDetails.isWishJob ? faTrash : faHeart} /> Lưu tin
+                      <FontAwesomeIcon icon={jobDetails.isWishJob ? faHeart : faHeart} /> Lưu tin
                     </button>
                   )}
 
