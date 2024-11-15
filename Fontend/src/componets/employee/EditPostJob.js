@@ -8,6 +8,7 @@ import axios from 'axios'; // Đảm bảo đã cài đặt axios
 import Map from '../utils/Map';
 import MapChoose from '../utils/MapChoose';
 import MapAutoComplete from '../utils/MapAutoComplete';
+import Swal from 'sweetalert2';
 import { useParams, useNavigate } from 'react-router-dom'; // Single import statement
 function EditPostJob() {
     const [jobTitle, setJobTitle] = useState('');
@@ -28,7 +29,7 @@ function EditPostJob() {
     const today = new Date();
     today.setDate(today.getDate() + 2); // Ngày mai
     const [IsEvent, SetIsEvent] = useState(false);
-
+    const [time, SetTime] = useState(1);
     const { id } = useParams();
 
     const [postJobDates, setPostJobDates] = useState([{ eventDate: '', startTime: '', endTime: '' }]);
@@ -189,7 +190,8 @@ function EditPostJob() {
     JobDetail.latitude,
     JobDetail.longitude,
     JobDetail.isUrgentRecruitment,
-    JobDetail.jobCategoryId]);
+    JobDetail.jobCategoryId,
+    JobDetail.time]);
 
     useEffect(() => {
         if (JobDetail && JobDetail.imagesURL && JobDetail.imagesURL.length > 0) {
@@ -587,16 +589,16 @@ function EditPostJob() {
             });
             if (response.ok) {
                 const id = await response.json(); // Lấy trực tiếp giá trị id
-                // console.log("PostId: " + id);
-                // SetPostID(id);
-                // const sang = formatDataForApi();
-                // console.log(JSON.stringify(sang, null, 2));
-                // uploadImages(id);
-                // if (isLongTerm) {
-                //     saveSchedule();
-                // } else {
-                //     handlePublishPostJobDates(id);
-                // }
+                console.log("PostId: " + id);
+                SetPostID(id);
+                const sang = formatDataForApi();
+                console.log(JSON.stringify(sang, null, 2));
+                uploadImages(id);
+                if (isLongTerm) {
+                    saveSchedule();
+                } else {
+                    handlePublishPostJobDates(id);
+                }
             } else {
                 console.error('Error creating job:', response.statusText);
             }
@@ -605,6 +607,17 @@ function EditPostJob() {
         }
     }
 
+    const showAlert = async (text) => {
+        const result = await Swal.fire({
+            title: text,
+            showCancelButton: true,
+            confirmButtonText: 'Ok'
+        });
+
+        if (result.isConfirmed) {
+            navigate("/viewListJobsCreated");
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -626,9 +639,10 @@ function EditPostJob() {
             address: JobDetail.address,
             latitude: JobDetail.latitude,
             longitude: JobDetail.longitude,
-            status: 0,
+            status: 1,
             isUrgentRecruitment: JobDetail.isUrgentRecruitment,
-            jobCategoryId: JobDetail.jobCategoryId
+            jobCategoryId: JobDetail.jobCategoryId,
+            time: time
         };
         console.log(JSON.stringify(jobData, null, 2));
 
@@ -653,12 +667,12 @@ function EditPostJob() {
                 const sang = formatDataForApi();
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages();
-                // //uploadImages(id);
-                // if (isLongTerm) {
-                //     saveSchedule();
-                // } else {
-                //     handlePublishPostJobDates(id);
-                // }
+                uploadImages(id);
+                if (isLongTerm) {
+                    saveSchedule();
+                } else {
+                    handlePublishPostJobDates(id);
+                }
                 saveSchedule();
             } else {
                 console.error('Error creating job:', response.statusText);
@@ -855,23 +869,6 @@ function EditPostJob() {
                             </div>
 
                             <div className="input-group form-group">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Địa chỉ"
-                                    value={JobDetail.address}
-                                    onChange={(e) => {
-                                        const newValue = e.target.value;
-                                        SetJobDetail(prev => ({
-                                            ...prev,
-                                            address: newValue
-                                        }));
-                                    }}
-                                />
-                            </div>
-
-
-                            <div className="input-group form-group">
                                 <div className="image-upload-container" style={{
                                     display: 'flex',
                                     flexDirection: 'row',
@@ -1010,16 +1007,31 @@ function EditPostJob() {
                                 </div>
                             </div>
 
-                            <div className="input-group form-group">
+                            <div className="input-group form-group full-width">
                                 <label>
                                     <input
                                         type="checkbox"
                                         checked={JobDetail.isUrgentRecruitment}
-                                        onChange={(e) => setIsUrgentRecruitment(e.target.checked)}
+                                        onChange={(e) => {
+                                            const newValue = e.target.checked;
+                                            SetJobDetail(prev => ({
+                                                ...prev,
+                                                isUrgentRecruitment: newValue
+                                            }));
+                                        }}
                                         style={{ marginRight: 10 }}
                                     />
-                                    Đăng bài viết nổi bật
+                                    Tuyển dụng nổi bật
                                 </label>
+                            </div>
+
+                            <div className="input-group form-group ">
+                                <label>Thời gian duy trì bài đăng:</label>
+                                <select className="form-control" value={time} onChange={(e) => SetTime(e.target.value)}>
+                                    <option value={1}>1 tháng</option>
+                                    <option value={2}>2 tháng</option>
+                                    <option value={3}>3 tháng</option>
+                                </select>
                             </div>
 
                             <div className="full-width">
