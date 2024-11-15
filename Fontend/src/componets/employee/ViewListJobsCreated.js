@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import Swal from 'sweetalert2';
 
 const ViewListJobsCreated = () => {
     const [jobs, setJobs] = useState([]);
@@ -30,6 +31,19 @@ const ViewListJobsCreated = () => {
     const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
     const navigate = useNavigate();
+    const showAlert = async (text, redirect = false) => {
+        const result = await Swal.fire({
+            title: text,
+            icon: 'info',
+            showCancelButton: redirect,
+            confirmButtonText: redirect ? 'Đi đến danh sách công việc' : 'Ok',
+        });
+    
+        if (redirect && result.isConfirmed) {
+            navigate("/viewListJobsCreated");
+        }
+    };
+    
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -173,6 +187,37 @@ const ViewListJobsCreated = () => {
             console.error("Failed to toggle job visibility:", error);
         }
     };
+
+    const handleRequest = async (job) => {
+        try {
+            const token = localStorage.getItem("token");
+            const apiEndpoint = `https://localhost:7077/api/PostJobs/RequestForPublicPost/${job.postId}`;
+            const response = await axios.put(apiEndpoint, null, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            await showAlert("Đã gửi yêu cầu duyệt bài thành công.");
+            setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 1 } : j));
+        } catch (error) {
+            console.error("Failed to send request:", error);
+            await showAlert("Gửi yêu cầu duyệt bài không thành công.");
+        }
+    };
+
+    const handleCancelRequest = async (job) => {
+        try {
+            const token = localStorage.getItem("token");
+            const apiEndpoint = `https://localhost:7077/api/PostJobs/CancelRequestForPublicPost/${job.postId}`;
+            const response = await axios.put(apiEndpoint, null, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            await showAlert("Đã hủy yêu cầu duyệt bài thành công.");
+            setJobs(jobs.map(j => j.postId === job.postId ? { ...j, status: 0 } : j));
+        } catch (error) {
+            console.error("Failed to cancel request:", error);
+            await showAlert("Hủy yêu cầu duyệt bài không thành công.");
+        }
+    };
+
 
     const chuyenman = () => {
         navigate("/createPostJob");
@@ -344,16 +389,20 @@ const ViewListJobsCreated = () => {
                                                     className="btn btn-toggle-visibility btn-approval"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        if (job.status === 0 || job.status === 1) {
-                                                            // sendRequest(job);
+                                                        if (job.status === 0) {
+                                                            handleRequest(job); // Gửi yêu cầu duyệt bài
+                                                        } else if (job.status === 1) {
+                                                            handleCancelRequest(job); // Hủy yêu cầu duyệt bài
                                                         } else {
-                                                            alert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc chờ phê duyệt.");
+                                                            showAlert("Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc Chờ phê duyệt.");
                                                         }
                                                     }}
                                                     title={job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 >
                                                     {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                 </button>
+
+
 
                                                 <button
                                                     className="btn btn-toggle-visibility btn-visibility"
