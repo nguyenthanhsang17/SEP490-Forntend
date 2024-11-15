@@ -405,19 +405,33 @@ function ViewJobCreatedDetail() {
                   )}
 
                   {jobDetails.status === 5 && (
-                    <button
-                      className="btn btn-secondary"
-                      style={{
-                        backgroundColor: "#28a745", // Xanh lá sáng
-                        border: "none",
-                        color: "#fff",
-                      }}
-                      onClick={handleShowPost} // Hàm xử lý hiện bài viết
-                    >
-                      Hiện bài viết
-                    </button>
+                    <>
+                      <button
+                        className="btn btn-info"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#17a2b8", // Xanh cyan
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={() => window.location.href = `/ViewAllJobseekerApply/${id}`}
+                      >
+                        Danh sách ứng viên đã ứng tuyển
+                      </button>
+                      <button
+                        className="btn btn-success"
+                        style={{
+                          backgroundColor: "#28a745", // Xanh lá sáng
+                          border: "none",
+                          color: "#fff",
+                          cursor: "pointer",
+                        }}
+                        onClick={handleShowPost} // Hàm xử lý hiện bài viết
+                      >
+                        Hiện bài viết
+                      </button>
+                    </>
                   )}
-
                 </div>
               </div>
 
