@@ -14,6 +14,8 @@ function ForgotPassword() {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); 
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Thêm trạng thái mới
+
 
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ function ForgotPassword() {
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
   
@@ -109,118 +111,114 @@ function ForgotPassword() {
 };
 
 
-  return (
-    <div className="simple-bg-screen" style={{ backgroundImage: `url(${bannerImage})` }}>
-      <div className="wrapper">
-        <section className="lost-ps-screen-sec">
-          <div className="container">
-            <div className="lost-ps-screen">
-              <a href="/">
-                <img src={logoImage} className="img-responsive" alt="Logo" />
-              </a>
-              {!emailVerified ? (
-                <form onSubmit={handleSubmit}>
+return (
+  <div className="simple-bg-screen" style={{ backgroundImage: `url(${bannerImage})` }}>
+    <div className="wrapper">
+      <section className="lost-ps-screen-sec">
+        <div className="container">
+          <div className="lost-ps-screen">
+            <a href="/">
+              <img src={logoImage} className="img-responsive" alt="Logo" />
+            </a>
+            {!emailVerified ? (
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Nhập email của bạn"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <button className="btn btn-login" type="submit">Xác nhận Email</button>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+              </form>
+            ) : (
+              <form onSubmit={handleResetPassword}>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Nhập mã xác thực được gửi về email của bạn"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  required
+                />
+                
+                {/* Password Field */}
+                <div className="password-field" style={{ position: "relative", marginBottom: "20px" }}>
                   <input
-                    type="email"
+                    type={showPassword ? "text" : "password"}
                     className="form-control"
-                    placeholder="Nhập email của bạn"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Nhập mật khẩu mới"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
+                    style={{ paddingRight: "2.5rem" }}
                   />
-                  <button className="btn btn-login" type="submit">Xác nhận Email</button>
-                  {errorMessage && <p className="error-message">{errorMessage}</p>}
-                </form>
-              ) : (
-                <form onSubmit={handleResetPassword}>
+                  <span
+                    className="password-toggle-icon"
+                    onClick={() => setShowPassword(!showPassword)} // Chỉ thay đổi trạng thái cho trường password
+                    style={{
+                      position: "absolute",
+                      right: "-150px",
+                      top: "10%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      fontSize: "1.2rem",
+                      color: "#888"
+                    }}
+                  >
+                    {showPassword ? (
+                      <i className="fa fa-eye-slash"></i>
+                    ) : (
+                      <i className="fa fa-eye"></i>
+                    )}
+                  </span>
+                </div>
+
+                {/* Confirm Password Field */}
+                <div className="password-field" style={{ position: "relative" }}>
                   <input
-                    type="text"
+                    type={showConfirmPassword ? "text" : "password"} // Sử dụng trạng thái riêng cho confirmPassword
                     className="form-control"
-                    placeholder="Nhập mã xác thực được gửi về email của bạn"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    placeholder="Xác nhận mật khẩu"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    style={{ paddingRight: "2.5rem" }}
                   />
-                  
-                  {/* Password Field with Eye Icon */}
-                  <div className="password-field" style={{ position: "relative", marginBottom: "20px" }}>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Nhập mật khẩu mới"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      style={{
-                        paddingRight: "2.5rem"
-                      }}
-                    />
-                    <span
-                      className="password-toggle-icon"
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: "absolute",
-                        right: "-150px",
-                        top: "10%",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        fontSize: "1.2rem",
-                        color: "#888"
-                      }}
-                    >
-                      {showPassword ? (
-                        <i className="fa fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa fa-eye"></i>
-                      )}
-                    </span>
-                  </div>
+                  <span
+                    className="password-toggle-icon"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Chỉ thay đổi trạng thái cho trường confirmPassword
+                    style={{
+                      position: "absolute",
+                      right: "-150px",
+                      top: "10%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      fontSize: "1.2rem",
+                      color: "#888"
+                    }}
+                  >
+                    {showConfirmPassword ? (
+                      <i className="fa fa-eye-slash"></i>
+                    ) : (
+                      <i className="fa fa-eye"></i>
+                    )}
+                  </span>
+                </div>
 
-                  {/* Confirm Password Field with Eye Icon */}
-                  <div className="password-field" style={{ position: "relative" }}>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Xác nhận mật khẩu"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      style={{
-                        paddingRight: "2.5rem"
-                      }}
-                    />
-                    <span
-                      className="password-toggle-icon"
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: "absolute",
-                        right: "-150px",
-                        top: "10%",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        fontSize: "1.2rem",
-                        color: "#888"
-                      }}
-                    >
-                      {showPassword ? (
-                        <i className="fa fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa fa-eye"></i>
-                      )}
-                    </span>
-                  </div>
-
-                  <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
-                  {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
-
-                </form>
-              )}
-            </div>
+                <button className="btn btn-login" type="submit">Đặt lại mật khẩu</button>
+                {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
+              </form>
+            )}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
-  );
+  </div>
+);
 }
+
 
 export default ForgotPassword;
