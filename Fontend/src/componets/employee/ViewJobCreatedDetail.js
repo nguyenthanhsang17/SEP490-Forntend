@@ -8,6 +8,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import Map from '../utils/Map';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function ViewJobCreatedDetail() {
   const [jobDetails, setJobDetails] = useState(null);
@@ -75,19 +76,19 @@ function ViewJobCreatedDetail() {
       { name: "Thứ 7", icon: "📅" },
       { name: "Chủ Nhật", icon: "🌞" }
     ];
-  
+
     // Hàm lấy lịch làm việc cho từng ngày
     const getWorkingHoursForDay = (dayOfWeek) => {
       const scheduleForDay = slotDTOs
         .flatMap(slot => slot.jobScheduleDTOs)
         .find(schedule => schedule.dayOfWeek === dayOfWeek);
-  
+
       if (!scheduleForDay) return null;
-  
+
       // Trả về tất cả các khoảng thời gian trong ngày
       return scheduleForDay.workingHourDTOs.map(hour => `${hour.startTime} - ${hour.endTime}`);
     };
-  
+
     return (
       <div style={styles.container}>
         <table style={styles.table}>
@@ -115,6 +116,118 @@ function ViewJobCreatedDetail() {
         </table>
       </div>
     );
+  };
+
+  const handleRequestApproval = async () => {
+    try {
+      const result = await Swal.fire({
+        title: 'Bạn có chắc muốn gửi yêu cầu duyệt bài không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Có',
+        cancelButtonText: 'Không',
+      });
+
+      if (result.isConfirmed) {
+        const token = localStorage.getItem("token");
+        const apiEndpoint = `https://localhost:7077/api/PostJobs/RequestForPublicPost/${id}`;
+        await axios.put(apiEndpoint, null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        await Swal.fire({
+          title: 'Gửi yêu cầu duyệt bài thành công!',
+          icon: 'success',
+          confirmButtonText: 'Ok',
+        });
+        setJobDetails({ ...jobDetails, status: 1 }); // Cập nhật trạng thái bài đăng
+      }
+    } catch (error) {
+      console.error("Failed to send request approval:", error);
+      await Swal.fire({
+        title: 'Gửi yêu cầu không thành công!',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
+    }
+  };
+
+  const handleCancelApprovalRequest = async () => {
+    try {
+      const result = await Swal.fire({
+        title: 'Bạn có chắc muốn hủy yêu cầu duyệt bài không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Có',
+        cancelButtonText: 'Không',
+      });
+
+      if (result.isConfirmed) {
+        const token = localStorage.getItem("token");
+        const apiEndpoint = `https://localhost:7077/api/PostJobs/CancelRequestForPublicPost/${id}`;
+        await axios.put(apiEndpoint, null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        await Swal.fire({
+          title: 'Hủy yêu cầu duyệt bài thành công!',
+          icon: 'success',
+          confirmButtonText: 'Ok',
+        });
+        setJobDetails({ ...jobDetails, status: 0 }); // Cập nhật trạng thái bài đăng
+      }
+    } catch (error) {
+      console.error("Failed to cancel request approval:", error);
+      await Swal.fire({
+        title: 'Hủy yêu cầu không thành công!',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
+    }
+  };
+
+  const handleHidePost = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const apiEndpoint = `https://localhost:7077/api/PostJobs/HidePostJob/${id}`;
+      await axios.put(apiEndpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await Swal.fire({
+        title: 'Ẩn bài viết thành công!',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+      });
+      setJobDetails({ ...jobDetails, status: 5 }); // Cập nhật trạng thái thành "Đã ẩn"
+    } catch (error) {
+      console.error("Failed to hide post:", error);
+      await Swal.fire({
+        title: 'Ẩn bài viết không thành công!',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
+    }
+  };
+
+  const handleShowPost = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const apiEndpoint = `https://localhost:7077/api/PostJobs/ShowPostJob/${id}`;
+      await axios.put(apiEndpoint, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await Swal.fire({
+        title: 'Hiện bài viết thành công!',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+      });
+      setJobDetails({ ...jobDetails, status: 2 }); // Cập nhật trạng thái thành "Đã đăng"
+    } catch (error) {
+      console.error("Failed to show post:", error);
+      await Swal.fire({
+        title: 'Hiện bài viết không thành công!',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
+    }
   };
 
 
@@ -219,22 +332,92 @@ function ViewJobCreatedDetail() {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
-                  <a
-                    href={`/EditPostJob/${id}`}
-                    className={`footer-btn grn-btn ${jobDetails.status === 1 ? 'disabled' : ''}`}
-                    title=""
-                    style={{ pointerEvents: jobDetails.status === 1 ? 'none' : 'auto' }}
-                  >
-                    Chỉnh sửa bài đăng
-                  </a>
-                  <a
-                    href={`/ViewAllJobseekerApply/${id}`}
-                    className={`footer-btn blu-btn ${jobDetails.status === 1 || jobDetails.status === 0 ? 'disabled' : ''}`}
-                    title=""
-                    style={{ pointerEvents: jobDetails.status === 1 || jobDetails.status === 0 ? 'none' : 'auto' }}
-                  >
-                    Danh sách ứng viên đã ứng tuyển
-                  </a>
+                  {jobDetails.status === 0 && (
+                    <>
+                      <button
+                        className="btn btn-primary"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#007bff", // Xanh dương nhạt
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={handleRequestApproval}
+                      >
+                        Gửi yêu cầu duyệt bài
+                      </button>
+                      <button
+                        className="btn btn-success"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#28a745", // Xanh lá
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={() => window.location.href = `/EditPostJob/${id}`}
+                      >
+                        Chỉnh sửa bài đăng
+                      </button>
+                    </>
+                  )}
+
+                  {jobDetails.status === 1 && (
+                    <button
+                      className="btn btn-warning"
+                      style={{
+                        marginRight: "10px",
+                        backgroundColor: "#ffc107", // Vàng
+                        border: "none",
+                        color: "#212529",
+                      }}
+                      onClick={handleCancelApprovalRequest}
+                    >
+                      Hủy yêu cầu duyệt bài
+                    </button>
+                  )}
+
+                  {jobDetails.status === 2 && (
+                    <>
+                      <button
+                        className="btn btn-info"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#17a2b8", // Xanh cyan
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={() => window.location.href = `/ViewAllJobseekerApply/${id}`}
+                      >
+                        Danh sách ứng viên đã ứng tuyển
+                      </button>
+                      <button
+                        className="btn btn-danger"
+                        style={{
+                          backgroundColor: "#dc3545", // Đỏ
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={handleHidePost} // Hàm xử lý ẩn bài viết
+                      >
+                        Ẩn bài viết
+                      </button>
+                    </>
+                  )}
+
+                  {jobDetails.status === 5 && (
+                    <button
+                      className="btn btn-secondary"
+                      style={{
+                        backgroundColor: "#6c757d", // Xám
+                        border: "none",
+                        color: "#fff",
+                      }}
+                      onClick={handleShowPost} // Hàm xử lý hiện bài viết
+                    >
+                      Hiện bài viết
+                    </button>
+                  )}
+
                 </div>
               </div>
 
