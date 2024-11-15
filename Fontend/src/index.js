@@ -41,6 +41,8 @@ import EmployerRequestDetail from "./componets/staff/ViewEmployerRequestDetail";
 import ChatList from "./componets/common/ChatList";
 import AdminDashboard from "./componets/admin/AdminDashBoard";
 import PaymentScreen from "./componets/utils/Payment";
+import ViewEmployerProfile from "./componets/jobseeker/ViewEmployerProfile";
+import ViewBlogList from "./componets/common/ViewBlogList";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -177,6 +179,8 @@ root.render(
           <Route path="/ChatList" element={<ChatList />} />
           <Route path="/EditPostJob/:id" element={<EditPostJob />} />
           <Route path="/Payment" element={<PaymentScreen />} />
+          <Route path="/viewEmployerProfile" element={<ViewEmployerProfile />} />
+          <Route path="/viewBlogList" element={<ViewBlogList />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
