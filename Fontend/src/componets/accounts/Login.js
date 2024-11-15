@@ -64,6 +64,7 @@ function Login() {
       localStorage.setItem('fullName', result.fullName);
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('userId', result.userId);
+      localStorage.setItem('status', result.status);
 
       if (result.roleId === 4) {
         navigate('/AdminDashboard');

@@ -68,7 +68,7 @@ function ViewAllPostJob() {
       <h1>.</h1>
       {/* Filter Dropdown */}
       <div style={styles.filterContainer}>
-        <label style={styles.filterLabel}>Filter by Status: </label>
+        <label style={styles.filterLabel}>Lọc theo trạng thái </label>
         <select onChange={handleFilterChange} value={filterStatus} style={styles.filterSelect}>
           <option value={-1}>Tất cả</option>
           <option value={1}>Chờ phê duyệt</option>
