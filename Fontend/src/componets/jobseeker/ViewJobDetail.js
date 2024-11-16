@@ -40,6 +40,9 @@ function ViewJobDetail() {
   
         const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, { headers });
         setJobDetails(response.data); // Lưu dữ liệu công việc vào state
+        if (response.data.slotDTOs && response.data.slotDTOs.length > 0) {
+          setSchedules(response.data.slotDTOs);
+        }
         console.log(response.data.isWishJob);
       } catch (error) {
         console.error("Error fetching job details:", error);

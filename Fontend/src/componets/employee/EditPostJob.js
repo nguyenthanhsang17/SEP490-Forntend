@@ -436,8 +436,8 @@ function EditPostJob() {
 
     const uploadImages = async () => {
         setIsLoading(true);
-        const check1 = false;
-        const check2 = false;
+        let check1 = false;
+        let check2 = false;
 
         const formData = new FormData();
 
@@ -588,7 +588,8 @@ function EditPostJob() {
             longitude: JobDetail.longitude,
             status: 0,
             isUrgentRecruitment: JobDetail.isUrgentRecruitment,
-            jobCategoryId: JobDetail.jobCategoryId
+            jobCategoryId: JobDetail.jobCategoryId,
+            time: JobDetail.time
         };
         console.log(JSON.stringify(jobData, null, 2));
 
@@ -643,8 +644,8 @@ function EditPostJob() {
         if (!validateJobData()) {
             return;
         }
-        const check1 = false;
-        const check2 = false;
+        let check1 = false;
+        let check2 = false;
         if (selectedImages && selectedImages.length > 0) {
             check1 = true;
         }
@@ -696,7 +697,7 @@ function EditPostJob() {
             status: 1,
             isUrgentRecruitment: JobDetail.isUrgentRecruitment,
             jobCategoryId: JobDetail.jobCategoryId,
-            time: time
+            time: JobDetail.time
         };
         console.log(JSON.stringify(jobData, null, 2));
 
@@ -715,9 +716,9 @@ function EditPostJob() {
                 body: JSON.stringify(jobData),
             });
             if (response.ok) {
-                const id = await response.json(); // Lấy trực tiếp giá trị id
-                console.log("PostId: " + id);
-                SetPostID(id);
+                const idp = await response.json(); // Lấy trực tiếp giá trị id
+                console.log("PostId: " + idp);
+                SetPostID(idp);
                 const sang = formatDataForApi();
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages();
@@ -1080,7 +1081,13 @@ function EditPostJob() {
 
                             <div className="input-group form-group ">
                                 <label>Thời gian duy trì bài đăng:</label>
-                                <select className="form-control" value={time} onChange={(e) => SetTime(e.target.value)}>
+                                <select className="form-control" value={JobDetail.time} onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    SetJobDetail(prev => ({
+                                        ...prev,
+                                        time: Number(newValue)
+                                    }));
+                                }}>
                                     <option value={1}>1 tháng</option>
                                     <option value={2}>2 tháng</option>
                                     <option value={3}>3 tháng</option>
@@ -1360,7 +1367,7 @@ function EditPostJob() {
 
                             </div>
                             <div className="full-width">
-                                <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} />
+                                <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} initialLatitude={JobDetail.latitude} initialLongitude={JobDetail.longitude} address={JobDetail.address} />
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
