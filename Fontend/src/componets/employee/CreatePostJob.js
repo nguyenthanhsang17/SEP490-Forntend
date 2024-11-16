@@ -213,9 +213,15 @@ function CreatePostJob() {
             slot => slot.workingHourCreateDTOs.length
         ));
     };
+    useEffect(() => {
+        if (PostID !== -1) {
+            const sang = formatDataForApi();
+            console.log(JSON.stringify(sang, null, 2));
+        }
+    }, [PostID, schedules]); // Theo dõi sự thay đổi của PostID và schedules
 
     // Hàm format dữ liệu để gửi lên API
-    const formatDataForApi = () => {
+    const formatDataForApi = (PostID) => {
         return schedules.map(schedule => ({
             postId: PostID,
             userId: 0,
@@ -232,10 +238,10 @@ function CreatePostJob() {
     };
 
     //Hàm gọi API để lưu lịch làm việc
-    const saveSchedule = async () => {
+    const saveSchedule = async (PostID) => {
         try {
             setIsLoading(true);
-            const dataToSend = formatDataForApi();
+            const dataToSend = formatDataForApi(PostID);
             console.log(JSON.stringify(dataToSend, null, 2));
             if (!dataToSend) {
                 alert('Không có dữ liệu để lưu!');
@@ -256,6 +262,8 @@ function CreatePostJob() {
             if (response.status === 200) {
                 //alert('Lưu lịch làm việc thành công!');
                 return 1;
+            }else{
+                return 0;
             }
         } catch (error) {
             // console.error('Lỗi khi lưu lịch làm việc:', error);
@@ -414,6 +422,8 @@ function CreatePostJob() {
                 // alert('Upload ảnh thành công!');
                 // // Xử lý kết quả từ API nếu cần
                 return 1;
+            }else{
+                return 0;
             }
         } catch (error) {
             // console.error('Error uploading images:', error);
@@ -522,7 +532,7 @@ function CreatePostJob() {
         console.log(token);
 
         if (isLongTerm) {
-            const dataToSend = formatDataForApi();
+            const dataToSend = formatDataForApi(-1);
             console.log(JSON.stringify(dataToSend, null, 2));
             if (!dataToSend) {
                 alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
@@ -558,19 +568,19 @@ function CreatePostJob() {
                 console.log(JSON.stringify(sang, null, 2));
                 const uploadstatus = await uploadImages(id);
                 if (uploadstatus === 0) {
-                    enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                    enqueueSnackbar("Tạo công việc thất bại 1", { variant: 'error' });
                     return;
                 }
                 if (isLongTerm) {
-                    const uploadSchedule = await saveSchedule();
+                    const uploadSchedule = await saveSchedule(id);
                     if (uploadSchedule === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                        enqueueSnackbar("Tạo công việc thất bại 2", { variant: 'error' });
                         return;
                     }
                 } else {
                     const uploadJobdate = await handlePublishPostJobDates(id);
                     if (uploadJobdate === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                        enqueueSnackbar("Tạo công việc thất bại 3", { variant: 'error' });
                         return;
                     }
                 }
@@ -627,7 +637,7 @@ function CreatePostJob() {
         console.log(token);
 
         if (isLongTerm) {
-            const dataToSend = formatDataForApi();
+            const dataToSend = formatDataForApi(-1);
             console.log(JSON.stringify(dataToSend, null, 2));
             if (!dataToSend) {
                 alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
@@ -639,10 +649,6 @@ function CreatePostJob() {
                 return 0;
             }
         }
-
-
-
-
 
         if (selectedImages.length === 0) {
             alert('Chưa có ảnh !!!');
@@ -657,29 +663,29 @@ function CreatePostJob() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(jobData),
+                body: JSON.stringify(jobData), 
             });
             if (response.ok) {
                 const id = await response.json(); // Lấy trực tiếp giá trị id
                 console.log("PostId: " + id);
                 SetPostID(id);
-                const sang = formatDataForApi();
+                const sang = formatDataForApi(id);
                 console.log(JSON.stringify(sang, null, 2));
                 const uploadstatus = await uploadImages(id);
                 if (uploadstatus === 0) {
-                    enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                    enqueueSnackbar("Tạo công việc thất bại 1", { variant: 'error' });
                     return;
                 }
                 if (isLongTerm) {
-                    const uploadSchedule = await saveSchedule();
+                    const uploadSchedule = await saveSchedule(id);
                     if (uploadSchedule === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                        enqueueSnackbar("Tạo công việc thất bại 2", { variant: 'error' });
                         return;
                     }
                 } else {
                     const uploadJobdate = await handlePublishPostJobDates(id);
                     if (uploadJobdate === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại", { variant: 'success' });
+                        enqueueSnackbar("Tạo công việc thất bại 3", { variant: 'error' });
                         return;
                     }
                 }

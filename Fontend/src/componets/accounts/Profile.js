@@ -65,14 +65,14 @@ const Profile = () => {
       return false;
     }
 
-    if (gender == null) {
+    if (gender == ""||gender==null) {
       enqueueSnackbar("Vui lòng chọn giới tính", {
         variant: "error",
       });
       return false;
     }
 
-    if (currentJob == null) {
+    if (currentJob == 0||currentJob==null) {
       enqueueSnackbar("Vui lòng chọn tình trạng hiện tại", {
         variant: "error",
       });
@@ -109,6 +109,8 @@ const Profile = () => {
       return;
     }
 
+    console.log(updatedProfile);
+
     const token = localStorage.getItem("token");
     const formData = new FormData();
     // Add fields to FormData
@@ -142,13 +144,39 @@ const Profile = () => {
       localStorage.setItem("fullName", updatedProfile.fullName); // Update fullName in localStorage
       setIsUpdateProfile(false);
     } catch (err) {
-      console.log(err.response.data) ;
+      console.log(err.response.data);
       enqueueSnackbar("Không thể cập nhật hồ sơ. Vui lòng thử lại.", {
         variant: "error",
       }); // Show error notification
 
     } finally {
       setLoading(false);
+    }
+
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        "https://localhost:7077/api/Users/Detail",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setProfile(response.data);
+      setUpdatedProfile(response.data);
+      setLoading(false);
+      setimg(response.data.avatarURL);
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        navigate("/login");
+      } else {
+        enqueueSnackbar(err.message, { variant: "error" }); // Show error notification
+        setLoading(false);
+      }
     }
   };
 
@@ -255,9 +283,9 @@ const Profile = () => {
                             className="label1"
                             style={{ marginRight: 60, width: 150 }}
                           >
-                            Công việc hiện tại:
+                            Tình trạng hiện tại:
                           </span>{" "}
-                          {profile.jobName}
+                          {profile.jobName ? profile.jobName: "Không xác định"}
                         </li>
                         <li>
                           <span
@@ -307,7 +335,6 @@ const Profile = () => {
                           className="manage-btn"
                           onClick={() => navigate("/ManagementCV")}
                         >
-                          Xác minh nhà tuyển dụng
                           Quản lý CV
                         </button>
 
@@ -423,7 +450,7 @@ const Profile = () => {
                                 value={updatedProfile.currentJob ?? ""}
                                 onChange={handleInputChange}
                               >
-                                <option value={1}>Chọn Tình trạng hiện tại</option>
+                                <option value={0}>Chọn Tình trạng hiện tại</option>
                                 <option value={1}>Thất nghiệp</option>
                                 <option value={2}>Đang đi học</option>
                                 <option value={3}>Đang đi làm</option>
