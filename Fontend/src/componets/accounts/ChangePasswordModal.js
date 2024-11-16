@@ -95,77 +95,81 @@ const styles = {
 };
 
 const ChangePasswordModal = ({ show, handleClose, fullName }) => {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [notification, setNotification] = useState('');
-  const [errorNotification, setErrorNotification] = useState('');
+  const [notification, setNotification] = useState("");
+  const [errorNotification, setErrorNotification] = useState("");
 
   useEffect(() => {
-    document.body.style.overflow = show ? 'hidden' : 'unset';
+    document.body.style.overflow = show ? "hidden" : "unset";
   }, [show]);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-    
+
+    // Validate confirm password
     if (newPassword !== confirmPassword) {
-      setErrorNotification('Mật khẩu không khớp.');
+      setErrorNotification("Mật khẩu không khớp.");
       return;
     }
 
-    const token = localStorage.getItem('token');
-    const fullName = localStorage.getItem('fullName');
+    // Validate password format
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[$@#&!])[A-Za-z\d$@#&!]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      setErrorNotification(
+        "Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt."
+      );
+      return;
+    }
+
+    const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch('https://localhost:7077/api/Users/ChangePassword', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          oldPassword,
-          newPassword,
-          confirmPassword,
-        }),
-      });
+      const response = await fetch(
+        "https://localhost:7077/api/Users/ChangePassword",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            oldPassword,
+            newPassword,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Thay đổi mật khẩu không thành công.');
+        throw new Error("Thay đổi mật khẩu không thành công.");
       }
 
-      setNotification(`Mật khẩu đã được thay đổi thành công cho người dùng: ${fullName}`);
-      setErrorNotification('');
-      
-      // Clear the form fields
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      setPasswordStrength(0);
-      
-      // Close modal after a short delay
+      setNotification("Mật khẩu đã được thay đổi thành công.");
+      setErrorNotification("");
+
+      // Clear fields and close modal
       setTimeout(() => {
         handleClose();
-        setNotification('');
+        setNotification("");
       }, 2000);
     } catch (error) {
-      setErrorNotification('Có lỗi xảy ra khi thay đổi mật khẩu.');
-      setNotification('');
-      console.error('Error changing password:', error);
+      setErrorNotification("Có lỗi xảy ra khi thay đổi mật khẩu.");
+      console.error("Error changing password:", error);
     }
   };
 
   const checkPasswordStrength = (password) => {
     let strength = 0;
-    if (password.length > 6) strength += 20;
-    if (password.match(/[a-z]+/)) strength += 20;
-    if (password.match(/[A-Z]+/)) strength += 20;
-    if (password.match(/[0-9]+/)) strength += 20;
-    if (password.match(/[$@#&!]+/)) strength += 20;
+    if (password.length >= 8) strength += 20;
+    if (/[a-z]/.test(password)) strength += 20;
+    if (/[A-Z]/.test(password)) strength += 20;
+    if (/[0-9]/.test(password)) strength += 20;
+    if (/[$@#&!]/.test(password)) strength += 20;
     setPasswordStrength(strength);
   };
 
@@ -173,6 +177,16 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
     const value = e.target.value;
     setNewPassword(value);
     checkPasswordStrength(value);
+
+    // Validate password format
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[$@#&!])[A-Za-z\d$@#&!]{8,}$/;
+    if (!passwordRegex.test(value)) {
+      setErrorNotification(
+        "Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt."
+      );
+    } else {
+      setErrorNotification(""); // Clear error if password is valid
+    }
   };
 
   const toggleOldPasswordVisibility = () => {
@@ -187,19 +201,21 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  if (!show) {
-    return null;
-  }
+  if (!show) return null;
 
   return (
     <div style={styles.modal}>
       <div style={styles.modalContent}>
         <h2 style={styles.title}>Đổi Mật Khẩu</h2>
         {notification && <div style={styles.notification}>{notification}</div>}
-        {errorNotification && <div style={styles.errorNotification}>{errorNotification}</div>}
+        {errorNotification && (
+          <div style={styles.errorNotification}>{errorNotification}</div>
+        )}
         <form onSubmit={handleChangePassword}>
           <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="old-password">Mật Khẩu Cũ</label>
+            <label style={styles.label} htmlFor="old-password">
+              Mật Khẩu Cũ
+            </label>
             <input
               style={styles.input}
               type={showOldPassword ? "text" : "password"}
@@ -208,12 +224,17 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
               onChange={(e) => setOldPassword(e.target.value)}
               required
             />
-            <span style={styles.togglePassword} onClick={toggleOldPasswordVisibility}>
+            <span
+              style={styles.togglePassword}
+              onClick={toggleOldPasswordVisibility}
+            >
               {showOldPassword ? "🙈" : "👁️"}
             </span>
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="new-password">Mật Khẩu Mới</label>
+            <label style={styles.label} htmlFor="new-password">
+              Mật Khẩu Mới
+            </label>
             <input
               style={styles.input}
               type={showNewPassword ? "text" : "password"}
@@ -222,13 +243,24 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
               onChange={handleNewPasswordChange}
               required
             />
-            <span style={styles.togglePassword} onClick={toggleNewPasswordVisibility}>
+            <span
+              style={styles.togglePassword}
+              onClick={toggleNewPasswordVisibility}
+            >
               {showNewPassword ? "🙈" : "👁️"}
             </span>
-            <div style={{ ...styles.passwordStrength, width: `${passwordStrength}%`, backgroundColor: `hsl(${passwordStrength}, 100%, 50%)` }}></div>
+            <div
+              style={{
+                ...styles.passwordStrength,
+                width: `${passwordStrength}%`,
+                backgroundColor: `hsl(${passwordStrength}, 100%, 50%)`,
+              }}
+            ></div>
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="confirm-password">Xác Nhận Lại Mật Khẩu</label>
+            <label style={styles.label} htmlFor="confirm-password">
+              Xác Nhận Mật Khẩu
+            </label>
             <input
               style={styles.input}
               type={showConfirmPassword ? "text" : "password"}
@@ -237,13 +269,27 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            <span style={styles.togglePassword} onClick={toggleConfirmPasswordVisibility}>
+            <span
+              style={styles.togglePassword}
+              onClick={toggleConfirmPasswordVisibility}
+            >
               {showConfirmPassword ? "🙈" : "👁️"}
             </span>
           </div>
           <div style={styles.buttonGroup}>
-            <button type="button" style={{ ...styles.button, ...styles.secondaryButton }} onClick={handleClose}>Hủy</button>
-            <button type="submit" style={{ ...styles.button, ...styles.primaryButton }}>Đổi Mật Khẩu</button>
+            <button
+              type="button"
+              style={{ ...styles.button, ...styles.secondaryButton }}
+              onClick={handleClose}
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              style={{ ...styles.button, ...styles.primaryButton }}
+            >
+              Đổi Mật Khẩu
+            </button>
           </div>
         </form>
       </div>
