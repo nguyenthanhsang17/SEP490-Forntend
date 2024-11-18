@@ -50,7 +50,7 @@ function VerifyEmployerAccount() {
     setIsSubmitting(true);
     setErrorMessage('');
 
-    if (!businessName || !businessAddress || cccdImages.length === 0 || addressImages.length === 0) {
+    if (!businessName || !businessAddress || cccdImages.length === 0 ) {
       setErrorMessage('Vui lòng điền đầy đủ thông tin và tải ảnh cho cả CCCD và địa chỉ.');
       setIsSubmitting(false);
       return;
@@ -106,13 +106,13 @@ function VerifyEmployerAccount() {
         boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
         textAlign: 'center',
       }}>
-        <img src={logoImage} alt="Logo" style={{ width: '250px', marginBottom: '5px' }} />
+        <img src={logoImage} alt="Logo" style={{ width: '200px', marginBottom: '5px' }} />
         <h2 style={{ marginBottom: '25px', fontFamily: 'Arial, sans-serif', color: '#333', fontSize: '1.5em' }}>Xác Thực Tài Khoản Nhà Tuyển Dụng</h2>
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh</label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Nơi làm việc</label>
           <input
             type="text"
-            placeholder="Tên cơ sở kinh doanh "
+            placeholder="Tên cửa hàng, công ty, phòng ban,..."
             value={businessName}
             onChange={(e) => setBusinessName(e.target.value)}
             required
@@ -130,7 +130,7 @@ function VerifyEmployerAccount() {
           />
 
           {/* Upload CCCD */}
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ảnh CCCD</label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ảnh CCCD 2 mặt và mặt trước căng cước cùng với mặt </label>
           <div className="image-upload-container">
             {cccdImages.map((image, index) => (
               <div key={index} className="image-preview" style={{ position: 'relative', margin: '10px', display: 'inline-block' }}>
