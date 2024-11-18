@@ -43,6 +43,7 @@ import AdminDashboard from "./componets/admin/AdminDashBoard";
 import PaymentScreen from "./componets/utils/Payment";
 import ViewEmployerProfile from "./componets/jobseeker/ViewEmployerProfile";
 import ViewBlogList from "./componets/common/ViewBlogList";
+import ViewAllPriceList from "./componets/employee/ViewAllPriceList"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -181,6 +182,7 @@ root.render(
           <Route path="/Payment" element={<PaymentScreen />} />
           <Route path="/viewEmployerProfile" element={<ViewEmployerProfile />} />
           <Route path="/viewBlogList" element={<ViewBlogList />} />
+          <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>

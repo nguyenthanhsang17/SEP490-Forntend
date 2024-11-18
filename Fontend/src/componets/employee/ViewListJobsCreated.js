@@ -447,51 +447,38 @@ const ViewListJobsCreated = () => {
                                         </div>
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
-                                                <button
-                                                    className="btn btn-toggle-visibility btn-approval"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (job.status === 0) {
-                                                            handleRequest(job); // Gửi yêu cầu duyệt bài (có xác nhận)
-                                                        } else if (job.status === 1) {
-                                                            handleCancelRequest(job); // Hủy yêu cầu duyệt bài (có xác nhận)
-                                                        } else {
-                                                            Swal.fire({
-                                                                title: "Chỉ có thể chỉnh sửa trạng thái bài viết ở Nháp hoặc Chờ phê duyệt.",
-                                                                icon: "info",
-                                                                confirmButtonText: "Ok",
-                                                            });
-                                                        }
-                                                    }}
-                                                    title={job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
-                                                >
-                                                    {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
-                                                </button>
+                                                {/* Gửi yêu cầu duyệt bài hoặc Hủy yêu cầu duyệt bài */}
+                                                {(job.status === 0 || job.status === 1) && (
+                                                    <button
+                                                        className="btn btn-toggle-visibility btn-approval"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (job.status === 0) {
+                                                                handleRequest(job); // Gửi yêu cầu duyệt bài
+                                                            } else if (job.status === 1) {
+                                                                handleCancelRequest(job); // Hủy yêu cầu duyệt bài
+                                                            }
+                                                        }}
+                                                        title={job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
+                                                    >
+                                                        {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
+                                                    </button>
+                                                )}
 
-
-
-
-                                                <button
-                                                    className="btn btn-toggle-visibility btn-visibility"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (job.status === 2 || job.status === 5) {
+                                                {/* Ẩn bài viết hoặc Hiện bài viết */}
+                                                {(job.status === 2 || job.status === 5) && (
+                                                    <button
+                                                        className="btn btn-toggle-visibility btn-visibility"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
                                                             togglePostVisibility(job);
-                                                        } else {
-                                                            Swal.fire({
-                                                                title: "Chỉ có thể chỉnh sửa bài viết đã đăng hoặc đã ẩn.",
-                                                                icon: "info",
-                                                                confirmButtonText: "Ok",
-                                                            });
-                                                        }
-                                                    }}
-                                                    title={job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
-                                                >
-                                                    {job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
-                                                </button>
-
+                                                        }}
+                                                        title={job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
+                                                    >
+                                                        {job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết"}
+                                                    </button>
+                                                )}
                                             </div>
-
                                         </div>
                                     </div>
                                     {job.isUrgentRecruitment && <span className="tg-themetag tg-featuretag">Tuyển gấp</span>}
