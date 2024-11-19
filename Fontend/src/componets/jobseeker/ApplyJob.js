@@ -15,7 +15,11 @@ function ApplyJob() {
 
     useEffect(() => {
         const fetchCvs = async () => {
-
+            const haveProfile = localStorage.getItem("haveProfile")
+            if(!haveProfile){
+                alert.log("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển")
+                navigate("/profile");
+            }
             const token = localStorage.getItem("token");
             console.log("Token:", token); // Kiểm tra giá trị token
 

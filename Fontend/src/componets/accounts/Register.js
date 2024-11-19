@@ -25,7 +25,7 @@ const Signup = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
+  
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Họ và tên không được để trống.";
     }
@@ -37,17 +37,25 @@ const Signup = () => {
         newErrors.email = "Email không đúng định dạng.";
       }
     }
+  
     if (!formData.password.trim()) {
       newErrors.password = "Mật khẩu không được để trống.";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+    } else {
+      // Kiểm tra mật khẩu với regex
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+      if (!passwordRegex.test(formData.password)) {
+        newErrors.password =
+          "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
+      }
     }
+  
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu và xác nhận mật khẩu không khớp.";
     }
-
+  
     return newErrors;
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

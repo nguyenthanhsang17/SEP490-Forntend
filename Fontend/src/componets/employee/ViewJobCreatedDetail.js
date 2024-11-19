@@ -485,6 +485,110 @@ function ViewJobCreatedDetail() {
       </section>
 
       <section className="full-detail-description full-detail">
+  <div className="container">
+    <div className="row row-bottom">
+      <h2 className="detail-title">Lịch làm việc</h2>
+      {jobDetails.slotDTOs ? (
+        <div style={styles.container}>
+          {schedules.length > 0 && (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                <thead>
+                  <tr>
+                    {daysOfWeek.map((day, index) => (
+                      <th
+                        key={index}
+                        style={{
+                          border: '1px solid #ddd',
+                          padding: '12px 8px',
+                          backgroundColor: '#f2f2f2',
+                          minWidth: '200px',
+                        }}
+                      >
+                        <div style={{ marginBottom: '10px' }}>{day.name}{day.icon}</div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...Array(getMaxWorkingHours())].map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {daysOfWeek.map((_, dayIndex) => {
+                        const workingHours = getWorkingHoursForDay(dayIndex + 2);
+                        return (
+                          <td
+                            key={dayIndex}
+                            style={{
+                              border: '1px solid #ddd',
+                              padding: '8px',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            {workingHours && workingHours[rowIndex] ? workingHours[rowIndex] : '-'}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {jobDetails.jobPostDateDTOs ? (
+        <div className="container">
+          {jobDetails.jobPostDateDTOs ? (
+            <div style={styles.dateGrid}>
+              {jobDetails.jobPostDateDTOs.map((date, index) => (
+                <div key={index} style={styles.dateCard}>
+                  <h3 style={styles.cardTitle}>Ngày làm việc {index + 1}</h3>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Ngày:</label>
+                    <input
+                      type="date"
+                      value={date.eventDate ? date.eventDate.slice(0, 10) : new Date().toISOString().split('T')[0]}
+                      style={styles.input}
+                      min={new Date().toISOString().split('T')[0]} // Giới hạn ngày chọn chỉ có thể là ngày hiện tại trở đi
+                      readOnly
+                    />
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Giờ bắt đầu:</label>
+                    <input
+                      type="time"
+                      value={date.startTime}
+                      style={styles.input}
+                      readOnly
+                    />
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Giờ kết thúc:</label>
+                    <input
+                      type="time"
+                      value={date.endTime}
+                      style={styles.input}
+                      readOnly
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ color: '#999' }}>Không có lịch làm việc</p>
+          )}
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
+  </div>
+</section>
+
+      <section className="full-detail-description full-detail">
         <div className="container">
           <div className="row row-bottom">
             <h2 className="detail-title">Mô tả công việc</h2>
@@ -514,90 +618,6 @@ function ViewJobCreatedDetail() {
         </div>
       </section>
 
-      <section className="map-section">
-        {jobDetails.slotDTOs ? (
-          <div style={styles.container}>
-            {schedules.length > 0 && (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-                  <thead>
-                    <tr>
-                      {daysOfWeek.map((day, index) => (
-                        <th key={index} style={{
-                          border: '1px solid #ddd',
-                          padding: '12px 8px',
-                          backgroundColor: '#f2f2f2',
-                          minWidth: '200px'
-                        }}>
-                          <div style={{ marginBottom: '10px' }}>{day.name}{day.icon}</div>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...Array(getMaxWorkingHours())].map((_, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {daysOfWeek.map((_, dayIndex) => {
-                          const workingHours = getWorkingHoursForDay(dayIndex + 2);
-                          return (
-                            <td key={dayIndex} style={{
-                              border: '1px solid #ddd',
-                              padding: '8px',
-                              verticalAlign: 'top'
-                            }}>
-                              {workingHours && workingHours[rowIndex] ? workingHours[rowIndex] : '-'}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        ) : null}
-
-        {jobDetails.jobPostDateDTOs ? (<div className="container">
-          {jobDetails.jobPostDateDTOs ? (<div style={styles.dateGrid}>
-            {jobDetails.jobPostDateDTOs.map((date, index) => (
-              <div key={index} style={styles.dateCard}>
-                <h3 style={styles.cardTitle}>Ngày làm việc {index + 1}</h3>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Ngày:</label>
-                  <input
-                    type="date"
-                    value={date.eventDate ? date.eventDate.slice(0, 10) : new Date().toISOString().split('T')[0]}
-                    style={styles.input}
-                    min={new Date().toISOString().split('T')[0]}  // Giới hạn ngày chọn chỉ có thể là ngày hiện tại trở đi
-                    readOnly
-                  />
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Giờ bắt đầu:</label>
-                  <input
-                    type="time"
-                    value={date.startTime}
-                    style={styles.input}
-                    readOnly
-                  />
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Giờ kết thúc:</label>
-                  <input
-                    type="time"
-                    value={date.endTime}
-                    style={styles.input}
-                    readOnly
-                  />
-                </div>
-              </div>
-            ))}
-          </div>) : (<p style={{ color: '#999' }}>Không có lịch làm việc</p>)}
-        </div>) : ("")}
-      </section>
       <Footer />
     </>
   );
