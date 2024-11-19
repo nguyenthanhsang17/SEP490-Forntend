@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
@@ -6,29 +6,9 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 
 const ViewAllPriceList = () => {
-  const plans = [
-    {
-      id: 1,
-      name: "TOP MAX TRIAL",
-      price: "2,887,500 VND",
-      description:
-        "Trải nghiệm đăng tin tuyển dụng hiệu quả với vị trí nổi bật trong Việc làm tốt nhất kết hợp cùng các dịch vụ cao cấp, giá đúng thử hấp dẫn.",
-    },
-    {
-      id: 2,
-      name: "TOP PRO TRIAL",
-      price: "2,448,000 VND",
-      description:
-        "Trải nghiệm đăng tin tuyển dụng tối ưu với vị trí ưu tiên trong Việc làm hấp dẫn kết hợp cùng các dịch vụ cao cấp, giá đúng thử hấp dẫn.",
-    },
-    {
-      id: 3,
-      name: "TOP ECO PLUS TRIAL",
-      price: "2,112,000 VND",
-      description:
-        "Trải nghiệm đăng tin tuyển dụng tiết kiệm với vị trí hiển thị trong Đề xuất việc làm liên quan kết hợp cùng các dịch vụ khác, giá đúng thử hấp dẫn.",
-    },
-  ];
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const styles = {
     alertBox: {
@@ -70,10 +50,6 @@ const ViewAllPriceList = () => {
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
       transition: "transform 0.2s, box-shadow 0.2s",
     },
-    cardHover: {
-      transform: "scale(1.05)",
-      boxShadow: "0 6px 15px rgba(0, 0, 0, 0.15)",
-    },
     cardTitle: {
       fontSize: "1.8rem",
       fontWeight: "bold",
@@ -111,28 +87,70 @@ const ViewAllPriceList = () => {
     },
   };
 
+  // Fetch data from the API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://localhost:7077/api/ServicePriceLists');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        // Map API data to the required format
+        const formattedData = data.map((item) => ({
+          id: item.servicePriceId,
+          name: `Gói ${item.servicePriceId}`, // Đổi sang tiếng Việt
+          price: `${item.price.toLocaleString()} VND`, // Giữ nguyên định dạng số
+          description: [
+            `Bao gồm: ${item.numberPosts} bài đăng.`,
+            `${item.numberPostsUrgentRecruitment} bài đăng tuyển gấp.`,
+            item.isFindJobseekers ? "Có thể tìm kiếm ứng viên." : "Không thể tìm kiếm ứng viên.",
+            `Có hiệu lực trong ${item.durationsMonth} tháng.`,
+          ], // Mô tả dưới dạng danh sách
+        }));
+
+        setPlans(formattedData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <>
       <Header />
+
       <section style={styles.section}>
-      {/* Alert Banner */}
-      <div className="container">
-        <div style={styles.alertBox}>
-          <span style={styles.alertIcon}>ℹ️</span>
-          <div>
-            <p style={{ ...styles.alertText, ...styles.alertTitle }}>
-              Lưu ý quan trọng
-            </p>
-            <p style={styles.alertText}>
-              Nhằm tránh rủi ro mạo danh và lừa đảo, VJN khuyến nghị Quý khách
-              hàng không chuyển khoản vào bất cứ tài khoản cá nhân nào và chỉ thực
-              hiện thanh toán vào các tài khoản chính thức của chúng tôi.
-            </p>
+        {/* Alert Banner */}
+        <div className="container">
+          <div style={styles.alertBox}>
+            <span style={styles.alertIcon}>ℹ️</span>
+            <div>
+              <p style={{ ...styles.alertText, ...styles.alertTitle }}>
+                Lưu ý quan trọng
+              </p>
+              <p style={styles.alertText}>
+                Nhằm tránh rủi ro mạo danh và lừa đảo, VJN khuyến nghị Quý khách
+                hàng không chuyển khoản vào bất cứ tài khoản cá nhân nào và chỉ thực
+                hiện thanh toán vào các tài khoản chính thức của chúng tôi.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
       </section>
-      
+
       {/* Pricing Section */}
       <section style={styles.section}>
         <div className="container">
@@ -154,16 +172,16 @@ const ViewAllPriceList = () => {
                 <div style={styles.card}>
                   <h3 style={styles.cardTitle}>{plan.name}</h3>
                   <p style={styles.cardPrice}>{plan.price}</p>
-                  <p style={styles.cardDescription}>{plan.description}</p>
+                  {/* Hiển thị mô tả theo dạng danh sách thẳng đứng */}
+                  <ul style={{ textAlign: "left", marginBottom: "1.5rem", fontSize: "1.2rem", lineHeight: "1.8", color: "#444" }}>
+                    {plan.description.map((line, index) => (
+                      <li key={index} style={{ marginBottom: "0.5rem" }}>
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
                   <div className="d-flex justify-content-center">
-                    <button
-                      style={{ ...styles.button, ...styles.btnSecondary }}
-                    >
-                      Thêm vào giỏ
-                    </button>
-                    <button
-                      style={{ ...styles.button, ...styles.btnSuccess }}
-                    >
+                    <button style={{ ...styles.button, ...styles.btnSuccess }}>
                       Mua ngay
                     </button>
                   </div>
@@ -173,6 +191,7 @@ const ViewAllPriceList = () => {
           </div>
         </div>
       </section>
+
       <Footer />
     </>
   );
