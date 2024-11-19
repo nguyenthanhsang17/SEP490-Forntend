@@ -44,6 +44,7 @@ import PaymentScreen from "./componets/utils/Payment";
 import ViewEmployerProfile from "./componets/jobseeker/ViewEmployerProfile";
 import ViewBlogList from "./componets/common/ViewBlogList";
 import ViewAllPriceList from "./componets/employee/ViewAllPriceList"
+import ReCreateJob from "./componets/employee/ReCreateJob";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -183,6 +184,7 @@ root.render(
           <Route path="/viewEmployerProfile" element={<ViewEmployerProfile />} />
           <Route path="/viewBlogList" element={<ViewBlogList />} />
           <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
+          <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
