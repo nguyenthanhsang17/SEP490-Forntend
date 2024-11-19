@@ -15,11 +15,7 @@ function ApplyJob() {
 
     useEffect(() => {
         const fetchCvs = async () => {
-            const roleid = localStorage.getItem("roleId")
-            if(roleid=0){
-                alert.log("Hãy cập nhật hồ sơ trước khi ứng tuyển")
-                navigate("/profile");
-            }
+
             const token = localStorage.getItem("token");
             console.log("Token:", token); // Kiểm tra giá trị token
 
@@ -187,7 +183,7 @@ function ApplyJob() {
                     ))}
                 </div>
 
-                <h2 style={styles.title}>Chưa có cv? <a href='./ManagementCV'>Tạo mới</a> </h2>
+                <h2 style={styles.title}>Chưa có cv? <a href='/ManagementCV'>Tạo mới</a> </h2>
             </div>
             <Footer />
         </>
