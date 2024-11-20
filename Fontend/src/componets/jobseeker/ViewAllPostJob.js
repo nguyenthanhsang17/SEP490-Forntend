@@ -24,15 +24,15 @@ const JobListing = () => {
   // Search filter states
   const [jobKeyword, setJobKeyword] = useState("");
   const [salaryTypesId, setSalaryTypesId] = useState(0);
-  const [rangeSalaryMin, setRangeSalaryMin] = useState("");
-  const [rangeSalaryMax, setRangeSalaryMax] = useState("");
+
   const [address, setAddress] = useState("");
   const [jobCategoryId, setJobCategoryId] = useState(0);
   const [sortNumberApplied, setSortNumberApplied] = useState(0);
-  const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
+
   const [distance, Setdistance] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const [savedJobs, setSavedJobs] = useState({});
+  const [isLocationLoading, setIsLocationLoading] = useState(true);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -49,24 +49,56 @@ const JobListing = () => {
   // Check if the user is logged in
   const isLoggedIn = !!localStorage.getItem("token");
   useEffect(() => {
-    // Get user's current location
+    if (
+      jobs.length > 0 &&
+      userLocation &&
+      userLocation.latitude &&
+      userLocation.longitude
+    ) {
+      const updatedJobs = jobs.map((job) => {
+        if (job.latitude && job.longitude) {
+          const distance = calculateDistance(
+            userLocation.latitude,
+            userLocation.longitude,
+            job.latitude,
+            job.longitude
+          );
+          return { ...job, distance };
+        }
+        return { ...job, distance: null }; // Nếu không có tọa độ công việc
+      });
+      setJobs(updatedJobs);
+    }
+  }, [jobs, userLocation]);
+
+  useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
+        setIsLocationLoading(true);
         navigator.geolocation.getCurrentPosition(
           (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Log tọa độ
+            console.log("Latitude:", latitude, "Longitude:", longitude);
+
             setUserLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
+              latitude: latitude,
+              longitude: longitude,
             });
+            setIsLocationLoading(false); // Vị trí đã được lấy
           },
           (error) => {
             console.warn("Location access denied or unavailable.");
-            setUserLocation(null); // Set to null if location access is denied
+            setUserLocation(null);
+            setIsLocationLoading(false); // Không thể lấy vị trí
           }
         );
       } else {
         setError("Geolocation is not supported by this browser.");
         setUserLocation(null);
+        setIsLocationLoading(false);
       }
     };
 
@@ -444,7 +476,7 @@ const JobListing = () => {
                             <span>{job.jobCategoryName}</span>
                             <span className="brows-job-sallery">
                               <i className="fa fa-money"></i>{" "}
-                              {job.salary + " VND"}
+                              {job.salary.toLocaleString("vi-VN") + " VND"}
                             </span>
                           </p>
                           <p>
@@ -455,7 +487,9 @@ const JobListing = () => {
 
                             {/* Display distance if userLocation and job.distance are available */}
                             <span className="job-type cl-success bg-trans-success">
-                              {userLocation && job.distance
+                              {isLocationLoading
+                                ? "Đang tải vị trí..."
+                                : userLocation && job.distance
                                 ? `Cách bạn: ${job.distance} km`
                                 : "Khoảng cách không khả dụng"}
                             </span>
@@ -478,7 +512,6 @@ const JobListing = () => {
                             onClick={(e) => {
                               e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
                               navigate(`/viewJobDetail/${job.postId}`); // Chuyển hướng đến trang chi tiết công việc với ID công việc
-                              
                             }}
                           >
                             Xem Chi Tiết
