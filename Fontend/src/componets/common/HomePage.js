@@ -229,7 +229,7 @@ const HomePage = () => {
                         </div>
                       </div>
                       <a
-                        href={`/jobDetail/${job.postId}`}
+                        href={`/viewJobDetail/${job.postId}`} // Sửa ở đây
                         className="btn btn-freelance-two bg-default"
                       >
                         Xem Chi Tiết
