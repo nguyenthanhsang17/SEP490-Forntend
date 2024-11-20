@@ -87,7 +87,7 @@ function ViewAllJobSeekerInFavoriteList() {
             <Header />
             <div className="container job-seeker-list" style={{ paddingTop: '100px' }}>
 
-                <h2 className="text-center">Danh sách ứng viên</h2>
+                <h2 className="text-center">Danh sách ứng viên ưa thích</h2>
 
                 <div
                     className="filter-section"

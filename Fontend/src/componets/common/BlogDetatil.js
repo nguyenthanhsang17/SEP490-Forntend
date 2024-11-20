@@ -4,49 +4,51 @@ import axios from "axios";
 import Footer from "../common/Footer";
 import Header from "../common/Header";
 import "../assets/css/style.css";
+import bannerImg from "../assets/img/banner-10.jpg";
 
 const BlogDetail = () => {
   const { id } = useParams(); // Get the blog ID from the URL
   const [blog, setBlog] = useState(null);
 
   useEffect(() => {
-    // console.log("Blog ID from URL:", id);
     fetchBlogDetails();
   }, [id]);
 
-
   const fetchBlogDetails = async () => {
     try {
-      const token = localStorage.getItem('token'); // Hoặc nơi bạn lưu token
-      const response = await axios.get(`https://localhost:7077/api/Blogs/GetDetailBlog/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        },
-      });
-      // console.log("API Response:", response.data);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `https://localhost:7077/api/Blogs/GetDetailBlog/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
       setBlog(response.data);
     } catch (error) {
       console.error("Error fetching blog details:", error.response || error.message);
     }
-
   };
 
   return (
     <>
       <Header />
-      {/* Page title */}
+
       <section
         className="inner-header-title"
-        style={{ backgroundImage: "url(assets/img/banner-10.jpg)" }}
+        style={{ backgroundImage: `url(${bannerImg})` }}
       >
-        <div className="container">
-          <h1>Chi Tiết Blog</h1>
-        </div>
+        {blog ? (
+          <div className="container">
+            <h1>{blog.blogTitle}</h1>
+          </div>
+        ) : null}
       </section>
+
       <div className="clearfix"></div>
 
-      {/* Blog details */}
       <section className="section">
         <div className="container">
           <div className="row no-mrg">
@@ -69,10 +71,9 @@ const BlogDetail = () => {
                       </div>
                     </figure>
                     <div className="full blog-content">
-                      <div className="post-meta">
+                      <h2 className="post-meta">
                         Tác giả: <span className="author">{blog.authorId}</span>
-                      </div>
-                      <h2>{blog.blogTitle}</h2>
+                      </h2>
                       <div className="blog-text">
                         <p>{blog.blogDescription}</p>
                       </div>
