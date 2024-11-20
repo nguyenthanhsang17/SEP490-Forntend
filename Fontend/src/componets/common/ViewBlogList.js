@@ -6,8 +6,9 @@ import Footer from "../common/Footer";
 import Header from "../common/Header";
 import "../assets/css/style.css"; // Import CSS tùy chỉnh
 import { Card, Row, Col, Pagination, Spin, Alert } from 'antd';
+import { Button } from "antd";
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-
+import bannerImg from "../assets/img/banner-10.jpg";
 const { Meta } = Card;
 
 const ViewBlogList = () => {
@@ -58,7 +59,7 @@ const ViewBlogList = () => {
             <Header />
 
             {/* Tiêu đề trang bắt đầu */}
-            <section className="inner-header-title" style={{ backgroundImage: "url(assets/img/banner-10.jpg)", padding: '50px 0', textAlign: 'center', color: '#fff' }}>
+            <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImg})`, padding: '50px 0', textAlign: 'center', color: '#fff' }}>
                 <div className="container">
                     <h1 style={{ fontSize: '48px', fontWeight: '700' }}>Trang Blog</h1>
                 </div>
@@ -123,14 +124,29 @@ const ViewBlogList = () => {
                             </Row>
 
                             {/* Phân trang */}
-                            <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                                <Pagination
-                                    current={currentPage}
-                                    total={totalPages * 10} // Vì Pagination tính tổng số items dựa trên pageSize, ở đây pageSize=10
-                                    pageSize={10}
-                                    onChange={handlePageChange}
-                                    showSizeChanger={false}
-                                    showQuickJumper
+                            <div
+                                className="pagination-container"
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginTop: "20px",
+                                }}
+                            >
+                                <Button
+                                    shape="circle"
+                                    icon={<LeftOutlined />}
+                                    disabled={currentPage === 1}
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                />
+                                <span style={{ margin: "0 10px", fontSize: "16px" }}>
+                                    {currentPage} / {totalPages} trang
+                                </span>
+                                <Button
+                                    shape="circle"
+                                    icon={<RightOutlined />}
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => handlePageChange(currentPage + 1)}
                                 />
                             </div>
                         </>

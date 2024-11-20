@@ -348,7 +348,7 @@ function ViewJobDetail() {
                   <a
                     href={`/viewEmployerProfile/${jobDetails.authorId}`}
                     style={{
-                      color: '#007bff',  // Màu xanh dương nổi bật
+                      color: '#4caf50',  // Màu xanh dương nổi bật
                       textDecoration: 'none',  // Loại bỏ gạch dưới mặc định
                       fontWeight: 'bold',  // Làm đậm tên người đăng
                       padding: '5px 10px',  // Thêm khoảng cách để tạo cảm giác dễ bấm
