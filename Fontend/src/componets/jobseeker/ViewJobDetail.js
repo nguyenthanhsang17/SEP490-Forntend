@@ -343,7 +343,24 @@ function ViewJobDetail() {
           <div className="row bottom-mrg">
             <div className="col-md-8 col-sm-8">
               <div className="detail-desc-caption">
-                <h4 className="designation">Người đăng: {jobDetails.authorName}</h4>
+                <h4 className="designation">
+                  Người đăng:
+                  <a
+                    href={`/viewEmployerProfile/${jobDetails.authorId}`}
+                    style={{
+                      color: '#007bff',  // Màu xanh dương nổi bật
+                      textDecoration: 'none',  // Loại bỏ gạch dưới mặc định
+                      fontWeight: 'bold',  // Làm đậm tên người đăng
+                      padding: '5px 10px',  // Thêm khoảng cách để tạo cảm giác dễ bấm
+                      borderRadius: '5px',  // Bo góc để làm nút mềm mại
+                      transition: 'all 0.3s ease',  // Hiệu ứng chuyển động mượt mà khi hover
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#e7f3ff'}  // Hiệu ứng khi hover
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}  // Quay lại trạng thái ban đầu khi không hover
+                  >
+                    {jobDetails.authorName}
+                  </a>
+                </h4>
                 <ul>
                   <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người/{jobDetails.numberAppliedUser} đã ứng tuyển</span></li>
                   <li>

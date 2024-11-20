@@ -219,7 +219,7 @@ const Header = () => {
                 <a
                   style={styles.viewJobsLink}
                   onClick={handleViewAllJobsClick}
-                  href="/blog"
+                  href="/viewBlogList"
                 >
                   <FaBlog style={styles.icon} /> Blog
                 </a>
