@@ -163,9 +163,12 @@ const HomePage = () => {
                     <div className="working-process text-center">
                       <h4>{step}</h4>
                       <p>
-                        {index === 0 && "Đăng ký tài khoản, xác minh và cập nhật hồ sơ cá nhân để sẵn sàng tìm kiếm công việc."}
-                        {index === 1 && "Khám phá các công việc phù hợp, xem chi tiết và lưu những công việc yêu thích."}
-                        {index === 2 && "Ứng tuyển nhanh chóng, theo dõi trạng thái và quản lý tiến trình ứng tuyển của bạn."}
+                        {index === 0 &&
+                          "Đăng ký tài khoản, xác minh và cập nhật hồ sơ cá nhân để sẵn sàng tìm kiếm công việc."}
+                        {index === 1 &&
+                          "Khám phá các công việc phù hợp, xem chi tiết và lưu những công việc yêu thích."}
+                        {index === 2 &&
+                          "Ứng tuyển nhanh chóng, theo dõi trạng thái và quản lý tiến trình ứng tuyển của bạn."}
                       </p>
                     </div>
                   </div>
@@ -195,13 +198,15 @@ const HomePage = () => {
                     <div className="freelance-container style-2">
                       <div className="freelance-box">
                         <span
-                          className={`freelance-status ${job.isUrgentRecruitment ? "urgent" : ""
-                            }`}
+                          className={`freelance-status ${
+                            job.isUrgentRecruitment ? "urgent" : ""
+                          }`}
                         >
                           {job.isUrgentRecruitment ? "Khẩn Cấp" : "Có Sẵn"}
                         </span>
                         <h4 className="flc-rate">
-                          ₫{job.salary.toLocaleString()} / {job.salaryTypeName}
+                          ₫{job.salary.toLocaleString("vi-VN")} /{" "}
+                          {job.salaryTypeName.replace(/^[Tt]heo\s/, "")}
                         </h4>
                         <div className="freelance-inner-box">
                           <div className="freelance-box-thumb">
