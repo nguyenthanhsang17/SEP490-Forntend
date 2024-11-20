@@ -4,12 +4,63 @@ import "chart.js/auto";
 import { Card, Row, Col, Input, Badge, Avatar } from "antd";
 import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
 import "../assets/css/colors/green-style.css";
+import { Bar } from "react-chartjs-2";
 
 const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const maxSold = Math.max(
+    ...dashboardData.packageStatistics.mostPopularPackages.map(
+      (pkg) => pkg.numberSold
+    )
+  );
 
+  const barChartData = {
+    labels: dashboardData.packageStatistics.mostPopularPackages.map(
+      (pkg) => pkg.packageName
+    ),
+    datasets: [
+      {
+        label: "Số lượng bán",
+        data: dashboardData.packageStatistics.mostPopularPackages.map(
+          (pkg) => pkg.numberSold
+        ),
+        backgroundColor:
+          dashboardData.packageStatistics.mostPopularPackages.map((pkg) =>
+            pkg.numberSold === maxSold
+              ? "rgba(255, 99, 132, 0.8)" // Màu nổi bật cho gói bán được nhiều nhất
+              : "rgba(54, 162, 235, 0.5)"
+          ),
+        borderColor: dashboardData.packageStatistics.mostPopularPackages.map(
+          (pkg) =>
+            pkg.numberSold === maxSold
+              ? "rgba(255, 99, 132, 1)" // Đường viền nổi bật
+              : "rgba(54, 162, 235, 1)"
+        ),
+        borderWidth: 1,
+      },
+      {
+        label: "Doanh thu (VND)",
+        data: dashboardData.packageStatistics.mostPopularPackages.map(
+          (pkg) => pkg.totalRevenue
+        ),
+        backgroundColor:
+          dashboardData.packageStatistics.mostPopularPackages.map((pkg) =>
+            pkg.numberSold === maxSold
+              ? "rgba(255, 159, 64, 0.8)" // Màu nổi bật cho doanh thu gói bán nhiều nhất
+              : "rgba(75, 192, 192, 0.5)"
+          ),
+        borderColor: dashboardData.packageStatistics.mostPopularPackages.map(
+          (pkg) =>
+            pkg.numberSold === maxSold
+              ? "rgba(255, 159, 64, 1)" // Đường viền nổi bật
+              : "rgba(75, 192, 192, 1)"
+        ),
+        borderWidth: 1,
+      },
+    ],
+  };
   const fetchData = async () => {
     try {
       const response = await fetch("https://localhost:7077/api/DashBoard");
@@ -79,8 +130,9 @@ const AdminDashboard = () => {
     );
 
   return (
-    <div className="admin-dashboard-container">
-      <aside className="sidebar">
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <aside className="dashboard-sidebar">
         <div className="sidebar-logo">Quản Trị</div>
         <nav className="sidebar-menu">
           <div className="menu-item active">Tổng Quan</div>
@@ -90,90 +142,106 @@ const AdminDashboard = () => {
         </nav>
       </aside>
 
-      <div className="main-content">
-        <header className="dashboard-header">
-          <Input
-            className="dashboard-search"
-            placeholder="Tìm kiếm"
-            prefix={<SearchOutlined />}
+      {/* Header */}
+      <header className="dashboard-header">
+        <Input
+          className="dashboard-search"
+          placeholder="Tìm kiếm"
+          prefix={<SearchOutlined />}
+        />
+        <div className="dashboard-actions">
+          <Badge count={2}>
+            <BellOutlined className="dashboard-icon" />
+          </Badge>
+          <Avatar
+            size="large"
+            icon={<UserOutlined />}
+            style={{ marginLeft: "15px", backgroundColor: "#87d068" }}
           />
-          <div className="dashboard-actions">
-            <Badge count={2}>
-              <BellOutlined className="dashboard-icon" />
-            </Badge>
-            <Avatar
-              size="large"
-              icon={<UserOutlined />}
-              style={{ marginLeft: "15px", backgroundColor: "#87d068" }}
-            />
-          </div>
-        </header>
+        </div>
+      </header>
 
-        <section className="statistics-section">
-          <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} md={6}>
-              <Card className="stat-card blue">
-                <h2>{dashboardData.totalUser}</h2>
-                <p>Tổng số người dùng</p>
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Card className="stat-card green">
-                <h2>
-                  {dashboardData.revenueStatistics.totalRevenue.toLocaleString(
-                    "vi-VN"
-                  )}{" "}
-                  VND
-                </h2>
-                <p>Tổng doanh thu</p>
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Card className="stat-card yellow">
-                <h2>{dashboardData.packageStatistics.totalPackagesSold}</h2>
-                <p>Tổng số gói đã bán</p>
-              </Card>
-            </Col>
-          </Row>
-        </section>
-
-        <section className="charts-section">
-          <Row gutter={[16, 16]}>
-            <Col xs={24} md={16}>
-              <Card className="chart-card">
-                <h3>Thống kê doanh thu</h3>
-                <Line data={lineChartData} />
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card className="chart-card">
-                <h3>Thống kê người dùng</h3>
-                <Pie data={pieChartData} />
-              </Card>
-            </Col>
-          </Row>
-        </section>
-
-        <section className="packages-section">
-          <Card>
-            <h3>Gói được sử dụng nhiều nhất</h3>
-            {topPackages.length > 0 ? (
-              topPackages.map((pkg) => (
-                <div key={pkg.packageId} className="package-item">
-                  <h4>{pkg.packageName}</h4>
-                  <p>Số lượng bán: {pkg.numberSold}</p>
-                  <p>
-                    Doanh thu:{" "}
-                    {pkg.totalRevenue.toLocaleString("vi-VN")} VND
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p>Chưa có gói nào được bán.</p>
-            )}
-          </Card>
-        </section>
-      </div>
+      {/* Main Content */}
+      <main className="dashboard-content">
+        {/* Statistics */}
+        <Row gutter={[16, 16]} className="statistics-row">
+          <Col span={8}>
+            <Card className="stat-card blue">
+              <h2>{dashboardData.totalUser}</h2>
+              <h5>Tổng số người dùng</h5>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card className="stat-card green">
+              <h2>
+                {dashboardData.revenueStatistics.totalRevenue.toLocaleString(
+                  "vi-VN"
+                )}{" "}
+                VND
+              </h2>
+              <h5>Tổng doanh thu</h5>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card className="stat-card yellow">
+              <h2>{dashboardData.packageStatistics.totalPackagesSold}</h2>
+              <h5>Tổng số gói đã bán</h5>
+            </Card>
+          </Col>
+        </Row>
+        {/* Charts */}
+        <Row gutter={[16, 16]} className="charts-row">
+          <Col span={16}>
+            <Card className="chart-card">
+              <h3>Thống kê doanh thu</h3>
+              <Line data={lineChartData} />
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card className="chart-card">
+              <h3>Thống kê người dùng</h3>
+              <Pie data={pieChartData} />
+            </Card>
+          </Col>
+        </Row>
+        <Card className="all-packages-bar-chart-card">
+          <h3
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              marginBottom: "15px",
+            }}
+          >
+            Biểu đồ cột - Gói và doanh thu
+          </h3>
+          <Bar
+            data={barChartData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+              },
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: "Tên gói",
+                  },
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: "Số lượng bán & Doanh thu (VND)",
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+        ;
+      </main>
     </div>
   );
 };

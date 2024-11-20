@@ -1120,106 +1120,192 @@ textarea.form-control {
   .candidate-actions button:first-child {
     margin-top: 0; /* Loại bỏ khoảng cách cho nút đầu tiên */
   }
-  .admin-dashboard-container {
-    display: flex;
-    font-family: "Arial", sans-serif;
-    background-color: #f5f7fa;
-    height: 100vh;
+  .dashboard-grid-container {
+    display: grid;
+    grid-template-columns: 250px auto;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar content";
+    height: 100vh; /* Chiều cao toàn màn hình */
+    overflow: hidden; /* Ẩn thanh cuộn */
   }
   
-  .sidebar {
-    width: 240px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sidebar-logo {
-    font-size: 24px;
-    font-weight: bold;
+  .dashboard-sidebar {
+    grid-area: sidebar;
+    background-color: #f5f5f5;
     padding: 20px;
-    text-align: center;
-    color: #6c63ff;
-  }
-  
-  .sidebar-menu {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-  }
-  
-  .menu-item {
-    padding: 15px 20px;
-    font-size: 16px;
-    color: #333;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .menu-item:hover,
-  .menu-item.active {
-    background-color: #f0f4ff;
-    color: #6c63ff;
-  }
-  
-  .main-content {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+    overflow-y: auto; /* Cho phép cuộn riêng sidebar nếu quá dài */
   }
   
   .dashboard-header {
+    grid-area: header;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
   }
   
-  .dashboard-actions .dashboard-icon {
-    font-size: 20px;
-    cursor: pointer;
-    color: #555;
-  }
-  
-  .statistics-section .stat-card {
-    text-align: center;
-    border-radius: 10px;
-    color: #fff;
+  .dashboard-content {
+    grid-area: content;
     padding: 20px;
+    background-color: #f9f9f9;
+    overflow-y: auto; /* Cho phép cuộn riêng nội dung nếu quá dài */
+  }
+  
+  .stat-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
   }
   
   .stat-card.blue {
-    background-color: #6c63ff;
+    background-color: #2196f3;
+    color: white;
   }
   
   .stat-card.green {
     background-color: #4caf50;
+    color: white;
   }
   
   .stat-card.yellow {
     background-color: #ffc107;
+    color: white;
   }
   
   .chart-card {
+    background-color: white;
     padding: 20px;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%; /* Chiều cao tối đa theo không gian bố cục */
   }
   
-  .packages-section .package-item {
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
+  .top-packages-card {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .package-item {
+    padding: 15px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
   
   .package-item h4 {
-    margin: 0;
     font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
   }
   
   .package-item p {
-    margin: 5px 0;
+    font-size: 14px;
     color: #666;
+    margin: 0;
   }
+  
+  .package-item .package-revenue {
+    color: #4caf50;
+    font-weight: bold;
+  }
+  .all-packages-card {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .package-item {
+    padding: 15px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .package-item h4 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .package-item p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+  
+  .package-item .package-revenue {
+    color: #4caf50;
+    font-weight: bold;
+  }
+  .all-packages-bar-chart-card {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .all-packages-bar-chart-card h3 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .chart-container {
+    width: 100%;
+    height: 400px;
+  }
+  .stat-card {
+    text-align: center;
+    padding: 10px; /* Giảm padding để giảm chiều cao */
+    border-radius: 8px;
+  }
+  
+  .stat-card h2 {
+    font-size: 1.5rem; /* Giảm kích thước font tiêu đề */
+    margin: 0; /* Giảm khoảng cách thừa */
+  }
+  
+  .stat-card p {
+    font-size: 0.9rem; /* Giảm kích thước font mô tả */
+    margin: 5px 0 0 0;
+  }
+  
+  .stat-card.blue {
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  .stat-card.green {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .stat-card.yellow {
+    background-color: #ffc107;
+    color: white;
+  }
+  
+  
+  
   
   
   
