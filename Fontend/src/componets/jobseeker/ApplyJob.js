@@ -187,7 +187,7 @@ function ApplyJob() {
                     ))}
                 </div>
 
-                <h2 style={styles.title}>Chưa có cv? <a href='./ManagementCV'>Tạo mới</a> </h2>
+                <h2 style={styles.title}>Chưa có cv? <a href='/ManagementCV'>Tạo mới</a> </h2>
             </div>
             <Footer />
         </>
