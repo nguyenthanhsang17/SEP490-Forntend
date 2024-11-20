@@ -1120,6 +1120,107 @@ textarea.form-control {
   .candidate-actions button:first-child {
     margin-top: 0; /* Loại bỏ khoảng cách cho nút đầu tiên */
   }
+  .admin-dashboard-container {
+    display: flex;
+    font-family: "Arial", sans-serif;
+    background-color: #f5f7fa;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 240px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar-logo {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    color: #6c63ff;
+  }
+  
+  .sidebar-menu {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+  
+  .menu-item {
+    padding: 15px 20px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .menu-item:hover,
+  .menu-item.active {
+    background-color: #f0f4ff;
+    color: #6c63ff;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-actions .dashboard-icon {
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+  }
+  
+  .statistics-section .stat-card {
+    text-align: center;
+    border-radius: 10px;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  .stat-card.blue {
+    background-color: #6c63ff;
+  }
+  
+  .stat-card.green {
+    background-color: #4caf50;
+  }
+  
+  .stat-card.yellow {
+    background-color: #ffc107;
+  }
+  
+  .chart-card {
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .packages-section .package-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .package-item h4 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .package-item p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
   
   
   

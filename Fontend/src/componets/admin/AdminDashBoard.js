@@ -1,74 +1,100 @@
-import React from 'react';
-import { Line, Pie } from 'react-chartjs-2';
-import 'chart.js/auto';
-import { Card, Row, Col, Input, Badge, Avatar, Pagination } from 'antd';
-import { SearchOutlined, BellOutlined, UserOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from "react";
+import { Line, Pie } from "react-chartjs-2";
+import "chart.js/auto";
+import { Card, Row, Col, Input, Badge, Avatar } from "antd";
+import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
 import "../assets/css/colors/green-style.css";
 
 const AdminDashboard = () => {
-  // Dummy data
-  const statistics = {
-    savedJobs: 178,
-    availableJobs: 20,
-    completedJobs: 190,
-    applications: 12,
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("https://localhost:7077/api/DashBoard");
+      if (!response.ok) {
+        throw new Error("Không thể lấy dữ liệu thống kê.");
+      }
+      const data = await response.json();
+      setDashboardData(data);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="loading">Đang tải...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Lỗi: {error}</div>;
+  }
+
   const lineChartData = {
-    labels: ['10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'],
+    labels: dashboardData.revenueStatistics.monthlyRevenue.map((item) =>
+      new Date(item.month).toLocaleString("vi-VN", {
+        month: "long",
+        year: "numeric",
+      })
+    ),
     datasets: [
       {
-        label: 'Reports',
-        data: [40, 60, 50, 70, 65, 85, 90, 70, 60, 80],
-        borderColor: '#7F56D9',
-        backgroundColor: 'rgba(127, 86, 217, 0.1)',
+        label: "Doanh thu theo tháng",
+        data: dashboardData.revenueStatistics.monthlyRevenue.map(
+          (item) => item.revenue
+        ),
+        borderColor: "#4caf50",
+        backgroundColor: "rgba(76, 175, 80, 0.2)",
         fill: true,
+        tension: 0.4,
       },
     ],
   };
 
   const pieChartData = {
-    labels: ['In Progress', 'Completed', 'Cancelled'],
+    labels: ["Người tìm việc", "Nhà tuyển dụng"],
     datasets: [
       {
-        data: [80, 15, 5],
-        backgroundColor: ['#007BFF', '#FFC107', '#FF5722'],
+        data: [
+          dashboardData.userStatistics.jobSeekersPercentage,
+          dashboardData.userStatistics.employersPercentage,
+        ],
+        backgroundColor: ["#4CAF50", "#FFC107"],
+        hoverOffset: 4,
       },
     ],
   };
 
-  const recentJobs = [
-    { id: '#1001', title: 'UI/UX Designer', price: '$1,500', applicants: 30, status: 'Active', posted: '1 day ago' },
-    { id: '#1002', title: 'Software Engineer', price: '$2,800', applicants: 50, status: 'Active', posted: '2 days ago' },
-    { id: '#1003', title: 'Content Writer', price: '$800', applicants: 20, status: 'Closed', posted: '3 days ago' },
-    { id: '#1004', title: 'Project Manager', price: '$3,200', applicants: 40, status: 'Active', posted: '4 days ago' },
-  ];
-
-  const topJobs = [
-    { title: 'Mobile App Developer', salary: '$3,500', applicants: 45 },
-    { title: 'Data Scientist', salary: '$4,200', applicants: 30 },
-  ];
+  const topPackages =
+    dashboardData.packageStatistics.mostPopularPackages.filter(
+      (pkg) => pkg.numberSold > 0
+    );
 
   return (
-    <div className="dashboard-container">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <div className="sidebar-logo">Base</div>
-        <div className="sidebar-menu">
-          <div className="menu-item">Dashboard</div>
-          <div className="menu-item">Jobs</div>
-          <div className="menu-item">Applications</div>
-          <div className="menu-item">Reports</div>
-        </div>
-      </div>
+    <div className="admin-dashboard-container">
+      <aside className="sidebar">
+        <div className="sidebar-logo">Quản Trị</div>
+        <nav className="sidebar-menu">
+          <div className="menu-item active">Tổng Quan</div>
+          <div className="menu-item">Công Việc</div>
+          <div className="menu-item">Ứng Tuyển</div>
+          <div className="menu-item">Báo Cáo</div>
+        </nav>
+      </aside>
 
-      {/* Main Content */}
       <div className="main-content">
-        {/* Header */}
-        <div className="dashboard-header">
+        <header className="dashboard-header">
           <Input
             className="dashboard-search"
-            placeholder="Search"
+            placeholder="Tìm kiếm"
             prefix={<SearchOutlined />}
           />
           <div className="dashboard-actions">
@@ -78,94 +104,75 @@ const AdminDashboard = () => {
             <Avatar
               size="large"
               icon={<UserOutlined />}
-              style={{ marginLeft: '15px', backgroundColor: '#87d068' }}
+              style={{ marginLeft: "15px", backgroundColor: "#87d068" }}
             />
           </div>
-        </div>
+        </header>
 
-        {/* Statistics Cards */}
-        <Row gutter={[16, 16]} className="dashboard-cards">
-          {[
-            { label: 'Saved Jobs', value: `${statistics.savedJobs}+`, color: '#E5F5FF' },
-            { label: 'Available Jobs', value: `${statistics.availableJobs}+`, color: '#FFF7E5' },
-            { label: 'Completed Jobs', value: `${statistics.completedJobs}+`, color: '#FFEFEF' },
-            { label: 'Applications', value: `${statistics.applications}+`, color: '#F5F5FF' },
-          ].map((stat, index) => (
-            <Col key={index} xs={24} sm={12} md={6}>
-              <Card
-                className="stat-card"
-                style={{
-                  backgroundColor: stat.color,
-                  borderRadius: '12px',
-                  textAlign: 'center',
-                }}
-              >
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
+        <section className="statistics-section">
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={12} md={6}>
+              <Card className="stat-card blue">
+                <h2>{dashboardData.totalUser}</h2>
+                <p>Tổng số người dùng</p>
               </Card>
             </Col>
-          ))}
-        </Row>
+            <Col xs={24} sm={12} md={6}>
+              <Card className="stat-card green">
+                <h2>
+                  {dashboardData.revenueStatistics.totalRevenue.toLocaleString(
+                    "vi-VN"
+                  )}{" "}
+                  VND
+                </h2>
+                <p>Tổng doanh thu</p>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card className="stat-card yellow">
+                <h2>{dashboardData.packageStatistics.totalPackagesSold}</h2>
+                <p>Tổng số gói đã bán</p>
+              </Card>
+            </Col>
+          </Row>
+        </section>
 
-        {/* Charts */}
-        <Row gutter={[16, 16]} className="dashboard-charts">
-          <Col xs={24} md={16}>
-            <Card className="chart-card">
-              <h3 className="chart-title">Reports</h3>
-              <Line data={lineChartData} />
-            </Card>
-          </Col>
-          <Col xs={24} md={8}>
-            <Card className="chart-card">
-              <h3 className="chart-title">Job Status</h3>
-              <Pie data={pieChartData} />
-            </Card>
-          </Col>
-        </Row>
+        <section className="charts-section">
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={16}>
+              <Card className="chart-card">
+                <h3>Thống kê doanh thu</h3>
+                <Line data={lineChartData} />
+              </Card>
+            </Col>
+            <Col xs={24} md={8}>
+              <Card className="chart-card">
+                <h3>Thống kê người dùng</h3>
+                <Pie data={pieChartData} />
+              </Card>
+            </Col>
+          </Row>
+        </section>
 
-        {/* Recent Jobs */}
-        <Card className="orders-card">
-          <h3 className="orders-title">Recent Jobs</h3>
-          <table className="orders-table">
-            <thead>
-              <tr>
-                <th>Job ID</th>
-                <th>Job Title</th>
-                <th>Salary</th>
-                <th>Applicants</th>
-                <th>Status</th>
-                <th>Posted</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentJobs.map((job) => (
-                <tr key={job.id}>
-                  <td>{job.id}</td>
-                  <td>{job.title}</td>
-                  <td>{job.price}</td>
-                  <td>{job.applicants}</td>
-                  <td>{job.status}</td>
-                  <td>{job.posted}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <Pagination defaultCurrent={1} total={50} style={{ marginTop: '10px' }} />
-        </Card>
-
-        {/* Top Jobs */}
-        <Card className="top-products-card">
-          <h3 className="top-products-title">Top Jobs</h3>
-          {topJobs.map((job, index) => (
-            <div key={index} className="top-product-item">
-              <div className="product-info">
-                <h4>{job.title}</h4>
-                <p>Salary: {job.salary}</p>
-                <p>Applicants: {job.applicants}</p>
-              </div>
-            </div>
-          ))}
-        </Card>
+        <section className="packages-section">
+          <Card>
+            <h3>Gói được sử dụng nhiều nhất</h3>
+            {topPackages.length > 0 ? (
+              topPackages.map((pkg) => (
+                <div key={pkg.packageId} className="package-item">
+                  <h4>{pkg.packageName}</h4>
+                  <p>Số lượng bán: {pkg.numberSold}</p>
+                  <p>
+                    Doanh thu:{" "}
+                    {pkg.totalRevenue.toLocaleString("vi-VN")} VND
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>Chưa có gói nào được bán.</p>
+            )}
+          </Card>
+        </section>
       </div>
     </div>
   );
