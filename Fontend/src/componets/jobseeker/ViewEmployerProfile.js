@@ -37,7 +37,7 @@ const ViewEmployerProfile = () => {
 
     try {
       const response = await axios.get(
-        `https://localhost:7077/api/Employer/ViewEmployerProfile?Authorid=${authorId}`,
+        `https://localhost:7077/api/Employer/ViewEmployerProfile?Authorid=${authorId}&pagnumber=${pageNumber}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,10 +45,11 @@ const ViewEmployerProfile = () => {
           },
         }
       );
+      console.log("API Response:", response.data);
 
       setAuthorData(response.data);
       setCurrentPage(pageNumber); // Cập nhật trang hiện tại
-      setTotalPages(response.data.totalPages || 0); // Lưu tổng số trang từ API
+      setTotalPages(response.data.postJobAuthors.totalPages || 0);
     } catch (error) {
       console.error("Failed to fetch author profile:", error);
     }
@@ -71,6 +72,18 @@ const ViewEmployerProfile = () => {
     return distance.toFixed(2); // Làm tròn 2 chữ số thập phân
   };
 
+  useEffect(() => {
+    if (!authorData?.latitude || !authorData?.longitude) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setAuthorData((prev) => ({
+          ...prev,
+          latitude,
+          longitude,
+        }));
+      });
+    }
+  }, [authorData]);
 
   useEffect(() => {
     fetchAuthorProfile();
@@ -78,10 +91,10 @@ const ViewEmployerProfile = () => {
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
-      fetchAuthorProfile(newPage); // Gọi lại API để lấy dữ liệu trang mới
+      fetchAuthorProfile(newPage); // Gọi lại API với trang mới
+      setCurrentPage(newPage);     // Cập nhật trang hiện tại
     }
   };
-
 
   const addwishlist = async (postJobId) => {
     const token = localStorage.getItem("token");
@@ -126,7 +139,6 @@ const ViewEmployerProfile = () => {
       );
     }
   };
-
 
   return (
     <>
@@ -196,8 +208,8 @@ const ViewEmployerProfile = () => {
         <div className="container">
           <div className="row row-bottom">
             <h2 className="detail-title">Tuyển dụng</h2>
-            {authorData && authorData.postJobAuthors?.length > 0 ? (
-              authorData.postJobAuthors.map((job) => (
+            {authorData && authorData.postJobAuthors?.items?.length > 0 ? (
+              authorData.postJobAuthors.items.map((job) => (
                 <div
                   key={job.postId}
                   className="item-click job-post-detail"
@@ -338,11 +350,9 @@ const ViewEmployerProfile = () => {
                 onClick={() => handlePageChange(currentPage + 1)}
               />
             </div>
-
           </div>
         </div>
       </section>
-
       <Footer />
     </>
   );
