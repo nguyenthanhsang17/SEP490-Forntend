@@ -180,7 +180,7 @@ root.render(
           <Route path="/ChatList" element={<ChatList />} />
           <Route path="/EditPostJob/:id" element={<EditPostJob />} />
           <Route path="/Payment" element={<PaymentScreen />} />
-          <Route path="/viewEmployerProfile" element={<ViewEmployerProfile />} />
+          <Route path="/viewEmployerProfile/:authorId" element={<ViewEmployerProfile />} />
           <Route path="/viewBlogList" element={<ViewBlogList />} />
           <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
         </Routes>
