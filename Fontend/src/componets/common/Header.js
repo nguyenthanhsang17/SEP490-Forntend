@@ -145,7 +145,7 @@ const Header = () => {
 
   const handleViewAllJobsClick = () => {
     setDropdownVisible(false);
-    navigate("/jobs");
+    navigate("/viewBlogList");
   };
 
   const handleViewListCreatedClick = () => {
