@@ -49,8 +49,8 @@ const ViewBlogList = () => {
         setCurrentPage(page);
     };
 
-    const handleBlogClick = (blogId) => {
-        navigate(`/blogDetail/${blogId}`);
+    const handleBlogClick = (id) => {
+        navigate(`/blogDetail/${id}`);
     };
 
     return (

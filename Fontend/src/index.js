@@ -43,6 +43,7 @@ import AdminDashboard from "./componets/admin/AdminDashBoard";
 import PaymentScreen from "./componets/utils/Payment";
 import ViewEmployerProfile from "./componets/jobseeker/ViewEmployerProfile";
 import ViewBlogList from "./componets/common/ViewBlogList";
+import BlogDetail from "./componets/common/BlogDetatil";
 import ViewAllPriceList from "./componets/employee/ViewAllPriceList"
 import ReCreateJob from "./componets/employee/ReCreateJob";
 
@@ -183,6 +184,7 @@ root.render(
           <Route path="/Payment" element={<PaymentScreen />} />
           <Route path="/viewEmployerProfile/:authorId" element={<ViewEmployerProfile />} />
           <Route path="/viewBlogList" element={<ViewBlogList />} />
+          <Route path="/blogDetail/:id" element={<BlogDetail />} />
           <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
           <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
         </Routes>

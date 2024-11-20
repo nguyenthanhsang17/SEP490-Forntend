@@ -5,35 +5,48 @@ import Footer from "../common/Footer";
 import Header from "../common/Header";
 import "../assets/css/style.css";
 
-const BlogDetatil = () => {
-  const { id } = useParams(); // Lấy ID bài viết từ URL
+const BlogDetail = () => {
+  const { id } = useParams(); // Get the blog ID from the URL
   const [blog, setBlog] = useState(null);
 
   useEffect(() => {
-    fetchChiTietBlog();
+    // console.log("Blog ID from URL:", id);
+    fetchBlogDetails();
   }, [id]);
 
-  const fetchChiTietBlog = async () => {
+
+  const fetchBlogDetails = async () => {
     try {
-      const response = await axios.get(`/api/blog/${id}`); // Thay bằng API endpoint của bạn
+      const token = localStorage.getItem('token'); // Hoặc nơi bạn lưu token
+      const response = await axios.get(`https://localhost:7077/api/Blogs/GetDetailBlog/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        },
+      });
+      // console.log("API Response:", response.data);
       setBlog(response.data);
     } catch (error) {
-      console.error("Lỗi khi lấy chi tiết bài viết:", error);
+      console.error("Error fetching blog details:", error.response || error.message);
     }
+
   };
 
   return (
     <>
       <Header />
-      {/* Tiêu đề trang */}
-      <section className="inner-header-title" style={{ backgroundImage: "url(assets/img/banner-10.jpg)" }}>
+      {/* Page title */}
+      <section
+        className="inner-header-title"
+        style={{ backgroundImage: "url(assets/img/banner-10.jpg)" }}
+      >
         <div className="container">
           <h1>Chi Tiết Blog</h1>
         </div>
       </section>
       <div className="clearfix"></div>
 
-      {/* Chi tiết blog */}
+      {/* Blog details */}
       <section className="section">
         <div className="container">
           <div className="row no-mrg">
@@ -42,9 +55,13 @@ const BlogDetatil = () => {
                 <article className="blog-news">
                   <div className="full-blog">
                     <figure className="img-holder">
-                      <img src={blog.image || "assets/img/blog/default.jpg"} className="img-responsive" alt="Hình ảnh bài viết" />
+                      <img
+                        src={blog.thumbnail || "assets/img/blog/default.jpg"}
+                        className="img-responsive"
+                        alt="Hình ảnh bài viết"
+                      />
                       <div className="blog-post-date">
-                        {new Date(blog.date).toLocaleDateString("vi-VN", {
+                        {new Date(blog.createDate).toLocaleDateString("vi-VN", {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
@@ -53,14 +70,11 @@ const BlogDetatil = () => {
                     </figure>
                     <div className="full blog-content">
                       <div className="post-meta">
-                        Tác giả: <span className="author">{blog.author}</span>
+                        Tác giả: <span className="author">{blog.authorId}</span>
                       </div>
-                      <h2>{blog.title}</h2>
+                      <h2>{blog.blogTitle}</h2>
                       <div className="blog-text">
-                        <p>{blog.content}</p>
-                        <div className="post-meta">
-                          Chủ đề: <span className="category">{blog.category}</span>
-                        </div>
+                        <p>{blog.blogDescription}</p>
                       </div>
                     </div>
                   </div>
@@ -78,4 +92,4 @@ const BlogDetatil = () => {
   );
 };
 
-export default BlogDetatil;
+export default BlogDetail;
