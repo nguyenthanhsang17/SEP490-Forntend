@@ -46,6 +46,7 @@ import ViewBlogList from "./componets/common/ViewBlogList";
 import BlogDetail from "./componets/common/BlogDetatil";
 import ViewAllPriceList from "./componets/employee/ViewAllPriceList"
 import ReCreateJob from "./componets/employee/ReCreateJob";
+import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -187,6 +188,7 @@ root.render(
           <Route path="/blogDetail/:id" element={<BlogDetail />} />
           <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
           <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
+          <Route path="/viewRecommendedJobs" element={<ViewRecommendedJobs />} />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
