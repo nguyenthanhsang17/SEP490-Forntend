@@ -52,7 +52,12 @@ import UserDetail from "./componets/admin/UserDetail";
 import BlogList from "./componets/admin/BlogList";
 import BlogDetailllll from "./componets/admin/BlogDetail";
 import CreateBlog from "./componets/admin/CreateBlog";
+<<<<<<< HEAD
+import HistoryPayment from "./componets/admin/ViewHistoryPayment";
+import PaymentHistoryTable from "./componets/employee/ViewHistoryPayment";
+=======
 import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
+>>>>>>> 3a346944c4389c92437e895b51d4f53717dc5c0a
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -80,6 +85,8 @@ root.render(
           <Route path="/BlogList" element={<BlogList />} />
           <Route path="/BlogDetailllll/:id" element={<BlogDetailllll />} />
           <Route path="/CreateBlog" element={<CreateBlog />} />
+          <Route path="/ViewAllHistoryPayment" element={<HistoryPayment />} />
+          <Route path="/ViewHistoryPayment" element={<PaymentHistoryTable />} />
           {/* Job Seeker-Only Routes */}
           <Route
             path="/ViewAllPost"
