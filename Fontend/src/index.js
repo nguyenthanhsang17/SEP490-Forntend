@@ -46,8 +46,13 @@ import ViewBlogList from "./componets/common/ViewBlogList";
 import BlogDetail from "./componets/common/BlogDetatil";
 import ViewAllPriceList from "./componets/employee/ViewAllPriceList";
 import ReCreateJob from "./componets/employee/ReCreateJob";
-import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
 
+import ManageUser from "./componets/admin/ManageUser";
+import UserDetail from "./componets/admin/UserDetail";
+import BlogList from "./componets/admin/BlogList";
+import BlogDetailllll from "./componets/admin/BlogDetail";
+import CreateBlog from "./componets/admin/CreateBlog";
+import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -70,7 +75,11 @@ root.render(
             element={<EmployerRequestDetail />}
           />
           <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
-
+          <Route path="/ManageUser" element={<ManageUser />} />
+          <Route path="/user/:id" element={<UserDetail />} />
+          <Route path="/BlogList" element={<BlogList />} />
+          <Route path="/BlogDetailllll/:id" element={<BlogDetailllll />} />
+          <Route path="/CreateBlog" element={<CreateBlog />} />
           {/* Job Seeker-Only Routes */}
           <Route
             path="/ViewAllPost"
