@@ -317,7 +317,10 @@ const ViewAllPostJobInWishlist = () => {
                                         </div>
                                         <div class="col-md-3 col-sm-3">
                                             <div class="brows-job-location">
-                                                <p><i class="fa fa-map-marker"></i>{job.address}</p>
+                                                <p title={job.address}>
+                                                    <i className="fa fa-map-marker"></i>
+                                                    {job.address.length > 30 ? `${job.address.slice(0, 30)}...` : job.address}
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="col-md-2 col-sm-2">
