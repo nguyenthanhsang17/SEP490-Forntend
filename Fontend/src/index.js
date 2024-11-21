@@ -44,13 +44,15 @@ import PaymentScreen from "./componets/utils/Payment";
 import ViewEmployerProfile from "./componets/jobseeker/ViewEmployerProfile";
 import ViewBlogList from "./componets/common/ViewBlogList";
 import BlogDetail from "./componets/common/BlogDetatil";
-import ViewAllPriceList from "./componets/employee/ViewAllPriceList"
+import ViewAllPriceList from "./componets/employee/ViewAllPriceList";
 import ReCreateJob from "./componets/employee/ReCreateJob";
+
 import ManageUser from "./componets/admin/ManageUser";
 import UserDetail from "./componets/admin/UserDetail";
 import BlogList from "./componets/admin/BlogList";
 import BlogDetailllll from "./componets/admin/BlogDetail";
 import CreateBlog from "./componets/admin/CreateBlog";
+import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -68,7 +70,10 @@ root.render(
           <Route path="/viewAllJob" element={<PostJobs />} />
           <Route path="/lich" element={<ScheduleTable />} />
           <Route path="/ViewEmployerRequests" element={<EmployerRequests />} />
-          <Route path="/ViewEmployerRequestsDetail/:id" element={<EmployerRequestDetail />} />
+          <Route
+            path="/ViewEmployerRequestsDetail/:id"
+            element={<EmployerRequestDetail />}
+          />
           <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
           <Route path="/ManageUser" element={<ManageUser />} />
           <Route path="/user/:id" element={<UserDetail />} />
@@ -78,7 +83,6 @@ root.render(
           {/* Job Seeker-Only Routes */}
           <Route
             path="/ViewAllPost"
-
             element={
               <PrivateRoute allowedRoles={[3, 4]}>
                 <ViewAllPostJob />
@@ -87,7 +91,7 @@ root.render(
           />
           <Route
             path="/ViewDetail/:job_id/:status"
-           element={
+            element={
               <PrivateRoute allowedRoles={[3, 4]}>
                 <PostJobDetail />
               </PrivateRoute>
@@ -109,9 +113,21 @@ root.render(
               </PrivateRoute>
             }
           />
-<Route
+          <Route
+            path="/ChatList"
+            element={
+              <PrivateRoute allowedRoles={[1, 2]}>
+                <ChatList />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/verifyEmployerAccount"
-            element={<PrivateRoute allowedRoles={[1]}><VerifyEmployerAccount /></PrivateRoute>}
+            element={
+              <PrivateRoute allowedRoles={[1]}>
+                <VerifyEmployerAccount />
+              </PrivateRoute>
+            }
           />
           {/* Employer-Only Routes */}
           <Route
@@ -183,18 +199,31 @@ root.render(
 
           {/* Miscellaneous Routes */}
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/viewAllPostJobInWishlist" element={<ViewAllPostJobInWishlist />} />
-          <Route path="/viewAllJobSeekerInFavoriteList" element={<ViewAllJobSeekerInFavoriteList />} />
+          <Route
+            path="/viewAllPostJobInWishlist"
+            element={<ViewAllPostJobInWishlist />}
+          />
+          <Route
+            path="/viewAllJobSeekerInFavoriteList"
+            element={<ViewAllJobSeekerInFavoriteList />}
+          />
           <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
           <Route path="/ManagementCV" element={<ManagementCV />} />
-          <Route path="/ChatList" element={<ChatList />} />
+
           <Route path="/EditPostJob/:id" element={<EditPostJob />} />
           <Route path="/Payment" element={<PaymentScreen />} />
-          <Route path="/viewEmployerProfile/:authorId" element={<ViewEmployerProfile />} />
+          <Route
+            path="/viewEmployerProfile/:authorId"
+            element={<ViewEmployerProfile />}
+          />
           <Route path="/viewBlogList" element={<ViewBlogList />} />
           <Route path="/blogDetail/:id" element={<BlogDetail />} />
           <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
           <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
+          <Route
+            path="/viewRecommendedJobs"
+            element={<ViewRecommendedJobs />}
+          />
         </Routes>
       </SnackbarProvider>
     </BrowserRouter>
