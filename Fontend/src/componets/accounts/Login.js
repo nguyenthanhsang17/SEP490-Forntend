@@ -32,58 +32,74 @@ function Login() {
     setWarningMessage(null);
 
     if (!validateEmail(email)) {
-      setError("Email không hợp lệ.");
-      return;
+        setError("Email không hợp lệ.");
+        return;
     }
 
     setIsLoading(true);
 
     const loginData = {
-      userName: email,
-      password: password,
+        userName: email,
+        password: password,
     };
 
     try {
-      const response = await fetch("https://localhost:7077/api/Users/Login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+        const response = await fetch("https://localhost:7077/api/Users/Login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json", // Đúng với định dạng API yêu cầu
+            },
+            body: JSON.stringify(loginData),
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.Message || "Đăng nhập không thành công");
-      }
+        console.log("API Response:", result);
 
-      console.log("Đăng nhập thành công:", result);
+        if (response.status === 401) {
+            // Kiểm tra thông điệp trả về
+            if (result.message === "Tài khoản của bạn hiện chưa được xác thực.") {
+                console.log("Chuyển đến trang xác minh email");
+                navigate('/VerifyRegister');
+                return;
+            } else {
+                setError(result.message || "Đăng nhập không thành công");
+                return;
+            }
+        }
 
-      localStorage.setItem('token', result.token);
-      localStorage.setItem('fullName', result.fullName);
-      localStorage.setItem('roleId', result.roleId);
-      localStorage.setItem('userId', result.userId);
-      localStorage.setItem('status', result.status);
+        if (!response.ok) {
+            throw new Error(result.message || "Đăng nhập không thành công");
+        }
 
-      if (result.roleId === 4) {
-        navigate('/AdminDashboard');
-      } else {
-        navigate('/');
-      }
+        // Đăng nhập thành công
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('fullName', result.fullName);
+        localStorage.setItem('roleId', result.roleId);
+        localStorage.setItem('userId', result.userId);
+        localStorage.setItem('status', result.status);
 
-      // Hiển thị cảnh báo nếu mật khẩu không đáp ứng tiêu chí mới
-      if (!validatePassword(password)) {
-        setWarningMessage("Mật khẩu của bạn không đáp ứng yêu cầu bảo mật mới. Vui lòng cập nhật mật khẩu.");
-      }
+        if (result.roleId === 4) {
+            navigate('/AdminDashboard');
+        } else {
+            navigate('/');
+        }
+
+        // Cảnh báo mật khẩu yếu
+        if (!validatePassword(password)) {
+            setWarningMessage("Mật khẩu của bạn không đáp ứng yêu cầu bảo mật mới. Vui lòng cập nhật mật khẩu.");
+        }
 
     } catch (error) {
-      setError(error.message);
-      console.error("Lỗi:", error);
+        setError(error.message || "Lỗi đăng nhập. Vui lòng kiểm tra lại thông tin.");
+        console.error("Lỗi:", error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
+
+
 
   const handleGoogleLogin = () => {
     console.log("Google login clicked");

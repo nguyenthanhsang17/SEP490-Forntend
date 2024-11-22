@@ -9,6 +9,7 @@ import bannerImage from "../assets/img/banner-10.jpg";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { colors } from "@mui/material";
 
 const VerifyRegister = () => {
   const [formData, setFormData] = useState({
@@ -126,6 +127,7 @@ const VerifyRegister = () => {
         <a href="/">
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
+        <span style={{ color: "red" }}>Kiểm tra code được gửi đến email của bạn</span>
         <form onSubmit={handleSubmit}>
           <div style={styles.passwordInput}>
             <input
