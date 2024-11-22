@@ -20,8 +20,8 @@ function VerifyEmployerAccount() {
     const files = Array.from(e.target.files);
     const currentImages = type === 'cccd' ? cccdImages : addressImages;
 
-    if (currentImages.length + files.length > (type === 'cccd' ? 3 : 5)) {
-      alert(`Bạn chỉ được chọn tối đa ${type === 'cccd' ? 3 : 5} ảnh cho ${type === 'cccd' ? "CCCD" : "địa chỉ"}!`);
+    if (currentImages.length + files.length > (type === 'cccd' ? 3 : 3)) {
+      alert(`Bạn chỉ được chọn tối đa ${type === 'cccd' ? 3 : 3} ảnh cho ${type === 'cccd' ? "CCCD" : "địa chỉ"}!`);
       return;
     }
 
@@ -50,42 +50,74 @@ function VerifyEmployerAccount() {
     setIsSubmitting(true);
     setErrorMessage('');
 
-    if (!businessName || !businessAddress || cccdImages.length === 0 ) {
-      setErrorMessage('Vui lòng điền đầy đủ thông tin và tải ảnh cho cả CCCD và địa chỉ.');
-      setIsSubmitting(false);
-      return;
+    if (!businessName || !businessAddress || (cccdImages.length === 0 && addressImages.length === 0)) {
+        await Swal.fire({
+            title: 'Hãy chắc chắn bạn đã điền đủ thông tin và tải lên ảnh CCCD!',
+            icon: 'warning',
+            confirmButtonText: 'Ok',
+        });
+        setIsSubmitting(false);
+        return;
     }
 
     const formData = new FormData();
     formData.append("BusinessName", businessName);
     formData.append("BusinessAddress", businessAddress);
 
-    cccdImages.forEach((image) => formData.append("cccdFiles", image.file));
-    addressImages.forEach((image) => formData.append("addressFiles", image.file));
+    // Gộp mảng ảnh CCCD và Địa chỉ
+    const allImages = [...cccdImages, ...addressImages];
+    allImages.forEach((image) => formData.append("files", image.file)); // Gửi tất cả tệp qua trường "files"
 
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('https://localhost:7077/api/Users/VerifyEmployerAccount', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      });
+        const response = await fetch('https://localhost:7077/api/Users/VerifyEmployerAccount', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+        });
 
-      if (response.ok) {
-        Swal.fire("Yêu cầu của bạn đã được gửi");
-        setIsSubmitting(false);
-        navigate("/profile");
-      } else {
-        const errorText = await response.text();
-        setErrorMessage(errorText || 'Có lỗi xảy ra khi gửi yêu cầu.');
-        setIsSubmitting(false);
-      }
+        if (response.ok) {
+            await Swal.fire({
+                title: 'Đăng ký thành công!',
+                text: 'Bạn đã đăng ký để trở thành nhà tuyển dụng. Vui lòng đợi phê duyệt.',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+            });
+            navigate("/profile");
+        } else {
+            const errorText = await response.text();
+            await Swal.fire({
+                title: 'Có lỗi xảy ra!',
+                text: errorText || 'Có lỗi xảy ra khi gửi yêu cầu.',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
+            setIsSubmitting(false);
+            navigate("/profile");
+        }
     } catch (error) {
-      console.error('Submission error:', error);
-      setErrorMessage('Có lỗi xảy ra khi kết nối với máy chủ.');
-      setIsSubmitting(false);
+        console.error('Submission error:', error);
+        await Swal.fire({
+            title: 'Lỗi kết nối máy chủ!',
+            text: 'Vui lòng kiểm tra kết nối mạng và thử lại.',
+            icon: 'error',
+            confirmButtonText: 'Thử lại',
+        });
+        setIsSubmitting(false);
     }
+};
+
+
+  const showAlert = async ({ title, icon, confirmText = 'Ok', timer = null }) => {
+    await Swal.fire({
+      title,
+      icon,
+      confirmButtonText: confirmText,
+      timer,
+      timerProgressBar: !!timer, // Hiển thị thanh tiến trình nếu có timer
+    });
   };
+
 
   return (
     <div style={{
@@ -201,7 +233,7 @@ function VerifyEmployerAccount() {
                 </button>
               </div>
             ))}
-            {addressImages.length < 5 && (
+            {addressImages.length < 3 && (
               <label className="upload-button" style={{ display: 'inline-block', margin: '10px' }}>
                 <input type="file" multiple accept="image/*" onChange={(e) => handleImageChange(e, 'address')} style={{ display: 'none' }} />
                 <div style={{
