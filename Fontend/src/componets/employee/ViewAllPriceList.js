@@ -4,6 +4,7 @@ import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
+import axios from "axios";
 
 const ViewAllPriceList = () => {
   const [plans, setPlans] = useState([]);
@@ -120,6 +121,31 @@ const ViewAllPriceList = () => {
     fetchData();
   }, []);
 
+
+  const mua = async (ServiceID) => {
+
+    try {
+      const requestBody = {
+        ServicePriceId: ServiceID, // ID của gói dịch vụ
+      };
+      localStorage.setItem('ServiceID', ServiceID);
+      const token = localStorage.getItem("token");
+      const response = await axios.post("https://localhost:7077/api/VnPay/checkout", requestBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const paymentUrl = response.data; // Lấy URL từ server
+      console.log("Payment URL:", paymentUrl);
+      window.location.href = paymentUrl;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -181,7 +207,7 @@ const ViewAllPriceList = () => {
                     ))}
                   </ul>
                   <div className="d-flex justify-content-center">
-                    <button style={{ ...styles.button, ...styles.btnSuccess }}>
+                    <button style={{ ...styles.button, ...styles.btnSuccess }} onClick={() => mua(plan.id)}>
                       Mua ngay
                     </button>
                   </div>
