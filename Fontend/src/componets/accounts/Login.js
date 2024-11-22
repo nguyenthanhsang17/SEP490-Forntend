@@ -79,7 +79,7 @@ function Login() {
         localStorage.setItem('userId', result.userId);
         localStorage.setItem('status', result.status);
 
-        if (result.roleId === 4) {
+        if (result.roleId === 4||result.roleId === 3) {
             navigate('/AdminDashboard');
         } else {
             navigate('/');
