@@ -56,6 +56,7 @@ import CreateBlog from "./componets/admin/CreateBlog";
 import HistoryPayment from "./componets/admin/ViewHistoryPayment";
 import PaymentHistoryTable from "./componets/employee/ViewHistoryPayment";
 import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -78,30 +79,18 @@ root.render(
             element={<EmployerRequestDetail />}
           />
           <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
-          <Route path="/ManageUser" element={<ManageUser />} />
-          <Route path="/user/:id" element={<UserDetail />} />
-          <Route path="/BlogList" element={<BlogList />} />
-          <Route path="/BlogDetailllll/:id" element={<BlogDetailllll />} />
-          <Route path="/CreateBlog" element={<CreateBlog />} />
-          <Route path="/ViewAllHistoryPayment" element={<HistoryPayment />} />
-          <Route path="/ViewHistoryPayment" element={<PaymentHistoryTable />} />
-          {/* Job Seeker-Only Routes */}
-          <Route
-            path="/ViewAllPost"
-            element={
-              <PrivateRoute allowedRoles={[3, 4]}>
-                <ViewAllPostJob />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/ViewDetail/:job_id/:status"
-            element={
-              <PrivateRoute allowedRoles={[3, 4]}>
-                <PostJobDetail />
-              </PrivateRoute>
-            }
-          />
+          
+          
+          <Route path="/ManageUser"element={<PrivateRoute allowedRoles={[4]}><ManageUser /></PrivateRoute>}/>
+          <Route path="/user/:id"element={<PrivateRoute allowedRoles={[4]}><UserDetail /></PrivateRoute>}/>
+          <Route path="/BlogList"element={<PrivateRoute allowedRoles={[4]}><BlogList /></PrivateRoute>}/>
+          <Route path="/BlogDetailllll/:id"element={<PrivateRoute allowedRoles={[4]}><BlogDetailllll /></PrivateRoute>}/>
+          <Route path="/CreateBlog"element={<PrivateRoute allowedRoles={[4]}><CreateBlog /></PrivateRoute>}/>
+          <Route path="/ViewAllHistoryPayment"element={<PrivateRoute allowedRoles={[4]}><HistoryPayment /></PrivateRoute>}/>
+          <Route path="/ViewAllPost"element={<PrivateRoute allowedRoles={[3, 4]}><ViewAllPostJob /></PrivateRoute>}/>
+          <Route path="/ViewDetail/:job_id/:status" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>}/>
+
+           {/* Job Seeker-Only Routes */}
           <Route
             path="/ViewAllJobApplied"
             element={
@@ -135,6 +124,7 @@ root.render(
             }
           />
           {/* Employer-Only Routes */}
+          <Route path="/ViewHistoryPayment"element={<PrivateRoute allowedRoles={[2]}><PaymentHistoryTable /></PrivateRoute>}/>
           <Route
             path="/createPostJob"
             element={

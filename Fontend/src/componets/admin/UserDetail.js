@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Sidebar from "./SidebarAdmin";
+import Header from "./HeaderAdmin";
 
 const UserDetail = () => {
   const { id } = useParams(); // Lấy ID từ URL
@@ -73,7 +75,16 @@ const handleUnban = async () => {
   
 
   return (
-    <div style={styles.container}>
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="dashboard-content">
+      <div style={styles.container}>
       <div style={styles.profileContainer}>
         {/* Hiển thị hình ảnh */}
         <img
@@ -117,6 +128,9 @@ const handleUnban = async () => {
         )}
       </div>
     </div>
+      </main>
+    </div>
+    
   );
 };
 

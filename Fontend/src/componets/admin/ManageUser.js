@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Sidebar from "./SidebarAdmin";
+import Header from "./HeaderAdmin";
 const ManageUser = () => {
   const [users, setUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -51,7 +52,7 @@ const ManageUser = () => {
 
   const styles = {
     container: {
-      padding: "20px",
+      padding: "0px",
       fontFamily: "Arial, sans-serif",
     },
     searchBar: {
@@ -112,7 +113,16 @@ const ManageUser = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="dashboard-content">
+      <div style={styles.container}>
       <h2>Quản lý người dùng</h2>
 
       {/* Search & Filters */}
@@ -207,6 +217,9 @@ const ManageUser = () => {
         ))}
       </div>
     </div>
+      </main>
+    </div>
+    
   );
 };
 

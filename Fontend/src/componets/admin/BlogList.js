@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./SidebarAdmin";
+import Header from "./HeaderAdmin";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
@@ -48,7 +50,16 @@ const BlogList = () => {
   };
 
   return (
-    <div className="blog-list-container">
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="dashboard-content">
+      <div className="blog-list-container">
       <h2>Danh sách Blog</h2>
 
       {/* Search and filter controls */}
@@ -227,6 +238,9 @@ const BlogList = () => {
         }
       `}</style>
     </div>
+      </main>
+    </div>
+    
   );
 };
 

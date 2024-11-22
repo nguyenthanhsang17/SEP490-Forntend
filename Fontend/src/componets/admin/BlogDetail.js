@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Sidebar from "./SidebarAdmin";
+import Header from "./HeaderAdmin";
 
 const BlogDetail = () => {
   const { id } = useParams(); // Lấy ID blog từ URL
@@ -59,7 +61,16 @@ const BlogDetail = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="dashboard-content">
+      <div style={styles.container}>
       <div style={styles.blogDetail}>
         <h2 style={styles.blogTitle}>{blog.blogTitle}</h2>
         <p style={styles.author}>Tác giả: {blog.authorName}</p>
@@ -69,13 +80,16 @@ const BlogDetail = () => {
         <div style={styles.buttonContainer}>{renderButton()}</div>
       </div>
     </div>
+      </main>
+    </div>
+    
   );
 };
 
 const styles = {
   container: {
-    padding: '30px',
-    maxWidth: '70%',
+    padding: '0px',
+    maxWidth: '100%',
     margin: '0 auto',
     fontFamily: 'Arial, sans-serif',
   },
@@ -104,9 +118,9 @@ const styles = {
     marginBottom: '20px',
   },
   thumbnail: {
-    width: '100%',
-    maxWidth: '600px',
-    height: 'auto',
+    width: 'auto',
+    maxWidth: 'auto',
+    height: '300px',
     borderRadius: '12px',
     marginBottom: '20px',
   },
