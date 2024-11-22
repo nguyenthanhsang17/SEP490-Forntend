@@ -114,7 +114,7 @@ const ChatList = () => {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
   }, [messages]); // Cuộn xuống khi danh sách tin nhắn thay đổi
-  
+
   useEffect(() => {
     const fetchChats = async () => {
       const token = localStorage.getItem("token");
@@ -123,7 +123,7 @@ const ChatList = () => {
         window.location.href = "/login";
         return;
       }
-  
+
       try {
         const response = await axios.get(
           "https://localhost:7077/api/Chat/GetChatUsers",
@@ -139,93 +139,87 @@ const ChatList = () => {
         alert("Không thể tải danh sách trò chuyện!");
       }
     };
-  
+
     fetchChats();
-  
+
     // Kết nối WebSocket
     const socket = new WebSocket("wss://localhost:7077/ws/chat");
-  
+
     socket.onopen = () => {
       console.log("WebSocket connected");
     };
-  
+
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Received message:", data);
-    
-      if (data.chatId === selectedChatRef.current) {
+
+      // Cập nhật tin nhắn cho cuộc trò chuyện hiện tại nếu đang mở
+      if (
+        selectedChatRef.current === data.chatId ||
+        selectedChatRef.current === data.sendFromId ||
+        selectedChatRef.current === data.sendToId
+      ) {
         setMessages((prevMessages) => [
           ...prevMessages,
           {
             id: data.chatId,
             text: data.message,
-            isMine: data.sendFromId === parseInt(localStorage.getItem("userId")),
+            isMine:
+              data.sendFromId === parseInt(localStorage.getItem("userId")),
             time: new Date(data.sendTime).toLocaleTimeString("vi-VN"),
           },
         ]);
       }
-    
+
+      // Cập nhật danh sách chat bên sidebar với tin nhắn mới nhất
       setChats((prevChats) =>
-        prevChats.map((chat) =>
-          chat.userId === data.sendFromId || chat.userId === data.sendToId
-            ? { ...chat, lastMessage: data.message }
-            : chat
-        )
+        prevChats.map((chat) => {
+          if (
+            chat.userId === data.sendFromId ||
+            chat.userId === data.sendToId
+          ) {
+            return {
+              ...chat,
+              lastMessage: data.message,
+              unreadCount:
+                selectedChatRef.current === chat.userId
+                  ? 0
+                  : (chat.unreadCount || 0) + 1,
+            };
+          }
+          return chat;
+        })
       );
+
+      // Tự động load tin nhắn mới nếu là cuộc trò chuyện hiện tại
+      const currentUserId = parseInt(localStorage.getItem("userId"));
+      if (
+        (data.sendFromId === currentUserId ||
+          data.sendToId === currentUserId) &&
+        (data.sendFromId === selectedChatRef.current ||
+          data.sendToId === selectedChatRef.current)
+      ) {
+        fetchMessages(selectedChatRef.current);
+      }
     };
-    
-  
+
     socket.onclose = () => {
       console.log("WebSocket disconnected");
     };
-  
+
     socketRef.current = socket;
-  
+
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
       }
     };
-  }, []); // Lắng nghe toàn bộ ứng dụng, không chỉ `selectedChat`.
-  
-  // useEffect(() => {
-  //   const fetchMessages = async (chatId) => {
-  //     const token = localStorage.getItem("token");
-  //     if (!token) {
-  //       alert("Vui lòng đăng nhập trước!");
-  //       window.location.href = "/login";
-  //       return;
-  //     }
+  }, []);
 
-  //     try {
-  //       const response = await axios.get(
-  //         `https://localhost:7077/api/Chat/GetAllChat/${chatId}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
+  // Thêm state để theo dõi tin nhắn chưa đọc
+  const [unreadMessages, setUnreadMessages] = useState({});
 
-  //       const processedMessages = response.data.map((msg) => ({
-  //         id: msg.chatId,
-  //         text: msg.message,
-  //         isMine: msg.sendFromId === parseInt(localStorage.getItem("userId")),
-  //         time: new Date(msg.sendTime).toLocaleTimeString("vi-VN"),
-  //       }));
-
-  //       setMessages(processedMessages);
-  //     } catch (error) {
-  //       console.error("Lỗi khi lấy tin nhắn:", error);
-  //       alert("Không thể tải tin nhắn!");
-  //     }
-  //   };
-
-  //   if (selectedChat) {
-  //     fetchMessages(selectedChat);
-  //   }
-  // }, [selectedChat]); // Lắng nghe sự thay đổi của `selectedChat`
-
+  // Sửa hàm fetchMessages để reset số tin nhắn chưa đọc khi mở chat
   const fetchMessages = async (chatId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -233,7 +227,7 @@ const ChatList = () => {
       window.location.href = "/login";
       return;
     }
-  
+
     try {
       const response = await axios.get(
         `https://localhost:7077/api/Chat/GetAllChat/${chatId}`,
@@ -243,39 +237,44 @@ const ChatList = () => {
           },
         }
       );
-  
+
       const processedMessages = response.data.map((msg) => ({
         id: msg.chatId,
         text: msg.message,
         isMine: msg.sendFromId === parseInt(localStorage.getItem("userId")),
         time: new Date(msg.sendTime).toLocaleTimeString("vi-VN"),
       }));
-  
+
       setMessages(processedMessages);
       setSelectedChat(chatId);
-      selectedChatRef.current = chatId; // Đồng bộ selectedChatRef
+      selectedChatRef.current = chatId;
+
+      // Reset unread count khi mở chat
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.userId === chatId ? { ...chat, unreadCount: 0 } : chat
+        )
+      );
     } catch (error) {
       console.error("Lỗi khi lấy tin nhắn:", error);
       alert("Không thể tải tin nhắn!");
     }
   };
-  
-  
 
   const sendMessage = () => {
     if (!newMessage.trim()) {
       alert("Tin nhắn không được để trống!");
       return;
     }
-  
+
     const userId = parseInt(localStorage.getItem("userId"));
     const chat = chats.find((chat) => chat.userId === selectedChat);
-  
+
     if (!chat) {
       alert("Không thể tìm thấy người nhận!");
       return;
     }
-  
+
     const messageData = {
       sendFromId: userId,
       sendToId: chat.userId,
@@ -283,14 +282,15 @@ const ChatList = () => {
       sendTime: new Date().toISOString(),
       chatId: selectedChat,
     };
-  
+
+    // Gửi tin nhắn qua WebSocket
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(messageData));
     } else {
       alert("Không thể gửi tin nhắn. WebSocket chưa kết nối!");
       return;
     }
-  
+
     // Cập nhật UI ngay lập tức
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -301,28 +301,27 @@ const ChatList = () => {
         time: new Date(messageData.sendTime).toLocaleTimeString("vi-VN"),
       },
     ]);
-  
-    setNewMessage("");
-  
-    // Cập nhật trạng thái cuộc trò chuyện gần nhất
-    setChats((prevChats) =>
-      prevChats.map((chatItem) =>
-        chatItem.userId === selectedChat
-          ? { ...chatItem, lastMessage: messageData.message }
-          : chatItem
-      )
-    );
-  
-    // Cuộn xuống cuối ngay sau khi thêm tin nhắn
-    if (chatContentRef.current) {
-      setTimeout(() => {
-        chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
-      }, 100); // Delay để đảm bảo DOM đã render
-    }
+
+    setNewMessage(""); // Xóa nội dung input
   };
-  
-  
-  
+
+  useEffect(() => {
+    console.log("Messages updated:", messages);
+  }, [messages]);
+
+  useEffect(() => {
+    console.log("Chats updated:", chats);
+  }, [chats]);
+
+  console.log("Current selectedChat:", selectedChat);
+  useEffect(() => {
+    console.log("Messages rendered:", messages);
+  }, [messages]);
+  useEffect(() => {
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div style={styles.container}>
@@ -345,6 +344,8 @@ const ChatList = () => {
                 backgroundColor:
                   selectedChat === chat.userId ? "#4e4f50" : "transparent",
                 cursor: "pointer",
+                padding: "8px",
+                borderRadius: "4px",
               }}
               onClick={() => fetchMessages(chat.userId)}
             >
@@ -355,7 +356,12 @@ const ChatList = () => {
                   </Avatar>
                 }
                 title={
-                  <Text style={{ color: "#e4e6eb" }}>{chat.fullName}</Text>
+                  <div style={styles.chatHeader}>
+                    <Text style={{ color: "#e4e6eb" }}>{chat.fullName}</Text>
+                    {chat.unreadCount > 0 && (
+                      <span style={styles.unreadBadge}>{chat.unreadCount}</span>
+                    )}
+                  </div>
                 }
                 description={
                   <Text style={{ color: "#b0b3b8" }}>
@@ -378,23 +384,24 @@ const ChatList = () => {
         </div>
         <div style={styles.chatContent} ref={chatContentRef}>
           {messages.map((msg, index) => (
-            <div
-              key={index}
-              style={{
-                ...styles.messageContainer,
-                ...(msg.isMine
-                  ? styles.messageFromMe
-                  : styles.messageFromOther),
-              }}
-            >
+            <div key={index}>
               <div
                 style={{
-                  ...styles.message,
-                  ...(msg.isMine ? styles.myMessage : styles.otherMessage),
+                  ...styles.messageContainer,
+                  ...(msg.isMine
+                    ? styles.messageFromMe
+                    : styles.messageFromOther),
                 }}
               >
-                <span>{msg.text}</span>
-                <div style={styles.timestamp}>{msg.time}</div>
+                <div
+                  style={{
+                    ...styles.message,
+                    ...(msg.isMine ? styles.myMessage : styles.otherMessage),
+                  }}
+                >
+                  <span>{msg.text}</span>
+                  <div style={styles.timestamp}>{msg.time}</div>
+                </div>
               </div>
             </div>
           ))}
