@@ -32,15 +32,15 @@ function Login() {
     setWarningMessage(null);
 
     if (!validateEmail(email)) {
-      setError("Email không hợp lệ.");
-      return;
+        setError("Email không hợp lệ.");
+        return;
     }
 
     setIsLoading(true);
 
     const loginData = {
-      userName: email,
-      password: password,
+        userName: email,
+        password: password,
     };
 
     try {
@@ -78,13 +78,17 @@ function Login() {
         setWarningMessage("Mật khẩu của bạn không đáp ứng yêu cầu bảo mật mới. Vui lòng cập nhật mật khẩu.");
       }
 
+
     } catch (error) {
-      setError(error.message);
-      console.error("Lỗi:", error);
+        setError(error.message || "Lỗi đăng nhập. Vui lòng kiểm tra lại thông tin.");
+        console.error("Lỗi:", error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
+
+
 
   const handleGoogleLogin = () => {
     console.log("Google login clicked");

@@ -56,6 +56,7 @@ import CreateBlog from "./componets/admin/CreateBlog";
 import HistoryPayment from "./componets/admin/ViewHistoryPayment";
 import PaymentHistoryTable from "./componets/employee/ViewHistoryPayment";
 import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
+import PaymentSuccess from "./componets/employee/PaymentSuccess";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -89,7 +90,7 @@ root.render(
           <Route path="/ViewAllHistoryPayment"element={<PrivateRoute allowedRoles={[4]}><HistoryPayment /></PrivateRoute>}/>
           <Route path="/ViewAllPost"element={<PrivateRoute allowedRoles={[3, 4]}><ViewAllPostJob /></PrivateRoute>}/>
           <Route path="/ViewDetail/:job_id/:status" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>}/>
-
+          <Route path="/PaymentSuccess" element={<PaymentSuccess/>}/>
            {/* Job Seeker-Only Routes */}
           <Route
             path="/ViewAllJobApplied"
