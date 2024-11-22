@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Sidebar from "./SidebarAdmin";
+import Header from "./HeaderAdmin";
 
 const PaymentHistoryTable = () => {
   const [data, setData] = useState([]);
@@ -6,7 +8,7 @@ const PaymentHistoryTable = () => {
   const [daysFilter, setDaysFilter] = useState(0); // 0 for no filter, can be set to other values like 7, 10, 30
   const [servicePriceIdFilter, setServicePriceIdFilter] = useState(''); // Filter by servicePriceId
   const [totalCount, setTotalCount] = useState(0);
-  const pageSize = 5; // Fixed page size of 5 items per page
+  const pageSize = 10; // Fixed page size of 5 items per page
 
   // Fetch data from the API
   const fetchData = async () => {
@@ -47,7 +49,16 @@ const PaymentHistoryTable = () => {
   };
 
   return (
-    <div className="payment-history-container">
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="dashboard-content">
+      <div className="payment-history-container">
       <h1>Lịch sử thanh toán</h1>
 
       {/* Filter controls */}
@@ -77,7 +88,7 @@ const PaymentHistoryTable = () => {
             <th>Họ tên</th>
             <th>Giá</th>
             <th>Mã dịch vụ</th>
-            <th>Ngày đăng ký</th>
+            <th>Thời gian giao dịch</th>
           </tr>
         </thead>
         <tbody>
@@ -87,7 +98,13 @@ const PaymentHistoryTable = () => {
                 <td>{item.user.fullName}</td>
                 <td>{item.servicePrice.price} VNĐ</td>
                 <td>{item.servicePriceId}</td>
-                <td>{new Date(item.registerDate).toLocaleDateString('vi-VN')}</td>
+                <td>{new Date(item.registerDate).toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}</td>
               </tr>
             ))
           ) : (
@@ -186,6 +203,9 @@ h1 {
 
       `}</style>
     </div>
+      </main>
+    </div>
+    
   );
 };
 

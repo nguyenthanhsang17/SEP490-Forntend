@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import Footer from "../common/Footer";
+import Header from "../common/Header";
 
 const PaymentHistoryTable = () => {
   const [data, setData] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const pageSize = 15; // Fixed page size of 5 items per page
+  const pageSize = 10;
 
   // Fetch data from the API
   const fetchData = async () => {
@@ -18,15 +20,15 @@ const PaymentHistoryTable = () => {
     try {
       const response = await fetch(
         `https://localhost:7077/api/Payment?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`, 
-            'Content-Type': 'application/json',
-          }
-        });
-      
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
       const result = await response.json();
-      
+
 
       if (response.ok) {
         setData(result.items);
@@ -53,51 +55,59 @@ const PaymentHistoryTable = () => {
   };
 
   return (
-    <div className="payment-history-container">
-      <h1>Lịch sử thanh toán</h1>
+    <>
+      <Header />
+      <div className="payment-history-container">
+        <h1>Lịch sử thanh toán</h1>
 
-      {/* Table displaying payment history */}
-      <table className="payment-history-table">
-        <thead>
-          <tr>
-            <th>Giá</th>
-            <th>Mã dịch vụ</th>
-            <th>Ngày đăng ký</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data.map((item) => (
-              <tr key={item.servicePriceLogId}>
-                <td>{item.servicePrice.price} VNĐ</td>
-                <td>{item.servicePriceId}</td>
-                <td>{new Date(item.registerDate).toLocaleDateString('vi-VN')}</td>
-              </tr>
-            ))
-          ) : (
+        {/* Table displaying payment history */}
+        <table className="payment-history-table">
+          <thead>
             <tr>
-              <td colSpan="3">Không có dữ liệu</td>
+              <th>Giá</th>
+              <th>Mã dịch vụ</th>
+              <th>Thời gian giao dịch</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((item) => (
+                <tr key={item.servicePriceLogId}>
+                  <td>{item.servicePrice.price} VNĐ</td>
+                  <td>{item.servicePriceId}</td>
+                  <td>{new Date(item.registerDate).toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3">Không có dữ liệu</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {/* Pagination controls */}
-      <div className="pagination-controls">
-        <button 
-          onClick={() => handlePageChange(pageNumber - 1)} 
-          disabled={pageNumber === 1}>
-          Trước
-        </button>
-        <span>Trang {pageNumber} / {Math.ceil(totalCount / pageSize)}</span>
-        <button 
-          onClick={() => handlePageChange(pageNumber + 1)} 
-          disabled={pageNumber === Math.ceil(totalCount / pageSize)}>
-          Sau
-        </button>
-      </div>
+        {/* Pagination controls */}
+        <div className="pagination-controls">
+          <button
+            onClick={() => handlePageChange(pageNumber - 1)}
+            disabled={pageNumber === 1}>
+            Trước
+          </button>
+          <span>Trang {pageNumber} / {Math.ceil(totalCount / pageSize)}</span>
+          <button
+            onClick={() => handlePageChange(pageNumber + 1)}
+            disabled={pageNumber === Math.ceil(totalCount / pageSize)}>
+            Sau
+          </button>
+        </div>
 
-      <style jsx>{`
+        <style jsx>{`
         .payment-history-container {
           font-family: Arial, sans-serif;
           max-width: 1000px;
@@ -153,7 +163,10 @@ const PaymentHistoryTable = () => {
           margin: 0 10px;
         }
       `}</style>
-    </div>
+      </div>
+      <Footer />
+    </>
+
   );
 };
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import Sidebar from "./SidebarAdmin";
+import Header from "./HeaderAdmin";
 
 const CreateBlog = () => {
   const [blogTitle, setBlogTitle] = useState("");
@@ -47,7 +49,16 @@ const CreateBlog = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="dashboard-content">
+      <div style={styles.container}>
       <h1 style={styles.heading}>Tạo bài viết mới</h1>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.formGroup}>
@@ -83,13 +94,16 @@ const CreateBlog = () => {
       </form>
       {message && <p style={styles.message}>{message}</p>}
     </div>
+      </main>
+    </div>
+    
   );
 };
 
 const styles = {
   container: {
-    padding: "20px",
-    maxWidth: "600px",
+    padding: "0px",
+    maxWidth: "1000px",
     margin: "0 auto",
     fontFamily: "Arial, sans-serif",
   },
@@ -121,7 +135,7 @@ const styles = {
     fontSize: "16px",
     borderRadius: "5px",
     border: "1px solid #ddd",
-    height: "100px",
+    height: "300px",
     resize: "none",
   },
   button: {
