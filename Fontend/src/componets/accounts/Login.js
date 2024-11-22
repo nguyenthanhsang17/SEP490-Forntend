@@ -44,51 +44,40 @@ function Login() {
     };
 
     try {
-        const response = await fetch("https://localhost:7077/api/Users/Login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json", // Đúng với định dạng API yêu cầu
-            },
-            body: JSON.stringify(loginData),
-        });
+      const response = await fetch("https://localhost:7077/api/Users/Login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        console.log("API Response:", result);
+      if (!response.ok) {
+        throw new Error(result.Message || "Đăng nhập không thành công");
+      }
 
-        if (response.status === 401) {
-            // Kiểm tra thông điệp trả về
-            if (result.message === "Tài khoản của bạn hiện chưa được xác thực.") {
-                console.log("Chuyển đến trang xác minh email");
-                navigate('/VerifyRegister');
-                return;
-            } else {
-                setError(result.message || "Đăng nhập không thành công");
-                return;
-            }
-        }
+      console.log("Đăng nhập thành công:", result);
 
-        if (!response.ok) {
-            throw new Error(result.message || "Đăng nhập không thành công");
-        }
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('fullName', result.fullName);
+      localStorage.setItem('roleId', result.roleId);
+      localStorage.setItem('userId', result.userId);
+      localStorage.setItem('status', result.status);
+      localStorage.setItem('haveProfile', result.haveProfile);
 
-        // Đăng nhập thành công
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('fullName', result.fullName);
-        localStorage.setItem('roleId', result.roleId);
-        localStorage.setItem('userId', result.userId);
-        localStorage.setItem('status', result.status);
+      if (result.roleId === 4) {
+        navigate('/AdminDashboard');
+      } else {
+        navigate('/');
+      }
 
-        if (result.roleId === 4) {
-            navigate('/AdminDashboard');
-        } else {
-            navigate('/');
-        }
+      // Hiển thị cảnh báo nếu mật khẩu không đáp ứng tiêu chí mới
+      if (!validatePassword(password)) {
+        setWarningMessage("Mật khẩu của bạn không đáp ứng yêu cầu bảo mật mới. Vui lòng cập nhật mật khẩu.");
+      }
 
-        // Cảnh báo mật khẩu yếu
-        if (!validatePassword(password)) {
-            setWarningMessage("Mật khẩu của bạn không đáp ứng yêu cầu bảo mật mới. Vui lòng cập nhật mật khẩu.");
-        }
 
     } catch (error) {
         setError(error.message || "Lỗi đăng nhập. Vui lòng kiểm tra lại thông tin.");

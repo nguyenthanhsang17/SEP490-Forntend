@@ -15,24 +15,26 @@ function ApplyJob() {
 
     useEffect(() => {
         const fetchCvs = async () => {
-            const haveProfile = localStorage.getItem("haveProfile")
-            if(!haveProfile){
-                alert.log("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển")
+            const haveProfile = localStorage.getItem("haveProfile");
+            if (!haveProfile) {
+                alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
                 navigate("/profile");
+                return;
             }
+        
             const token = localStorage.getItem("token");
             console.log("Token:", token); // Kiểm tra giá trị token
-
+        
             if (!token) {
                 console.log("No token found, cannot fetch CVs.");
                 setLoading(false);
                 navigate("/login");
                 return; // Không làm gì cả nếu không có token
             }
-
+        
             try {
                 const response = await axios.get(
-                    "https://localhost:7077/api/Cvs/GetCvByUID", // Điều chỉnh đường dẫn nếu cần
+                    "https://localhost:7077/api/Cvs/GetCvByUID",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -42,11 +44,12 @@ function ApplyJob() {
                 setCvs(response.data);
                 setLoading(false);
             } catch (err) {
-                console.error("Error fetching CVs:", err); 
+                console.error("Error fetching CVs:", err);
                 setError(err.message);
                 setLoading(false);
             }
         };
+        
 
         fetchCvs();
     }, []);
