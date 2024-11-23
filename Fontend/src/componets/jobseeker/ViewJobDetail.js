@@ -9,7 +9,7 @@ import Header from '../common/Header';
 import Map from '../utils/Map';
 import { useParams, useNavigate } from 'react-router-dom'; // Single import statement
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 function ViewJobDetail() {
   const [jobDetails, setJobDetails] = useState(null);
@@ -184,6 +184,13 @@ function ViewJobDetail() {
     );
   };
 
+  const toggleApplyJob = () => {
+    setJobDetails((prevDetails) => ({
+      ...prevDetails,
+      isAppliedJob: !prevDetails.isAppliedJob,
+    }));
+  };
+  
 
   const toggleSaveJob = async () => {
 
@@ -390,23 +397,30 @@ function ViewJobDetail() {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   {/* Nút Ứng tuyển ngay */}
-                  <button
-
-                    className="button apply-button"
-                    title="Ứng tuyển ngay"
-                    onClick={() => {
-                      const token = localStorage.getItem('token');
-                      if (!token) {
-                        navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
-                      } else {
-                        // Thêm logic để ứng tuyển vào công việc ở đây
-                        navigate(`/ApplyJob/${id}`);
-                        console.log("Đang ứng tuyển vào công việc...");
-                      }
-                    }}
-                  >
-                    Ứng tuyển ngay
-                  </button>
+                  {jobDetails.isAppliedJob ? (
+                    <button className="button apply-button">
+                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={faCheckCircle} /> Đã ứng tuyển
+                    </button>
+                  ) : (
+                    <button
+                      className="button apply-button"
+                      title="Ứng tuyển ngay"
+                      onClick={() => {
+                        const token = localStorage.getItem('token');
+                        if (!token) {
+                          navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                        } else {
+                          // Logic ứng tuyển công việc
+                          navigate(`/ApplyJob/${id}`);
+                          console.log("Đang ứng tuyển vào công việc...");
+                          // Gọi API hoặc logic để cập nhật trạng thái ứng tuyển
+                          toggleApplyJob(); // Hàm để đổi trạng thái isAppliedJob
+                        }
+                      }}
+                    >
+                      Ứng tuyển ngay
+                    </button>
+                  )}
 
                   {/* Nút Lưu tin */}
                   {jobDetails.isWishJob ? (
