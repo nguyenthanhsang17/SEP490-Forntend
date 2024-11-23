@@ -78,6 +78,7 @@ function Login() {
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('userId', result.userId);
       localStorage.setItem('status', result.status);
+      localStorage.setItem('haveProfile', result.haveProfile);
 
       if (result.roleId === 4) {
         navigate('/AdminDashboard');
