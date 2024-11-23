@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Footer from '../common/Footer';
-import Header from '../common/Header';
+import Sidebar from "../admin/SidebarAdmin";
+import Header from "../admin/HeaderAdmin";
 import { useNavigate } from "react-router-dom";
 
 function PostJobDetail() {
-    const { job_id, status } = useParams();
+    const { job_id } = useParams();
+    const [status, setStatus] = useState(null);
     const [postData, setPostData] = useState(null);
     const [banReason, setBanReason] = useState("");
     const [isBanned, setIsBanned] = useState(false);
@@ -17,6 +18,8 @@ function PostJobDetail() {
     const pageSize = 5; // Set page size for pagination
     const navigate = useNavigate();
 
+    const token = localStorage.getItem("token");
+
     const statusMapping = {
         0: 'Nháp',
         1: 'Chờ Duyệt',
@@ -25,13 +28,14 @@ function PostJobDetail() {
         4: 'Đã xóa',
         5: 'Đã ẩn',
         6: 'Bị Cấm',
-      };
+    };
 
     useEffect(() => {
         axios.get(`https://localhost:7077/api/PostJobs/GetPostDetailForStaff?id=${job_id}`)
             .then(response => {
                 setPostData(response.data);
                 setIsBanned(response.data.status === 3);
+                setStatus(response.data.status)
             })
             .catch(error => console.error('Error fetching post data:', error));
     }, [job_id]);
@@ -43,12 +47,13 @@ function PostJobDetail() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
             if (response.ok) {
                 alert("Duyệt bài viết thành công");
-                navigate(`/ViewDetail/${job_id}/3`);
+                navigate(`/ViewDetail/${job_id}`);
                 window.location.reload()
             } else {
                 const result = await response.json();
@@ -72,12 +77,13 @@ function PostJobDetail() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
             if (response.ok) {
                 alert("Từ chối duyệt bài viết thành công");
-                navigate(`/ViewDetail/${job_id}/3`);
+                navigate(`/ViewDetail/${job_id}`);
                 window.location.reload()
             } else {
                 const result = await response.json();
@@ -94,19 +100,20 @@ function PostJobDetail() {
             alert("Vui lòng nhập lý do cấm.");
             return;
         }
-    
+
         try {
             // Gọi API cấm bài viết với lý do
             const response = await fetch(`https://localhost:7077/api/PostJobs/Ban/${job_id}?reasonBan=${encodeURIComponent(banReason)}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
             });
-    
+
             if (response.ok) {
                 alert("Bài viết đã bị cấm.");
-                navigate(`/ViewDetail/${job_id}/6`); // Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
+                navigate(`/ViewDetail/${job_id}`); // Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
             } else {
                 const result = await response.json(banReason);
                 console.log()
@@ -117,29 +124,8 @@ function PostJobDetail() {
             alert("Có lỗi khi cấm bài viết");
         }
     };
-    
-    const handleUnban = async () => {
-        try {
-            // Gọi API hủy cấm bài viết
-            const response = await fetch(`https://localhost:7077/api/PostJobs/UnBan/${job_id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            if (response.ok) {
-                alert("Bài viết đã được hủy cấm.");
-                navigate(`/ViewDetail/${job_id}/3`); // Chuyển hướng đến trang chi tiết bài viết với trạng thái không bị cấm
-            } else {
-                const result = await response.json();
-                alert(result.Message || "Có lỗi khi hủy cấm bài viết");
-            }
-        } catch (error) {
-            console.error("Error during unban:", error);
-            alert("Có lỗi khi hủy cấm bài viết");
-        }
-    };
+
+
 
     useEffect(() => {
         if (status !== "1") {
@@ -168,144 +154,148 @@ function PostJobDetail() {
     };
 
     return (
-        <>
+        <div className="dashboard-grid-container">
+            {/* Sidebar */}
+            <Sidebar />
+
+            {/* Header */}
             <Header />
-            <h1>.</h1>
-            <div className="post-job-container">
-                {postData && (
-                    <div className="post-job-details">
-                        <h2>{postData.jobTitle}</h2>
-                        <p><strong>Mô tả công việc:</strong> {postData.jobDescription}</p>
-                        <p><strong>Địa chỉ:</strong> {postData.address}</p>
-                        <p><strong>Số lượng tuyển:</strong> {postData.numberPeople}</p>
-                        <p><strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND</p>
-                        <p><strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}</p>
-                        <p><strong>Ngày hết hạn:</strong> {new Date(postData.expirationDate).toLocaleDateString()}</p>
-                        <p><strong>Trạng thái:</strong> {statusMapping[postData.status]}</p>
 
-                        {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
-                            <div className="images-gallery">
-                                <div className="image-container">
-                                    {postData.imagePostJobs.map((image, index) => (
-                                        <img
-                                            key={index}
-                                            src={image.image.url}
-                                            alt={`Image ${index + 1}`}
-                                            className="image-thumbnail"
-                                            onClick={() => handleImageClick(image.image.url)}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+            {/* Main Content */}
+            <main className="dashboard-content">
+                <>
+                    <div className="post-job-container">
+                        {postData && (
+                            <div className="post-job-details">
+                                <h2>{postData.jobTitle}</h2>
+                                <p><strong>Mô tả công việc:</strong> {postData.jobDescription}</p>
+                                <p><strong>Địa chỉ:</strong> {postData.address}</p>
+                                <p><strong>Số lượng tuyển:</strong> {postData.numberPeople}</p>
+                                <p><strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND</p>
+                                <p><strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}</p>
+                                <p><strong>Trạng thái:</strong> {statusMapping[postData.status]} {status}</p>
 
-                        {showImage && (
-                            <div className="modal" onClick={closeImageModal}>
-                                <img src={selectedImage} alt="Selected" className="modal-image" />
-                            </div>
-                        )}
-
-                        {/* Author Information */}
-                        <div className="author-info">
-                            <h3>Thông tin người đăng</h3>
-                            <img src={postData.author.avatarURL} alt="Avatar" className="author-avatar" />
-                            <p><strong>Họ và tên:</strong> {postData.author.fullName}</p>
-                            <p><strong>Tuổi:</strong> {postData.author.age}</p>
-                            <p><strong>Số điện thoại:</strong> {postData.author.phonenumber}</p>
-                            <p><strong>Email:</strong> {postData.author.email}</p>
-                        </div>
-
-                        {status !== "1" && postData.censor && (
-                            <div className="author-info">
-                                <h3>Thông tin người duyệt</h3>
-                                <img src={postData.censor.avatarURL} alt="Censor Avatar" className="author-avatar" />
-                                <p><strong>Họ và tên:</strong> {postData.censor.fullName}</p>
-                                <p><strong>Tuổi:</strong> {postData.censor.age}</p>
-                                <p><strong>Số điện thoại:</strong> {postData.censor.phonenumber}</p>
-                                <p><strong>Email:</strong> {postData.censor.email}</p>
-                            </div>
-                        )}
-
-                        {/* Conditional Button Rendering */}
-                        <div className="action-section">
-                            {status === "1" ? (
-                                <>
-                                    <button onClick={handleApprove} className="btn-approve">Duyệt</button>
-                                    <button onClick={handleReject} className="btn-reject">Không Duyệt</button>
-                                    <textarea
-                                        value={banReason}
-                                        onChange={(e) => setBanReason(e.target.value)}
-                                        placeholder="Nhập lý do không duyệt"
-                                        className="reason-textarea"
-                                    />
-                                </>
-                            ) : status === "6" ? (
-                                <button onClick={handleUnban} className="btn-unban">Hủy cấm</button>
-                            ) : (
-                                <>
-                                    <button onClick={handleBan} className="btn-ban">Cấm</button>
-                                    <textarea
-                                        value={banReason}
-                                        onChange={(e) => setBanReason(e.target.value)}
-                                        placeholder="Nhập lý do cấm"
-                                        className="reason-textarea"
-                                    />
-                                </>
-                            )}
-                        </div>
-
-                        {reports.totalCount > 0 && (
-                            <div className="report-section">
-                                <h3>Danh sách báo cáo</h3>
-                                {reports.items.map((report, index) => (
-                                    <div key={index} className="report-item">
-                                        <div className="reporter-info">
-                                            <img src={report.jobSeeker.avatarURL} alt="Reporter Avatar" className="author-avatar" />
-                                            <p><strong>Họ và tên:</strong> {report.jobSeeker.fullName}</p>
-                                            <p><strong>Email:</strong> {report.jobSeeker.email}</p>
+                                {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
+                                    <div className="images-gallery">
+                                        <div className="image-container">
+                                            {postData.imagePostJobs.map((image, index) => (
+                                                <img
+                                                    key={index}
+                                                    src={image.image.url}
+                                                    alt={`Image ${index + 1}`}
+                                                    className="image-thumbnail"
+                                                    onClick={() => handleImageClick(image.image.url)}
+                                                />
+                                            ))}
                                         </div>
-                                        <p><strong>Lý do báo cáo:</strong> {report.reason}</p>
-
-                                        {report.reportMedia && report.reportMedia.length > 0 && (
-                                            <div className="report-images">
-                                                {report.reportMedia.map((media, idx) => (
-                                                    <img
-                                                        key={idx}
-                                                        src={media.image.url}
-                                                        alt={`Report Media ${idx + 1}`}
-                                                        className="image-thumbnail"
-                                                        onClick={() => handleImageClick(media.image.url)}
-                                                    />
-                                                ))}
-                                            </div>
-                                        )}
                                     </div>
-                                ))}
+                                )}
 
-                                {/* Pagination buttons */}
-                                <div className="pagination">
-                                    <button
-                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                        disabled={currentPage === 1}
-                                    >
-                                        Previous
-                                    </button>
-                                    <span>Trang {currentPage} / {reports.totalPages}</span>
-                                    <button
-                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, reports.totalPages))}
-                                        disabled={currentPage === reports.totalPages}
-                                    >
-                                        Next
-                                    </button>
+                                {showImage && (
+                                    <div className="modal" onClick={closeImageModal}>
+                                        <img src={selectedImage} alt="Selected" className="modal-image" />
+                                    </div>
+                                )}
+
+                                {/* Author Information */}
+                                <div className="author-info">
+                                    <h3>Thông tin người đăng</h3>
+                                    <img src={postData.author.avatarURL} alt="Avatar" className="author-avatar" />
+                                    <p><strong>Họ và tên:</strong> {postData.author.fullName}</p>
+                                    <p><strong>Tuổi:</strong> {postData.author.age}</p>
+                                    <p><strong>Số điện thoại:</strong> {postData.author.phonenumber}</p>
+                                    <p><strong>Email:</strong> {postData.author.email}</p>
                                 </div>
+
+                                {status !== 1 && status !== 0 && postData.censor && (
+                                    <div className="author-info">
+                                        <h3>Thông tin người duyệt</h3>
+                                        <img src={postData.censor.avatarURL} alt="Censor Avatar" className="author-avatar" />
+                                        <p><strong>Họ và tên:</strong> {postData.censor.fullName}</p>
+                                        <p><strong>Tuổi:</strong> {postData.censor.age}</p>
+                                        <p><strong>Số điện thoại:</strong> {postData.censor.phonenumber}</p>
+                                        <p><strong>Email:</strong> {postData.censor.email}</p>
+                                    </div>
+                                )}
+
+                                {/* Conditional Button Rendering */}
+                                <div className="action-section">
+                                    {status === 1 ? (
+                                        <>
+                                            <button onClick={handleApprove} className="btn-approve">Duyệt</button>
+                                            <button onClick={handleReject} className="btn-reject">Không Duyệt</button>
+                                            <textarea
+                                                value={banReason}
+                                                onChange={(e) => setBanReason(e.target.value)}
+                                                placeholder="Nhập lý do không duyệt"
+                                                className="reason-textarea"
+                                            />
+                                        </>
+                                    ) : status === 2 ? (
+                                        <>
+                                            <button onClick={handleBan} className="btn-ban">Cấm</button>
+                                            <textarea
+                                                value={banReason}
+                                                onChange={(e) => setBanReason(e.target.value)}
+                                                placeholder="Nhập lý do cấm"
+                                                className="reason-textarea"
+                                            />
+                                        </>
+                                    ) : null}
+                                </div>
+
+                                {reports.totalCount > 0 && (
+                                    <div className="report-section">
+                                        <h3>Danh sách báo cáo</h3>
+                                        {reports.items.map((report, index) => (
+                                            <div key={index} className="report-item">
+                                                <div className="reporter-info">
+                                                    <img src={report.jobSeeker.avatarURL} alt="Reporter Avatar" className="author-avatar" />
+                                                    <p><strong>Họ và tên:</strong> {report.jobSeeker.fullName}</p>
+                                                    <p><strong>Email:</strong> {report.jobSeeker.email}</p>
+                                                </div>
+                                                <p><strong>Lý do báo cáo:</strong> {report.reason}</p>
+
+                                                {report.reportMedia && report.reportMedia.length > 0 && (
+                                                    <div className="report-images">
+                                                        {report.reportMedia.map((media, idx) => (
+                                                            <img
+                                                                key={idx}
+                                                                src={media.image.url}
+                                                                alt={`Report Media ${idx + 1}`}
+                                                                className="image-thumbnail"
+                                                                onClick={() => handleImageClick(media.image.url)}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                        {/* Pagination buttons */}
+                                        <div className="pagination">
+                                            <button
+                                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                                disabled={currentPage === 1}
+                                            >
+                                                Previous
+                                            </button>
+                                            <span>Trang {currentPage} / {reports.totalPages}</span>
+                                            <button
+                                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, reports.totalPages))}
+                                                disabled={currentPage === reports.totalPages}
+                                            >
+                                                Next
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
-                )}
-            </div>
-            <Footer />
 
-            <style jsx>{`
+
+                    <style jsx>{`
             .report-section {
                     margin-top: 20px;
                     padding: 20px;
@@ -334,7 +324,7 @@ function PostJobDetail() {
                 }
                 .post-job-container {
                     padding: 20px;
-                    max-width: 900px;
+                    max-width: 80%;
                     margin: 0 auto;
                 }
 
@@ -468,7 +458,10 @@ function PostJobDetail() {
     object-fit: contain;
 }
             `}</style>
-        </>
+                </>
+            </main>
+        </div>
+
     );
 }
 

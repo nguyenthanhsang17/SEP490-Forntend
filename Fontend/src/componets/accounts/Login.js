@@ -82,7 +82,9 @@ function Login() {
 
       if (result.roleId === 4) {
         navigate('/AdminDashboard');
-      } else {
+      }  else if (result.roleId === 3 ){
+        navigate('/Bloglist');
+      }else {
         navigate('/');
       }
 
