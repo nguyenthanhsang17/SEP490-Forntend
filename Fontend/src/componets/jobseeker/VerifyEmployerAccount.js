@@ -61,8 +61,8 @@ function VerifyEmployerAccount() {
     }
 
     const formData = new FormData();
-    formData.append("BusinessName", businessName);
-    formData.append("BusinessAddress", businessAddress);
+    formData.append("BussinessName", businessName);
+    formData.append("BussinessAddress", businessAddress);
 
     // Gộp mảng ảnh CCCD và Địa chỉ
     const allImages = [...cccdImages, ...addressImages];
