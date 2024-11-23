@@ -23,8 +23,9 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     padding: "10px",
-    overflowY: "auto",
+    height: "100vh", // Đảm bảo chiều cao full màn hình
   },
+  
   header: {
     fontSize: "20px",
     padding: "10px 0",
@@ -33,10 +34,14 @@ const styles = {
     color: "#e4e6eb",
   },
   chatContent: {
-    flexGrow: 1,
+    flexGrow: 1, // Đảm bảo nó chiếm toàn bộ không gian còn lại
     color: "#e4e6eb",
     padding: "10px",
+    overflowY: "auto", // Thêm cuộn dọc
+    height: "calc(100% - 50px)", // Đặt chiều cao trừ phần header và input
+    maxHeight: "calc(100vh - 150px)", // Đặt chiều cao tối đa
   },
+  
   messageContainer: {
     display: "flex",
     margin: "5px 0",
@@ -98,6 +103,7 @@ const styles = {
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [chats, setChats] = useState([]);
+  const [lastMessage, setLastMessage] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
@@ -110,10 +116,12 @@ const ChatList = () => {
   }, [selectedChat]);
 
   useEffect(() => {
+    console.log(chatContentRef.current); // Kiểm tra ref
     if (chatContentRef.current) {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
-  }, [messages]); // Cuộn xuống khi danh sách tin nhắn thay đổi
+  }, [messages]);
+  
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -216,8 +224,7 @@ const ChatList = () => {
     };
   }, []);
 
-  // Thêm state để theo dõi tin nhắn chưa đọc
-  const [unreadMessages, setUnreadMessages] = useState({});
+
 
   // Sửa hàm fetchMessages để reset số tin nhắn chưa đọc khi mở chat
   const fetchMessages = async (chatId) => {
@@ -227,7 +234,7 @@ const ChatList = () => {
       window.location.href = "/login";
       return;
     }
-
+  
     try {
       const response = await axios.get(
         `https://localhost:7077/api/Chat/GetAllChat/${chatId}`,
@@ -237,29 +244,43 @@ const ChatList = () => {
           },
         }
       );
-
+  
       const processedMessages = response.data.map((msg) => ({
         id: msg.chatId,
         text: msg.message,
         isMine: msg.sendFromId === parseInt(localStorage.getItem("userId")),
         time: new Date(msg.sendTime).toLocaleTimeString("vi-VN"),
       }));
-
+  
       setMessages(processedMessages);
       setSelectedChat(chatId);
       selectedChatRef.current = chatId;
-
+  
       // Reset unread count khi mở chat
       setChats((prevChats) =>
         prevChats.map((chat) =>
           chat.userId === chatId ? { ...chat, unreadCount: 0 } : chat
         )
       );
+  
+      // Cuộn xuống cuối cùng sau khi tải tin nhắn
+      setTimeout(() => {
+        if (chatContentRef.current) {
+          chatContentRef.current.scrollTop =
+            chatContentRef.current.scrollHeight;
+        }
+      }, 100); // Đợi UI cập nhật xong trước khi cuộn
     } catch (error) {
       console.error("Lỗi khi lấy tin nhắn:", error);
       alert("Không thể tải tin nhắn!");
     }
   };
+  useEffect(() => {
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  }, [messages]);
+  
 
   const sendMessage = () => {
     if (!newMessage.trim()) {
@@ -315,8 +336,8 @@ const ChatList = () => {
 
   console.log("Current selectedChat:", selectedChat);
   useEffect(() => {
-    console.log("Messages rendered:", messages);
-  }, [messages]);
+    console.log("Chats updated:", lastMessage);
+  }, [lastMessage]);
   useEffect(() => {
     if (chatContentRef.current) {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;

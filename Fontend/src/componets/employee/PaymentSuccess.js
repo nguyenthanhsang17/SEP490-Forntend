@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { faHeart, faCheckCircle, faCircleCheck, faXmarkCircle } from "@fortawesome/free-solid-svg-icons"; // Icon hiện/ẩn mật khẩu
+import { faHeart, faCheckCircle, faCircleCheck, faXmarkCircle, faTimesCircle} from "@fortawesome/free-solid-svg-icons"; // Icon hiện/ẩn mật khẩu
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Thêm FontAwesome
 import { useNavigate } from "react-router-dom";
 const PaymentSuccess = () => {
