@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Footer from '../common/Footer';
-import Header from '../common/Header';
+import Sidebar from "../admin/SidebarAdmin";
+import Header from "../admin/HeaderAdmin";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -40,7 +40,7 @@ function EmployerRequestDetail() {
             console.error('Error approving employer:', error);
         }
     };
-    
+
 
     const handleReject = async () => {
         if (!reason) {
@@ -59,7 +59,7 @@ function EmployerRequestDetail() {
             console.error('Error rejecting employer:', error);
         }
     };
-    
+
 
     const openImageModal = (img) => {
         if (isImageEnlarged && selectedImage === img) {
@@ -82,100 +82,108 @@ function EmployerRequestDetail() {
     if (loading) return <div>Loading...</div>;
 
     return (
-        <>
+
+        <div className="dashboard-grid-container">
+            {/* Sidebar */}
+            <Sidebar />
+
+            {/* Header */}
             <Header />
-            <div className="container">
-            <h1>Chi tiết đơn đăng ký nhà tuyển dụng</h1>
-                {/* Phần thông tin doanh nghiệp */}
-                <div className="details-container">
-                    <h2>Thông tin doanh nghiệp</h2>
-                    <div className="info-item">
-                        <strong>Doanh nghiệp:</strong> {employerDetail.bussinessName}
-                    </div>
-                    <div className="info-item">
-                        <strong>Địa chỉ:</strong> {employerDetail.bussinessAddress}
-                    </div>
-                    <div className="info-item">
-                        <strong>Ngày tạo:</strong> {new Date(employerDetail.createDate).toLocaleDateString()}
-                    </div>
-                    <div className="info-item">
-                        <strong>Trạng thái:</strong> 
-                        {status === 0 ? "Đang chờ phê duyệt" : status === 1 ? "Đã phê duyệt" : "Bị từ chối"}
-                    </div>
-                    <div className="info-item">
-                        <strong>Hình ảnh doanh nghiệp:</strong>
-                        <div className="images-container">
-                            {employerDetail.listIMG.map((img, index) => (
-                                <img 
-                                    key={index} 
-                                    src={img} 
-                                    alt={`Image ${index}`} 
-                                    className="employer-image image-thumbnail" 
-                                    onClick={() => openImageModal(img)} 
+
+            {/* Main Content */}
+            <main className="dashboard-content">
+
+                <>
+                    <div className="container">
+                        <h1>Chi tiết đơn đăng ký nhà tuyển dụng</h1>
+                        {/* Phần thông tin doanh nghiệp */}
+                        <div className="details-container">
+
+                            <div className="info-item">
+                                <strong>Doanh nghiệp:</strong> {employerDetail.bussinessName}
+                            </div>
+                            <div className="info-item">
+                                <strong>Địa chỉ:</strong> {employerDetail.bussinessAddress}
+                            </div>
+                            <div className="info-item">
+                                <strong>Ngày tạo:</strong> {new Date(employerDetail.createDate).toLocaleDateString()}
+                            </div>
+                            <div className="info-item">
+                                <strong>Trạng thái:</strong>
+                                {status === 0 ? "Đang chờ phê duyệt" : status === 1 ? "Đã phê duyệt" : "Bị từ chối"}
+                            </div>
+                            <div className="info-item">
+                                <strong>Hình ảnh doanh nghiệp:</strong>
+                                <div className="images-container">
+                                    {employerDetail.listIMG.map((img, index) => (
+                                        <img
+                                            key={index}
+                                            src={img}
+                                            alt={`Image ${index}`}
+                                            className="employer-image image-thumbnail"
+                                            onClick={() => openImageModal(img)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Phần thông tin người dùng */}
+                        <div className="user-info">
+                            <h2>Người đăng ký</h2>
+                            <div className="user-item">
+                                <img
+                                    src={employerDetail.user?.avatarURL || '/default-avatar.png'}
+                                    alt="User Avatar"
+                                    className="user-avatar"
                                 />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Phần thông tin người dùng */}
-                <div className="user-info">
-                    <h2>Người đăng ký</h2>
-                    <div className="user-item">
-                        <img 
-                            src={employerDetail.user?.avatarURL || '/default-avatar.png'} 
-                            alt="User Avatar" 
-                            className="user-avatar"
-                        />
-                        <div className="user-details">
-                            <div className="info-item">
-                                <strong>Người gửi:</strong> {employerDetail.user?.fullName || 'N/A'}
-                            </div>
-                            <div className="info-item">
-                                <strong>Email:</strong> {employerDetail.user?.email || 'N/A'}
-                            </div>
-                            <div className="info-item">
-                                <strong>Điện thoại:</strong> {employerDetail.user?.phonenumber || 'N/A'}
-                            </div>
-                            <div className="info-item">
-                                <strong>Giới tính:</strong> {employerDetail.user?.gender || 'N/A'}
-                                { 
-                                                             employerDetail.user === 0 
-                                                             ? 'Nữ' 
-                                                             : 'Nam'
-                                                        }
+                                <div className="user-details">
+                                    <div className="info-item">
+                                        <strong>Người gửi:</strong> {employerDetail.user?.fullName || 'N/A'}
+                                    </div>
+                                    <div className="info-item">
+                                        <strong>Email:</strong> {employerDetail.user?.email || 'N/A'}
+                                    </div>
+                                    <div className="info-item">
+                                        <strong>Điện thoại:</strong> {employerDetail.user?.phonenumber || 'N/A'}
+                                    </div>
+                                    <div className="info-item">
+                                        <strong>Giới tính:</strong> {employerDetail.user?.gender || 'N/A'}
+                                        {
+                                            employerDetail.user === 0
+                                                ? 'Nữ'
+                                                : 'Nam'
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        {/* Các nút hành động */}
+                        {status === 0 && (
+                            <div className="action-buttons">
+                                <button onClick={handleApprove} className="approve-button">Chấp thuận</button>
+                                <button onClick={handleReject} className="reject-button">Từ chối</button>
+                                <textarea
+                                    placeholder="Nhập lý do từ chối..."
+                                    value={reason}
+                                    onChange={(e) => setReason(e.target.value)}
+                                    className="reason-input"
+                                />
+                            </div>
+                        )}
                     </div>
-                </div>
 
-                {/* Các nút hành động */}
-                {status === 0 && (
-                    <div className="action-buttons">
-                        <button onClick={handleApprove} className="approve-button">Chấp thuận</button>
-                        <button onClick={handleReject} className="reject-button">Từ chối</button>
-                        <textarea
-                            placeholder="Nhập lý do từ chối..."
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            className="reason-input"
-                        />
-                    </div>
-                )}
-            </div>
+                    {/* Modal phóng to ảnh */}
+                    {isImageModalOpen && (
+                        <div className="modal" onClick={closeImageModal}>
+                            <img src={selectedImage} alt="Enlarged" className="modal-image" onClick={(e) => e.stopPropagation()} />
+                        </div>
+                    )}
 
-            {/* Modal phóng to ảnh */}
-            {isImageModalOpen && (
-                <div className="modal" onClick={closeImageModal}>
-                    <img src={selectedImage} alt="Enlarged" className="modal-image" onClick={(e) => e.stopPropagation()} />
-                </div>
-            )}
-
-            <Footer />
-
-            <style jsx>{`
+                    <style jsx>{`
                 .container {
-                    max-width: 900px;
+                    max-width: 70%;
                     margin: 0 auto;
                     padding: 20px;
                 }
@@ -280,7 +288,10 @@ function EmployerRequestDetail() {
                     border-radius: 8px;
                 }
             `}</style>
-        </>
+                </>
+            </main>
+        </div>
+
     );
 }
 

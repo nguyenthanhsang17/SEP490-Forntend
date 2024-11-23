@@ -79,9 +79,12 @@ function Login() {
       localStorage.setItem('userId', result.userId);
       localStorage.setItem('status', result.status);
       localStorage.setItem('haveProfile', result.haveProfile);
+
       if (result.roleId === 4) {
         navigate('/AdminDashboard');
-      } else {
+      }  else if (result.roleId === 3 ){
+        navigate('/Bloglist');
+      }else {
         navigate('/');
       }
 

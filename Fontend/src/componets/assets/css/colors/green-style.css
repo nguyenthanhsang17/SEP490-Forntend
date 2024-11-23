@@ -1303,7 +1303,22 @@ textarea.form-control {
     background-color: #ffc107;
     color: white;
   }
+  .btn-freelance-two {
+    color: #fff; /* Màu chữ luôn trắng */
+    background-color: #000080; /* Màu nền mặc định */
+    border: none;
+    padding: 10px 20px;
+    display: block;
+    text-align: center;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+  }
   
+  .btn-freelance-two:hover {
+    background-color: #333; /* Màu nền khi hover */
+    color: #fff; /* Đảm bảo màu chữ vẫn luôn trắng khi hover */
+  }
   
   
   

@@ -50,32 +50,32 @@ function ViewAllJobApplied() {
     fetchJobs(pageNumber); 
   }, [ pageNumber]);
 
-  const handleCancelApply = async (jobId) => {
-    console.log(`Canceling application for job ID: ${jobId}`);
+  // const handleCancelApply = async (jobId) => {
+  //   console.log(`Canceling application for job ID: ${jobId}`);
     
-    const newStatus = 5;
+  //   const newStatus = 5;
 
-    try {
-      const response = await axios.get(`https://localhost:7077/api/JobEmployer/ChangeStatusApplyJob`, {
-        params: {
-          JobSeekerApply_ID: jobId,
-          newStatus: newStatus,
-        }
-      });
+  //   try {
+  //     const response = await axios.get(`https://localhost:7077/api/JobEmployer/ChangeStatusApplyJob`, {
+  //       params: {
+  //         JobSeekerApply_ID: jobId,
+  //         newStatus: newStatus,
+  //       }
+  //     });
 
-      if (response.data) {
-        console.log('Status updated successfully:', response.data);
-        setMessage('Đã hủy ứng tuyển thành công.');
-        fetchJobs(pageNumber);
-      } else {
-        console.error('Unable to update status:', response.data);
-        setMessage('Không thể hủy đăng ký.');
-      }
-    } catch (error) {
-      console.error('Error updating application status:', error);
-      setMessage('Có lỗi xảy a khi hủy, hãy thử lại sau.');
-    }
-  };
+  //     if (response.data) {
+  //       console.log('Status updated successfully:', response.data);
+  //       setMessage('Đã hủy ứng tuyển thành công.');
+  //       fetchJobs(pageNumber);
+  //     } else {
+  //       console.error('Unable to update status:', response.data);
+  //       setMessage('Không thể hủy đăng ký.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating application status:', error);
+  //     setMessage('Có lỗi xảy a khi hủy, hãy thử lại sau.');
+  //   }
+  // };
 
   const handleViewDetail = (jobId) => {
     // Add functionality for viewing job details if needed
@@ -91,8 +91,8 @@ function ViewAllJobApplied() {
   return (
     <>
       <Header />
-      <div className="container job-list" style={{ paddingTop: '50px' }}>
-        <h2 className="text-center">List of Applied Jobs</h2>
+      <div className="container job-list" style={{ paddingTop: '30px' }}>
+        <h2 className="text-center">Công việc đã ứng tuyển</h2>
         {message && <div className="alert alert-info text-center">{message}</div>}
         <div className="row justify-content-center">
           {Array.isArray(jobs) && jobs.length > 0 ? (
@@ -136,7 +136,7 @@ function ViewAllJobApplied() {
                       }
                     </p>
 
-                    {job.statusJob === 1 && job.statusApplyJob === 0 && (
+                    {/* {job.statusJob === 1 && job.statusApplyJob === 0 && (
                       <button
                         className="btn btn-danger me-2" 
                         style={{ marginRight: '10px' }}
@@ -144,7 +144,7 @@ function ViewAllJobApplied() {
                       >
                         Hủy ứng tuyển
                       </button>
-                    )}
+                    )} */}
                     <button
                       className="btn btn-primary"
                       onClick={() => handleViewDetail(job.id)}

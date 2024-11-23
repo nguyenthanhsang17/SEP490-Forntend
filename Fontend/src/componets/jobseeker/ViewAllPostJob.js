@@ -67,10 +67,30 @@ const JobListing = () => {
         }
         return { ...job, distance: null }; // Nếu không có tọa độ công việc
       });
-      setJobs(updatedJobs);
+      setJobs((prevJobs) => {
+        if (JSON.stringify(prevJobs) === JSON.stringify(updatedJobs)) {
+          return prevJobs; // Ngăn việc cập nhật lại nếu không có thay đổi
+        }
+        return updatedJobs;
+      });
     }
-  }, [jobs, userLocation]);
-
+  }, [userLocation]); // Loại bỏ `jobs` khỏi mảng phụ thuộc
+  
+  useEffect(() => {
+    const initialSavedJobs = jobs.reduce((acc, job) => {
+      if (job.isWishlist === 1) {
+        acc[job.postId] = true;
+      }
+      return acc;
+    }, {});
+    setSavedJobs((prev) => {
+      if (JSON.stringify(prev) === JSON.stringify(initialSavedJobs)) {
+        return prev; // Ngăn cập nhật nếu không có thay đổi
+      }
+      return initialSavedJobs;
+    });
+  }, [jobs]);
+  
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
