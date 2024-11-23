@@ -105,6 +105,9 @@ const ViewBlogList = () => {
                                                                     year: "numeric",
                                                                 })}
                                                             </p>
+                                                            <p style={{ color: '#888', fontSize: '14px' }}>
+                                                                Tác giả: {blog.authorName}
+                                                            </p>
                                                             <p style={{ fontSize: '16px', marginTop: '10px' }}>
                                                                 {blog.blogDescription.length > 100
                                                                     ? `${blog.blogDescription.substring(0, 100)}...`

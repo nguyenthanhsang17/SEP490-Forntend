@@ -57,7 +57,15 @@ const Profile = () => {
   };
 
   const validateFields = () => {
-    const { fullName, age, phonenumber, address, description, gender, currentJob } = updatedProfile;
+    const {
+      fullName,
+      age,
+      phonenumber,
+      address,
+      description,
+      gender,
+      currentJob,
+    } = updatedProfile;
     if (!fullName || !age || !phonenumber || !address || !description) {
       enqueueSnackbar("Vui lòng điền tất cả các trường bắt buộc.", {
         variant: "error",
@@ -65,21 +73,19 @@ const Profile = () => {
       return false;
     }
 
-    if (gender == ""||gender==null) {
+    if (gender == "" || gender == null) {
       enqueueSnackbar("Vui lòng chọn giới tính", {
         variant: "error",
       });
       return false;
     }
 
-    if (currentJob == 0||currentJob==null) {
+    if (currentJob == 0 || currentJob == null) {
       enqueueSnackbar("Vui lòng chọn tình trạng hiện tại", {
         variant: "error",
       });
       return false;
     }
-
-
 
     const phoneRegex = /^0\d{9}$/; // Example: 10-digit phone number
     if (!phoneRegex.test(phonenumber)) {
@@ -148,11 +154,9 @@ const Profile = () => {
       enqueueSnackbar("Không thể cập nhật hồ sơ. Vui lòng thử lại.", {
         variant: "error",
       }); // Show error notification
-
     } finally {
       setLoading(false);
     }
-
 
     if (!token) {
       navigate("/login");
@@ -215,9 +219,6 @@ const Profile = () => {
           <div className="row">
             <div className="detail-pic">
               <img src={img} className="img" alt="" />
-
-
-
             </div>
             <div className="detail-status">
               <span>
@@ -283,9 +284,22 @@ const Profile = () => {
                             className="label1"
                             style={{ marginRight: 60, width: 150 }}
                           >
+                            Vai trò:
+                          </span>{" "}
+                          {profile.roleName === "Employer"
+                            ? "Nhà tuyển dụng"
+                            : profile.roleName === "Job seeker"
+                            ? "Người tìm việc"
+                            : "Không xác định"}
+                        </li>
+                        <li>
+                          <span
+                            className="label1"
+                            style={{ marginRight: 60, width: 150 }}
+                          >
                             Tình trạng hiện tại:
                           </span>{" "}
-                          {profile.jobName ? profile.jobName: "Không xác định"}
+                          {profile.jobName ? profile.jobName : "Không xác định"}
                         </li>
                         <li>
                           <span
@@ -304,8 +318,8 @@ const Profile = () => {
                             Giới tính:
                           </span>{" "}
                           {(() => {
-                            if (profile.gender == true) return "Nam";
-                            if (profile.gender == false) return "Nữ";
+                            if (profile.gender === true) return "Nam";
+                            if (profile.gender === false) return "Nữ";
                             return "Chưa xác định";
                           })()}
                         </li>
@@ -325,8 +339,56 @@ const Profile = () => {
                           >
                             Miêu tả bản thân:
                           </span>{" "}
-                          <textarea disabled>{profile.description}</textarea>
+                          <span>{profile.description}</span>
                         </li>
+
+                        {profile.registerEmployerStatus !== null && (
+                          <li>
+                            <span
+                              className="label1"
+                              style={{ marginRight: 60, width: 150 }}
+                            >
+                              Trạng thái nhà tuyển dụng:
+                            </span>
+                            <span
+                              style={{
+                                color:
+                                  profile.registerEmployerStatus === 0
+                                    ? "orange" // Màu cam cho trạng thái "Đang chờ duyệt"
+                                    : profile.registerEmployerStatus === 1
+                                    ? "green" // Màu xanh lá cho trạng thái "Đã được phê duyệt"
+                                    : profile.registerEmployerStatus === 2
+                                    ? "red" // Màu đỏ cho trạng thái "Bị từ chối"
+                                    : "black", // Mặc định
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {profile.registerEmployerStatus === 0
+                                ? "Đang chờ duyệt"
+                                : profile.registerEmployerStatus === 1
+                                ? "Đã được phê duyệt"
+                                : profile.registerEmployerStatus === 2
+                                ? "Bị từ chối"
+                                : "Không xác định"}
+                            </span>
+                          </li>
+                        )}
+                        {profile.registerEmployerStatus === 2 &&
+                          profile.reason && (
+                            <li>
+                              <span
+                                className="label1"
+                                style={{ marginRight: 60, width: 150 }}
+                              >
+                                Lý do từ chối:
+                              </span>
+                              <span
+                                style={{ color: "red", fontWeight: "bold" }}
+                              >
+                                {profile.reason}
+                              </span>
+                            </li>
+                          )}
                       </ul>
 
                       {/* Nút ManageCV và Verify Employer Account */}
@@ -338,14 +400,15 @@ const Profile = () => {
                           Quản lý CV
                         </button>
 
-                        {profile.roleId === 1 && (
-                          <button
-                            className="verify-btn"
-                            onClick={() => navigate("/verifyEmployerAccount")}
-                          >
-                            Xác minh tài khoản nhà tuyển dụng
-                          </button>
-                        )}
+                        {profile.roleId === 1 &&
+                          profile.registerEmployerStatus !== 0 && (
+                            <button
+                              className="verify-btn"
+                              onClick={() => navigate("/verifyEmployerAccount")}
+                            >
+                              Xác minh tài khoản nhà tuyển dụng
+                            </button>
+                          )}
 
                         <button
                           className="update-btn"
@@ -450,7 +513,9 @@ const Profile = () => {
                                 value={updatedProfile.currentJob ?? ""}
                                 onChange={handleInputChange}
                               >
-                                <option value={0}>Chọn Tình trạng hiện tại</option>
+                                <option value={0}>
+                                  Chọn Tình trạng hiện tại
+                                </option>
                                 <option value={1}>Thất nghiệp</option>
                                 <option value={2}>Đang đi học</option>
                                 <option value={3}>Đang đi làm</option>

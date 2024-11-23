@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import ChangePasswordModal from "../accounts/ChangePasswordModal"; // Assuming you have this component
-import { FaBriefcase, FaBlog, FaHeart, FaList, FaUsers } from "react-icons/fa";
+import { FaBriefcase, FaBlog, FaHeart, FaList, FaUsers, FaStar } from "react-icons/fa";
 
 const styles = {
   wrapper: {
@@ -47,12 +47,15 @@ const styles = {
     display: "block",
   },
   dropdownItem: {
-    padding: "10px 15px",
-    cursor: "pointer",
-    color: "#333",
+    display: "flex",
+    alignItems: "center", // Căn giữa theo chiều dọc
+    justifyContent: "flex-start", // Canh trái cho nội dung
     textDecoration: "none",
-    display: "block",
-    transition: "background-color 0.3s ease, color 0.3s ease",
+    padding: "10px 20px", // Khoảng cách trong các mục
+    color: "#333", // Màu chữ
+    fontSize: "14px",
+    width: "100%", // Đảm bảo chiếm toàn bộ chiều rộng
+    boxSizing: "border-box", // Bao gồm padding trong kích thước
   },
   dropdownItemHover: {
     backgroundColor: "#f0f0f0",
@@ -71,8 +74,8 @@ const styles = {
     color: "#4facfe",
   },
   icon: {
-    marginRight: "5px",
-    fontSize: "16px",
+    marginRight: "10px", // Khoảng cách giữa icon và chữ
+    fontSize: "16px", // Đảm bảo icon đều kích thước
   },
   dropdownMenu: {
     display: "none",
@@ -91,7 +94,6 @@ const styles = {
     display: "block",
   },
 };
-
 
 const Header = () => {
   const [showChangePassModal, setShowChangePassModal] = useState(false);
@@ -168,8 +170,6 @@ const Header = () => {
     navigate("/ViewAllPost"); // Adjust the route as necessary
   };
 
-
-
   const handleRequestEmployer = () => {
     setDropdownVisible(false);
     navigate("/ViewEmployerRequests"); // Adjust the route as necessary
@@ -219,67 +219,89 @@ const Header = () => {
                 <a
                   style={styles.viewJobsLink}
                   onClick={handleViewAllJobsClick}
+                  href="/viewAllPriceList"
+                >
+                  <FaList style={styles.icon} /> Bảng giá dịch vụ
+                </a>
+              </li>
+              <li>
+                <a
+                  style={styles.viewJobsLink}
+                  onClick={handleViewAllJobsClick}
                   href="/viewBlogList"
                 >
                   <FaBlog style={styles.icon} /> Blog
                 </a>
               </li>
               {/* Tất cả các công việc với dropdown */}
-<li className="dropdown"
-    onMouseEnter={(e) =>
-      (e.currentTarget.querySelector(".dropdown-menu").style.display = "block")
-    }
-    onMouseLeave={(e) =>
-      (e.currentTarget.querySelector(".dropdown-menu").style.display = "none")
-    }
->
-  <a
-    style={styles.viewJobsLink}
-    href="/viewalljob"
-  >
-    <FaBriefcase style={styles.icon} /> Tất cả các công việc
-  </a>
-  <ul className="dropdown-menu" style={styles.dropdownMenu}>
-    <li>
-      <a
-        style={styles.dropdownItem}
-        onClick={() => navigate("/viewAllPostJobInWishlist")}
-      >
-        <FaHeart style={styles.icon} /> Công việc yêu thích
-      </a>
-    </li>
-  </ul>
-</li>
+              <li
+                className="dropdown"
+                onMouseEnter={(e) =>
+                  (e.currentTarget.querySelector(
+                    ".dropdown-menu"
+                  ).style.display = "block")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.querySelector(
+                    ".dropdown-menu"
+                  ).style.display = "none")
+                }
+              >
+                <a style={styles.viewJobsLink} href="/viewalljob">
+                  <FaBriefcase style={styles.icon} /> Tất cả các công việc
+                </a>
+                <ul className="dropdown-menu" style={styles.dropdownMenu}>
+                  <li>
+                    <a
+                      style={styles.dropdownItem}
+                      onClick={() => navigate("/viewAllPostJobInWishlist")}
+                    >
+                      <FaHeart style={styles.icon} /> Công việc yêu thích
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      style={styles.dropdownItem}
+                      onClick={() => navigate("/viewRecommendedJobs")}
+                    >
+                      <FaStar style={styles.icon} /> Công việc đề xuất
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
-{/* Tất cả ứng viên với dropdown */}
-{roleId === "2" && (
-  <li className="dropdown"
-      onMouseEnter={(e) =>
-        (e.currentTarget.querySelector(".dropdown-menu").style.display = "block")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.querySelector(".dropdown-menu").style.display = "none")
-      }
-  >
-    <a
-      style={styles.viewJobsLink}
-      href="/viewAllJobSeeker"
-    >
-      <FaUsers style={styles.icon} /> Tất cả ứng viên
-    </a>
-    <ul className="dropdown-menu" style={styles.dropdownMenu}>
-      <li>
-        <a
-          style={styles.dropdownItem}
-          onClick={() => navigate("/viewAllJobSeekerInFavoriteList")}
-        >
-          <FaList style={styles.icon} /> Ứng viên ưa thích
-        </a>
-      </li>
-    </ul>
-  </li>
-)}
-
+              {/* Tất cả ứng viên với dropdown */}
+              {roleId === "2" && (
+                <li
+                  className="dropdown"
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.querySelector(
+                      ".dropdown-menu"
+                    ).style.display = "block")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.querySelector(
+                      ".dropdown-menu"
+                    ).style.display = "none")
+                  }
+                >
+                  <a style={styles.viewJobsLink} href="/viewAllJobSeeker">
+                    <FaUsers style={styles.icon} /> Tất cả ứng viên
+                  </a>
+                  <ul className="dropdown-menu" style={styles.dropdownMenu}>
+                    <li>
+                      <a
+                        style={styles.dropdownItem}
+                        onClick={() =>
+                          navigate("/viewAllJobSeekerInFavoriteList")
+                        }
+                      >
+                        <FaList style={styles.icon} /> Ứng viên ưa thích
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              )}
 
               {/* Dropdown với tên người dùng */}
               {isLoggedIn ? (
@@ -320,10 +342,9 @@ const Header = () => {
                         style={styles.dropdownItem}
                         onClick={handleManageAllPostJob}
                       >
-                        Xem  tất cả bài đăng 
+                        Xem tất cả bài đăng
                       </div>
                     )}
-
 
                     {roleId === "3" && (
                       <div
@@ -342,7 +363,6 @@ const Header = () => {
                     </div>
 
                     {/* Thêm Wishlist và Favorite List vào dropdown */}
-                    
 
                     <div style={styles.dropdownItem} onClick={handleLogout}>
                       Đăng xuất

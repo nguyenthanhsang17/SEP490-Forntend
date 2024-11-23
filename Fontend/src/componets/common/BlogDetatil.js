@@ -72,7 +72,7 @@ const BlogDetail = () => {
                     </figure>
                     <div className="full blog-content">
                       <h2 className="post-meta">
-                        Tác giả: <span className="author">{blog.authorId}</span>
+                        Tác giả: <span className="author">{blog.authorName}</span>
                       </h2>
                       <div className="blog-text">
                         <p>{blog.blogDescription}</p>

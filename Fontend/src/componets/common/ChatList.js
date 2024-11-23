@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Input, List, Avatar, Typography } from "antd";
 
@@ -12,19 +12,20 @@ const styles = {
     color: "white",
   },
   sidebar: {
-    width: "30%",
+    width: "20%",
     backgroundColor: "#3a3b3c",
     padding: "10px",
     overflowY: "auto",
   },
   chatWindow: {
-    width: "70%",
+    width: "80%",
     backgroundColor: "#18191a",
     display: "flex",
     flexDirection: "column",
     padding: "10px",
-    overflowY: "auto",
+    height: "100vh", // Đảm bảo chiều cao full màn hình
   },
+  
   header: {
     fontSize: "20px",
     padding: "10px 0",
@@ -33,38 +34,24 @@ const styles = {
     color: "#e4e6eb",
   },
   chatContent: {
-    flexGrow: 1,
+    flexGrow: 1, // Đảm bảo nó chiếm toàn bộ không gian còn lại
     color: "#e4e6eb",
     padding: "10px",
+    overflowY: "auto", // Thêm cuộn dọc
+    height: "calc(100% - 50px)", // Đặt chiều cao trừ phần header và input
+    maxHeight: "calc(100vh - 150px)", // Đặt chiều cao tối đa
   },
-  message: {
-    backgroundColor: "#3a3b3c",
-    padding: "8px 12px",
-    borderRadius: "18px",
-    margin: "5px 0",
-    maxWidth: "70%",
-    alignSelf: "flex-start",
-  },
-  myMessage: {
-    backgroundColor: "#007bff",
-    alignSelf: "flex-end",
-  },
-  messageText: {
-    fontSize: "14px",
-  },
-  searchInput: {
-    width: "100%",
-    marginBottom: "10px",
-  },
+  
   messageContainer: {
     display: "flex",
     margin: "5px 0",
+    alignItems: "center", // Đảm bảo căn giữa tin nhắn và không bị lệch
   },
   messageFromMe: {
-    justifyContent: "flex-end", // Căn sang bên phải
+    justifyContent: "flex-end",
   },
   messageFromOther: {
-    justifyContent: "flex-start", // Căn sang bên trái
+    justifyContent: "flex-start",
   },
   message: {
     padding: "10px",
@@ -72,14 +59,14 @@ const styles = {
     maxWidth: "60%",
     color: "white",
     fontSize: "14px",
+    wordWrap: "break-word", // Đảm bảo tin nhắn không bị tràn ra ngoài
+    margin: 0, // Loại bỏ thừa khoảng cách
   },
   myMessage: {
-    backgroundColor: "#007bff", // Màu xanh cho tin nhắn của mình
-    color: "white",
+    backgroundColor: "#007bff",
   },
   otherMessage: {
-    backgroundColor: "#3a3b3c", // Màu xám cho tin nhắn của người khác
-    color: "white",
+    backgroundColor: "#3a3b3c",
   },
   timestamp: {
     fontSize: "12px",
@@ -116,8 +103,25 @@ const styles = {
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [chats, setChats] = useState([]);
+  const [lastMessage, setLastMessage] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+  const socketRef = useRef(null);
+  const chatContentRef = useRef(null);
+  const selectedChatRef = useRef(null); // Tham chiếu đến cuộc trò chuyện hiện tại
+
+  useEffect(() => {
+    selectedChatRef.current = selectedChat; // Cập nhật tham chiếu khi `selectedChat` thay đổi
+  }, [selectedChat]);
+
+  useEffect(() => {
+    console.log(chatContentRef.current); // Kiểm tra ref
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  }, [messages]);
+  
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -137,12 +141,7 @@ const ChatList = () => {
             },
           }
         );
-        const processedChats = response.data.map((chat) => ({
-          ...chat,
-          lastMessage: chat.lastMessage || "Không có tin nhắn",
-          isOnline: chat.isOnline || false,
-        }));
-        setChats(processedChats);
+        setChats(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách chat:", error);
         alert("Không thể tải danh sách trò chuyện!");
@@ -150,8 +149,84 @@ const ChatList = () => {
     };
 
     fetchChats();
+
+    // Kết nối WebSocket
+    const socket = new WebSocket("wss://localhost:7077/ws/chat");
+
+    socket.onopen = () => {
+      console.log("WebSocket connected");
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Received message:", data);
+
+      // Cập nhật tin nhắn cho cuộc trò chuyện hiện tại nếu đang mở
+      if (
+        selectedChatRef.current === data.chatId ||
+        selectedChatRef.current === data.sendFromId ||
+        selectedChatRef.current === data.sendToId
+      ) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            id: data.chatId,
+            text: data.message,
+            isMine:
+              data.sendFromId === parseInt(localStorage.getItem("userId")),
+            time: new Date(data.sendTime).toLocaleTimeString("vi-VN"),
+          },
+        ]);
+      }
+
+      // Cập nhật danh sách chat bên sidebar với tin nhắn mới nhất
+      setChats((prevChats) =>
+        prevChats.map((chat) => {
+          if (
+            chat.userId === data.sendFromId ||
+            chat.userId === data.sendToId
+          ) {
+            return {
+              ...chat,
+              lastMessage: data.message,
+              unreadCount:
+                selectedChatRef.current === chat.userId
+                  ? 0
+                  : (chat.unreadCount || 0) + 1,
+            };
+          }
+          return chat;
+        })
+      );
+
+      // Tự động load tin nhắn mới nếu là cuộc trò chuyện hiện tại
+      const currentUserId = parseInt(localStorage.getItem("userId"));
+      if (
+        (data.sendFromId === currentUserId ||
+          data.sendToId === currentUserId) &&
+        (data.sendFromId === selectedChatRef.current ||
+          data.sendToId === selectedChatRef.current)
+      ) {
+        fetchMessages(selectedChatRef.current);
+      }
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    socketRef.current = socket;
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
   }, []);
 
+
+
+  // Sửa hàm fetchMessages để reset số tin nhắn chưa đọc khi mở chat
   const fetchMessages = async (chatId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -159,7 +234,7 @@ const ChatList = () => {
       window.location.href = "/login";
       return;
     }
-
+  
     try {
       const response = await axios.get(
         `https://localhost:7077/api/Chat/GetAllChat/${chatId}`,
@@ -169,78 +244,108 @@ const ChatList = () => {
           },
         }
       );
-
-      console.log("Messages API Response:", response.data);
-
-      // Xử lý phản hồi từ API
-      const userId = parseInt(localStorage.getItem("userId")); // ID người dùng hiện tại
+  
       const processedMessages = response.data.map((msg) => ({
         id: msg.chatId,
-        text: msg.message || "Không có nội dung", // Sử dụng trường 'message'
-        isMine: msg.sendFromId === userId, // Kiểm tra tin nhắn có phải của mình không
-        time: new Date(msg.sendTime).toLocaleTimeString("vi-VN"), // Định dạng thời gian
+        text: msg.message,
+        isMine: msg.sendFromId === parseInt(localStorage.getItem("userId")),
+        time: new Date(msg.sendTime).toLocaleTimeString("vi-VN"),
       }));
-
+  
       setMessages(processedMessages);
       setSelectedChat(chatId);
+      selectedChatRef.current = chatId;
+  
+      // Reset unread count khi mở chat
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.userId === chatId ? { ...chat, unreadCount: 0 } : chat
+        )
+      );
+  
+      // Cuộn xuống cuối cùng sau khi tải tin nhắn
+      setTimeout(() => {
+        if (chatContentRef.current) {
+          chatContentRef.current.scrollTop =
+            chatContentRef.current.scrollHeight;
+        }
+      }, 100); // Đợi UI cập nhật xong trước khi cuộn
     } catch (error) {
       console.error("Lỗi khi lấy tin nhắn:", error);
       alert("Không thể tải tin nhắn!");
     }
   };
+  useEffect(() => {
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  }, [messages]);
+  
 
-  const filteredChats = chats.filter(
-    (chat) =>
-      chat.fullName &&
-      chat.fullName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const [newMessage, setNewMessage] = useState(""); // State cho tin nhắn mới
-
-  const sendMessage = async () => {
-    const token = localStorage.getItem("token");
-    const userId = parseInt(localStorage.getItem("userId"));
-
+  const sendMessage = () => {
     if (!newMessage.trim()) {
       alert("Tin nhắn không được để trống!");
       return;
     }
 
-    try {
-      const response = await axios.post(
-        `https://localhost:7077/api/Chat/SendMessage`,
-        {
-          chatId: selectedChat,
-          sendFromId: userId,
-          sendToId: chats.find((chat) => chat.userId === selectedChat)?.userId,
-          message: newMessage,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const userId = parseInt(localStorage.getItem("userId"));
+    const chat = chats.find((chat) => chat.userId === selectedChat);
 
-      // Cập nhật tin nhắn trong giao diện
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: response.data.chatId,
-          text: newMessage,
-          isMine: true,
-          time: new Date().toLocaleTimeString("vi-VN"),
-        },
-      ]);
-      setNewMessage(""); // Reset ô nhập tin nhắn
-    } catch (error) {
-      console.error("Lỗi khi gửi tin nhắn:", error);
-      alert("Không thể gửi tin nhắn!");
+    if (!chat) {
+      alert("Không thể tìm thấy người nhận!");
+      return;
     }
+
+    const messageData = {
+      sendFromId: userId,
+      sendToId: chat.userId,
+      message: newMessage.trim(),
+      sendTime: new Date().toISOString(),
+      chatId: selectedChat,
+    };
+
+    // Gửi tin nhắn qua WebSocket
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify(messageData));
+    } else {
+      alert("Không thể gửi tin nhắn. WebSocket chưa kết nối!");
+      return;
+    }
+
+    // Cập nhật UI ngay lập tức
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        id: messageData.chatId,
+        text: messageData.message,
+        isMine: true,
+        time: new Date(messageData.sendTime).toLocaleTimeString("vi-VN"),
+      },
+    ]);
+
+    setNewMessage(""); // Xóa nội dung input
   };
+
+  useEffect(() => {
+    console.log("Messages updated:", messages);
+  }, [messages]);
+
+  useEffect(() => {
+    console.log("Chats updated:", chats);
+  }, [chats]);
+
+  console.log("Current selectedChat:", selectedChat);
+  useEffect(() => {
+    console.log("Chats updated:", lastMessage);
+  }, [lastMessage]);
+  useEffect(() => {
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div style={styles.container}>
-      {/* Sidebar for Chat List */}
       <div style={styles.sidebar}>
         <h2 style={styles.header}>Danh Sách Trò Chuyện</h2>
         <Input
@@ -251,31 +356,38 @@ const ChatList = () => {
         />
         <List
           itemLayout="horizontal"
-          dataSource={filteredChats}
+          dataSource={chats.filter((chat) =>
+            chat.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+          )}
           renderItem={(chat) => (
             <List.Item
               style={{
                 backgroundColor:
                   selectedChat === chat.userId ? "#4e4f50" : "transparent",
                 cursor: "pointer",
+                padding: "8px",
+                borderRadius: "4px",
               }}
               onClick={() => fetchMessages(chat.userId)}
             >
               <List.Item.Meta
                 avatar={
-                  <Avatar
-                    style={{
-                      backgroundColor: chat.isOnline ? "#87d068" : "#bbb",
-                    }}
-                  >
-                    {chat.fullName[0]} {/* Lấy ký tự đầu tiên của tên */}
+                  <Avatar style={{ backgroundColor: "#bbb" }}>
+                    {chat.fullName[0]}
                   </Avatar>
                 }
                 title={
-                  <Text style={{ color: "#e4e6eb" }}>{chat.fullName}</Text>
+                  <div style={styles.chatHeader}>
+                    <Text style={{ color: "#e4e6eb" }}>{chat.fullName}</Text>
+                    {chat.unreadCount > 0 && (
+                      <span style={styles.unreadBadge}>{chat.unreadCount}</span>
+                    )}
+                  </div>
                 }
                 description={
-                  <Text style={{ color: "#b0b3b8" }}>{chat.lastMessage}</Text>
+                  <Text style={{ color: "#b0b3b8" }}>
+                    {chat.lastMessage || "Không có tin nhắn"}
+                  </Text>
                 }
               />
             </List.Item>
@@ -283,21 +395,18 @@ const ChatList = () => {
         />
       </div>
 
-      {/* Chat Window */}
       <div style={styles.chatWindow}>
         <div style={styles.header}>
           {selectedChat
             ? `Chat với ${
-                chats.find((chat) => chat.userId === selectedChat)?.fullName ||
-                ""
+                chats.find((chat) => chat.userId === selectedChat)?.fullName
               }`
             : "Chọn một cuộc trò chuyện"}
         </div>
-        <div style={styles.chatContent}>
-          {messages.length > 0 ? (
-            messages.map((msg) => (
+        <div style={styles.chatContent} ref={chatContentRef}>
+          {messages.map((msg, index) => (
+            <div key={index}>
               <div
-                key={msg.id}
                 style={{
                   ...styles.messageContainer,
                   ...(msg.isMine
@@ -315,22 +424,17 @@ const ChatList = () => {
                   <div style={styles.timestamp}>{msg.time}</div>
                 </div>
               </div>
-            ))
-          ) : (
-            <p style={{ color: "#b0b3b8", textAlign: "center" }}>
-              Không có tin nhắn nào.
-            </p>
-          )}
+            </div>
+          ))}
         </div>
 
-        {/* Ô nhập tin nhắn */}
         <div style={styles.inputContainer}>
           <Input
             placeholder="Nhập tin nhắn..."
             style={styles.inputBox}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onPressEnter={sendMessage} // Gửi tin nhắn khi nhấn Enter
+            onPressEnter={sendMessage}
           />
           <button style={styles.sendButton} onClick={sendMessage}>
             Gửi

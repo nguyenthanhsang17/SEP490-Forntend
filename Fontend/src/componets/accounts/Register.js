@@ -123,6 +123,9 @@ const Signup = () => {
       padding: "20px",
       borderRadius: "8px",
       boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+      display: "flex", // Sử dụng Flexbox
+      flexDirection: "column", // Sắp xếp theo cột
+      alignItems: "center", // Căn giữa theo chiều ngang
     },
     input: {
       width: "100%",
@@ -132,14 +135,18 @@ const Signup = () => {
       borderRadius: "20px",
     },
     passwordInput: {
-      position: "relative",
+      position: "relative", // Đảm bảo icon nằm trong cùng khối với input
+      display: "flex", // Sử dụng Flexbox để căn chỉnh
+      alignItems: "center", // Căn giữa theo chiều dọc
     },
     icon: {
       position: "absolute",
-      top: "50%",
-      right: "10px",
-      transform: "translateY(-50%)",
+      top: "50%", // Căn giữa theo chiều dọc
+      right: "10px", // Đặt cách lề phải
+      transform: "translateY(-50%)", // Đảm bảo chính giữa hoàn hảo
       cursor: "pointer",
+      fontSize: "20px", // Kích thước icon
+      color: "#333", // Màu icon
     },
     button: {
       width: "100%",
@@ -164,6 +171,16 @@ const Signup = () => {
       color: "red",
       fontSize: "12px",
       marginBottom: "10px",
+    },
+    input: {
+      width: "100%",
+      padding: "10px",
+      paddingRight: "40px", // Tạo khoảng trống bên phải cho icon
+      border: "1px solid #ccc",
+      borderRadius: "20px", // Bo góc
+      height: "45px", // Chiều cao cố định
+      fontSize: "14px", // Kích thước chữ
+      boxSizing: "border-box", // Đảm bảo padding không làm thay đổi kích thước
     },
   };
 
