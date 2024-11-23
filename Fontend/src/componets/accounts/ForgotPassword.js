@@ -122,6 +122,7 @@ return (
             </a>
             {!emailVerified ? (
               <form onSubmit={handleSubmit}>
+                <label htmlFor="email" className="form-label">Email</label>
                 <input
                   type="email"
                   className="form-control"
@@ -135,6 +136,7 @@ return (
               </form>
             ) : (
               <form onSubmit={handleResetPassword}>
+                <label htmlFor="otp" className="form-label">Nhập OTP</label>
                 <input
                   type="text"
                   className="form-control"
@@ -146,6 +148,7 @@ return (
                 
                 {/* Password Field */}
                 <div className="password-field" style={{ position: "relative", marginBottom: "20px" }}>
+                <label htmlFor="password" className="form-label">Mật khẩu mới</label>
                   <input
                     type={showPassword ? "text" : "password"}
                     className="form-control"
@@ -160,8 +163,8 @@ return (
                     onClick={() => setShowPassword(!showPassword)} // Chỉ thay đổi trạng thái cho trường password
                     style={{
                       position: "absolute",
-                      right: "-150px",
-                      top: "10%",
+                      right: "-160px",
+                      top: "50%",
                       transform: "translateY(-50%)",
                       cursor: "pointer",
                       fontSize: "1.2rem",
@@ -178,10 +181,11 @@ return (
 
                 {/* Confirm Password Field */}
                 <div className="password-field" style={{ position: "relative" }}>
+                <label htmlFor="password" className="form-label">Nhập lại mật khẩu</label>
                   <input
                     type={showConfirmPassword ? "text" : "password"} // Sử dụng trạng thái riêng cho confirmPassword
                     className="form-control"
-                    placeholder="Xác nhận mật khẩu"
+                    placeholder="Nhập lại mật khẩu"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -192,8 +196,8 @@ return (
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Chỉ thay đổi trạng thái cho trường confirmPassword
                     style={{
                       position: "absolute",
-                      right: "-150px",
-                      top: "10%",
+                      right: "-160px",
+                      top: "50%",
                       transform: "translateY(-50%)",
                       cursor: "pointer",
                       fontSize: "1.2rem",

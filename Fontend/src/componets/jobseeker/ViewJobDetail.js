@@ -9,7 +9,7 @@ import Header from '../common/Header';
 import Map from '../utils/Map';
 import { useParams, useNavigate } from 'react-router-dom'; // Single import statement
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faRotateRight, faPaperPlane, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 function ViewJobDetail() {
   const [jobDetails, setJobDetails] = useState(null);
@@ -184,6 +184,15 @@ function ViewJobDetail() {
     );
   };
 
+  const applyJob = () => {
+    console.log("Ứng tuyển công việc...");
+    // Gọi API hoặc logic xử lý ứng tuyển
+    // Sau đó, cập nhật trạng thái:
+    setJobDetails((prevDetails) => ({
+      ...prevDetails,
+      isAppliedJob: true, // Đánh dấu trạng thái đã ứng tuyển
+    }));
+  };
 
   const toggleSaveJob = async () => {
 
@@ -389,33 +398,43 @@ function ViewJobDetail() {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
-                  {/* Nút Ứng tuyển ngay */}
+                  {/* Nút Ứng tuyển ngay hoặc Ứng tuyển lại */}
                   <button
-
                     className="button apply-button"
-                    title="Ứng tuyển ngay"
+                    title={jobDetails.isAppliedJob ? "Ứng tuyển lại" : "Ứng tuyển ngay"}
                     onClick={() => {
                       const token = localStorage.getItem('token');
                       if (!token) {
                         navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
                       } else {
-                        // Thêm logic để ứng tuyển vào công việc ở đây
+                        // Logic ứng tuyển hoặc ứng tuyển lại
                         navigate(`/ApplyJob/${id}`);
-                        console.log("Đang ứng tuyển vào công việc...");
+                        console.log(jobDetails.isAppliedJob ? "Ứng tuyển lại công việc..." : "Ứng tuyển ngay...");
+                        applyJob(); // Hàm để xử lý ứng tuyển hoặc ứng tuyển lại
                       }
                     }}
                   >
-                    Ứng tuyển ngay
+                    {jobDetails.isAppliedJob ? (
+                      <>
+                        <FontAwesomeIcon icon={faRotateRight} style={{ marginRight: "5px" }} />
+                        Ứng tuyển lại
+                      </>
+                    ) : (
+                      <>
+                        <FontAwesomeIcon icon={faPaperPlane} style={{ marginRight: "5px" }} />
+                        Ứng tuyển ngay
+                      </>
+                    )}
                   </button>
 
                   {/* Nút Lưu tin */}
                   {jobDetails.isWishJob ? (
                     <button className="button save-button">
-                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={jobDetails.isWishJob ? faHeart : faHeart} /> Đã Lưu
+                      <FontAwesomeIcon style={{ color: "#ff6666" }} icon={faHeart} /> Đã Lưu
                     </button>
                   ) : (
                     <button onClick={toggleSaveJob} className="button save-button">
-                      <FontAwesomeIcon icon={jobDetails.isWishJob ? faHeart : faHeart} /> Lưu tin
+                      <FontAwesomeIcon icon={faHeart} /> Lưu tin
                     </button>
                   )}
 
@@ -432,11 +451,11 @@ function ViewJobDetail() {
                     className="button report-button"
                     title="Báo cáo"
                   >
+                    <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginRight: "5px" }} />
                     Báo vi phạm
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

@@ -450,6 +450,16 @@ const ViewListJobsCreated = () => {
                                         </div>
                                         <div className="col-md-2 col-sm-2">
                                             <div className="brows-job-link">
+
+                                                <button type="button" className="btn btn-toggle-visibility btn-visibility"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon /> sao chép bài viết
+                                                </button>
+
                                                 {/* Gửi yêu cầu duyệt bài hoặc Hủy yêu cầu duyệt bài */}
                                                 {(job.status === 0 || job.status === 1) && (
                                                     <button
@@ -471,7 +481,7 @@ const ViewListJobsCreated = () => {
                                                 {/* Ẩn bài viết hoặc Hiện bài viết */}
                                                 {(job.status === 2 || job.status === 5) && (
                                                     <button
-                                                        className="btn btn-toggle-visibility btn-visibility"
+                                                        className="btn btn-toggle-visibility btn-approval"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             togglePostVisibility(job);
