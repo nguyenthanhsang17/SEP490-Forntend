@@ -7,7 +7,6 @@ const CreateBlog = () => {
   const [blogTitle, setBlogTitle] = useState("");
   const [blogDescription, setBlogDescription] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
-  const [message, setMessage] = useState("");
 
   // Xử lý sự kiện gửi form
   const handleSubmit = async (e) => {
@@ -41,10 +40,10 @@ const CreateBlog = () => {
         },
       }
     );
-    setMessage(response.data.Message); 
-    alert.log("Tạo bài viết thành công")
+    alert("Tạo thành công");
+
     } catch (error) {
-    setMessage(error.response?.data?.Message || "Đã xảy ra lỗi.");
+      alert("Có lỗi trong quá trình tạo.");
     }
   };
 
@@ -92,7 +91,6 @@ const CreateBlog = () => {
           Tạo bài viết
         </button>
       </form>
-      {message && <p style={styles.message}>{message}</p>}
     </div>
       </main>
     </div>

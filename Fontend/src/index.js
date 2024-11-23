@@ -73,22 +73,19 @@ root.render(
           <Route path="/VerifyRegister" element={<VerifyRegister />} />
           <Route path="/viewAllJob" element={<PostJobs />} />
           <Route path="/lich" element={<ScheduleTable />} />
-          <Route path="/ViewEmployerRequests" element={<EmployerRequests />} />
-          <Route
-            path="/ViewEmployerRequestsDetail/:id"
-            element={<EmployerRequestDetail />}
-          />
+
           <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
           
-          
+          <Route path="/ViewEmployerRequests"element={<PrivateRoute allowedRoles={[3,4]}><EmployerRequests /></PrivateRoute>}/>
+          <Route path="/ViewEmployerRequestsDetail/:id"element={<PrivateRoute allowedRoles={[3,4]}><EmployerRequestDetail /></PrivateRoute>}/>
           <Route path="/ManageUser"element={<PrivateRoute allowedRoles={[4]}><ManageUser /></PrivateRoute>}/>
           <Route path="/user/:id"element={<PrivateRoute allowedRoles={[4]}><UserDetail /></PrivateRoute>}/>
-          <Route path="/BlogList"element={<PrivateRoute allowedRoles={[4]}><BlogList /></PrivateRoute>}/>
-          <Route path="/BlogDetailllll/:id"element={<PrivateRoute allowedRoles={[4]}><BlogDetailllll /></PrivateRoute>}/>
-          <Route path="/CreateBlog"element={<PrivateRoute allowedRoles={[4]}><CreateBlog /></PrivateRoute>}/>
+          <Route path="/BlogList"element={<PrivateRoute allowedRoles={[3]}><BlogList /></PrivateRoute>}/>
+          <Route path="/BlogDetailllll/:id"element={<PrivateRoute allowedRoles={[3]}><BlogDetailllll /></PrivateRoute>}/>
+          <Route path="/CreateBlog"element={<PrivateRoute allowedRoles={[3]}><CreateBlog /></PrivateRoute>}/>
           <Route path="/ViewAllHistoryPayment"element={<PrivateRoute allowedRoles={[4]}><HistoryPayment /></PrivateRoute>}/>
           <Route path="/ViewAllPost"element={<PrivateRoute allowedRoles={[3, 4]}><ViewAllPostJob /></PrivateRoute>}/>
-          <Route path="/ViewDetail/:job_id/:status" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>}/>
+          <Route path="/ViewDetail/:job_id" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>}/>
 
            {/* Job Seeker-Only Routes */}
           <Route

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Footer from '../common/Footer';
-import Header from '../common/Header';
+import Sidebar from "../admin/SidebarAdmin";
+import Header from "../admin/HeaderAdmin";
 import axios from 'axios';
 
 function EmployerRequests() {
@@ -48,154 +48,161 @@ function EmployerRequests() {
     };
 
     return (
-        <>
+        <div className="dashboard-grid-container">
+            {/* Sidebar */}
+            <Sidebar />
+
+            {/* Header */}
             <Header />
-            <h1>.</h1>
-            <div className="container">
-                <h1>Danh sách yêu cầu trở thành nhà tuyển dụng</h1>
 
-                <div className="filter-container">
-                    <input
-                        type="text"
-                        placeholder="Tìm theo tên người gửi..."
-                        value={searchFullName}
-                        onChange={handleSearchChange}
-                        className="search-bar"
-                    />
-                    <select value={status} onChange={handleStatusChange} className="status-dropdown">
-                        <option value="-1">Tất cả</option>
-                        <option value="0">Chờ phê duyệt</option>
-                        <option value="1">Thành công</option>
-                        <option value="2">Bị từ chối</option>
-                    </select>
-                    <select value={sortOrder} onChange={handleSortChange} className="sort-dropdown">
-                        <option value="asc">Ngày tạo: Tăng dần</option>
-                        <option value="desc">Ngày tạo: Giảm dần</option>
-                    </select>
+            {/* Main Content */}
+            <main className="dashboard-content">
+                <div className="container">
+                    <h1>Danh sách yêu cầu trở thành nhà tuyển dụng</h1>
+
+                    <div className="filter-container">
+                        <input
+                            type="text"
+                            placeholder="Tìm theo tên người gửi..."
+                            value={searchFullName}
+                            onChange={handleSearchChange}
+                            className="search-bar"
+                        />
+                        <select value={status} onChange={handleStatusChange} className="status-dropdown">
+                            <option value="-1">Tất cả</option>
+                            <option value="0">Chờ phê duyệt</option>
+                            <option value="1">Thành công</option>
+                            <option value="2">Bị từ chối</option>
+                        </select>
+                        <select value={sortOrder} onChange={handleSortChange} className="sort-dropdown">
+                            <option value="asc">Ngày tạo: Tăng dần</option>
+                            <option value="desc">Ngày tạo: Giảm dần</option>
+                        </select>
+                    </div>
+
+                    <table className="employer-table">
+                        <thead>
+                            <tr>
+                                <th>Ảnh</th>
+                                <th>Doanh nghiệp</th>
+                                <th>Ngày tạo</th>
+                                <th>Người gửi</th>
+                                <th>Điện thoại</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {employers.map((employer) => (
+                                <tr key={employer.registerEmployerId}>
+                                    <td>
+                                        <img
+                                            src={employer.listIMG && employer.listIMG.length > 0 ? employer.listIMG[0] : 'default-image-url.jpg'}
+                                            alt="Employer"
+                                            className="employer-image"
+                                        />
+                                    </td>
+                                    <td>{employer.bussinessName}</td>
+                                    <td>{new Date(employer.createDate).toLocaleDateString()}</td>
+                                    <td>{employer.user?.fullName || 'N/A'}</td>
+                                    <td>{employer.user?.phonenumber || 'N/A'}</td>
+                                    <td>
+                                        {employer.status === 0
+                                            ? 'Đang chờ phê duyệt'
+                                            : employer.status === 1
+                                                ? 'Đã duyệt'
+                                                : employer.status === 2
+                                                    ? 'Bị từ chối'
+                                                    : 'Không xác định'}
+                                    </td>
+                                    <td>
+                                        <a href={'/ViewEmployerRequestsDetail/' + employer.registerEmployerId} className="view-detail-button">
+                                            Xem chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <div className="pagination">
+                        <button onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>Trang trước</button>
+                        <span>Trang {pageNumber}</span>
+                        <button onClick={() => setPageNumber(pageNumber + 1)} disabled={employers.length < pageSize}>Trang sau</button>
+                    </div>
                 </div>
 
-                <ul className="employer-list">
-                    {employers.map((employer) => (
-                        <li key={employer.registerEmployerId} className="employer-item">
-                            <div className="employer-info">
-                                <img
-                                    src={employer.listIMG && employer.listIMG.length > 0 ? employer.listIMG[0] : 'default-image-url.jpg'}
-                                    alt="Employer"
-                                    className="employer-image"
-                                /> 
-                            </div>
-                            <div className="employer-info">
-                                <strong>Doanh nghiệp:</strong> {employer.bussinessName}
-                            </div>
-                            <div className="employer-info">
-                                <strong>Ngày tạo:</strong> {new Date(employer.createDate).toLocaleDateString()}
-                            </div>
-                            <div className="employer-info">
-                                <strong>Người gửi:</strong> {employer.user?.fullName || 'N/A'}
-                            </div>
-                            <div className="employer-info">
-                                <strong>Điện thoại:</strong> {employer.user?.phonenumber || 'N/A'}
-                            </div>
-                            <div className="employer-info">
-                            <strong>Trạng thái:</strong> { 
-                                                             employer.status === 0 
-                                                             ? 'Đang chờ phê duyệt' 
-                                                             : employer.status === 1 
-                                                             ? 'Đã duyệt' 
-                                                             : employer.status === 2 
-                                                             ? 'Bị từ chối' 
-                                                             : 'Không xác định'
-                                                        }
-                            </div>
-                            <div className="employer-info">
-                                <a href={'/ViewEmployerRequestsDetail/' + employer.registerEmployerId} className="view-detail-button">
-                                    Xem chi tiết
-                                </a>
-                            </div>
-                            
-                        </li>
-                    ))}
-                </ul>
+                <style jsx>{`
+                    .container {
+                        max-width: 90%;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
 
-                <div className="pagination">
-                    <button onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>Trang trước</button>
-                    <span>Trang {pageNumber}</span>
-                    <button onClick={() => setPageNumber(pageNumber + 1)} disabled={employers.length < pageSize}>Trang sau</button>
-                </div>
-            </div>
-            <Footer />
-            <style jsx>{`
-                .container {
-                    max-width: 900px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
+                    .filter-container {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+                    }
 
-                .filter-container {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 20px;
-                }
+                    .search-bar {
+                        width: 40%;
+                        padding: 8px;
+                    }
 
-                .search-bar {
-                    width: 40%;
-                    padding: 8px;
-                }
+                    .status-dropdown, .sort-dropdown {
+                        padding: 8px;
+                        width: 150px;
+                    }
 
-                .status-dropdown, .sort-dropdown {
-                    padding: 8px;
-                    width: 150px;
-                }
+                    .employer-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
 
-                .employer-list {
-                    list-style-type: none;
-                    padding: 0;
-                }
+                    .employer-table th, .employer-table td {
+                        padding: 10px;
+                        text-align: left;
+                        border: 1px solid #ddd;
+                    }
 
-                .employer-item {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    border-bottom: 1px solid #ddd;
-                    padding: 10px 0;
-                }
+                    .employer-table th {
+                        background-color: #f4f4f4;
+                    }
 
-                .employer-info {
-                    flex: 1;
-                    margin-right: 10px;
-                }
+                    .employer-image {
+    width: 80px;  /* Adjusted width to 80px */
+    height: 80px; /* Adjusted height to 80px */
+    object-fit: cover; /* Ensures the image fits nicely */
+    background-color: #e0e0e0; /* Fallback background */
+}
 
-                .employer-image {
-                    width: 80px;  /* Adjust width */
-                    height: 80px; /* Adjust height */
-                    object-fit: cover; /* Ensures the image is cropped to fit inside the box */
-                    margin-right: 10px; /* Space between the image and other content */
-                    background-color: #e0e0e0; /* Fallback background if the image fails to load */
-                }
 
-                .pagination {
-                    display: flex;
-                    justify-content: center;
-                    margin-top: 20px;
-                }
+                    .pagination {
+                        display: flex;
+                        justify-content: center;
+                        margin-top: 20px;
+                    }
 
-                .pagination button {
-                    padding: 8px 12px;
-                    margin: 0 5px;
-                }
+                    .pagination button {
+                        padding: 8px 12px;
+                        margin: 0 5px;
+                    }
+
                     .view-detail-button {
-                    padding: 6px 12px;
-                    background-color: #4CAF50;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 4px;
-                }
+                        padding: 6px 12px;
+                        background-color: #4CAF50;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 4px;
+                    }
 
-                .view-detail-button:hover {
-                    background-color: #45a049;
-                }
-            `}</style>
-        </>
+                    .view-detail-button:hover {
+                        background-color: #45a049;
+                    }
+                `}</style>
+            </main>
+        </div>
     );
 }
 

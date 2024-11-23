@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Footer from '../common/Footer';
-import Header from '../common/Header';
+import Sidebar from "../admin/SidebarAdmin";
+import Header from "../admin/HeaderAdmin";
 
 function ViewAllPostJob() {
   const [jobs, setJobs] = useState([]);
@@ -63,67 +63,77 @@ function ViewAllPostJob() {
   if (loading) return <p>Loading jobs...</p>;
 
   return (
-    <>
+    <div className="dashboard-grid-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Header */}
       <Header />
-      <h1>.</h1>
-      {/* Filter Dropdown */}
-      <div style={styles.filterContainer}>
-        <label style={styles.filterLabel}>Lọc theo trạng thái </label>
-        <select onChange={handleFilterChange} value={filterStatus} style={styles.filterSelect}>
-          <option value={-1}>Tất cả</option>
-          <option value={1}>Chờ phê duyệt</option>
-          <option value={-2}>Bị báo cáo</option>
-        </select>
-      </div>
 
-      <div style={styles.jobListContainer}>
-        {jobs.map(job => (
-          <div key={job.postId} style={styles.jobCard}>
-            <div style={styles.jobImageContainer}>
-              <img
-                src={job.imagePostJobs[0] || 'default-image-url.jpg'}
-                alt={job.jobTitle}
-                style={styles.jobImage}
-              />
-            </div>
-            <div style={styles.jobDetails}>
-              <h2 style={styles.jobTitle}>{job.jobTitle}</h2>
-              <p style={styles.jobAddress}>Địa Chỉ: {job.address}</p>
-              <p style={styles.jobAuthor}>Người Đăng: {job.authorName}</p>
-              <p style={styles.jobDate}>Ngày Đăng: {new Date(job.createDate).toLocaleDateString()}</p>
-              <p style={styles.jobCategory}>Loại: {job.jobCategoryName}</p>
-            </div>
-            <div style={styles.jobStatus}>
-              <p>{filterStatus === -2 ? `Bị báo cáo: ${job.reportCount} lần` : statusMapping[job.status]}</p>
-            </div>
-            <div style={styles.viewDetailsContainer}>
-              <a href={'/ViewDetail/' + job.postId + '/' + job.status} >
-                <button style={styles.viewDetailsButton}>Xem Chi Tiết</button>
-                </a>
-            </div>
+      {/* Main Content */}
+      <main className="dashboard-content">
+
+        <>
+          {/* Filter Dropdown */}
+          <div style={styles.filterContainer}>
+            <label style={styles.filterLabel}>Lọc theo trạng thái </label>
+            <select onChange={handleFilterChange} value={filterStatus} style={styles.filterSelect}>
+              <option value={-1}>Tất cả</option>
+              <option value={1}>Chờ phê duyệt</option>
+              <option value={-2}>Bị báo cáo</option>
+            </select>
           </div>
-        ))}
-      </div>
 
-      <div style={styles.paginationContainer}>
-        <button 
-          onClick={handlePreviousPage} 
-          disabled={currentPage === 1} 
-          style={styles.paginationButton}
-        >
-          Previous
-        </button>
-        <span>Page {currentPage} of {totalPages}</span>
-        <button 
-          onClick={handleNextPage} 
-          disabled={currentPage === totalPages} 
-          style={styles.paginationButton}
-        >
-          Next
-        </button>
-      </div>
-      <Footer />
-    </>
+          <div style={styles.jobListContainer}>
+            {jobs.map(job => (
+              <div key={job.postId} style={styles.jobCard}>
+                <div style={styles.jobImageContainer}>
+                  <img
+                    src={job.imagePostJobs[0] || 'default-image-url.jpg'}
+                    alt={job.jobTitle}
+                    style={styles.jobImage}
+                  />
+                </div>
+                <div style={styles.jobDetails}>
+                  <h2 style={styles.jobTitle}>{job.jobTitle}</h2>
+                  <p style={styles.jobAddress}>Địa Chỉ: {job.address}</p>
+                  <p style={styles.jobAuthor}>Người Đăng: {job.authorName}</p>
+                  <p style={styles.jobDate}>Ngày Đăng: {new Date(job.createDate).toLocaleDateString()}</p>
+                  <p style={styles.jobCategory}>Loại: {job.jobCategoryName}</p>
+                </div>
+                <div style={styles.jobStatus}>
+                  <p>{filterStatus === -2 ? `Bị báo cáo: ${job.reportCount} lần` : statusMapping[job.status]}</p>
+                </div>
+                <div style={styles.viewDetailsContainer}>
+                  <a href={'/ViewDetail/' + job.postId} >
+                    <button style={styles.viewDetailsButton}>Xem Chi Tiết</button>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={styles.paginationContainer}>
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              style={styles.paginationButton}
+            >
+              Previous
+            </button>
+            <span>Page {currentPage} of {totalPages}</span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              style={styles.paginationButton}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      </main>
+    </div>
+
   );
 }
 
@@ -133,7 +143,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: '20px 0',
+    margin: '0px 0',
   },
   filterLabel: {
     marginRight: '10px',
@@ -148,9 +158,9 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     padding: '20px',
-    width: '80%',
+    width: '92%',
     maxWidth: '1200px',
-    margin: '50px auto',
+    margin: '10px auto',
     boxSizing: 'border-box',
   },
   jobCard: {
