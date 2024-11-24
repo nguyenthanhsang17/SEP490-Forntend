@@ -268,7 +268,7 @@ function ReCreateJob() {
             userId: 0,
             jobScheduleCreateDTO: schedule.slots.map(slot => ({
                 slotId: slot.SlotId,
-                dayOfWeek: slot.DayOfWeek,
+                dayOfWeek: slot.DayOfWeek+1,
                 workingHourCreateDTOs: slot.workingHourCreateDTOs.map(hour => ({
                     scheduleId: Math.floor(Math.random() * 1000000) + 1,
                     startTime: hour.StartTime,

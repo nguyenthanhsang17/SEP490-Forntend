@@ -134,7 +134,9 @@ function EditPostJob() {
         setLongitude(newPosition.lng);
         console.log(newPosition);
         console.log(address);
-        setAddress(address)
+        setAddress(address);
+        JobDetail.address= address;
+
     };
     //==================================================================
     const [schedules, setSchedules] = useState([]);
@@ -278,6 +280,8 @@ function EditPostJob() {
         const longitude_a = parseFloat(lon);
         setLatitude(latitude_a);
         setLongitude(longitude_a);
+        JobDetail.latitude=latitude_a;
+        JobDetail.longitude=longitude_a;
     };
 
     //Hàm gọi API để lưu lịch làm việc
@@ -586,7 +590,7 @@ function EditPostJob() {
             address: JobDetail.address,
             latitude: JobDetail.latitude,
             longitude: JobDetail.longitude,
-            status: 0,
+            status: 1,
             isUrgentRecruitment: JobDetail.isUrgentRecruitment,
             jobCategoryId: JobDetail.jobCategoryId,
             time: JobDetail.time
@@ -618,7 +622,12 @@ function EditPostJob() {
                     handlePublishPostJobDates(id);
                 }
             } else {
-                console.error('Error creating job:', response.statusText);
+                try {
+                    const errorData = await response.json();
+                    showAlert(errorData.message || "Có lỗi xảy ra");
+                } catch {
+                    showAlert("Có lỗi xảy ra");
+                }
             }
         } catch (error) {
             console.error('Error:', error);

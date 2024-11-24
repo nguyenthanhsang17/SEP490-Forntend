@@ -12,7 +12,11 @@ import MapAutoComplete from '../utils/MapAutoComplete';
 import { useSnackbar } from 'notistack'; // Import useSnackbar
 import Swal from 'sweetalert2';
 import GeocodingMap from '../utils/GeocodingMap';
+
 function CreatePostJob() {
+
+    
+
     const [jobTitle, setJobTitle] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [salaryType, setSalaryType] = useState(1);
@@ -29,10 +33,11 @@ function CreatePostJob() {
     const [status, SetStatus] = useState(1);
     const [selectedImages, setSelectedImages] = useState([]);
     const today = new Date();
-    today.setDate(today.getDate() + 2); // Ngày mai
+    today.setDate(today.getDate()); // Ngày mai
+    const today1 = today.toISOString().split('T')[0]; 
     const [IsEvent, SetIsEvent] = useState(false);
     const [time, SetTime] = useState(1);
-    const [postJobDates, setPostJobDates] = useState([{ eventDate: '', startTime: '', endTime: '' }]);
+    const [postJobDates, setPostJobDates] = useState([{ eventDate: today1, startTime: '', endTime: '' }]);
     const [jsonOutput, setJsonOutput] = useState('');
     const [isLongTerm, setIsLongTerm] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
@@ -54,18 +59,22 @@ function CreatePostJob() {
     ///================================================
 
     const handleAddPostJobDate = () => {
-        setPostJobDates([...postJobDates, { eventDate: '', startTime: '', endTime: '' }]);
+        const today = new Date().toISOString().split('T')[0]; 
+        setPostJobDates([...postJobDates, { eventDate: today, startTime: '', endTime: '' }]);
+        console.log(postJobDates);
     };
 
     const handleInputChange = (index, field, value) => {
         const newPostJobDates = [...postJobDates];
         newPostJobDates[index][field] = value;
         setPostJobDates(newPostJobDates);
+        console.log(postJobDates);
     };
 
     const handleDeletePostJobDate = (index) => {
         const newPostJobDates = postJobDates.filter((_, i) => i !== index);
         setPostJobDates(newPostJobDates);
+        console.log(postJobDates);
     };
 
     const handlePublishPostJobDates = async (Postid) => {
@@ -227,7 +236,7 @@ function CreatePostJob() {
             userId: 0,
             jobScheduleCreateDTO: schedule.slots.map(slot => ({
                 slotId: slot.SlotId,
-                dayOfWeek: slot.DayOfWeek,
+                dayOfWeek: slot.DayOfWeek+1,
                 workingHourCreateDTOs: slot.workingHourCreateDTOs.map(hour => ({
                     scheduleId: Math.floor(Math.random() * 1000000) + 1,
                     startTime: hour.StartTime,
@@ -504,101 +513,12 @@ function CreatePostJob() {
     };
 
     const luujob = async (e) => {
-        e.preventDefault();
-
-
-        if (!validateJobData()) {
-            return;
-        }
-
-        const jobData = {
-            jobTitle: jobTitle,
-            jobDescription: jobDescription,
-            salaryTypesId: salaryType,
-            salary: fixSalary,
-            NumberPeople: numberPeople,
-            Address: address,
-            latitude: latitude,
-            longitude: longitude,
-            ExpirationDate: expirationDate,
-            status: 0,
-            IsUrgentRecruitment: isUrgentRecruitment,
-            jobCategoryId: jobCategory,
-            time: time
-        };
-        console.log(JSON.stringify(jobData, null, 2));
-
-        const token = localStorage.getItem('token');
-        console.log(token);
-
-        if (isLongTerm) {
-            const dataToSend = formatDataForApi(-1);
-            console.log(JSON.stringify(dataToSend, null, 2));
-            if (!dataToSend) {
-                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
-                return 0;
-            }
-        } else {
-            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
-                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
-                return 0;
-            }
-        }
-
-        if (selectedImages.length === 0) {
-            alert('Chưa có ảnh !!!');
-            return 0;
-        }
-
-
-        try {
-            const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(jobData),
-            });
-            if (response.ok) {
-                const id = await response.json(); // Lấy trực tiếp giá trị id
-                console.log("PostId: " + id);
-                SetPostID(id);
-                const sang = formatDataForApi();
-                console.log(JSON.stringify(sang, null, 2));
-                const uploadstatus = await uploadImages(id);
-                if (uploadstatus === 0) {
-                    enqueueSnackbar("Tạo công việc thất bại 1", { variant: 'error' });
-                    return;
-                }
-                if (isLongTerm) {
-                    const uploadSchedule = await saveSchedule(id);
-                    if (uploadSchedule === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại 2", { variant: 'error' });
-                        return;
-                    }
-                } else {
-                    const uploadJobdate = await handlePublishPostJobDates(id);
-                    if (uploadJobdate === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại 3", { variant: 'error' });
-                        return;
-                    }
-                }
-
-                showAlert("Tạo Công việc Thành công");
-
-            } else {
-                showAlert();
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
     };
 
     const showAlert = async (text) => {
         const result = await Swal.fire({
             title: text,
-            showCancelButton: true,
+            showCancelButton: false,
             confirmButtonText: 'Ok'
         });
 
@@ -616,6 +536,27 @@ function CreatePostJob() {
             return;
         }
 
+        if (isLongTerm) {
+            const dataToSend = formatDataForApi(-1);
+            console.log(JSON.stringify(dataToSend, null, 2));
+            if (!dataToSend) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch làm việc !!!');
+                return 0;
+            }
+        } else {
+            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch làm việc !!!');
+                return 0;
+            }
+        }
+
+        const formattedPostJobDates = postJobDates.map((date, index) => ({
+            postId: -1,
+            eventDate: new Date(date.eventDate).toISOString(),
+            startTime: date.startTime,
+            endTime: date.endTime
+        }));
+
         const jobData = {
             jobTitle: jobTitle,
             jobDescription: jobDescription,
@@ -629,32 +570,16 @@ function CreatePostJob() {
             status: 1,
             IsUrgentRecruitment: isUrgentRecruitment,
             jobCategoryId: jobCategory,
-            time: time
+            time: time,
+            slotDTOs: formatDataForApi(-1),
+            jobPostDates: formattedPostJobDates,
+            isLongTerm: isLongTerm
         };
         console.log(JSON.stringify(jobData, null, 2));
 
         const token = localStorage.getItem('token');
         console.log(token);
-
-        if (isLongTerm) {
-            const dataToSend = formatDataForApi(-1);
-            console.log(JSON.stringify(dataToSend, null, 2));
-            if (!dataToSend) {
-                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
-                return 0;
-            }
-        } else {
-            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
-                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
-                return 0;
-            }
-        }
-
-        if (selectedImages.length === 0) {
-            alert('Chưa có ảnh !!!');
-            return 0;
-        }
-
+        
 
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
@@ -669,31 +594,15 @@ function CreatePostJob() {
                 const id = await response.json(); // Lấy trực tiếp giá trị id
                 console.log("PostId: " + id);
                 SetPostID(id);
-                const sang = formatDataForApi(id);
-                console.log(JSON.stringify(sang, null, 2));
                 const uploadstatus = await uploadImages(id);
-                if (uploadstatus === 0) {
-                    enqueueSnackbar("Tạo công việc thất bại 1", { variant: 'error' });
-                    return;
-                }
-                if (isLongTerm) {
-                    const uploadSchedule = await saveSchedule(id);
-                    if (uploadSchedule === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại 2", { variant: 'error' });
-                        return;
-                    }
-                } else {
-                    const uploadJobdate = await handlePublishPostJobDates(id);
-                    if (uploadJobdate === 0) {
-                        enqueueSnackbar("Tạo công việc thất bại 3", { variant: 'error' });
-                        return;
-                    }
-                }
-
                 showAlert("Tạo Công việc Thành công");
-
             } else {
-                showAlert();
+                try {
+                    const errorData = await response.json();
+                    showAlert(errorData.message || "Có lỗi xảy ra");
+                } catch {
+                    showAlert("Có lỗi xảy ra");
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -804,7 +713,7 @@ function CreatePostJob() {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Địa chỉ"
+                                    placeholder="Địa chỉ chi tiết"
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value)}
                                 />
@@ -1133,7 +1042,7 @@ function CreatePostJob() {
                                                     <label style={styles.label}>Ngày:</label>
                                                     <input
                                                         type="date"
-                                                        value={date.eventDate || new Date().toISOString().split('T')[0]}  // Nếu `date.eventDate` null thì lấy ngày hiện tại
+                                                        value={date.eventDate}  // Nếu `date.eventDate` null thì lấy ngày hiện tại
                                                         onChange={e => handleInputChange(index, 'eventDate', e.target.value)}
                                                         style={styles.input}
                                                         min={new Date().toISOString().split('T')[0]}  // Giới hạn ngày chọn chỉ có thể là ngày hiện tại trở đi
@@ -1185,7 +1094,6 @@ function CreatePostJob() {
 
                             </div>
                             <div className="full-width">
-                                {/* <MapChoose onPositionChange={handlePositionChange} /> */}
                                 <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} />
                             </div>
                             <div className="input-group form-group">
