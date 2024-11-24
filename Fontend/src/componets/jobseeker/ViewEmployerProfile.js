@@ -222,7 +222,7 @@ const ViewEmployerProfile = () => {
                           className="brows-job-company-img"
                           style={{ backgroundColor: "white" }}
                         >
-                          <a href="#">
+                          <a href="">
                             <img
                               style={{ width: "100px" }}
                               src={job.thumbnail || "https://via.placeholder.com/100"}
@@ -234,7 +234,7 @@ const ViewEmployerProfile = () => {
                       </div>
                       <div className="col-md-6 col-sm-5">
                         <div className="brows-job-position">
-                          <a href="#">
+                          <a href="">
                             <h3>{job.jobTitle}</h3>
                           </a>
                           <p>
