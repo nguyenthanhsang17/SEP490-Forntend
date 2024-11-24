@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { faHeart, faCheckCircle, faCircleCheck, faXmarkCircle, faTimesCircle} from "@fortawesome/free-solid-svg-icons"; // Icon hiện/ẩn mật khẩu
+import { faHeart, faCheckCircle, faCircleCheck, faXmarkCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons"; // Icon hiện/ẩn mật khẩu
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Thêm FontAwesome
 import { useNavigate } from "react-router-dom";
 const PaymentSuccess = () => {
     const navigate = useNavigate();
     const [IsThanhcong, SetThanhcong] = useState(false);
+    const [ServiceID, setServiceID] = useState(0);
+    const [responseCode, SetresponseCode] = useState("");
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
 
@@ -28,7 +31,7 @@ const PaymentSuccess = () => {
 
         const token = localStorage.getItem("token");
         const ServiceID = parseInt(number[0]);
-
+        setServiceID(ServiceID);
         // In các giá trị để kiểm tra
         console.log(token);
         console.log(ServiceID);
@@ -37,32 +40,34 @@ const PaymentSuccess = () => {
         console.log("Response Code:", responseCode);
         console.log("Transaction Status:", transactionStatus);
         console.log(responseCode == "00");
-
-        if (responseCode === '00') {
-            callPaymentCallBack(ServiceID, token); // Gọi API nếu thanh toán thành công
-            SetThanhcong(true)
-        }
-
+        SetresponseCode(responseCode);
     }, []);
 
-    const callPaymentCallBack = async (id, token) => {
-        try {
-            // Gửi yêu cầu POST tới API với body là ServiceID và token trong header
-            const response = await axios.post(
-                `https://localhost:7077/api/VnPay/PaymentCallBack/${id}`,
-                {}, // Không cần body dữ liệu nếu API không yêu cầu
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}` // Thêm Authorization header với token
+    const callPaymentCallBack = async (id) => {
+        if (responseCode == "00") {
+            const token = localStorage.getItem("token");
+            try {
+                // Gửi yêu cầu POST tới API với body là ServiceID và token trong header
+                const response = await axios.post(
+                    `https://localhost:7077/api/VnPay/PaymentCallBack/${id}`,
+                    {}, // Không cần body dữ liệu nếu API không yêu cầu
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}` // Thêm Authorization header với token
+                        }
                     }
-                }
-            );
+                );
 
-            console.log('Response:', response.data); // In ra kết quả trả về từ API
-        } catch (error) {
-            console.error('Error during the API call:', error); // Nếu có lỗi
+                console.log('Response:', response.data); // In ra kết quả trả về từ API
+            } catch (error) {
+                console.error('Error during the API call:', error); // Nếu có lỗi
+            }
+        } else {
+            return;
         }
     };
+
+    callPaymentCallBack(ServiceID);
 
     const VeTrangChu = () => {
         navigate("/");
