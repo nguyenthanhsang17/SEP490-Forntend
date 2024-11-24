@@ -112,6 +112,13 @@ function EmployerRequestDetail() {
                                 <strong>Trạng thái:</strong>
                                 {status === 0 ? "Đang chờ phê duyệt" : status === 1 ? "Đã phê duyệt" : "Bị từ chối"}
                             </div>
+
+                            {employerDetail.reason && (
+                                <div className="info-item">
+                                <strong>Lý do từ chối: {employerDetail.reason}</strong>
+                            </div>
+                            )}
+
                             <div className="info-item">
                                 <strong>Hình ảnh doanh nghiệp:</strong>
                                 <div className="images-container">

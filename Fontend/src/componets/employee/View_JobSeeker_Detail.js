@@ -35,21 +35,21 @@ function ViewJobSeekerDetail() {
     switch (evaluationType) {
       case 'Không phù hợp':
         newStatus = 6; 
+        alert("Bạn đã đánh dầu người này là không phù hợp");
         break;
       case 'Xem lại sau':
         newStatus = 7; 
-        setMessage('Bạn đã đánh dấu sẽ xem lại người này sau.');
-        setTimeout(() => {
-          setMessage('');
-        }, 10000); 
+        alert("Bạn đã đánh dấu sẽ xem lại người này sau.");
         break;
       case 'Xem thông tin liên lạc':
         newStatus = 2; 
         setCanViewDetails(true);
+        alert("Thông tin liên lạc đã được hiển thị");
         break;
       case 'Đã nhận':
         newStatus = 3;
         setCanViewDetails(true);
+        alert("Bạn đã nhận người này, chúng tôi sẽ cho họ biết điều này");
         break;
       default:
         return;
@@ -72,7 +72,7 @@ function ViewJobSeekerDetail() {
   return (
     <>
       <Header />
-      <div className="container my-5" style={{ paddingTop: '70px' }}>
+      <div className="container my-5" style={{ paddingTop: '20px' }}>
         {jobSeeker ? (
           <div className="profile-container">
             <div className="profile-header text-center">
