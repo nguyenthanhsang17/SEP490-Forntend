@@ -94,20 +94,24 @@ const VerifyRegister = () => {
     },
     input: {
       width: "100%",
-      marginBottom: "15px",
       padding: "10px",
+      paddingRight: "40px", // Chừa khoảng trống cho icon
       border: "1px solid #ccc",
       borderRadius: "4px",
+      boxSizing: "border-box",
     },
-    passwordInput: {
-      position: "relative",
+
+    swordInput: {
+      position: "relative", // Để icon nằm bên trong
+      width: "100%",
     },
     icon: {
       position: "absolute",
-      top: "50%",
-      right: "10px",
+      top: "50%", // Căn giữa icon
+      right: "10px", // Căn chỉnh từ bên phải
       transform: "translateY(-50%)",
       cursor: "pointer",
+      color: "#888",
     },
     button: {
       width: "100%",
@@ -118,16 +122,23 @@ const VerifyRegister = () => {
       borderRadius: "4px",
       cursor: "pointer",
       transition: "background-color 0.3s",
+      marginTop: "8px",
+    },
+    passwordInput: {
+      position: "relative", // Đặt tương đối để chứa icon
+      width: "100%",
     },
   };
 
   return (
     <div style={styles.body}>
       <div style={styles.wrapper}>
-        <a href="/">
+        <a href="">
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
-        <span style={{ color: "red" }}>Kiểm tra code được gửi đến email của bạn</span>
+        <span style={{ color: "red" }}>
+          Kiểm tra code được gửi đến email của bạn
+        </span>
         <form onSubmit={handleSubmit}>
           <div style={styles.passwordInput}>
             <input
