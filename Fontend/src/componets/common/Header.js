@@ -180,8 +180,13 @@ const Header = () => {
 
   const handleRequestEmployer = () => {
     setDropdownVisible(false);
-    navigate("/ViewEmployerRequests"); // Adjust the route as necessary
+    navigate("/ViewEmployerRequests"); 
   };
+
+  const handleViewhistoryPayment = () => {
+    setDropdownVisible(false);
+    navigate("/ViewHistoryPayment"); 
+  }; 
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -325,10 +330,21 @@ const Header = () => {
                   >
                     <div
                       style={styles.dropdownItem}
-                      onClick={handleProfileClick}
+                      onClick={handleProfileClick} 
                     >
                       Hồ sơ của bạn
                     </div>
+
+
+                    {roleId === "2" && (
+                      <div
+                      style={styles.dropdownItem}
+                      onClick={handleViewhistoryPayment} 
+                    >
+                      Xem lịch sử mua gói
+                    </div>
+                    )}
+
                     {roleId === "2" && (
                       <div
                         style={styles.dropdownItem}

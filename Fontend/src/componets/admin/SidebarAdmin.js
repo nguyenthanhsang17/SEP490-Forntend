@@ -38,8 +38,14 @@ const Sidebar = () => {
         )}
 
         {roleId === "4" && (
-          <div className="menu-item" onClick={() => navigateTo("/ManageUser")}>
+          <div className="menu-item" onClick={() => navigateTo("/ManageUser")}> 
             Quản lý người dùng
+          </div>
+        )}
+
+{roleId === "4" && (
+          <div className="menu-item" onClick={() => navigateTo("/ManageService")}> 
+            Quản lý gói dịch vụ
           </div>
         )}
 
