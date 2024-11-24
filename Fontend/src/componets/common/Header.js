@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import ChangePasswordModal from "../accounts/ChangePasswordModal"; // Assuming you have this component
-import { FaBriefcase, FaBlog, FaHeart, FaList, FaUsers, FaStar } from "react-icons/fa";
+import {
+  FaBriefcase,
+  FaBlog,
+  FaHeart,
+  FaList,
+  FaUsers,
+  FaStar,
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const styles = {
   wrapper: {
@@ -172,8 +180,13 @@ const Header = () => {
 
   const handleRequestEmployer = () => {
     setDropdownVisible(false);
-    navigate("/ViewEmployerRequests"); // Adjust the route as necessary
+    navigate("/ViewEmployerRequests"); 
   };
+
+  const handleViewhistoryPayment = () => {
+    setDropdownVisible(false);
+    navigate("/ViewHistoryPayment"); 
+  }; 
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -317,10 +330,21 @@ const Header = () => {
                   >
                     <div
                       style={styles.dropdownItem}
-                      onClick={handleProfileClick}
+                      onClick={handleProfileClick} 
                     >
                       Hồ sơ của bạn
                     </div>
+
+
+                    {roleId === "2" && (
+                      <div
+                      style={styles.dropdownItem}
+                      onClick={handleViewhistoryPayment} 
+                    >
+                      Xem lịch sử mua gói
+                    </div>
+                    )}
+
                     {roleId === "2" && (
                       <div
                         style={styles.dropdownItem}
@@ -371,14 +395,9 @@ const Header = () => {
                 </li>
               ) : (
                 <li className="left-br">
-                  <a
-                    href="/login"
-                    data-toggle="modal"
-                    data-target="#signup"
-                    className="signin"
-                  >
+                  <Link to="/login" className="signin">
                     Đăng Nhập Ngay
-                  </a>
+                  </Link>
                 </li>
               )}
             </ul>

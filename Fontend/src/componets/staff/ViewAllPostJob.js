@@ -79,8 +79,10 @@ function ViewAllPostJob() {
             <label style={styles.filterLabel}>Lọc theo trạng thái </label>
             <select onChange={handleFilterChange} value={filterStatus} style={styles.filterSelect}>
               <option value={-1}>Tất cả</option>
+              <option value={2}>Đã phê duyệt</option>
               <option value={1}>Chờ phê duyệt</option>
               <option value={-2}>Bị báo cáo</option>
+              <option value={6}>Bị cấm</option>
             </select>
           </div>
 

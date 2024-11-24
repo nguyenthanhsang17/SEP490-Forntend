@@ -376,6 +376,11 @@ function ViewJobCreatedDetail() {
                     : null
                   }
                 </h4>
+                
+                {/* Hiển thị lý do bị từ chối */}
+                <div style={{ marginTop: "20px", color: "red" }}>
+                  <strong>Lý do bị từ chối:</strong> {jobDetails.reason || "Không có lý do cụ thể"}
+                </div>
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
@@ -433,6 +438,36 @@ function ViewJobCreatedDetail() {
                     >
                       Hủy yêu cầu duyệt bài
                     </button>
+                  )}
+
+                  {jobDetails.status === 3 && (
+                    <>
+                      <button
+                        className="btn btn-primary"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#007bff", // Xanh dương nhạt
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={handleRequestApproval}
+                      >
+                        Gửi lại yêu cầu duyệt bài
+                      </button>
+                      <button
+                        className="btn btn-success"
+                        style={{
+                          marginRight: "10px",
+                          backgroundColor: "#28a745", // Xanh lá
+                          border: "none",
+                          color: "#fff",
+                        }}
+                        onClick={() => window.location.href = `/EditPostJob/${id}`}
+                      >
+                        Chỉnh sửa bài đăng
+                      </button>
+
+                    </>
                   )}
 
                   {jobDetails.status === 2 && (

@@ -113,7 +113,7 @@ function PostJobDetail() {
 
             if (response.ok) {
                 alert("Bài viết đã bị cấm.");
-                navigate(`/ViewDetail/${job_id}`); // Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
+                window.location.reload()// Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
             } else {
                 const result = await response.json(banReason);
                 console.log()
@@ -173,8 +173,10 @@ function PostJobDetail() {
                                 <p><strong>Số lượng tuyển:</strong> {postData.numberPeople}</p>
                                 <p><strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND</p>
                                 <p><strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}</p>
-                                <p><strong>Trạng thái:</strong> {statusMapping[postData.status]} {status}</p>
-
+                                <p><strong>Trạng thái:</strong> {statusMapping[postData.status]} </p>
+                                {postData.reason && (
+                                    <p><strong>Lý do từ chối :</strong> {postData.reason} </p>
+                                )}
                                 {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
                                     <div className="images-gallery">
                                         <div className="image-container">
