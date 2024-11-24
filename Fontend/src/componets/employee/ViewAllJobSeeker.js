@@ -8,7 +8,6 @@ import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 const MemberCard = () => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +25,18 @@ const MemberCard = () => {
   const [saved, setSaved] = useState({});
   const [totalPages, setTotalPages] = useState(1); // Tổng số trang
 
+
+  const showAlert2 = async (text) => {
+    const result = await Swal.fire({
+      title: text,
+      showCancelButton: false,
+      confirmButtonText: 'Ok'
+    });
+
+    if (result.isConfirmed) {
+      navigate("/viewAllPriceList");
+    }
+  };
   // Fetch data from API based on filters
   const fetchCandidates = async () => {
     setLoading(true);
@@ -33,6 +44,7 @@ const MemberCard = () => {
     const token = localStorage.getItem("token");
 
     try {
+      console.log("alo");
       const response = await axios.get(
         "https://localhost:7077/api/JobJobSeeker/GetAllJobSeeker",
         {
@@ -51,11 +63,18 @@ const MemberCard = () => {
           },
         }
       );
-
-      setCandidates(response.data.items || []);
-      setTotalPages(response.data.totalPages || 1); // Gán tổng số trang từ API
+      console.log("alo");
+      console.log(response.data.message);
+      if(response.data.message=="Bạn không dc phép truy cập hãy mua gói"){
+        showAlert2("Bạn không dc phép truy cập hãy mua gói");
+        return;
+      }
+      if (response.status == 200) {
+        setCandidates(response.data.items || []);
+        setTotalPages(response.data.totalPages || 1); // Gán tổng số trang từ API
+      }
     } catch (error) {
-      console.error("Error fetching candidates:", error);
+
     } finally {
       setLoading(false);
     }
@@ -321,7 +340,7 @@ const MemberCard = () => {
                           Liên Hệ Ngay
                         </button>
                         {saved[candidate.userId] ||
-                        candidate.isFavorite === 1 ? (
+                          candidate.isFavorite === 1 ? (
                           <button
                             className="btn btn-save"
                             style={{
