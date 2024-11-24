@@ -403,11 +403,7 @@ function CreatePostJob() {
     };
 
     const uploadImages = async (postId) => {
-        if (selectedImages.length === 0) {
-            alert('Không có ảnh để upload!');
-            return 0;
-        }
-
+        
         setIsLoading(true);
         const formData = new FormData();
 
@@ -608,7 +604,7 @@ function CreatePostJob() {
     const showAlert2 = async (text) => {
         const result = await Swal.fire({
             title: text,
-            showCancelButton: false,
+            showCancelButton: true,
             confirmButtonText: 'Ok'
         });
 
@@ -689,7 +685,7 @@ function CreatePostJob() {
             } else {
                 try {
                     const errorData = await response.json();
-                    showAlert2(errorData.message || "Có lỗi xảy ra");
+                    showAlert2(errorData.message+", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
                 } catch {
                     showAlert("Có lỗi xảy ra");
                 }

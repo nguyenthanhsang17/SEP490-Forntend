@@ -188,7 +188,7 @@ function ViewJobCreatedDetail() {
     } catch (error) {
       console.error("Failed to send request approval:", error);
       await Swal.fire({
-        title: 'Gửi yêu cầu không thành công!',
+        title: error.response.data.message,
         icon: 'error',
         confirmButtonText: 'Ok',
       });
@@ -387,7 +387,7 @@ function ViewJobCreatedDetail() {
                       border: "none",
                       color: "#fff",
                     }}
-                    onClick={() => window.location.href = `/EditPostJob/${id}`}
+                    onClick={() => window.location.href = `/ReCreateJob/${id}`}
                   >
                     Sao chép bài viết
                   </button>

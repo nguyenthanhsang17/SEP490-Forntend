@@ -671,7 +671,7 @@ function EditPostJob() {
     const showAlert2 = async (text) => {
         const result = await Swal.fire({
             title: text,
-            showCancelButton: false,
+            showCancelButton: true,
             confirmButtonText: 'Ok'
         });
 
@@ -764,7 +764,7 @@ function EditPostJob() {
             } else {
                 try {
                     const errorData = await response.json();
-                    showAlert2(errorData.message || "Có lỗi xảy ra");
+                    showAlert2(errorData.message+", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
                 } catch {
                     showAlert("Có lỗi xảy ra");
                 }

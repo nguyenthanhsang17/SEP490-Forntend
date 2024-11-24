@@ -224,7 +224,7 @@ const ViewListJobsCreated = () => {
             if (result.isConfirmed) {
                 const token = localStorage.getItem("token");
                 const apiEndpoint = `https://localhost:7077/api/PostJobs/RequestForPublicPost/${job.postId}`;
-                await axios.put(apiEndpoint, null, {
+                const response = await axios.put(apiEndpoint, null, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 await Swal.fire({
@@ -237,7 +237,7 @@ const ViewListJobsCreated = () => {
         } catch (error) {
             console.error("Failed to send request:", error);
             await Swal.fire({
-                title: 'Gửi yêu cầu duyệt bài không thành công!',
+                title: error.response.data.message,
                 icon: 'error',
                 confirmButtonText: 'Ok',
             });
@@ -454,7 +454,7 @@ const ViewListJobsCreated = () => {
                                                 <button type="button" className="btn btn-toggle-visibility btn-visibility"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-
+                                                        navigate(`/ReCreateJob/${job.postId}`);
                                                     }}
                                                 >
                                                     <FontAwesomeIcon /> sao chép bài viết
