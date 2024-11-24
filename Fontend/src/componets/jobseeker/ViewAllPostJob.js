@@ -322,7 +322,7 @@ const JobListing = () => {
   };
 
   const handleJobClick = (postId) => {
-    navigate(`/viewJobDetail/${postId}`);
+    navigate('/viewJobDetail/'+postId);
   };
 
   // const handlePageChange = (newPage) => {
@@ -489,7 +489,7 @@ const JobListing = () => {
                       </div>
                       <div className="col-md-6 col-sm-5">
                         <div className="brows-job-position">
-                          <a href="#">
+                          <a href="">
                             <h3>{job.jobTitle}</h3>
                           </a>
                           <p>

@@ -371,11 +371,26 @@ function ViewJobCreatedDetail() {
             <div className="detail pannel-footer">
               <div className="col-md-5 col-sm-5">
                 <h4 style={styles.expirationDate}>
-                  Ngày hết hạn: {new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}
+                  Ngày hết hạn: {jobDetails.expirationDate
+                    ? `${new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}`
+                    : null
+                  }
                 </h4>
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
+                  <button
+                    className="btn btn-success"
+                    style={{
+                      marginRight: "10px",
+                      backgroundColor: "#28a745", // Xanh lá
+                      border: "none",
+                      color: "#fff",
+                    }}
+                    onClick={() => window.location.href = `/EditPostJob/${id}`}
+                  >
+                    Sao chép bài viết
+                  </button>
                   {jobDetails.status === 0 && (
                     <>
                       <button
@@ -485,108 +500,108 @@ function ViewJobCreatedDetail() {
       </section>
 
       <section className="full-detail-description full-detail">
-  <div className="container">
-    <div className="row row-bottom">
-      <h2 className="detail-title">Lịch làm việc</h2>
-      {jobDetails.slotDTOs ? (
-        <div style={styles.container}>
-          {schedules.length > 0 && (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-                <thead>
-                  <tr>
-                    {daysOfWeek.map((day, index) => (
-                      <th
-                        key={index}
-                        style={{
-                          border: '1px solid #ddd',
-                          padding: '12px 8px',
-                          backgroundColor: '#f2f2f2',
-                          minWidth: '200px',
-                        }}
-                      >
-                        <div style={{ marginBottom: '10px' }}>{day.name}{day.icon}</div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...Array(getMaxWorkingHours())].map((_, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {daysOfWeek.map((_, dayIndex) => {
-                        const workingHours = getWorkingHoursForDay(dayIndex + 2);
-                        return (
-                          <td
-                            key={dayIndex}
-                            style={{
-                              border: '1px solid #ddd',
-                              padding: '8px',
-                              verticalAlign: 'top',
-                            }}
-                          >
-                            {workingHours && workingHours[rowIndex] ? workingHours[rowIndex] : '-'}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      ) : null}
-
-      {jobDetails.jobPostDateDTOs ? (
         <div className="container">
-          {jobDetails.jobPostDateDTOs ? (
-            <div style={styles.dateGrid}>
-              {jobDetails.jobPostDateDTOs.map((date, index) => (
-                <div key={index} style={styles.dateCard}>
-                  <h3 style={styles.cardTitle}>Ngày làm việc {index + 1}</h3>
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Ngày:</label>
-                    <input
-                      type="date"
-                      value={date.eventDate ? date.eventDate.slice(0, 10) : new Date().toISOString().split('T')[0]}
-                      style={styles.input}
-                      min={new Date().toISOString().split('T')[0]} // Giới hạn ngày chọn chỉ có thể là ngày hiện tại trở đi
-                      readOnly
-                    />
+          <div className="row row-bottom">
+            <h2 className="detail-title">Lịch làm việc</h2>
+            {jobDetails.slotDTOs ? (
+              <div style={styles.container}>
+                {schedules.length > 0 && (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                      <thead>
+                        <tr>
+                          {daysOfWeek.map((day, index) => (
+                            <th
+                              key={index}
+                              style={{
+                                border: '1px solid #ddd',
+                                padding: '12px 8px',
+                                backgroundColor: '#f2f2f2',
+                                minWidth: '200px',
+                              }}
+                            >
+                              <div style={{ marginBottom: '10px' }}>{day.name}{day.icon}</div>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...Array(getMaxWorkingHours())].map((_, rowIndex) => (
+                          <tr key={rowIndex}>
+                            {daysOfWeek.map((_, dayIndex) => {
+                              const workingHours = getWorkingHoursForDay(dayIndex + 2);
+                              return (
+                                <td
+                                  key={dayIndex}
+                                  style={{
+                                    border: '1px solid #ddd',
+                                    padding: '8px',
+                                    verticalAlign: 'top',
+                                  }}
+                                >
+                                  {workingHours && workingHours[rowIndex] ? workingHours[rowIndex] : '-'}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
+                )}
+              </div>
+            ) : null}
 
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Giờ bắt đầu:</label>
-                    <input
-                      type="time"
-                      value={date.startTime}
-                      style={styles.input}
-                      readOnly
-                    />
-                  </div>
+            {jobDetails.jobPostDateDTOs ? (
+              <div className="container">
+                {jobDetails.jobPostDateDTOs ? (
+                  <div style={styles.dateGrid}>
+                    {jobDetails.jobPostDateDTOs.map((date, index) => (
+                      <div key={index} style={styles.dateCard}>
+                        <h3 style={styles.cardTitle}>Ngày làm việc {index + 1}</h3>
+                        <div style={styles.formGroup}>
+                          <label style={styles.label}>Ngày:</label>
+                          <input
+                            type="date"
+                            value={date.eventDate ? date.eventDate.slice(0, 10) : new Date().toISOString().split('T')[0]}
+                            style={styles.input}
+                            min={new Date().toISOString().split('T')[0]} // Giới hạn ngày chọn chỉ có thể là ngày hiện tại trở đi
+                            readOnly
+                          />
+                        </div>
 
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Giờ kết thúc:</label>
-                    <input
-                      type="time"
-                      value={date.endTime}
-                      style={styles.input}
-                      readOnly
-                    />
+                        <div style={styles.formGroup}>
+                          <label style={styles.label}>Giờ bắt đầu:</label>
+                          <input
+                            type="time"
+                            value={date.startTime}
+                            style={styles.input}
+                            readOnly
+                          />
+                        </div>
+
+                        <div style={styles.formGroup}>
+                          <label style={styles.label}>Giờ kết thúc:</label>
+                          <input
+                            type="time"
+                            value={date.endTime}
+                            style={styles.input}
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p style={{ color: '#999' }}>Không có lịch làm việc</p>
-          )}
+                ) : (
+                  <p style={{ color: '#999' }}>Không có lịch làm việc</p>
+                )}
+              </div>
+            ) : (
+              ''
+            )}
+          </div>
         </div>
-      ) : (
-        ''
-      )}
-    </div>
-  </div>
-</section>
+      </section>
 
       <section className="full-detail-description full-detail">
         <div className="container">
@@ -624,101 +639,101 @@ function ViewJobCreatedDetail() {
 }
 const styles = {
   container: {
-      maxWidth: '1600px',
-      margin: '20px auto',
-      padding: '30px',
-      backgroundColor: '#f8f9fa',
-      borderRadius: '12px',
-      boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
-      fontFamily: 'Arial, sans-serif'
+    maxWidth: '1600px',
+    margin: '20px auto',
+    padding: '30px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '12px',
+    boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+    fontFamily: 'Arial, sans-serif'
   },
   title: {
-      textAlign: 'center',
-      color: '#343a40',
-      marginBottom: '30px',
-      fontSize: '28px',
-      fontWeight: '600'
+    textAlign: 'center',
+    color: '#343a40',
+    marginBottom: '30px',
+    fontSize: '28px',
+    fontWeight: '600'
   },
   dateGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '20px',
-      marginBottom: '30px'
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '20px',
+    marginBottom: '30px'
   },
   dateCard: {
-      backgroundColor: '#ffffff',
-      padding: '20px',
-      borderRadius: '8px',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-      position: 'relative'
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+    position: 'relative'
   },
   cardTitle: {
-      color: '#495057',
-      marginBottom: '15px',
-      fontSize: '18px'
+    color: '#495057',
+    marginBottom: '15px',
+    fontSize: '18px'
   },
   formGroup: {
-      marginBottom: '15px'
+    marginBottom: '15px'
   },
   label: {
-      display: 'block',
-      marginBottom: '5px',
-      color: '#6c757d',
-      fontSize: '14px'
+    display: 'block',
+    marginBottom: '5px',
+    color: '#6c757d',
+    fontSize: '14px'
   },
   input: {
-      width: '100%',
-      padding: '8px 12px',
-      borderRadius: '4px',
-      border: '1px solid #ced4da',
-      fontSize: '14px',
-      transition: 'border-color 0.15s ease-in-out',
-      boxSizing: 'border-box'
+    width: '100%',
+    padding: '8px 12px',
+    borderRadius: '4px',
+    border: '1px solid #ced4da',
+    fontSize: '14px',
+    transition: 'border-color 0.15s ease-in-out',
+    boxSizing: 'border-box'
   },
   buttonContainer: {
-      display: 'flex',
-      gap: '15px',
-      marginTop: '20px'
+    display: 'flex',
+    gap: '15px',
+    marginTop: '20px'
   },
   button: {
-      flex: 1,
-      padding: '10px 15px',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontWeight: '500',
-      fontSize: '16px',
-      transition: 'opacity 0.2s ease'
+    flex: 1,
+    padding: '10px 15px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+    fontSize: '16px',
+    transition: 'opacity 0.2s ease'
   },
   addButton: {
-      backgroundColor: '#28a745',
-      color: 'white',
+    backgroundColor: '#28a745',
+    color: 'white',
   },
   publishButton: {
-      backgroundColor: '#007bff',
-      color: 'white',
+    backgroundColor: '#007bff',
+    color: 'white',
   },
   deleteButton: {
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      backgroundColor: '#dc3545',
-      color: 'white',
-      padding: '5px 10px',
-      borderRadius: '4px',
-      border: 'none',
-      cursor: 'pointer',
-      fontSize: '12px'
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '12px'
   },
   jsonOutput: {
-      marginTop: '30px',
-      padding: '20px',
-      backgroundColor: '#ffffff',
-      border: '1px solid #e9ecef',
-      borderRadius: '8px',
-      whiteSpace: 'pre-wrap',
-      fontSize: '14px',
-      color: '#212529'
+    marginTop: '30px',
+    padding: '20px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #e9ecef',
+    borderRadius: '8px',
+    whiteSpace: 'pre-wrap',
+    fontSize: '14px',
+    color: '#212529'
   }
 };
 

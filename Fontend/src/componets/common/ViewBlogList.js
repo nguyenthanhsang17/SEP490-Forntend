@@ -92,7 +92,7 @@ const ViewBlogList = () => {
                                                         onClick={() => handleBlogClick(blog.blogId)}
                                                     />
                                                 }
-                                                onClick={() => handleBlogClick(blog.blogId)}
+                                                //onClick={() => handleBlogClick(blog.blogId)}
                                             >
                                                 <Meta
                                                     title={blog.blogTitle}
