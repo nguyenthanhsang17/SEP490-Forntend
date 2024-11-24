@@ -49,12 +49,8 @@ const JobListing = () => {
   // Check if the user is logged in
   const isLoggedIn = !!localStorage.getItem("token");
   useEffect(() => {
-    if (
-      jobs.length > 0 &&
-      userLocation &&
-      userLocation.latitude &&
-      userLocation.longitude
-    ) {
+    // Chỉ tính toán khi `userLocation` có đầy đủ thông tin
+    if (userLocation.latitude && userLocation.longitude && jobs.length > 0) {
       const updatedJobs = jobs.map((job) => {
         if (job.latitude && job.longitude) {
           const distance = calculateDistance(
@@ -65,16 +61,18 @@ const JobListing = () => {
           );
           return { ...job, distance };
         }
-        return { ...job, distance: null }; // Nếu không có tọa độ công việc
+        return { ...job, distance: null }; // Nếu công việc không có tọa độ
       });
+  
       setJobs((prevJobs) => {
         if (JSON.stringify(prevJobs) === JSON.stringify(updatedJobs)) {
-          return prevJobs; // Ngăn việc cập nhật lại nếu không có thay đổi
+          return prevJobs; // Ngăn cập nhật lại nếu không có thay đổi
         }
         return updatedJobs;
       });
     }
-  }, [userLocation]); // Loại bỏ `jobs` khỏi mảng phụ thuộc
+  }, [userLocation, jobs]); // Thêm `jobs` vào dependency để theo dõi thay đổi
+  
   
   useEffect(() => {
     const initialSavedJobs = jobs.reduce((acc, job) => {
@@ -99,20 +97,17 @@ const JobListing = () => {
           (position) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-
-            // Log tọa độ
-            console.log("Latitude:", latitude, "Longitude:", longitude);
-
+  
             setUserLocation({
-              latitude: latitude,
-              longitude: longitude,
+              latitude,
+              longitude,
             });
-            setIsLocationLoading(false); // Vị trí đã được lấy
+            setIsLocationLoading(false);
           },
           (error) => {
             console.warn("Location access denied or unavailable.");
-            setUserLocation(null);
-            setIsLocationLoading(false); // Không thể lấy vị trí
+            setUserLocation(null); // Không thể lấy vị trí
+            setIsLocationLoading(false);
           }
         );
       } else {
@@ -121,9 +116,10 @@ const JobListing = () => {
         setIsLocationLoading(false);
       }
     };
-
+  
     getLocation();
   }, []);
+  
 
   useEffect(() => {
     const initialSavedJobs = {};

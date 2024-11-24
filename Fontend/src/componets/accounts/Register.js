@@ -156,6 +156,7 @@ const Signup = () => {
       border: "none",
       borderRadius: "20px",
       cursor: "pointer",
+      marginTop:"8px"
     },
     loginButton: {
       width: "100%",
