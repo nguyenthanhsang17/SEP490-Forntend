@@ -34,9 +34,11 @@ function ReCreateJob() {
     const [time, SetTime] = useState(1);
     const { id } = useParams();
     const { enqueueSnackbar } = useSnackbar();
-    const [postJobDates, setPostJobDates] = useState([{ eventDate: '', startTime: '', endTime: '' }]);
+    const today1 = today.toISOString().split('T')[0];
+    const [postJobDates, setPostJobDates] = useState([{ eventDate: today1, startTime: '', endTime: '' }]);
     const [jsonOutput, setJsonOutput] = useState('');
     const [isLongTerm, setIsLongTerm] = useState(false);
+    const [BamNut, SetBamNut] = useState(false);
     const [location, setLocation] = useState({
         addressDetail: '',
         address: {},
@@ -139,7 +141,6 @@ function ReCreateJob() {
         setLongitude(newPosition.lng);
         console.log(newPosition);
         console.log(address);
-        setAddress(address)
     };
     //==================================================================
     const [schedules, setSchedules] = useState([]);
@@ -268,7 +269,7 @@ function ReCreateJob() {
             userId: 0,
             jobScheduleCreateDTO: schedule.slots.map(slot => ({
                 slotId: slot.SlotId,
-                dayOfWeek: slot.DayOfWeek+1,
+                dayOfWeek: slot.DayOfWeek + 1,
                 workingHourCreateDTOs: slot.workingHourCreateDTOs.map(hour => ({
                     scheduleId: Math.floor(Math.random() * 1000000) + 1,
                     startTime: hour.StartTime,
@@ -310,7 +311,7 @@ function ReCreateJob() {
             if (response.status === 200) {
                 //alert('Lưu lịch làm việc thành công!');
                 return 1;
-            }else{
+            } else {
                 return 0;
             }
         } catch (error) {
@@ -454,7 +455,7 @@ function ReCreateJob() {
             selectedImages.forEach((imageObj) => {
                 if (imageObj.file) {
                     console.log("Appending actual file:", imageObj.file);
-                    formData.append('files', imageObj.file); 
+                    formData.append('files', imageObj.file);
                 } else {
                     console.error("Image object missing file property:", imageObj);
                 }
@@ -569,24 +570,8 @@ function ReCreateJob() {
     };
 
     const luujob = async (e) => {
-        
-    };
-
-    const showAlert = async (text) => {
-        const result = await Swal.fire({
-            title: text,
-            showCancelButton: true,
-            confirmButtonText: 'Ok'
-        });
-
-        if (result.isConfirmed) {
-            navigate("/viewListJobsCreated");
-        }
-    };
-
-    const handleSubmit = async (e) => {
         e.preventDefault();
-
+        SetBamNut(true);
 
         if (!validateJobData()) {
             return;
@@ -607,6 +592,13 @@ function ReCreateJob() {
             }
         }
 
+        const formattedPostJobDates = postJobDates.map((date, index) => ({
+            postId: -1,
+            eventDate: new Date(date.eventDate).toISOString(),
+            startTime: date.startTime,
+            endTime: date.endTime
+        }));
+
         const dataToSend = formatDataForApi();
         console.log("slot de cap nhat");
         console.log(JSON.stringify(dataToSend, null, 2));
@@ -623,10 +615,13 @@ function ReCreateJob() {
             address: JobDetail.address,
             latitude: JobDetail.latitude,
             longitude: JobDetail.longitude,
-            status: 1,
+            status: 0,
             isUrgentRecruitment: JobDetail.isUrgentRecruitment,
             jobCategoryId: JobDetail.jobCategoryId,
-            time: JobDetail.time
+            time: JobDetail.time,
+            slotDTOs: formatDataForApi(-1),
+            jobPostDates: formattedPostJobDates,
+            isLongTerm: isLongTerm
         };
         console.log(JSON.stringify(jobData, null, 2));
 
@@ -651,18 +646,135 @@ function ReCreateJob() {
                 const sang = formatDataForApi();
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages(idp);
-                if (isLongTerm) {
-                    saveSchedule(idp);
-                } else {
-                    handlePublishPostJobDates(idp);
-                }
-                showAlert("");
+                showAlert("Tạo Công việc Thành công");
             } else {
-                console.error('Error Update job:', response.statusText);
+                try {
+                    const errorData = await response.json();
+                    showAlert2(errorData.message || "Có lỗi xảy ra");
+                } catch {
+                    showAlert("Có lỗi xảy ra");
+                }
             }
         } catch (error) {
             console.error('Error:', error);
         }
+        SetBamNut(false);
+    };
+
+    const showAlert = async (text) => {
+        const result = await Swal.fire({
+            title: text,
+            showCancelButton: true,
+            confirmButtonText: 'Ok'
+        });
+
+        if (result.isConfirmed) {
+            navigate("/viewListJobsCreated");
+        }
+    };
+
+    const showAlert2 = async (text) => {
+        const result = await Swal.fire({
+            title: text,
+            showCancelButton: false,
+            confirmButtonText: 'Ok'
+        });
+
+        if (result.isConfirmed) {
+            navigate("/viewAllPriceList");
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        SetBamNut(true);
+
+        if (!validateJobData()) {
+            return;
+        }
+
+        if (isLongTerm) {
+            const dataToSend = formatDataForApi();
+            console.log("slot de cap nhat");
+            console.log(JSON.stringify(dataToSend, null, 2));
+            if (!dataToSend) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
+                return;
+            }
+        } else {
+            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
+                return;
+            }
+        }
+
+        const formattedPostJobDates = postJobDates.map((date, index) => ({
+            postId: -1,
+            eventDate: new Date(date.eventDate).toISOString(),
+            startTime: date.startTime,
+            endTime: date.endTime
+        }));
+
+        const dataToSend = formatDataForApi();
+        console.log("slot de cap nhat");
+        console.log(JSON.stringify(dataToSend, null, 2));
+        console.log(postJobDates);
+
+
+        const jobData = {
+            postId: JobDetail.postId,
+            jobTitle: JobDetail.jobTitle,
+            jobDescription: JobDetail.jobDescription,
+            salaryTypesId: JobDetail.salaryTypesId,
+            salary: JobDetail.salary,
+            numberPeople: JobDetail.numberPeople,
+            address: JobDetail.address,
+            latitude: JobDetail.latitude,
+            longitude: JobDetail.longitude,
+            status: 1,
+            isUrgentRecruitment: JobDetail.isUrgentRecruitment,
+            jobCategoryId: JobDetail.jobCategoryId,
+            time: JobDetail.time,
+            slotDTOs: formatDataForApi(-1),
+            jobPostDates: formattedPostJobDates,
+            isLongTerm: isLongTerm
+        };
+        console.log(JSON.stringify(jobData, null, 2));
+
+        const token = localStorage.getItem('token');
+        console.log(token);
+
+        console.log(isLongTerm);
+
+        try {
+            const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(jobData),
+            });
+            if (response.ok) {
+                const idp = await response.json(); // Lấy trực tiếp giá trị id
+                console.log("PostId: " + idp);
+                SetPostID(idp);
+                const sang = formatDataForApi();
+                console.log(JSON.stringify(sang, null, 2));
+                uploadImages(idp);
+                showAlert("Tạo Công việc Thành công");
+            } else {
+                try {
+                    const errorData = await response.json();
+                    showAlert2(errorData.message || "Có lỗi xảy ra");
+                } catch {
+                    showAlert("Có lỗi xảy ra");
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        SetBamNut(false);
     };
 
     const handleChange = (event) => {
@@ -680,7 +792,7 @@ function ReCreateJob() {
                 slots: daysOfWeek.map((day, dayIndex) => {
                     // Tìm schedule cho ngày hiện tại
                     const daySchedule = slot.jobScheduleDTOs.find(
-                        schedule => schedule.dayOfWeek === dayIndex + 1
+                        schedule => schedule.dayOfWeek === dayIndex + 2
                     );
 
                     return {
@@ -737,6 +849,7 @@ function ReCreateJob() {
                     <div className="row bottom-mrg">
                         <form className="add-feild form-container" >
                             <div className="input-group form-group">
+                                <label>Tiêu đề công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -753,6 +866,7 @@ function ReCreateJob() {
                             </div>
 
                             <div className="input-group form-group">
+                                <label>Chọn loại công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <select
                                     className="form-control"
                                     value={JobDetail.jobCategoryId}
@@ -778,6 +892,7 @@ function ReCreateJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
+                                <label>Chọn kiểu trả lương</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <select
                                     className="form-control"
                                     value={JobDetail.salaryTypesId}
@@ -799,6 +914,7 @@ function ReCreateJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
+                                <label>Mức lương vnd</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <input
                                     type="number"
                                     min={0}
@@ -815,6 +931,7 @@ function ReCreateJob() {
                                 />
                             </div>
                             <div className="input-group form-group">
+                                <label>Số lượng người cần tuyển</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -832,6 +949,7 @@ function ReCreateJob() {
                             </div>
 
                             <div className="input-group form-group full-width">
+                                <label>Mô tả công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <textarea
                                     className="form-control"
                                     placeholder="Mô tả công việc"
@@ -845,8 +963,25 @@ function ReCreateJob() {
                                     }}
                                 ></textarea>
                             </div>
+                            <div className="input-group form-group full-width">
+                                <label>Địa chỉ chi tiết</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Địa chỉ chi tiết"
+                                    value={JobDetail.address}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        SetJobDetail(prev => ({
+                                            ...prev,
+                                            address: newValue
+                                        }));
+                                    }}
+                                />
+                            </div>
 
                             <div className="input-group form-group">
+                                <label>Ảnh công việc</label>
                                 <div className="image-upload-container" style={{
                                     display: 'flex',
                                     flexDirection: 'row',
@@ -1088,6 +1223,7 @@ function ReCreateJob() {
                                 </label>
                             </div>
                             <div className="full-width">
+                                <label>Lịch công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 {isLongTerm ? (
                                     <div>
                                         {/* Schedule Selection Tabs */}
@@ -1295,12 +1431,34 @@ function ReCreateJob() {
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
-                                    <button type='button' onClick={luujob} style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" >Lưu công việc</button>
+                                    <button
+                                        style={{
+                                            width: "50%",
+                                            backgroundColor: BamNut ? "gray" : "",
+                                            cursor: BamNut ? "not-allowed" : "pointer"
+                                        }}
+                                        className={`btn ${BamNut ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
+                                        onClick={!BamNut ? handleSubmit : null} // Chặn click nếu đang xử lý
+                                        disabled={BamNut} // Disable nút khi đang xử lý
+                                    >
+                                        {BamNut ? "Đang Đăng công việc..." : "Đăng công việc"}
+                                    </button>
                                 </div>
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">
-                                    <button type='button' onClick={handleSubmit} style={{ width: "50%" }} className="btn btn-success btn-primary small-btn" >Đăng công việc </button>
+                                    <button
+                                        style={{
+                                            width: "50%",
+                                            backgroundColor: BamNut ? "gray" : "orange",
+                                            cursor: BamNut ? "not-allowed" : "pointer"
+                                        }}
+                                        className={`btn ${BamNut ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
+                                        onClick={!BamNut ? luujob : null} // Chặn click nếu đang xử lý
+                                        disabled={BamNut} // Disable nút khi đang xử lý
+                                    >
+                                        {BamNut ? "Đang Lưu công việc..." : "Lưu công việc"}
+                                    </button>
                                 </div>
                             </div>
                         </form>

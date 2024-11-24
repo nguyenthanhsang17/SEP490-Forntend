@@ -371,7 +371,10 @@ function ViewJobCreatedDetail() {
             <div className="detail pannel-footer">
               <div className="col-md-5 col-sm-5">
                 <h4 style={styles.expirationDate}>
-                  Ngày hết hạn: {new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}
+                  Ngày hết hạn: {jobDetails.expirationDate
+                    ? `${new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}`
+                    : null
+                  }
                 </h4>
                 
                 {/* Hiển thị lý do bị từ chối */}
@@ -381,6 +384,18 @@ function ViewJobCreatedDetail() {
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
+                  <button
+                    className="btn btn-success"
+                    style={{
+                      marginRight: "10px",
+                      backgroundColor: "#28a745", // Xanh lá
+                      border: "none",
+                      color: "#fff",
+                    }}
+                    onClick={() => window.location.href = `/EditPostJob/${id}`}
+                  >
+                    Sao chép bài viết
+                  </button>
                   {jobDetails.status === 0 && (
                     <>
                       <button

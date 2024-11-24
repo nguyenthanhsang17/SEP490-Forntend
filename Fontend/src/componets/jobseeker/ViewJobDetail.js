@@ -32,12 +32,9 @@ function ViewJobDetail() {
     const fetchJobDetails = async () => {
       try {
         const token = localStorage.getItem('token'); // Ensure token is correctly retrieved
-
-
         const headers = {
           Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
         };
-
         const response = await axios.get(`https://localhost:7077/api/PostJobs/jobDetails/${id}`, { headers });
         setJobDetails(response.data); // Lưu dữ liệu công việc vào state
         if (response.data.slotDTOs && response.data.slotDTOs.length > 0) {
@@ -53,7 +50,7 @@ function ViewJobDetail() {
     };
 
     fetchJobDetails();
-  }, [id, jobDetails]);
+  }, [id]);
 
   const styles = {
     container: {
