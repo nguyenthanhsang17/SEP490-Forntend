@@ -405,7 +405,12 @@ function ViewJobDetail() {
                         navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
                       } else {
                         // Logic ứng tuyển hoặc ứng tuyển lại
-                        navigate(`/ApplyJob/${id}`);
+                        if(!jobDetails.isAppliedJob)
+                          {
+                            navigate(`/ApplyJob/${id}`);
+                          }else {
+                            navigate(`/ReApplyJob/${id}`);
+                          }
                         console.log(jobDetails.isAppliedJob ? "Ứng tuyển lại công việc..." : "Ứng tuyển ngay...");
                         applyJob(); // Hàm để xử lý ứng tuyển hoặc ứng tuyển lại
                       }

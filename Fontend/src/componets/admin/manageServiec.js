@@ -16,10 +16,11 @@ const ManageService = () => {
         numberPostsUrgentRecruitment: '',
         isFindJobseekers: '',
         durationsMonth: '',
-        price: ''
+        price: '',
+        servicePriceName: '',
+        status: ''
     });
 
-    // Fetch service list with pagination
     const fetchServiceList = async (pageNumber = 1, pageSize = 9) => {
         try {
             const response = await axios.get(`https://localhost:7077/api/ServicePriceLists/GetAll?pageNumber=${pageNumber}&pageSize=${pageSize}`);
@@ -39,7 +40,29 @@ const ManageService = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        const validValue = value < 1 ? 1 : value; // Không cho giá trị âm
+        const validValue = value < 1 ? 1 : value;
+        setNewService({ ...newService, [name]: validValue });
+
+        if (name === "isFindJobseekers" && value === "0") {
+            setNewService({
+                ...newService,
+                [name]: value,
+                durationsMonth: 0, // Đặt thời hạn sử dụng thành 0 khi chọn "Không"
+            });
+        } else if (name === "isFindJobseekers" && value === "1") {
+            setNewService({
+                ...newService,
+                [name]: value,
+                durationsMonth: 1, 
+            });
+        } else {
+            setNewService({ ...newService, [name]: value });
+        }
+    };
+
+    const handleInputMonth = (e) => {
+        const { name, value } = e.target;
+        const validValue = value < 0 ? 0 : value;
         setNewService({ ...newService, [name]: validValue });
     };
 
@@ -53,9 +76,11 @@ const ManageService = () => {
                 numberPostsUrgentRecruitment: '',
                 isFindJobseekers: '',
                 durationsMonth: '',
-                price: ''
+                price: '',
+                servicePriceName: '',
+                status: ''
             });
-            fetchServiceList(pagination.pageNumber, pagination.pageSize); // Refresh the list after creation
+            fetchServiceList(pagination.pageNumber, pagination.pageSize);
         } catch (error) {
             console.error('Error creating service:', error);
             alert('Có lỗi xảy ra khi tạo gói dịch vụ!');
@@ -65,6 +90,18 @@ const ManageService = () => {
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= pagination.totalPages) {
             fetchServiceList(newPage, pagination.pageSize);
+        }
+    };
+
+    const handleToggleStatus = async (id, currentStatus) => {
+        try {
+            const newStatus = currentStatus === 1 ? 0 : 1; // Đổi trạng thái
+            await axios.put(`https://localhost:7077/api/ServicePriceLists/UpdateStatus?id=${id}&newStatus=${newStatus}`);
+            alert(`Trạng thái gói dịch vụ đã được cập nhật thành công!`);
+            fetchServiceList(pagination.pageNumber, pagination.pageSize); // Làm mới danh sách
+        } catch (error) {
+            console.error('Error updating status:', error);
+            alert('Có lỗi xảy ra khi cập nhật trạng thái!');
         }
     };
 
@@ -83,7 +120,7 @@ const ManageService = () => {
                         <table className="service-table">
                             <thead>
                                 <tr>
-                                    <th>Mã dịch vụ</th>
+                                    <th>Tên gói</th>
                                     <th>Số lượng bài đăng</th>
                                     <th>Số lượng bài đăng khẩn cấp</th>
                                     <th>Tìm kiếm ứng viên</th>
@@ -95,16 +132,20 @@ const ManageService = () => {
                             <tbody>
                                 {serviceList.map((service) => (
                                     <tr key={service.servicePriceId}>
-                                        <td>{service.servicePriceId || 'N/A'}</td>
+                                        <td>{service.servicePriceName || 'N/A'}</td>
                                         <td>{service.numberPosts || 'N/A'}</td>
                                         <td>{service.numberPostsUrgentRecruitment || 'N/A'}</td>
                                         <td>{service.isFindJobseekers === 1 ? 'Có' : 'Không'}</td>
                                         <td>{service.durationsMonth ? `${service.durationsMonth} tháng` : 'Không có'}</td>
                                         <td>{service.price ? `${service.price.toLocaleString()} VNĐ` : 'N/A'}</td>
-                                        <td >
+                                        <td>
                                             <div className="action-buttons">
-                                                <button className="edit-btn">Sửa</button>
-                                                <button className="delete-btn">Xóa</button>
+                                                <button
+                                                    className={service.status === 1 ? 'stop-sale-btn' : 'start-sale-btn'}
+                                                    onClick={() => handleToggleStatus(service.servicePriceId, service.status)}
+                                                >
+                                                    {service.status === 1 ? 'Ngừng bán' : 'Bán'}
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -113,25 +154,35 @@ const ManageService = () => {
                         </table>
 
                         <div className="pagination">
-                    <button
-                        disabled={pagination.pageNumber === 1}
-                        onClick={() => handlePageChange(pagination.pageNumber - 1)}
-                    >
-                        Previous
-                    </button>
-                    <span>Trang {pagination.pageNumber} / {pagination.totalPages}</span>
-                    <button
-                        disabled={pagination.pageNumber === pagination.totalPages}
-                        onClick={() => handlePageChange(pagination.pageNumber + 1)}
-                    >
-                        Next
-                    </button>
-                </div>
+                            <button
+                                disabled={pagination.pageNumber === 1}
+                                onClick={() => handlePageChange(pagination.pageNumber - 1)}
+                            >
+                                Previous
+                            </button>
+                            <span>Trang {pagination.pageNumber} / {pagination.totalPages}</span>
+                            <button
+                                disabled={pagination.pageNumber === pagination.totalPages}
+                                onClick={() => handlePageChange(pagination.pageNumber + 1)}
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
-
                     <div className="create-service">
                         <h2 className="section-title">Tạo Gói Mới</h2>
                         <form onSubmit={handleCreateService} className="service-form">
+                            <div className="form-group">
+                                <label>Tên gói dịch vụ:</label>
+                                <input
+                                    type="text"
+                                    name="servicePriceName"
+                                    value={newService.servicePriceName}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Nhập tên gói dịch vụ"
+                                />
+                            </div>
                             <div className="form-group">
                                 <label>Số lượng bài đăng:</label>
                                 <input
@@ -172,7 +223,7 @@ const ManageService = () => {
                                     type="number"
                                     name="durationsMonth"
                                     value={newService.durationsMonth}
-                                    onChange={handleInputChange}
+                                    onChange={handleInputMonth}
                                     required
                                     placeholder="Nhập số tháng"
                                 />
@@ -189,12 +240,25 @@ const ManageService = () => {
                                     placeholder="Nhập giá tiền"
                                 />
                             </div>
+                            <div className="form-group">
+                                <label>Trạng thái:</label>
+                                <select
+                                    name="status"
+                                    value={newService.status}
+                                    onChange={handleInputChange}
+                                    required
+                                >
+                                    <option value="">Chọn trạng thái</option>
+                                    <option value="1">Bán</option>
+                                    <option value="0">Không bán</option>
+                                </select>
+                            </div>
                             <button type="submit" className="create-btn">Thêm Gói</button>
                         </form>
                     </div>
                 </div>
 
-                
+
 
                 <style jsx>{`
                     .container {
@@ -203,9 +267,10 @@ const ManageService = () => {
                         
                     }
                     .service-section {
-                        flex: 3;
+                        flex: 2;
                         background-color: #f9f9f9;
                         padding: 20px;
+                        padding-top: 0px;
                         border-radius: 8px;
                         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                     }
@@ -213,6 +278,7 @@ const ManageService = () => {
                         flex: 1;
                         background-color: #f9f9f9;
                         padding: 20px;
+                        padding-top: 0px;
                         border-radius: 8px;
                         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                     }
@@ -265,27 +331,20 @@ const ManageService = () => {
                         border-radius: 5px;
                         cursor: pointer;
                     }
-                         .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Khoảng cách giữa các nút */
-}
-
-.edit-btn, .delete-btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    min-width: 70px; /* Đảm bảo các nút có chiều rộng cố định */
-}
-
-.edit-btn {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.delete-btn {
-    background-color: #f44336;
+                    .action-buttons button {
+                        padding: 8px 12px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+                    .stop-sale-btn {
+                        background-color: #f44336;
+                        color: white;
+                    }
+                    .start-sale-btn {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
     
                 `}</style>
             </main>
