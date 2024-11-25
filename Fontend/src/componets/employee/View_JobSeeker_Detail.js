@@ -34,22 +34,22 @@ function ViewJobSeekerDetail() {
     let newStatus;
     switch (evaluationType) {
       case 'Không phù hợp':
-        newStatus = 6; 
+        newStatus = 1; 
         alert("Bạn đã đánh dầu người này là không phù hợp");
         break;
-      case 'Xem lại sau':
-        newStatus = 7; 
-        alert("Bạn đã đánh dấu sẽ xem lại người này sau.");
+      case 'Phù hợp':
+        newStatus = 3; 
+        alert("Thông tin liên lạc đã được hiển thị.");
         break;
-      case 'Xem thông tin liên lạc':
-        newStatus = 2; 
+      case 'Nhận':
+        newStatus = 4; 
         setCanViewDetails(true);
-        alert("Thông tin liên lạc đã được hiển thị");
+        alert("Bạn đã nhận người này");
         break;
-      case 'Đã nhận':
-        newStatus = 3;
+      case 'Không nhận':
+        newStatus = 5;
         setCanViewDetails(true);
-        alert("Bạn đã nhận người này, chúng tôi sẽ cho họ biết điều này");
+        alert("Bạn đã ko nhận người này");
         break;
       default:
         return;
@@ -59,15 +59,29 @@ function ViewJobSeekerDetail() {
       const response = await axios.get(`https://localhost:7077/api/JobEmployer/ChangeStatusApplyJob?Applyjob_Id=${apply_id}&newStatus=${newStatus}`);
       if (response.data) {
         setStatus(newStatus);
-      }
+      } 
+      window.location.reload()
     } catch (error) {
       console.error('Error changing the job seeker status:', error);
     }
   };
 
-  // Điều kiện để vô hiệu hóa nút
-  const isDisabledViewLater = status === 2 || status === 5 || status === 6 || status === 3;
-  const isDisabledNotSuitable = status === 2 || status === 5 || status === 6 || status === 3;
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 0:
+        return 'Đang chờ';
+      case 1:
+        return 'Không phù hợp';
+      case 3:
+        return 'Phù hợp';
+      case 4:
+        return 'Nhận';
+      case 5:
+        return 'Không nhận';
+      default:
+        return 'Không xác định';
+    }
+  };
 
   return (
     <>
@@ -101,45 +115,57 @@ function ViewJobSeekerDetail() {
                     <p style={{ color: '#000', opacity: 1 }}><strong>Tuổi:</strong> {jobSeeker.age}</p>
                     <p style={{ color: '#000', opacity: 1 }}><strong>Giới tính:</strong> {jobSeeker.gender ? "Nam" : "Nữ"}</p>
                     <p style={{ color: '#000', opacity: 1 }}><strong>Mô tả:</strong> {jobSeeker.description}</p>
+                    <p style={{ color: '#000', opacity: 1 }}><strong>Trạng thái:</strong>{getStatusLabel(jobSeeker.status)}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Nút đánh giá ứng viên */}
             <div className="evaluation-buttons mt-4 text-center">
-              <button 
-                className="btn btn-danger mx-2" 
-                onClick={() => handleEvaluation('Không phù hợp')} 
-                disabled={isDisabledNotSuitable}
-                style={{marginRight: '10px', /* Căn giữa nội dung */}}
-              >
-                Không phù hợp
-              </button>
-              <button 
-                className="btn btn-warning mx-2" 
-                onClick={() => handleEvaluation('Xem lại sau')} 
-                disabled={isDisabledViewLater} // Vô hiệu hóa nếu status là 2
-                style={{marginRight: '10px', /* Căn giữa nội dung */}}
-              >
-                Xem lại sau
-              </button>
-              <button 
-                className="btn btn-info mx-2" 
-                onClick={() => handleEvaluation('Xem thông tin liên lạc')} 
-                disabled={status === 5 || status === 6 || status === 3}
-                style={{marginRight: '10px', /* Căn giữa nội dung */}}
-              >
-                Xem thông tin liên lạc
-              </button>
-              <button 
-                className="btn btn-success mx-2" 
-                onClick={() => handleEvaluation('Đã nhận')} 
-                disabled={status === 5 || status === 6 || status === 3}
-              >
-                Đã nhận
-              </button>
-            </div>
+  {/* Kiểm tra trạng thái */}
+  {status === 0 && (
+    <>
+      <button 
+        className="btn btn-danger mx-2" 
+        onClick={() => handleEvaluation('Không phù hợp')} 
+        style={{ marginRight: '10px' }}
+      >
+        Không phù hợp
+      </button>
+      <button 
+        className="btn btn-warning mx-2" 
+        onClick={() => handleEvaluation('Phù hợp')} 
+        style={{ marginRight: '10px' }}
+      >
+        Phù hợp
+      </button>
+    </>
+  )}
+  {status === 3 && (
+    <>
+      <button 
+        className="btn btn-info mx-2" 
+        onClick={() => handleEvaluation('Nhận')} 
+        style={{ marginRight: '10px' }}
+      >
+        Nhận
+      </button>
+      <button 
+        className="btn btn-success mx-2" 
+        onClick={() => handleEvaluation('Không nhận')} 
+      >
+        Không nhận
+      </button>
+
+      <button 
+        className="btn btn-success mx-2" 
+      >
+        Liên hệ ngay
+      </button>
+    </>
+  )}
+</div>
+
 
             {/* Thông báo */}
             {message && (

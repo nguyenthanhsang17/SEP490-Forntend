@@ -73,7 +73,7 @@ function ReApplyJob() {
 
         try {
             const response = await axios.post(
-                "https://localhost:7077/api/ApplyJobs/ApplyJob",
+                "https://localhost:7077/api/ApplyJobs/ReApplyJob",
                 applyJobDTO,
                 {
                     headers: {
