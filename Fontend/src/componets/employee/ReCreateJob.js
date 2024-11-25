@@ -55,7 +55,7 @@ function ReCreateJob() {
     };
 
     const [isOn, setIsOn] = useState(false);
-
+    
 
     const [imagesData, setImagesData] = useState([
         // Sẽ chứa cả URL và ID
@@ -65,6 +65,7 @@ function ReCreateJob() {
         })),
         // Các ảnh local sẽ có id là null ban đầu
     ]);
+
 
     ///================================================
 
@@ -151,7 +152,27 @@ function ReCreateJob() {
 
     const [tangdan, Settangdan] = useState(1);
     //==================================================================
-
+    const [serviceInfo, setServiceInfo] = useState({
+        numberPosts: 0,
+        numberPostsUrgentRecruitment: 0
+    });
+    useEffect(() => {
+        const fetchServiceInfo = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await axios.get("https://localhost:7077/api/Service", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                console.log(response.data);
+                setServiceInfo(response.data); // Lưu dữ liệu dịch vụ vào state
+            } catch (err) {
+                enqueueSnackbar("Không thể tải thông tin dịch vụ", {
+                    variant: "error",
+                });
+            }
+        };
+        fetchServiceInfo();
+    }, [enqueueSnackbar]);
 
     useEffect(() => {
         const LoadJobFirst = async () => {
@@ -738,7 +759,7 @@ function ReCreateJob() {
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages(idp);
             } else {
-                
+
             }
         } catch (error) {
             console.error('Error:', error);
@@ -852,7 +873,7 @@ function ReCreateJob() {
             } else {
                 try {
                     const errorData = await response.json();
-                    showAlert2(errorData.message+", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
+                    showAlert2(errorData.message + ", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
                 } catch {
                     showAlert("Có lỗi xảy ra");
                 }
@@ -926,6 +947,9 @@ function ReCreateJob() {
             <section className="inner-header-title blank">
                 <div className="container">
                     <h1>Tạo bài đăng tuyển</h1>
+                </div>
+                <div className="container">
+                    <h1>Số lượt đăng: {serviceInfo.numberPosts??0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ??0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>

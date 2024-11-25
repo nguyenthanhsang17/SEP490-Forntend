@@ -31,7 +31,7 @@ const ManagementCV = () => {
 
     const handleCreateNewCV = () => {
         setCvForms([...cvForms, {
-            id: Date.now(),
+            id: -1,
             nameCv: "CV mẫu",
             itemOfCvs:
             [{ itemName: "", itemDescription: "", itemDescriptionPlaced: "Họ tên, địa chỉ, số điện thoại, email, và các liên kết (LinkedIn, GitHub nếu có).", itemNamePlaced:"Thông tin cá nhân"  },
@@ -76,22 +76,51 @@ const ManagementCV = () => {
 
 
 
-    const handleSaveCV = (formIndex) => {
+    const handleSaveCV = async (formIndex) => {
         const cvData = {
             ...cvForms[formIndex],
-            cvId: Date.now()
+            cvId: -1
         };
+        
+        try {
+            cvData.cvId = cvData.id;
+            console.log(cvData);
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                'https://localhost:7077/api/Cvs/CreateCV', 
+                cvData,
+                {
+                  headers: {
+                    'Authorization': `Bearer ${token}`, // Thêm token vào header
+                    'Content-Type': 'application/json'
+                  }
+                }
+              );
+        
+            console.log('Tạo CV thành công', response.data);
+            if(cvData.id!=-1){
+                return;
+            }
+          } catch (error) {
+            console.error('Lỗi khi tạo CV', error);
+          }
         setCvs([...cvs, cvData]);
         // Remove the form after saving
         const newForms = cvForms.filter((_, idx) => idx !== formIndex);
         setCvForms(newForms);
     };
 
-    const handleDelete = (cvId) => {
+    const handleDelete = async (cvId) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa CV này không?")) {
             const updatedCvs = cvs.filter((cv) => cv.cvId !== cvId);
             setCvs(updatedCvs);
         }
+        try {
+            const response = await axios.put(`https://localhost:7077/api/Cvs/DeleteCV/${cvId}`);
+            console.log('Xóa CV thành công');
+          } catch (error) {
+            console.error('Lỗi khi xóa CV', error);
+          }
     };
 
     const handleEdit = (cv) => {
@@ -166,7 +195,7 @@ const ManagementCV = () => {
                             Tạo CV mới
                         </button>
 
-                        <button
+                        {/* <button
                             onClick={LuuVaoDB}
                             style={{
                                 backgroundColor: "#1cbcb4",
@@ -182,7 +211,7 @@ const ManagementCV = () => {
                             }}
                         >
                             Lưu tất cả
-                        </button>
+                        </button> */}
 
                         {/* CV Forms */}
                         {cvForms.map((form, formIndex) => (
@@ -191,23 +220,6 @@ const ManagementCV = () => {
                                     <h3 style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
                                         Tạo CV mới
                                     </h3>
-                                    <button
-                                        onClick={() => {
-                                            const newForms = cvForms.filter((_, idx) => idx !== formIndex);
-                                            setCvForms(newForms);
-                                        }}
-                                        style={{
-                                            backgroundColor: "#ef4444",
-                                            color: "white",
-                                            padding: "0.5rem 1rem",
-                                            borderRadius: "8px",
-                                            border: "none",
-                                            cursor: "pointer",
-                                            fontSize: "0.9rem",
-                                        }}
-                                    >
-                                        Đóng
-                                    </button>
                                 </div>
 
                                 <input
@@ -346,6 +358,24 @@ const ManagementCV = () => {
                                         }}
                                     >
                                         Lưu CV
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const newForms = cvForms.filter((_, idx) => idx !== formIndex);
+                                            setCvForms(newForms);
+                                        }}
+                                        style={{
+                                            backgroundColor: "#ef4444",
+                                            color: "white",
+                                            padding: "0.5rem 1rem",
+                                            borderRadius: "8px",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            fontSize: "0.9rem",
+                                            marginLeft: "895px"
+                                        }}
+                                    >
+                                        Đóng
                                     </button>
                                 </div>
                             </div>
