@@ -346,7 +346,12 @@ const Profile = () => {
                           <li>
                             <span
                               className="label1"
-                              style={{ marginRight: 60, width: 150 }}
+                              style={{
+                                marginRight: 60,
+                                width: 150,
+                                whiteSpace: "nowrap", // Đảm bảo không ngắt dòng
+                                display: "inline-block", // Hiển thị trên cùng một dòng
+                              }}
                             >
                               Trạng thái nhà tuyển dụng:
                             </span>
@@ -361,6 +366,8 @@ const Profile = () => {
                                     ? "red" // Màu đỏ cho trạng thái "Bị từ chối"
                                     : "black", // Mặc định
                                 fontWeight: "bold",
+                                whiteSpace: "nowrap", // Đảm bảo không ngắt dòng
+                                display: "inline-block",
                               }}
                             >
                               {profile.registerEmployerStatus === 0
