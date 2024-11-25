@@ -59,6 +59,7 @@ import ViewRecommendedJobs from "./componets/jobseeker/ViewRecommendedJobs";
 import PaymentSuccess from "./componets/employee/PaymentSuccess";
 import ManageService from "./componets/admin/manageServiec";
 import PaymentResult from "./componets/employee/PaymentResult";
+import ReApplyJob from "./componets/jobseeker/ReApplyJob";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -184,6 +185,15 @@ root.render(
             element={
               <PrivateRoute allowedRoles={[2]}>
                 <ViewJobSeekerDetail />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/ReApplyJob/:job_id"
+            element={
+              <PrivateRoute allowedRoles={[1, 2]}>
+                <ReApplyJob />
               </PrivateRoute>
             }
           />

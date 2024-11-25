@@ -110,9 +110,10 @@ function ViewAllJobApplied() {
                   <div className="card-body">
                     <h3 className="card-title">{job.jobTitle}</h3>
                     <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory}</p>
-                    <p className="card-text"><strong>Mức lương:</strong> {job.rangeSalaryMin || 0} - {job.rangeSalaryMax || "Thỏa thuận"} VNĐ</p>
+                    <p className="card-text"><strong>Mức lương:</strong> {job.fixSalary } VNĐ</p>
                     <p className="card-text"><strong>Người đăng:</strong> {job.authorname}</p>
-                    <p className="card-text"><strong>Trạng thái công việc:</strong> {job.statusJob === 1 ? 'Đang chờ ứng viên' : 'Hết hạn'}</p>
+                    <p className="card-text"><strong>Ngày hết hạn:</strong> {new Date(job.expirationDate).toLocaleDateString('vi-VN')}</p>
+                    <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory }</p>
                     <p className="card-text">
                       <strong>Trạng thái đơn xin việc:</strong> {
                         (() => {
@@ -147,7 +148,7 @@ function ViewAllJobApplied() {
                     )} */}
                     <button
                       className="btn btn-primary"
-                      onClick={() => handleViewDetail(job.id)}
+                      onClick={() => handleViewDetail(job.postId)}
                     >
                       Xem chi tiết
                     </button>

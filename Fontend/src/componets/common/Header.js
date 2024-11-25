@@ -354,7 +354,7 @@ const Header = () => {
                         Danh sách công việc đã tạo
                       </div>
                     )}
-                    {roleId === "1" && (
+                    {roleId === "1" || roleId ==="2" && (
                       <div
                         style={styles.dropdownItem}
                         onClick={handleViewListAppliedClick}
