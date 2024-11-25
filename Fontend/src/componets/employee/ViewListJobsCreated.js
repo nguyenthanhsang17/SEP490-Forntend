@@ -244,6 +244,14 @@ const ViewListJobsCreated = () => {
         }
     };
 
+    const salaryTypeMap = {
+        "Theo giờ": "giờ",
+        "Theo ngày": "ngày",
+        "Theo công việc": "công việc",
+        "Theo tuần": "tuần",
+        "Theo tháng": "tháng",
+        "Lương cố định": "cố định",
+    };
 
     const handleCancelRequest = async (job) => {
         try {
@@ -427,7 +435,7 @@ const ViewListJobsCreated = () => {
                                                 <h3>{job.jobTitle}</h3>
                                                 <p>
                                                     <span>{job.jobCategoryName}</span> |
-                                                    <span> {job.salaryTypeName}: {job.salary.toLocaleString()} VND</span>
+                                                    <span> {job.salaryTypeName}: {job.salary.toLocaleString()} VND / {salaryTypeMap[job.salaryTypeName]}</span>
                                                 </p>
                                                 <p>
                                                     <span>Số người cần tuyển: {job.numberPeople}</span> |

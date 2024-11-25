@@ -314,7 +314,7 @@ const ViewAllPostJobInWishlist = () => {
                                             <div class="brows-job-position">
                                                 <a href=""><h3>{job.jobTitle}</h3></a>
                                                 <p>
-                                                    <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}/{salaryTypeMap[job.salaryTypeName]}</span>
+                                                    <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}/ {salaryTypeMap[job.salaryTypeName]}</span>
                                                 </p>
                                                 <p>
                                                     <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>
