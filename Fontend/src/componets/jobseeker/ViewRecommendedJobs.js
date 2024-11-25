@@ -22,6 +22,7 @@ const ViewRecommendedJobs = () => {
   const [notFoundJob, setNotFoundJob] = useState(false);
   const [savedJobs, setSavedJobs] = useState({});
   const [isLocationLoading, setIsLocationLoading] = useState(true);
+
   const [userLocation, setUserLocation] = useState({
     latitude: null,
     longitude: null,
@@ -32,6 +33,15 @@ const ViewRecommendedJobs = () => {
 
   // Check if the user is logged in
   const isLoggedIn = !!localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      enqueueSnackbar("Vui lòng đăng nhập để xem công việc được đề xuất.", {
+        variant: "warning",
+      });
+      navigate("/login");
+    }
+  }, [isLoggedIn, enqueueSnackbar, navigate]);
 
   // Get user location
   useEffect(() => {
@@ -103,6 +113,16 @@ const ViewRecommendedJobs = () => {
     fetchJobs();
   }, [currentPage, userLocation, isLocationLoading]);
 
+  const salaryTypeMap = {
+    "Theo giờ": "giờ",
+    "Theo ngày": "ngày",
+    "Theo công việc": "công việc",
+    "Theo tuần": "tuần",
+    "Theo tháng": "tháng",
+    "Lương cố định": "cố định",
+  };
+
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -156,21 +176,21 @@ const ViewRecommendedJobs = () => {
   }
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     if (!lat1 || !lon1 || !lat2 || !lon2) return null;
-  
+
     const R = 6371; // Bán kính Trái đất (km)
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c; // Khoảng cách (km)
     return distance.toFixed(2); // Làm tròn 2 chữ số thập phân
   };
-  
+
   return (
     <>
       <Header />
@@ -226,7 +246,7 @@ const ViewRecommendedJobs = () => {
                             <span>{job.jobCategoryName}</span>
                             <span className="brows-job-sallery">
                               <i className="fa fa-money"></i>{" "}
-                              {job.salary.toLocaleString("vi-VN") + " VND"}
+                              {job.salary.toLocaleString("vi-VN") + " VND"} / {salaryTypeMap[job.salaryTypeName]}
                             </span>
                           </p>
                           <p>
@@ -240,13 +260,13 @@ const ViewRecommendedJobs = () => {
                               {isLocationLoading
                                 ? "Đang tải vị trí..."
                                 : userLocation && job.latitude && job.longitude
-                                ? `Cách bạn: ${calculateDistance(
+                                  ? `Cách bạn: ${calculateDistance(
                                     userLocation.latitude,
                                     userLocation.longitude,
                                     job.latitude,
                                     job.longitude
                                   )} km`
-                                : "Khoảng cách không khả dụng"}
+                                  : "Khoảng cách không khả dụng"}
                             </span>
                           </p>
                         </div>
