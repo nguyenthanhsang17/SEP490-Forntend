@@ -18,6 +18,25 @@ const Profile = () => {
   const [file, setFile] = useState(null);
   const [updatedProfile, setUpdatedProfile] = useState({});
   const { enqueueSnackbar } = useSnackbar(); // Initialize notistack
+  const [serviceInfo, setServiceInfo] = useState(null); // Thêm state để lưu thông tin dịch vụ
+  useEffect(() => {
+    const fetchServiceInfo = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await axios.get("https://localhost:7077/api/Service", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setServiceInfo(response.data); // Lưu dữ liệu dịch vụ vào state
+      } catch (err) {
+        enqueueSnackbar("Không thể tải thông tin dịch vụ", {
+          variant: "error",
+        });
+      }
+    };
+
+    fetchServiceInfo();
+  }, [enqueueSnackbar]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -380,22 +399,29 @@ const Profile = () => {
                             </span>
                           </li>
                         )}
-                        {profile.registerEmployerStatus === 2 &&
-                          profile.reason && (
+                        {profile.roleId === 2 && serviceInfo && (
+                          <>
                             <li>
                               <span
                                 className="label1"
                                 style={{ marginRight: 60, width: 150 }}
                               >
-                                Lý do từ chối:
+                                Số bài đăng đã tạo:
                               </span>
-                              <span
-                                style={{ color: "red", fontWeight: "bold" }}
-                              >
-                                {profile.reason}
-                              </span>
+                              {serviceInfo.numberPosts ?? "N/A"}
                             </li>
-                          )}
+                            <li>
+                              <span
+                                className="label1"
+                                style={{ marginRight: 60, width: 150 }}
+                              >
+                                Số bài đăng khẩn cấp:
+                              </span>
+                              {serviceInfo.numberPostsUrgentRecruitment ??
+                                "N/A"}
+                            </li>
+                          </>
+                        )}
                       </ul>
 
                       {/* Nút ManageCV và Verify Employer Account */}
