@@ -204,6 +204,15 @@ const ViewAllPostJobInWishlist = () => {
         navigate(`/viewJobDetail/${postId}`);
     };
 
+    const salaryTypeMap = {
+        "Theo giờ": "giờ",
+        "Theo ngày": "ngày",
+        "Theo công việc": "công việc",
+        "Theo tuần": "tuần",
+        "Theo tháng": "tháng",
+        "Lương cố định": "cố định",
+    };
+
     const searchContainerStyle = {
         display: 'flex',
         justifyContent: 'center',
@@ -305,8 +314,7 @@ const ViewAllPostJobInWishlist = () => {
                                             <div class="brows-job-position">
                                                 <a href=""><h3>{job.jobTitle}</h3></a>
                                                 <p>
-                                                    <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}</span>
-                                                    <span class="job-type cl-success bg-trans-success">Full Time</span>
+                                                    <span>{job.jobCategoryName}</span><span class="brows-job-sallery"><i class="fa fa-money"></i>{job.salary + " VND"}/ {salaryTypeMap[job.salaryTypeName]}</span>
                                                 </p>
                                                 <p>
                                                     <span>Số người cần tuyển: {job.numberPeople}</span><span class="brows-job-sallery">Số người đã ứng tuyển: {job.numberOfApplicants}</span>

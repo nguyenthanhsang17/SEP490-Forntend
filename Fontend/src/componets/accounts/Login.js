@@ -82,9 +82,9 @@ function Login() {
 
       if (result.roleId === 4) {
         navigate('/AdminDashboard');
-      }  else if (result.roleId === 3 ){
+      } else if (result.roleId === 3) {
         navigate('/Bloglist');
-      }else {
+      } else {
         navigate('/');
       }
 
@@ -108,6 +108,26 @@ function Login() {
   const handleGoogleLogin = () => {
     console.log("Google login clicked");
     // Logic cho đăng nhập bằng Google
+  };
+
+  const styles = {
+    googleButton: {
+      display: 'inline-block',
+      fontSize: '17px',
+      fontWeight: '600',
+      padding: '12px 0px',
+      borderRadius: '25px',
+      textAlign: 'center',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      border: 'none',
+      width: '100%',
+      backgroundColor: '#db4437', // Google Red
+      color: '#fff',
+    },
+    googleButtonHover: {
+      backgroundColor: '#c3362b', // Darker red for hover
+    },
   };
 
   return (
@@ -168,8 +188,15 @@ function Login() {
                   {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
                 <span>Hoặc</span>
-                <button className="btn btn-google btn-block" type="button" onClick={handleGoogleLogin}>
-                  <i className="fa fa-google"></i> Đăng nhập bằng Google
+                <button
+                  className="btn btn-google btn-block"
+                  style={styles.googleButton}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = styles.googleButtonHover.backgroundColor}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = styles.googleButton.backgroundColor}
+                  type="button"
+                  onClick={handleGoogleLogin}
+                >
+                   Đăng nhập bằng Google
                 </button>
                 <div className="login-links text-center">
                   <span>Bạn chưa có tài khoản? <a href="/register">Tạo tài khoản</a></span>
