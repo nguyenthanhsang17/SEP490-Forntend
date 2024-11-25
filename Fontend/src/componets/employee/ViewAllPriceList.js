@@ -5,6 +5,7 @@ import '../assets/css/colors/green-style.css';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 const ViewAllPriceList = () => {
   const [plans, setPlans] = useState([]);
@@ -49,7 +50,10 @@ const ViewAllPriceList = () => {
       padding: "25px",
       marginBottom: "30px",
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-      transition: "transform 0.2s, box-shadow 0.2s",
+      height: "100%", // Đảm bảo chiều cao bằng nhau
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
     },
     cardTitle: {
       fontSize: "1.8rem",
@@ -69,6 +73,20 @@ const ViewAllPriceList = () => {
       marginBottom: "1.5rem",
       lineHeight: "1.6",
     },
+    card: {
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      textAlign: "center",
+      backgroundColor: "#fff",
+      padding: "25px",
+      marginBottom: "30px",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      transition: "transform 0.2s, box-shadow 0.2s",
+      height: "100%", // Đảm bảo chiều cao bằng nhau
+      display: "flex",
+      flexDirection: "column", // Giúp nội dung dàn đều
+      justifyContent: "space-between",
+    },
     button: {
       borderRadius: "5px",
       fontSize: "1rem",
@@ -86,6 +104,7 @@ const ViewAllPriceList = () => {
       color: "#fff",
       border: "none",
     },
+
   };
 
   // Fetch data from the API
@@ -97,18 +116,24 @@ const ViewAllPriceList = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Map API data to the required format
-        const formattedData = data.map((item) => ({
-          id: item.servicePriceId,
-          name: `Gói ${item.servicePriceId}`, // Đổi sang tiếng Việt
-          price: `${item.price.toLocaleString()} VND`, // Giữ nguyên định dạng số
-          description: [
+        const formattedData = data.map((item) => {
+          const description = [
             `Bao gồm: ${item.numberPosts} bài đăng.`,
-            `${item.numberPostsUrgentRecruitment} bài đăng tuyển gấp.`,
-            item.isFindJobseekers ? "Có thể tìm kiếm ứng viên." : "Không thể tìm kiếm ứng viên.",
-            `Có hiệu lực trong ${item.durationsMonth} tháng.`,
-          ], // Mô tả dưới dạng danh sách
-        }));
+            `${item.numberPostsUrgentRecruitment} bài đăng tuyển nổi bật.`,
+          ];
+
+          // Thêm dòng "Có thể tìm kiếm ứng viên và có hiệu lực trong X tháng." nếu isFindJobseekers là true
+          if (item.isFindJobseekers) {
+            description.push(`Có thể tìm kiếm ứng viên và có hiệu lực trong ${item.durationsMonth} tháng.`);
+          }
+
+          return {
+            id: item.servicePriceId,
+            name: `Gói ${item.servicePriceId}`,
+            price: `${item.price.toLocaleString()} VND`,
+            description,
+          };
+        });
 
         setPlans(formattedData);
       } catch (err) {
@@ -122,29 +147,48 @@ const ViewAllPriceList = () => {
   }, []);
 
 
-  const mua = async (ServiceID) => {
 
-    try {
-      const requestBody = {
-        ServicePriceId: ServiceID, // ID của gói dịch vụ
-      };
-      localStorage.setItem('ServiceID', ServiceID);
-      const token = localStorage.getItem("token");
-      const response = await axios.post("https://localhost:7077/api/VnPay/checkout", requestBody, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  
+const mua = async (ServiceID) => {
+  const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
-      const paymentUrl = response.data; // Lấy URL từ server
-      console.log("Payment URL:", paymentUrl);
-      window.location.href = paymentUrl;
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!token) {
+    // Nếu không có token, hiển thị thông báo yêu cầu đăng nhập
+    Swal.fire({
+      icon: 'warning', 
+      title: 'Bạn chưa đăng nhập',
+      text: 'Vui lòng đăng nhập để tiếp tục mua gói dịch vụ.',
+      showCancelButton: true, 
+      confirmButtonText: 'Đăng nhập',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/login";
+      }
+    });
+    return;
+  }
+
+  try {
+    const requestBody = {
+      ServicePriceId: ServiceID, // ID của gói dịch vụ
+    };
+    const response = await axios.post("https://localhost:7077/api/VnPay/checkout", requestBody, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const paymentUrl = response.data; // Lấy URL từ server
+    console.log("Payment URL:", paymentUrl);
+    window.location.href = paymentUrl;
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -180,26 +224,36 @@ const ViewAllPriceList = () => {
       {/* Pricing Section */}
       <section style={styles.section}>
         <div className="container">
-          <div className="row">
+          <div
+            className="row"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
             {plans.map((plan) => (
               <div
                 className="col-md-4"
                 key={plan.id}
                 style={{
-                  transition: "transform 0.2s",
+                  display: "flex",
+                  alignItems: "stretch", // Đảm bảo các card có chiều cao bằng nhau
+                  flexDirection: "column",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.05)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
               >
                 <div style={styles.card}>
                   <h3 style={styles.cardTitle}>{plan.name}</h3>
                   <p style={styles.cardPrice}>{plan.price}</p>
-                  {/* Hiển thị mô tả theo dạng danh sách thẳng đứng */}
-                  <ul style={{ textAlign: "left", marginBottom: "1.5rem", fontSize: "1.2rem", lineHeight: "1.8", color: "#444" }}>
+                  <ul
+                    style={{
+                      textAlign: "left",
+                      marginBottom: "1.5rem",
+                      fontSize: "1.2rem",
+                      lineHeight: "1.8",
+                      color: "#444",
+                    }}
+                  >
                     {plan.description.map((line, index) => (
                       <li key={index} style={{ marginBottom: "0.5rem" }}>
                         {line}
@@ -207,7 +261,10 @@ const ViewAllPriceList = () => {
                     ))}
                   </ul>
                   <div className="d-flex justify-content-center">
-                    <button style={{ ...styles.button, ...styles.btnSuccess }} onClick={() => mua(plan.id)}>
+                    <button
+                      style={{ ...styles.button, ...styles.btnSuccess }}
+                      onClick={() => mua(plan.id)}
+                    >
                       Mua ngay
                     </button>
                   </div>
@@ -217,7 +274,6 @@ const ViewAllPriceList = () => {
           </div>
         </div>
       </section>
-
       <Footer />
     </>
   );

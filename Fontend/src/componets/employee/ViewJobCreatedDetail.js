@@ -188,7 +188,7 @@ function ViewJobCreatedDetail() {
     } catch (error) {
       console.error("Failed to send request approval:", error);
       await Swal.fire({
-        title: 'Gửi yêu cầu không thành công!',
+        title: error.response.data.message,
         icon: 'error',
         confirmButtonText: 'Ok',
       });
@@ -373,14 +373,14 @@ function ViewJobCreatedDetail() {
                 <h4 style={styles.expirationDate}>
                   Ngày hết hạn: {jobDetails.expirationDate
                     ? `${new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}`
-                    : null
-                  }
+                    : null}
                 </h4>
-                
-                {/* Hiển thị lý do bị từ chối */}
-                <div style={{ marginTop: "20px", color: "red" }}>
-                  <strong>Lý do bị từ chối:</strong> {jobDetails.reason || "Không có lý do cụ thể"}
-                </div>
+                {(jobDetails.status === 3 || jobDetails.status === 6) && jobDetails.reason && (
+                  // Hiển thị lý do bị từ chối nếu có lý do
+                  <div style={{ marginTop: "20px", color: "red" }}>
+                    <strong>Lý do bị từ chối:</strong> {jobDetails.reason}
+                  </div>
+                )}
               </div>
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
@@ -392,7 +392,7 @@ function ViewJobCreatedDetail() {
                       border: "none",
                       color: "#fff",
                     }}
-                    onClick={() => window.location.href = `/EditPostJob/${id}`}
+                    onClick={() => window.location.href = `/ReCreateJob/${id}`}
                   >
                     Sao chép bài viết
                   </button>

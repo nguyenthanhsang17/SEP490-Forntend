@@ -65,7 +65,7 @@ const MemberCard = () => {
       );
       console.log("alo");
       console.log(response.data.message);
-      if(response.data.message=="Bạn không dc phép truy cập hãy mua gói"){
+      if (response.data.message == "Bạn không dc phép truy cập hãy mua gói") {
         showAlert2("Bạn không dc phép truy cập hãy mua gói");
         return;
       }
@@ -149,6 +149,38 @@ const MemberCard = () => {
   useEffect(() => {
     fetchCandidates();
   }, []);
+
+  const sendFirstTimeMessage = async (idto) => {
+    try {
+      // Get the JWT token from localStorage (or another secure location)
+      const token = localStorage.getItem("token");
+
+      
+
+      // Define the API endpoint
+      const apiEndpoint = `https://localhost:7077/api/Chat/SendFisrtTime/${idto}`;
+
+      // Make the POST request to the API
+      const response = await axios.post(apiEndpoint, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Handle the response
+      if (response.status === 200) {
+        console.log("Message sent successfully:", response.data);
+        window.open("/ChatList", "_blank");
+      }
+    } catch (error) {
+      // Handle error
+      if (error.response) {
+        console.error("API error:", error.response.data.message || error.response.data);
+      } else {
+        console.error("Error:", error.message);
+      }
+    }
+  }
 
   return (
     <>
@@ -335,7 +367,9 @@ const MemberCard = () => {
                             fontSize: "12px", // Giảm kích thước font
                             marginBottom: "5px", // Cách đều các nút
                           }}
-                          onClick={() => handleViewDetail(candidate.userId)}
+                          onClick={() => {
+                            sendFirstTimeMessage(candidate.userId);
+                          }}
                         >
                           Liên Hệ Ngay
                         </button>

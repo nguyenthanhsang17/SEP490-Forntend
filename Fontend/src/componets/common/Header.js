@@ -228,7 +228,7 @@ const Header = () => {
               data-in="fadeInDown"
               data-out="fadeOutUp"
             >
-              <li>
+              {roleId===2?(<li>
                 <a
                   style={styles.viewJobsLink}
                   onClick={handleViewAllJobsClick}
@@ -236,7 +236,8 @@ const Header = () => {
                 >
                   <FaList style={styles.icon} /> Bảng giá dịch vụ
                 </a>
-              </li>
+              </li>):("")}
+              
               <li>
                 <a
                   style={styles.viewJobsLink}
@@ -353,7 +354,7 @@ const Header = () => {
                         Danh sách công việc đã tạo
                       </div>
                     )}
-                    {roleId === "1" && (
+                    {roleId === "1" || roleId ==="2" && (
                       <div
                         style={styles.dropdownItem}
                         onClick={handleViewListAppliedClick}
