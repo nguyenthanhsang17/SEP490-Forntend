@@ -232,15 +232,19 @@ const Header = () => {
               data-in="fadeInDown"
               data-out="fadeOutUp"
             >
-              {roleId==="2"?(<li>
-                <a
-                  style={styles.viewJobsLink}
-                  onClick={handleViewAllJobsClick}
-                  href="/viewAllPriceList"
-                >
-                  <FaList style={styles.icon} /> Bảng giá dịch vụ
-                </a>
-              </li>):("")}
+              {roleId === "2" ? (
+                <li>
+                  <a
+                    style={styles.viewJobsLink}
+                    onClick={handleViewAllJobsClick}
+                    href="/viewAllPriceList"
+                  >
+                    <FaList style={styles.icon} /> Bảng giá dịch vụ
+                  </a>
+                </li>
+              ) : (
+                ""
+              )}
 
               <li>
                 <a
