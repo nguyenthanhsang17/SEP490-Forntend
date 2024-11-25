@@ -228,7 +228,7 @@ const Header = () => {
               data-in="fadeInDown"
               data-out="fadeOutUp"
             >
-              {roleId===2?(<li>
+              {roleId==="2"?(<li>
                 <a
                   style={styles.viewJobsLink}
                   onClick={handleViewAllJobsClick}
