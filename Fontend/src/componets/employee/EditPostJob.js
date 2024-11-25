@@ -656,6 +656,94 @@ function EditPostJob() {
         SetBamNut(false);
     }
 
+    const luujob2 = async () => {
+        SetBamNut(true);
+
+        if (!validateJobData()) {
+            return;
+        }
+
+        if (isLongTerm) {
+            const dataToSend = formatDataForApi();
+            console.log("slot de cap nhat");
+            console.log(JSON.stringify(dataToSend, null, 2));
+            if (!dataToSend) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
+                return;
+            }
+        } else {
+            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch !!!');
+                return;
+            }
+        }
+
+        const dataToSend = formatDataForApi();
+        console.log("slot de cap nhat");
+        console.log(JSON.stringify(dataToSend, null, 2));
+        if (!dataToSend) {
+            alert('Chưa nhập thông tin đầy đủ lịch làm việc');
+            return;
+        }
+
+        const formattedPostJobDates = postJobDates.map((date, index) => ({
+            postId: id,
+            eventDate: new Date(date.eventDate).toISOString(),
+            startTime: date.startTime,
+            endTime: date.endTime
+        }));
+
+
+        const jobData = {
+            postId: JobDetail.postId,
+            jobTitle: JobDetail.jobTitle,
+            jobDescription: JobDetail.jobDescription,
+            salaryTypesId: JobDetail.salaryTypesId,
+            salary: JobDetail.salary,
+            numberPeople: JobDetail.numberPeople,
+            address: JobDetail.address,
+            latitude: JobDetail.latitude,
+            longitude: JobDetail.longitude,
+            status: 0,
+            isUrgentRecruitment: JobDetail.isUrgentRecruitment,
+            jobCategoryId: JobDetail.jobCategoryId,
+            time: JobDetail.time,
+            jobPostDates: formattedPostJobDates,
+            slotDTOs: formatDataForApi(),
+            isLongTerm: isLongTerm
+        };
+        console.log(JSON.stringify(jobData, null, 2));
+
+        const token = localStorage.getItem('token');
+        console.log(token);
+
+        console.log(isLongTerm);
+
+        try {
+            const response = await fetch('https://localhost:7077/api/PostJobs/UpdatePostJob', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(jobData),
+            });
+            if (response.ok) {
+                const idp = await response.json(); // Lấy trực tiếp giá trị id
+                console.log("PostId: " + idp);
+                SetPostID(idp);
+                const sang = formatDataForApi();
+                console.log(JSON.stringify(sang, null, 2));
+                uploadImages();
+            } else {
+                
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        SetBamNut(false);
+    }
+
     const showAlert = async (text) => {
         const result = await Swal.fire({
             title: text,
@@ -671,11 +759,12 @@ function EditPostJob() {
     const showAlert2 = async (text) => {
         const result = await Swal.fire({
             title: text,
-            showCancelButton: false,
+            showCancelButton: true,
             confirmButtonText: 'Ok'
         });
 
         if (result.isConfirmed) {
+            luujob2();
             navigate("/viewAllPriceList");
         }
     };
@@ -764,7 +853,7 @@ function EditPostJob() {
             } else {
                 try {
                     const errorData = await response.json();
-                    showAlert2(errorData.message || "Có lỗi xảy ra");
+                    showAlert2(errorData.message+", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
                 } catch {
                     showAlert("Có lỗi xảy ra");
                 }
