@@ -589,6 +589,80 @@ function CreatePostJob() {
         SetBamNut(false);
     };
 
+    const luujob2 = async () => {
+        SetBamNut(true);
+
+        if (!validateJobData()) {
+            return;
+        }
+
+        if (isLongTerm) {
+            const dataToSend = formatDataForApi(-1);
+            console.log(JSON.stringify(dataToSend, null, 2));
+            if (!dataToSend) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch làm việc !!!');
+                return 0;
+            }
+        } else {
+            if (postJobDates.some(date => !date.eventDate || !date.startTime || !date.endTime)) {
+                alert('Chưa nhập đầy đủ các thông tin về lịch làm việc !!!');
+                return 0;
+            }
+        }
+
+        const formattedPostJobDates = postJobDates.map((date, index) => ({
+            postId: -1,
+            eventDate: new Date(date.eventDate).toISOString(),
+            startTime: date.startTime,
+            endTime: date.endTime
+        }));
+
+        const jobData = {
+            jobTitle: jobTitle,
+            jobDescription: jobDescription,
+            salaryTypesId: salaryType,
+            salary: fixSalary,
+            NumberPeople: numberPeople,
+            Address: address,
+            latitude: latitude,
+            longitude: longitude,
+            ExpirationDate: expirationDate,
+            status: 0,
+            IsUrgentRecruitment: isUrgentRecruitment,
+            jobCategoryId: jobCategory,
+            time: time,
+            slotDTOs: formatDataForApi(-1),
+            jobPostDates: formattedPostJobDates,
+            isLongTerm: isLongTerm
+        };
+        console.log(JSON.stringify(jobData, null, 2));
+
+        const token = localStorage.getItem('token');
+        console.log(token);
+
+
+        try {
+            const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(jobData),
+            });
+            if (response.ok) {
+                const id = await response.json(); // Lấy trực tiếp giá trị id
+                console.log("PostId: " + id);
+                SetPostID(id);
+                const uploadstatus = await uploadImages(id);
+            } else {
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        SetBamNut(false);
+    };
+
     const showAlert = async (text) => {
         const result = await Swal.fire({
             title: text,
@@ -597,6 +671,7 @@ function CreatePostJob() {
         });
 
         if (result.isConfirmed) {
+            
             navigate("/viewListJobsCreated");
         }
     };
@@ -609,6 +684,7 @@ function CreatePostJob() {
         });
 
         if (result.isConfirmed) {
+            luujob2();
             navigate("/viewAllPriceList");
         }
     };
