@@ -434,8 +434,8 @@ const ViewListJobsCreated = () => {
                                             <div className="brows-job-position">
                                                 <h3>{job.jobTitle}</h3>
                                                 <p>
-                                                    <span>{job.jobCategoryName}</span> |
-                                                    <span> {job.salaryTypeName}: {job.salary.toLocaleString()} VND / {salaryTypeMap[job.salaryTypeName]}</span>
+                                                    <span>{job.jobCategoryName}</span>|
+                                                    <span> {job.salary.toLocaleString()} VND / {salaryTypeMap[job.salaryTypeName]}</span>
                                                 </p>
                                                 <p>
                                                     <span>Số người cần tuyển: {job.numberPeople}</span> |
