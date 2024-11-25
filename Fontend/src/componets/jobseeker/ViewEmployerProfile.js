@@ -186,7 +186,7 @@ const ViewEmployerProfile = () => {
                     </li>
                     <li>
                       <strong>Giới tính:</strong>{" "}
-                      {authorData.gender === "Male" ? "Nam" : "Nữ"}
+                      {authorData.gender ? "Nam" : "Nữ"}
                     </li>
                     <li>
                       <strong>Địa chỉ:</strong> {authorData.address}

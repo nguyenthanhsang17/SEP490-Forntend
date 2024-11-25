@@ -25,9 +25,9 @@ const Header = () => {
   return (
     <header className="dashboard-header">
       {/* Search Bar */}
-      <Input
+      <h1
         className="dashboard-search"
-        placeholder="Tìm kiếm"
+        
         prefix={<SearchOutlined />}
       />
 

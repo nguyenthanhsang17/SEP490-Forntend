@@ -42,19 +42,6 @@ const ViewAllPriceList = () => {
       backgroundColor: "#f9f9f9",
       padding: "50px 0",
     },
-    card: {
-      border: "1px solid #ddd",
-      borderRadius: "10px",
-      textAlign: "center",
-      backgroundColor: "#fff",
-      padding: "25px",
-      marginBottom: "30px",
-      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-      height: "100%", // Đảm bảo chiều cao bằng nhau
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-    },
     cardTitle: {
       fontSize: "1.8rem",
       fontWeight: "bold",
@@ -82,9 +69,9 @@ const ViewAllPriceList = () => {
       marginBottom: "30px",
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
       transition: "transform 0.2s, box-shadow 0.2s",
-      height: "100%", // Đảm bảo chiều cao bằng nhau
+      minHeight: "350px", // Đặt chiều cao tối thiểu
       display: "flex",
-      flexDirection: "column", // Giúp nội dung dàn đều
+      flexDirection: "column",
       justifyContent: "space-between",
     },
     button: {
@@ -122,14 +109,13 @@ const ViewAllPriceList = () => {
             `${item.numberPostsUrgentRecruitment} bài đăng tuyển nổi bật.`,
           ];
 
-          // Thêm dòng "Có thể tìm kiếm ứng viên và có hiệu lực trong X tháng." nếu isFindJobseekers là true
           if (item.isFindJobseekers) {
             description.push(`Có thể tìm kiếm ứng viên và có hiệu lực trong ${item.durationsMonth} tháng.`);
           }
 
           return {
             id: item.servicePriceId,
-            name: `Gói ${item.servicePriceId}`,
+            name: item.servicePriceName, // Thay đổi từ "Gói ${item.servicePriceId}" thành servicePriceName
             price: `${item.price.toLocaleString()} VND`,
             description,
           };
@@ -148,46 +134,46 @@ const ViewAllPriceList = () => {
 
 
 
-  
-const mua = async (ServiceID) => {
-  const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
-  if (!token) {
-    // Nếu không có token, hiển thị thông báo yêu cầu đăng nhập
-    Swal.fire({
-      icon: 'warning', 
-      title: 'Bạn chưa đăng nhập',
-      text: 'Vui lòng đăng nhập để tiếp tục mua gói dịch vụ.',
-      showCancelButton: true, 
-      confirmButtonText: 'Đăng nhập',
-      cancelButtonText: 'Hủy',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/login";
-      }
-    });
-    return;
-  }
+  const mua = async (ServiceID) => {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
-  try {
-    const requestBody = {
-      ServicePriceId: ServiceID, // ID của gói dịch vụ
-    };
-    const response = await axios.post("https://localhost:7077/api/VnPay/checkout", requestBody, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    if (!token) {
+      // Nếu không có token, hiển thị thông báo yêu cầu đăng nhập
+      Swal.fire({
+        icon: 'warning',
+        title: 'Bạn chưa đăng nhập',
+        text: 'Vui lòng đăng nhập để tiếp tục mua gói dịch vụ.',
+        showCancelButton: true,
+        confirmButtonText: 'Đăng nhập',
+        cancelButtonText: 'Hủy',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/login";
+        }
+      });
+      return;
+    }
 
-    const paymentUrl = response.data; // Lấy URL từ server
-    console.log("Payment URL:", paymentUrl);
-    window.location.href = paymentUrl;
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const requestBody = {
+        ServicePriceId: ServiceID, // ID của gói dịch vụ
+      };
+      const response = await axios.post("https://localhost:7077/api/VnPay/checkout", requestBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const paymentUrl = response.data; // Lấy URL từ server
+      console.log("Payment URL:", paymentUrl);
+      window.location.href = paymentUrl;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   if (loading) {
@@ -229,12 +215,12 @@ const mua = async (ServiceID) => {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              justifyContent: "space-between",
+              justifyContent: "flex-start",
             }}
           >
             {plans.map((plan) => (
               <div
-                className="col-md-4"
+                className="col-md-4 d-flex align-items-stretch"
                 key={plan.id}
                 style={{
                   display: "flex",
