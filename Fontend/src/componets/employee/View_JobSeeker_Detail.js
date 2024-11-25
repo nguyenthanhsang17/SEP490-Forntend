@@ -22,6 +22,7 @@ function ViewJobSeekerDetail() {
         setJobSeeker(response.data);
         console.log(response.data.status);
         setStatus(response.data.status);
+        if(status===4){setCanViewDetails(true) }
       } catch (error) {
         console.error('Error fetching the jobseeker detail data:', error);
       }

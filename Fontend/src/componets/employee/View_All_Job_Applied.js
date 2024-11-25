@@ -113,7 +113,8 @@ function ViewAllJobApplied() {
                     <p className="card-text"><strong>Mức lương:</strong> {job.fixSalary } VNĐ</p>
                     <p className="card-text"><strong>Người đăng:</strong> {job.authorname}</p>
                     <p className="card-text"><strong>Ngày hết hạn:</strong> {new Date(job.expirationDate).toLocaleDateString('vi-VN')}</p>
-                    <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory }</p>
+                    <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory }</p>  
+                    <p className="card-text"><strong>Tên cv ứng tuyển :</strong> {job.cVname }</p>  
                     <p className="card-text">
                       <strong>Trạng thái đơn xin việc:</strong> {
                         (() => {
@@ -122,14 +123,12 @@ function ViewAllJobApplied() {
                               return "Đã ứng tuyển";
                             case 1:
                               return "Nhà tuyển dụng đánh giá bạn không phù hợp";
-                            case 2:
-                              return "Nhà tuyển dụng đang chuẩn bị liên lạc với bạn";
                             case 3:
-                              return "Nhà tuyển dụng xác nhận bạn đã được nhận";
+                              return "Nhà tuyển dụng đã xem thông tin liên hệ";
                             case 4:
-                              return "Nhà tuyển dụng không phản hồi";
+                              return "Nhà tuyển dụng xác nhận nhận bạn";
                             case 5:
-                              return "Đã hủy ứng tuyển";
+                              return "Nhà tuyển dụng xác nhận ko nhận bạn";
                             default:
                               return "Không xác định";
                           }

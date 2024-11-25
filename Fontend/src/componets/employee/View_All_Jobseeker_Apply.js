@@ -120,6 +120,7 @@ function ViewAllJobSeekerApply() {
               onChange={e => setApplyFilter(e.target.value)}
             >
               <option value="">Tất cả</option>
+              <option value="1">Đang chờ</option>
               <option value="1">Không phù hợp</option>
               <option value="3">Đã xem thông tin liên lạc</option>
               <option value="4">Đã nhận</option>
