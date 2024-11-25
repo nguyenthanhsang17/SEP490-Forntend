@@ -68,6 +68,7 @@ const ManageService = () => {
 
     const handleCreateService = async (e) => {
         e.preventDefault();
+        console.log(newService);
         try {
             await axios.put('https://localhost:7077/api/ServicePriceLists/CreateNewService', newService);
             alert('Gói dịch vụ đã được tạo thành công!');
@@ -144,7 +145,7 @@ const ManageService = () => {
                                                     className={service.status === 1 ? 'stop-sale-btn' : 'start-sale-btn'}
                                                     onClick={() => handleToggleStatus(service.servicePriceId, service.status)}
                                                 >
-                                                    {service.status === 1 ? 'Ngừng bán' : 'Bán'}
+                                                    {service.status == "1" ? 'Ngừng bán' : 'Bán'}
                                                 </button>
                                             </div>
                                         </td>
@@ -217,7 +218,7 @@ const ManageService = () => {
                                     <option value="0">Không</option>
                                 </select>
                             </div>
-                            <div className="form-group">
+                            {newService.isFindJobseekers=="1"?(<div className="form-group">
                                 <label>Thời hạn sử dụng (tháng):</label>
                                 <input
                                     type="number"
@@ -226,8 +227,10 @@ const ManageService = () => {
                                     onChange={handleInputMonth}
                                     required
                                     placeholder="Nhập số tháng"
+                                    readOnly={!newService.isFindJobseekers}
                                 />
-                            </div>
+                            </div>):("")}
+                            
                             <div className="form-group">
                                 <label>Mức giá:</label>
                                 <input
