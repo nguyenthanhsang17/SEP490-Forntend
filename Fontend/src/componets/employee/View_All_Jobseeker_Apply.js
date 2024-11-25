@@ -12,20 +12,23 @@ function ViewAllJobSeekerApply() {
   const [jobSeekers, setJobSeekers] = useState([]);
   const [genderFilter, setGenderFilter] = useState('');
   const [ageFilter, setAgeFilter] = useState('');
+  const [ageFilter2, setAgeFilter2] = useState('');
   const [jobFilter, setJobFilter] = useState('');
   const [applyFilter, setApplyFilter] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchJobSeekers = async () => {
-    console.log("Job ID:", id);  
+
     try {
+      setJobSeekers([]);
       const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetAllJobseekerApply/${id}`, {
         params: {
           pageNumber: pageNumber,
           pageSize: 4, // Bạn có thể thay đổi kích thước trang nếu cần
           gender: genderFilter,
-          age: ageFilter,
+          agemin: ageFilter,
+          agemax:  ageFilter2,
           jobName: jobFilter,
           applyStatus: applyFilter,
         }
@@ -39,12 +42,14 @@ function ViewAllJobSeekerApply() {
   };
 
   useEffect(() => {
+    // Chỉ gọi fetch khi trang hoặc id thay đổi
     fetchJobSeekers();
-  }, [id, pageNumber, genderFilter, ageFilter, jobFilter, applyFilter]);
+  }, [id, pageNumber]);
 
   const handleSearch = () => {
-    setPageNumber(1); // Reset về trang 1 khi có bộ lọc mới
-    fetchJobSeekers(); // Gọi lại hàm để fetch dữ liệu mới
+    // Đặt trang về 1 và gọi fetch khi bấm tìm kiếm
+    setPageNumber(1);
+    fetchJobSeekers();
   };
 
   return (
@@ -69,7 +74,7 @@ function ViewAllJobSeekerApply() {
             </select>
           </div>
           <div className="form-group" style={{ flex: '1', marginRight: '10px' }}>
-            <label htmlFor="ageFilter">Tuổi:</label>
+            <label htmlFor="ageFilter">Tuổi từ:</label>
             <input 
               type="number" 
               id="ageFilter" 
@@ -79,6 +84,19 @@ function ViewAllJobSeekerApply() {
               placeholder="Nhập tuổi"
             />
           </div>
+
+          <div className="form-group" style={{ flex: '1', marginRight: '10px' }}>
+            <label htmlFor="ageFilter2">Tuổi đến:</label>
+            <input 
+              type="number" 
+              id="ageFilter2" 
+              className="form-control" 
+              value={ageFilter2} 
+              onChange={e => setAgeFilter2(e.target.value)}
+              placeholder="Nhập tuổi"
+            />
+          </div>
+
           <div className="form-group" style={{ flex: '1', marginRight: '10px' }}>
             <label htmlFor="jobFilter">Công việc hiện tại:</label>
             <select 
@@ -102,10 +120,10 @@ function ViewAllJobSeekerApply() {
               onChange={e => setApplyFilter(e.target.value)}
             >
               <option value="">Tất cả</option>
-              <option value="6">Không phù hợp</option>
-              <option value="7">Xem lại sau</option>
-              <option value="2">Đã xem thông tin liên lạc</option>
-              <option value="3">Đã nhận</option>
+              <option value="1">Không phù hợp</option>
+              <option value="3">Đã xem thông tin liên lạc</option>
+              <option value="4">Đã nhận</option>
+              <option value="5">Không nhận</option>
             </select>
           </div>
           <button onClick={handleSearch} className="btn btn-primary">Tìm kiếm</button>
