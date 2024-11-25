@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "notistack"; // Import useSnackbar
+import { useSnackbar } from "notistack";
 import $ from "jquery";
 import "../assets/css/style.css";
 import "../assets/plugins/css/plugins.css";
@@ -9,7 +9,6 @@ import bannerImage from "../assets/img/banner-10.jpg";
 import logoImage from "../assets/img/Nice Job Logo-Photoroom.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { colors } from "@mui/material";
 
 const VerifyRegister = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +16,7 @@ const VerifyRegister = () => {
   });
 
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar(); // Initialize notistack
+  const { enqueueSnackbar } = useSnackbar();
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -95,20 +94,20 @@ const VerifyRegister = () => {
     input: {
       width: "100%",
       padding: "10px",
-      paddingRight: "40px", // Chừa khoảng trống cho icon
+      paddingRight: "40px",
       border: "1px solid #ccc",
       borderRadius: "4px",
       boxSizing: "border-box",
     },
 
     swordInput: {
-      position: "relative", // Để icon nằm bên trong
+      position: "relative",
       width: "100%",
     },
     icon: {
       position: "absolute",
-      top: "50%", // Căn giữa icon
-      right: "10px", // Căn chỉnh từ bên phải
+      top: "50%",
+      right: "10px",
       transform: "translateY(-50%)",
       cursor: "pointer",
       color: "#888",
@@ -116,7 +115,7 @@ const VerifyRegister = () => {
     button: {
       width: "100%",
       padding: "10px",
-      backgroundColor: "#4facfe",
+      backgroundColor: "#4caf50", // Màu xanh lá cây
       color: "#fff",
       border: "none",
       borderRadius: "4px",
@@ -125,7 +124,7 @@ const VerifyRegister = () => {
       marginTop: "8px",
     },
     passwordInput: {
-      position: "relative", // Đặt tương đối để chứa icon
+      position: "relative",
       width: "100%",
     },
   };
@@ -134,11 +133,14 @@ const VerifyRegister = () => {
     <div style={styles.body}>
       <div style={styles.wrapper}>
         <a href="">
-          <img src={logoImage} className="img-responsive" alt="Logo" />
+          <img
+            src={logoImage}
+            className="img-responsive"
+            alt="Logo"
+            style={{ marginBottom: "20px" }}
+          />
         </a>
-        <span style={{ color: "red" }}>
-          Kiểm tra code được gửi đến email của bạn
-        </span>
+        
         <form onSubmit={handleSubmit}>
           <div style={styles.passwordInput}>
             <input
@@ -155,6 +157,18 @@ const VerifyRegister = () => {
               />
             </span>
           </div>
+          <span
+          style={{
+            color: "#4caf50",
+            fontWeight: "bold",
+            display: "block",
+            textAlign: "left",
+            marginBottom: "15px",
+            fontSize: "13px",
+          }}
+        >
+          Kiểm tra code được gửi đến email của bạn
+        </span>
           <button style={styles.button} type="submit">
             Xác thực tài Khoản
           </button>
