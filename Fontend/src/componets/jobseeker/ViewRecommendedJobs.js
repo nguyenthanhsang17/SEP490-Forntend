@@ -22,6 +22,7 @@ const ViewRecommendedJobs = () => {
   const [notFoundJob, setNotFoundJob] = useState(false);
   const [savedJobs, setSavedJobs] = useState({});
   const [isLocationLoading, setIsLocationLoading] = useState(true);
+
   const [userLocation, setUserLocation] = useState({
     latitude: null,
     longitude: null,
@@ -33,6 +34,15 @@ const ViewRecommendedJobs = () => {
   // Check if the user is logged in
   const isLoggedIn = !!localStorage.getItem("token");
 
+  useEffect(() => {
+    if (!isLoggedIn) {
+      enqueueSnackbar("Vui lòng đăng nhập để xem công việc được đề xuất.", {
+        variant: "warning",
+      });
+      navigate("/login");
+    }
+  }, [isLoggedIn, enqueueSnackbar, navigate]);
+  
   // Get user location
   useEffect(() => {
     const getLocation = () => {
