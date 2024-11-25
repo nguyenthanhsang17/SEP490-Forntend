@@ -180,13 +180,13 @@ const Header = () => {
 
   const handleRequestEmployer = () => {
     setDropdownVisible(false);
-    navigate("/ViewEmployerRequests"); 
+    navigate("/ViewEmployerRequests");
   };
 
   const handleViewhistoryPayment = () => {
     setDropdownVisible(false);
-    navigate("/ViewHistoryPayment"); 
-  }; 
+    navigate("/ViewHistoryPayment");
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -211,7 +211,11 @@ const Header = () => {
             className="navbar-header"
             style={{ position: "relative", top: "-93px" }}
           >
-            <a className="navbar-brand" href="/">
+            <a
+              className="navbar-brand"
+              href="/"
+              style={{ marginLeft: "-150px" }}
+            >
               <img src={logoImage} className="logo logo-display" alt="Logo" />
               <img
                 src={logoImage}
@@ -237,7 +241,7 @@ const Header = () => {
                   <FaList style={styles.icon} /> Bảng giá dịch vụ
                 </a>
               </li>):("")}
-              
+
               <li>
                 <a
                   style={styles.viewJobsLink}
@@ -331,19 +335,18 @@ const Header = () => {
                   >
                     <div
                       style={styles.dropdownItem}
-                      onClick={handleProfileClick} 
+                      onClick={handleProfileClick}
                     >
                       Hồ sơ của bạn
                     </div>
 
-
                     {roleId === "2" && (
                       <div
-                      style={styles.dropdownItem}
-                      onClick={handleViewhistoryPayment} 
-                    >
-                      Xem lịch sử mua gói
-                    </div>
+                        style={styles.dropdownItem}
+                        onClick={handleViewhistoryPayment}
+                      >
+                        Xem lịch sử mua gói
+                      </div>
                     )}
 
                     {roleId === "2" && (
@@ -354,7 +357,7 @@ const Header = () => {
                         Danh sách công việc đã tạo
                       </div>
                     )}
-                    {roleId === "1" || roleId ==="2" && (
+                    {(roleId === "1" || roleId === "2") && (
                       <div
                         style={styles.dropdownItem}
                         onClick={handleViewListAppliedClick}
@@ -362,6 +365,7 @@ const Header = () => {
                         Danh sách công việc đã ứng tuyển
                       </div>
                     )}
+
                     {roleId === "3" && (
                       <div
                         style={styles.dropdownItem}

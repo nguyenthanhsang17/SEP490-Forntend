@@ -47,7 +47,8 @@ const AdminDashboard = () => {
       )
     );
 
-  const barChartData = {
+  // Biểu đồ cột cho số lượng gói đã bán
+  const soldBarChartData = {
     labels: dashboardData.packageStatistics.mostPopularPackages.map(
       (pkg) => pkg.packageName
     ),
@@ -57,12 +58,12 @@ const AdminDashboard = () => {
         data: dashboardData.packageStatistics.mostPopularPackages.map(
           (pkg) => pkg.numberSold
         ),
-        backgroundColor:
-          dashboardData.packageStatistics.mostPopularPackages.map((pkg) =>
+        backgroundColor: dashboardData.packageStatistics.mostPopularPackages.map(
+          (pkg) =>
             pkg.numberSold === maxSold
               ? "rgba(255, 99, 132, 0.8)"
               : "rgba(54, 162, 235, 0.5)"
-          ),
+        ),
         borderColor: dashboardData.packageStatistics.mostPopularPackages.map(
           (pkg) =>
             pkg.numberSold === maxSold
@@ -71,22 +72,25 @@ const AdminDashboard = () => {
         ),
         borderWidth: 1,
       },
+    ],
+  };
+
+  // Biểu đồ cột cho doanh thu
+  const revenueBarChartData = {
+    labels: dashboardData.packageStatistics.mostPopularPackages.map(
+      (pkg) => pkg.packageName
+    ),
+    datasets: [
       {
         label: "Doanh thu (VND)",
         data: dashboardData.packageStatistics.mostPopularPackages.map(
           (pkg) => pkg.totalRevenue
         ),
-        backgroundColor:
-          dashboardData.packageStatistics.mostPopularPackages.map((pkg) =>
-            pkg.numberSold === maxSold
-              ? "rgba(255, 159, 64, 0.8)"
-              : "rgba(75, 192, 192, 0.5)"
-          ),
+        backgroundColor: dashboardData.packageStatistics.mostPopularPackages.map(
+          () => "rgba(75, 192, 192, 0.5)"
+        ),
         borderColor: dashboardData.packageStatistics.mostPopularPackages.map(
-          (pkg) =>
-            pkg.numberSold === maxSold
-              ? "rgba(255, 159, 64, 1)"
-              : "rgba(75, 192, 192, 1)"
+          () => "rgba(75, 192, 192, 1)"
         ),
         borderWidth: 1,
       },
@@ -163,7 +167,7 @@ const AdminDashboard = () => {
             </Card>
           </Col>
         </Row>
-        <Row gutter={[16, 16]} className="charts-row">
+        <Row gutter={[16, 16]} className="charts-row" style={{marginTop:"20px"}}>
           <Col span={16}>
             <Card className="chart-card">
               <h3>Thống kê doanh thu</h3>
@@ -177,34 +181,68 @@ const AdminDashboard = () => {
             </Card>
           </Col>
         </Row>
-        <Card className="all-packages-bar-chart-card">
-          <h3>Biểu đồ cột - Gói và doanh thu</h3>
-          <Bar
-            data={barChartData}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: "top",
-                },
-              },
-              scales: {
-                x: {
-                  title: {
-                    display: true,
-                    text: "Tên gói",
+        <Row gutter={[16, 16]} className="charts-row" style={{marginTop:"30px"}}>
+          <Col span={12}>
+            <Card className="chart-card">
+              <h3>Số lượng gói đã bán</h3>
+              <Bar
+                data={soldBarChartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
                   },
-                },
-                y: {
-                  title: {
-                    display: true,
-                    text: "Số lượng bán & Doanh thu (VND)",
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: "Tên gói",
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: "Số lượng bán",
+                      },
+                    },
                   },
-                },
-              },
-            }}
-          />
-        </Card>
+                }}
+              />
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card className="chart-card">
+              <h3>Doanh thu theo gói</h3>
+              <Bar
+                data={revenueBarChartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                  },
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: "Tên gói",
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: "Doanh thu (VND)",
+                      },
+                    },
+                  },
+                }}
+              />
+            </Card>
+          </Col>
+        </Row>
       </main>
     </div>
   );

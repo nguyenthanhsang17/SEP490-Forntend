@@ -25,12 +25,11 @@ const MemberCard = () => {
   const [saved, setSaved] = useState({});
   const [totalPages, setTotalPages] = useState(1); // Tổng số trang
 
-
   const showAlert2 = async (text) => {
     const result = await Swal.fire({
       title: text,
       showCancelButton: false,
-      confirmButtonText: 'Ok'
+      confirmButtonText: "Ok",
     });
 
     if (result.isConfirmed) {
@@ -74,7 +73,6 @@ const MemberCard = () => {
         setTotalPages(response.data.totalPages || 1); // Gán tổng số trang từ API
       }
     } catch (error) {
-
     } finally {
       setLoading(false);
     }
@@ -155,8 +153,6 @@ const MemberCard = () => {
       // Get the JWT token from localStorage (or another secure location)
       const token = localStorage.getItem("token");
 
-      
-
       // Define the API endpoint
       const apiEndpoint = `https://localhost:7077/api/Chat/SendFisrtTime/${idto}`;
 
@@ -175,12 +171,15 @@ const MemberCard = () => {
     } catch (error) {
       // Handle error
       if (error.response) {
-        console.error("API error:", error.response.data.message || error.response.data);
+        console.error(
+          "API error:",
+          error.response.data.message || error.response.data
+        );
       } else {
         console.error("Error:", error.message);
       }
     }
-  }
+  };
 
   return (
     <>
@@ -283,7 +282,11 @@ const MemberCard = () => {
             <div className="row mt-4">
               {candidates.length > 0 ? (
                 candidates.map((candidate) => (
-                  <div key={candidate.userId} className="col-md-12 mb-4">
+                  <div
+                    key={candidate.userId}
+                    className="col-md-12 mb-4"
+                    onClick={() => handleViewDetail(candidate.userId)} // Sự kiện áp dụng cho cả thẻ
+                  >
                     <div className="candidate-card shadow-effect d-flex align-items-center p-3">
                       <div
                         className="candidate-image"
@@ -318,7 +321,6 @@ const MemberCard = () => {
                         >
                           <strong>Tuổi:</strong> {candidate.age}
                         </p>
-
                         <p
                           style={{
                             color: "#666",
@@ -359,13 +361,16 @@ const MemberCard = () => {
                           {candidate.gender ? "Nam" : "Nữ"}
                         </p>
                       </div>
-                      <div className="candidate-actions d-flex flex-column align-items-end">
+                      <div
+                        className="candidate-actions d-flex flex-column align-items-end"
+                        onClick={(e) => e.stopPropagation()} // Ngăn sự kiện từ các nút bên trong
+                      >
                         <button
                           className="btn btn-primary"
                           style={{
-                            padding: "6px 12px", // Giảm padding để làm nhỏ nút
-                            fontSize: "12px", // Giảm kích thước font
-                            marginBottom: "5px", // Cách đều các nút
+                            padding: "6px 12px",
+                            fontSize: "12px",
+                            marginBottom: "5px",
                           }}
                           onClick={() => {
                             sendFirstTimeMessage(candidate.userId);
@@ -374,15 +379,15 @@ const MemberCard = () => {
                           Liên Hệ Ngay
                         </button>
                         {saved[candidate.userId] ||
-                          candidate.isFavorite === 1 ? (
+                        candidate.isFavorite === 1 ? (
                           <button
                             className="btn btn-save"
                             style={{
-                              padding: "6px 12px", // Giảm padding
-                              fontSize: "12px", // Giảm kích thước font
+                              padding: "6px 12px",
+                              fontSize: "12px",
                             }}
                             onClick={(e) => {
-                              e.stopPropagation();
+                              e.stopPropagation(); // Ngăn sự kiện click lan tới thẻ cha
                             }}
                           >
                             <FontAwesomeIcon
@@ -396,12 +401,13 @@ const MemberCard = () => {
                           <button
                             className="btn btn-save"
                             style={{
-                              padding: "6px 12px", // Giảm padding
-                              fontSize: "12px", // Giảm kích thước font
+                              padding: "6px 12px",
+                              fontSize: "12px",
                             }}
-                            onClick={() =>
-                              handleAddToFavorites(candidate.userId)
-                            }
+                            onClick={(e) => {
+                              e.stopPropagation(); // Ngăn sự kiện click lan tới thẻ cha
+                              handleAddToFavorites(candidate.userId);
+                            }}
                           >
                             <FontAwesomeIcon
                               icon={faHeart}

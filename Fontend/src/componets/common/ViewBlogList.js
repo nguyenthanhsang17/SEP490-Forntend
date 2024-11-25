@@ -89,10 +89,10 @@ const ViewBlogList = () => {
                                                         alt={blog.blogTitle}
                                                         src={blog.thumbnail || "assets/img/blog/default.jpg"}
                                                         style={{ height: '200px', objectFit: 'cover' }}
-                                                        onClick={() => handleBlogClick(blog.blogId)}
+                                                        // onClick={() => handleBlogClick(blog.blogId)}
                                                     />
                                                 }
-                                                //onClick={() => handleBlogClick(blog.blogId)}
+                                                onClick={() => handleBlogClick(blog.blogId)}
                                             >
                                                 <Meta
                                                     title={blog.blogTitle}
