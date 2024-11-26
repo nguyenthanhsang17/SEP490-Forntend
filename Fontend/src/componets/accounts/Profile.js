@@ -404,18 +404,28 @@ const Profile = () => {
                             <li>
                               <span
                                 className="label1"
-                                style={{ marginRight: 60, width: 150 }}
+                                style={{
+                                  marginRight: 60,
+                                  width: 150,
+                                  whiteSpace: "nowrap", // Không cho xuống dòng
+                                  display: "inline-block", // Hiển thị trên cùng một dòng
+                                }}
                               >
-                                Số bài đăng đã tạo:
+                                Số lượt đăng bài bình thường:
                               </span>
                               {serviceInfo.numberPosts ?? "N/A"}
                             </li>
                             <li>
                               <span
                                 className="label1"
-                                style={{ marginRight: 60, width: 150 }}
+                                style={{
+                                  marginRight: 60,
+                                  width: 150,
+                                  whiteSpace: "nowrap", // Không cho xuống dòng
+                                  display: "inline-block", // Hiển thị trên cùng một dòng
+                                }}
                               >
-                                Số bài đăng khẩn cấp:
+                                Số lượt đăng khẩn cấp:
                               </span>
                               {serviceInfo.numberPostsUrgentRecruitment ??
                                 "N/A"}
