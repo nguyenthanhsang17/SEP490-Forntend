@@ -112,7 +112,7 @@ function ReApplyJob() {
         cvItems: {
             display: 'flex',
             flexDirection: 'column',
-            gap: '15px', 
+            gap: '15px',
         },
         cvItem: {
             backgroundColor: '#ffffff',
@@ -123,7 +123,7 @@ function ReApplyJob() {
         cvItemTitle: {
             fontSize: '1.5rem',
             marginBottom: '10px',
-            color: '#007bff', 
+            color: '#007bff',
         },
         cvDetail: {
             padding: '10px 0',
@@ -135,7 +135,7 @@ function ReApplyJob() {
         },
         cvDetailDescription: {
             margin: '5px 0 0',
-            color: '#777', 
+            color: '#777',
         },
         applyButton: {
             marginTop: '10px',
@@ -163,6 +163,15 @@ function ReApplyJob() {
             marginTop: '20px',
         },
         appliedMessage: { color: '#28a745', fontWeight: 'bold' },
+    };
+
+    // Ở trang ReApplyJob
+    const handleNavigateToManagementCV = () => {
+        navigate('/ManagementCV', {
+            state: {
+                from: `/ReApplyJob/${job_id}`
+            }
+        });
     };
 
     if (loading) {
@@ -203,7 +212,7 @@ function ReApplyJob() {
                     ))}
                 </div>
                 <h2 style={styles.title}>
-                    Chưa có CV? <a href="/ManagementCV">Tạo mới</a>
+                    Chưa có CV? <a  onClick={handleNavigateToManagementCV}>Tạo mới</a>
                 </h2>
             </div>
             <Footer />
@@ -215,4 +224,3 @@ export default ReApplyJob;
 
 
 
-    
