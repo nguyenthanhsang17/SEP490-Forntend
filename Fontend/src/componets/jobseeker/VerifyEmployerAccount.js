@@ -141,7 +141,7 @@ function VerifyEmployerAccount() {
         <img src={logoImage} alt="Logo" style={{ width: '200px', marginBottom: '5px' }} />
         <h2 style={{ marginBottom: '25px', fontFamily: 'Arial, sans-serif', color: '#333', fontSize: '1.5em' }}>Xác Thực Tài Khoản Nhà Tuyển Dụng</h2>
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh / tên chủ hộ gia đình <span style={{ color: 'red' }}>*</span></label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh / Tên chủ hộ gia đình <span style={{ color: 'red' }}>*</span></label>
           <input
             type="text"
             placeholder="Tên cửa hàng, công ty, phòng ban,..."
