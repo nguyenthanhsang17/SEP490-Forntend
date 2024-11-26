@@ -21,17 +21,17 @@ function ApplyJob() {
                 navigate("/profile");
                 return;
             }
-        
+
             const token = localStorage.getItem("token");
             console.log("Token:", token); // Kiểm tra giá trị token
-        
+
             if (!token) {
                 console.log("No token found, cannot fetch CVs.");
                 setLoading(false);
                 navigate("/login");
                 return; // Không làm gì cả nếu không có token
             }
-        
+
             try {
                 const response = await axios.get(
                     "https://localhost:7077/api/Cvs/GetCvByUID",
@@ -49,7 +49,7 @@ function ApplyJob() {
                 setLoading(false);
             }
         };
-        
+
 
         fetchCvs();
     }, []);
@@ -72,7 +72,7 @@ function ApplyJob() {
         cvItems: {
             display: 'flex',
             flexDirection: 'column',
-            gap: '15px', 
+            gap: '15px',
         },
         cvItem: {
             backgroundColor: '#ffffff',
@@ -83,7 +83,7 @@ function ApplyJob() {
         cvItemTitle: {
             fontSize: '1.5rem',
             marginBottom: '10px',
-            color: '#007bff', 
+            color: '#007bff',
         },
         cvDetail: {
             padding: '10px 0',
@@ -95,7 +95,7 @@ function ApplyJob() {
         },
         cvDetailDescription: {
             margin: '5px 0 0',
-            color: '#777', 
+            color: '#777',
         },
         applyButton: {
             marginTop: '10px',
@@ -128,13 +128,13 @@ function ApplyJob() {
         console.log("Button clicked for CV ID:", cvId);
         const token = localStorage.getItem("token");
         const applyJobDTO = {
-            PostId: job_id, 
+            PostId: job_id,
             CvId: cvId,
         };
 
         try {
             const response = await axios.post(
-                "https://localhost:7077/api/ApplyJobs/ApplyJob", 
+                "https://localhost:7077/api/ApplyJobs/ApplyJob",
                 applyJobDTO,
                 {
                     headers: {
@@ -153,6 +153,14 @@ function ApplyJob() {
             console.error("Error applying for job:", err);
             setApplyStatus('Bạn đã ứng tuyển, không thể ứng tuyển lại nữa.');
         }
+    };
+
+    const handleNavigateToManagementCV = () => {
+        navigate('/ManagementCV', {
+            state: {
+                from: `/ApplyJob/${job_id}`
+            }
+        });
     };
 
     if (loading) {
@@ -190,7 +198,7 @@ function ApplyJob() {
                     ))}
                 </div>
 
-                <h2 style={styles.title}>Chưa có cv? <a href='/ManagementCV'>Tạo mới</a> </h2>
+                <h2 style={styles.title}>Chưa có cv? <a  onClick={handleNavigateToManagementCV}>Tạo mới</a> </h2>
             </div>
             <Footer />
         </>

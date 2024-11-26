@@ -3,16 +3,24 @@ import axios from "axios";
 import { useSnackbar } from 'notistack'; // Import useSnackbar
 import Footer from '../common/Footer';
 import Header from '../common/Header';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 const ManagementCV = () => {
     const [cvs, setCvs] = useState([]); // Danh sách CV đã lưu
     const [cvForms, setCvForms] = useState([]); // Danh sách form đang mở
+    const location = useLocation();
     const { enqueueSnackbar } = useSnackbar();
+    const [previousPath, setpreviousPath] = useState("");
+    const navigate = useNavigate();
     useEffect(() => {
         // Fetch API khi component mount
         fetchCVs();
     }, []);
 
     const fetchCVs = async () => {
+        const previousPath = location.state?.from || '';
+    console.log('Trang trước:', previousPath);
+        setpreviousPath(previousPath);
         try {
             const token = localStorage.getItem("token");
             const response = await fetch('https://localhost:7077/api/Cvs/GetCvByUID', {
@@ -98,6 +106,9 @@ const ManagementCV = () => {
               );
         
             console.log('Tạo CV thành công', response.data);
+            if (previousPath.includes('ReApplyJob') || previousPath.includes('ApplyJob')) {
+                navigate(previousPath);
+              }
             if(cvData.id!=-1){
                 return;
             }
