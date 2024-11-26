@@ -385,17 +385,19 @@ function ViewJobCreatedDetail() {
               <div className="col-md-7 col-sm-7">
                 <div className="detail-pannel-footer-btn pull-right">
                   <button
-                    className="btn btn-success"
+                    className="btn btn-copy"
                     style={{
                       marginRight: "10px",
-                      backgroundColor: "#28a745", // Xanh lá
+                      backgroundColor: "#fd7e14", // Màu tím
                       border: "none",
                       color: "#fff",
+                      cursor: "pointer", // Con trỏ dạng pointer
                     }}
-                    onClick={() => window.location.href = `/ReCreateJob/${id}`}
+                    onClick={() => (window.location.href = `/ReCreateJob/${id}`)}
                   >
                     Sao chép bài viết
                   </button>
+
                   {jobDetails.status === 0 && (
                     <>
                       <button
