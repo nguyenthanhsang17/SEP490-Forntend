@@ -368,7 +368,7 @@ function ViewJobDetail() {
                   </a>
                 </h4>
                 <ul>
-                  <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người/{jobDetails.numberAppliedUser} đã ứng tuyển</span></li>
+                  <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người | {jobDetails.numberAppliedUser} người đã ứng tuyển</span></li>
                   <li>
                     Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
                   </li>
