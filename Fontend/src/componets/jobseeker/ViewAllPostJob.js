@@ -437,7 +437,7 @@ const JobListing = () => {
                     <input
                       type="number"
                       className="form-control search-input"
-                      placeholder="Khoảng cách bạn mong muốn"
+                      placeholder="Khoảng cách tối đa"
                       value={distance}
                       onChange={(e) => Setdistance(e.target.value)}
                       min="0"
