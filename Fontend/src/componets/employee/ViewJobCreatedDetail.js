@@ -349,10 +349,11 @@ function ViewJobCreatedDetail() {
                 <h4>{jobDetails.jobCategoryName}</h4>
                 <span></span>
                 <ul>
-                  <li><i className="fa fa-briefcase"></i><span>{jobDetails.numberPeople} người/{jobDetails.numberAppliedUser} đã ứng tuyển</span></li>
+                  <li><i className="fa fa-briefcase"></i><span>Số người cần tuyển : {jobDetails.numberPeople} người</span></li>
                   <li>
-                    Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
+                  <i className="fa fa-money"></i>Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
                   </li>
+                  <li><i className="fa fa-user"></i><span> {jobDetails.numberAppliedUser} lượt đã ứng tuyển</span></li>
                 </ul>
               </div>
             </div>
