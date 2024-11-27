@@ -354,11 +354,17 @@ const Profile = () => {
                         <li>
                           <span
                             className="label1"
-                            style={{ marginRight: 60, width: 150 }}
+                            style={{
+                              marginRight: 60,
+                              width: 150,
+                              whiteSpace: "nowrap", // Đảm bảo tiêu đề không xuống dòng
+                            }}
                           >
                             Miêu tả bản thân:
-                          </span>{" "}
-                          <span>{profile.description}</span>
+                          </span>
+                          <span style={{ fontWeight: "normal" }}>
+                            {profile.description}
+                          </span>
                         </li>
 
                         {profile.registerEmployerStatus !== null && (
