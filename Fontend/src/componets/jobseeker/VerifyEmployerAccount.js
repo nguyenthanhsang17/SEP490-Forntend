@@ -141,7 +141,7 @@ function VerifyEmployerAccount() {
         <img src={logoImage} alt="Logo" style={{ width: '200px', marginBottom: '5px' }} />
         <h2 style={{ marginBottom: '25px', fontFamily: 'Arial, sans-serif', color: '#333', fontSize: '1.5em' }}>Xác Thực Tài Khoản Nhà Tuyển Dụng</h2>
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh / tên chủ hộ gia đình </label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Tên cơ sở kinh doanh / cá nhân <span style={{ color: 'red' }}>*</span></label>
           <input
             type="text"
             placeholder="Tên cửa hàng, công ty, phòng ban,..."
@@ -151,7 +151,7 @@ function VerifyEmployerAccount() {
             style={{ width: '100%', padding: '12px', margin: '10px 0 20px 0', border: '1px solid #ddd', borderRadius: '5px', fontSize: '1em' }}
           />
 
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Địa Chỉ</label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Địa Chỉ <span style={{ color: 'red' }}>*</span></label>
           <input
             type="text"
             placeholder="Địa chỉ"
@@ -162,7 +162,7 @@ function VerifyEmployerAccount() {
           />
 
           {/* Upload CCCD */}
-          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ảnh CCCD 2 mặt và mặt trước căng cước cùng với mặt </label>
+          <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Mặt trước, mặt sau căn cước công dân và khuôn mặt của bạn <span style={{ color: 'red' }}>*</span></label>
           <div className="image-upload-container">
             {cccdImages.map((image, index) => (
               <div key={index} className="image-preview" style={{ position: 'relative', margin: '10px', display: 'inline-block' }}>
