@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
+import { useParams } from 'react-router-dom';
 
-const PaymentHistoryTable = () => {
+const PaymentHistoryTableDetail = () => {
+  const { uid } = useParams();
   const [data, setData] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [daysFilter, setDaysFilter] = useState(0); // 0 for no filter, can be set to other values like 7, 10, 30
@@ -13,7 +15,7 @@ const PaymentHistoryTable = () => {
 
   // Fetch data for payment history
   const fetchData = async () => {
-    const query = `pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}`;
+    const query = `uid=${uid}&pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}`;
     console.log('Fetching data with query:', query);
 
     try {
@@ -233,4 +235,4 @@ const PaymentHistoryTable = () => {
   );
 };
 
-export default PaymentHistoryTable;
+export default PaymentHistoryTableDetail;
