@@ -96,6 +96,15 @@ const ViewEmployerProfile = () => {
     }
   };
 
+  const salaryTypeMap = {
+    "Theo giờ": "giờ",
+    "Theo ngày": "ngày",
+    "Theo công việc": "công việc",
+    "Theo tuần": "tuần",
+    "Theo tháng": "tháng",
+    "Lương cố định": "cố định",
+};
+
   const addwishlist = async (postJobId) => {
     const token = localStorage.getItem("token");
 
@@ -241,7 +250,7 @@ const ViewEmployerProfile = () => {
                             <span>{job.jobCategoryName}</span>
                             <span className="brows-job-sallery">
                               <i className="fa fa-money"></i>{" "}
-                              {job.salary.toLocaleString()} VND ({job.salaryTypeName})
+                              {job.salary.toLocaleString()} VND /{salaryTypeMap[job.salaryTypeName]}
                             </span>
                           </p>
                           <p>

@@ -11,6 +11,7 @@ import MapAutoComplete from '../utils/MapAutoComplete';
 import Swal from 'sweetalert2';
 import GeocodingMap from '../utils/GeocodingMap';
 import { useParams, useNavigate } from 'react-router-dom'; // Single import statement
+import { useSnackbar } from 'notistack'; // Import useSnackbar
 function EditPostJob() {
     const [jobTitle, setJobTitle] = useState('');
     const [jobDescription, setJobDescription] = useState('');
@@ -32,6 +33,7 @@ function EditPostJob() {
     const [IsEvent, SetIsEvent] = useState(false);
     const [time, SetTime] = useState(1);
     const { id } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
     const today1 = today.toISOString().split('T')[0];
     const [postJobDates, setPostJobDates] = useState([{ eventDate: today1, startTime: '', endTime: '' }]);
     const [jsonOutput, setJsonOutput] = useState('');
@@ -46,14 +48,17 @@ function EditPostJob() {
 
     const [sangsalary, Setsangsalary] = useState(0);
     const [JobDetail, SetJobDetail] = useState({});
-
+    const [serviceInfo, setServiceInfo] = useState({
+        numberPosts: 0,
+        numberPostsUrgentRecruitment: 0
+    });
     const handleToggle = () => {
         setIsLongTerm(!isLongTerm);
         console.log(isLongTerm);
     };
 
     const [isOn, setIsOn] = useState(false);
-
+    
 
     const [imagesData, setImagesData] = useState([
         // Sẽ chứa cả URL và ID
@@ -128,6 +133,8 @@ function EditPostJob() {
             console.log("Kinh độ: " + longitude);
         }
     }, [latitude, longitude]);
+
+    
 
     const handlePositionChange = (newPosition, address) => {
         setPosition(newPosition);
@@ -206,6 +213,24 @@ function EditPostJob() {
             setImagesData(updatedImagesData);
         }
     }, [JobDetail]);
+    
+    useEffect(() => {
+        const fetchServiceInfo = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await axios.get("https://localhost:7077/api/Service", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                console.log(response.data);
+                setServiceInfo(response.data); // Lưu dữ liệu dịch vụ vào state
+            } catch (err) {
+                enqueueSnackbar("Không thể tải thông tin dịch vụ", {
+                    variant: "error",
+                });
+            }
+        };
+        fetchServiceInfo();
+    }, [enqueueSnackbar]);
 
     const addNewSchedule = () => {
         setSchedules([...schedules, {
@@ -736,7 +761,7 @@ function EditPostJob() {
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages();
             } else {
-                
+
             }
         } catch (error) {
             console.error('Error:', error);
@@ -853,7 +878,7 @@ function EditPostJob() {
             } else {
                 try {
                     const errorData = await response.json();
-                    showAlert2(errorData.message+", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
+                    showAlert2(errorData.message + ", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
                 } catch {
                     showAlert("Có lỗi xảy ra");
                 }
@@ -932,6 +957,9 @@ function EditPostJob() {
             <section className="inner-header-title blank">
                 <div className="container">
                     <h1>Chỉnh sửa bài đăng tuyển</h1>
+                </div>
+                <div className="container">
+                    <h1>Số lượt đăng: {serviceInfo.numberPosts ?? 0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>

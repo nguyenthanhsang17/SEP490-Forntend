@@ -152,19 +152,55 @@ const ViewListJobsCreated = () => {
     };
 
     // Định nghĩa ánh xạ trạng thái
-    const statusLabels = {
-        0: "Bản nháp",
-        1: "Chờ phê duyệt",
-        2: "Đã đăng",
-        3: "Bị từ chối",
-        4: "Đã xóa",
-        5: "Đã ẩn",
-        6: "Bị cấm"
-    };
+    // const statusLabels = {
+    //     0: "Bản nháp",
+    //     1: "Chờ phê duyệt",
+    //     2: "Đã đăng",
+    //     3: "Bị từ chối",
+    //     4: "Đã xóa",
+    //     5: "Đã ẩn",
+    //     6: "Bị cấm"
+    // };
 
     const getStatusLabel = (status) => {
-        return statusLabels[status] || "Không xác định";
+        switch (status) {
+            case 0:
+                return <span>Bản nháp</span>;
+            case 1:
+                return <span>Chờ phê duyệt</span>;
+            case 2:
+                return <span>Đã đăng</span>;
+            case 3:
+                return <span>Bị từ chối</span>;
+            case 4:
+                return <span>Đã xóa</span>;
+            case 5:
+                return <span>Đã ẩn</span>;
+            case 6:
+                return <span>Bị cấm</span>;
+        }
     };
+
+    const style = {
+        statusLabel: {
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            padding: "5px 10px",
+            borderRadius: "5px",
+            fontSize: "12px",
+            fontWeight: "bold",
+            zIndex: 1,
+            marginBottom: "15px", // Tạo khoảng cách phía dưới
+            backgroundColor: "#28a745", // Màu nền cho status
+            color: "white", // Màu chữ
+            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Thêm hiệu ứng đổ bóng
+        },
+        buttonContainer: {
+            marginTop: "25px", // Tạo khoảng cách giữa status và nút bên dưới
+        },
+    };
+    
 
     const togglePostVisibility = async (job) => {
         const action = job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết";
@@ -244,6 +280,14 @@ const ViewListJobsCreated = () => {
         }
     };
 
+    const salaryTypeMap = {
+        "Theo giờ": "giờ",
+        "Theo ngày": "ngày",
+        "Theo công việc": "công việc",
+        "Theo tuần": "tuần",
+        "Theo tháng": "tháng",
+        "Lương cố định": "cố định",
+    };
 
     const handleCancelRequest = async (job) => {
         try {
@@ -426,12 +470,10 @@ const ViewListJobsCreated = () => {
                                             <div className="brows-job-position">
                                                 <h3>{job.jobTitle}</h3>
                                                 <p>
-                                                    <span>{job.jobCategoryName}</span> |
-                                                    <span> {job.salaryTypeName}: {job.salary.toLocaleString()} VND</span>
+                                                    <span>{job.jobCategoryName}</span>|<span> {job.salary.toLocaleString()} VND / {salaryTypeMap[job.salaryTypeName]}</span>
                                                 </p>
                                                 <p>
-                                                    <span>Số người cần tuyển: {job.numberPeople}</span> |
-                                                    <span> Số người đã ứng tuyển: {job.numberOfApplicants}</span>
+                                                    <span>Số người cần tuyển: {job.numberPeople}</span> | <span>Số người đã ứng tuyển: {job.numberOfApplicants}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -443,24 +485,25 @@ const ViewListJobsCreated = () => {
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="col-md-3 col-sm-3">
-                                            <div className="brows-job-location">
-                                                <p>{getStatusLabel(job.status)}</p>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 col-sm-2">
-                                            <div className="brows-job-link">
 
-                                                <button type="button" className="btn btn-toggle-visibility btn-visibility"
+                                        {/* Status Label */}
+                                        <div className="status-label" style={style.statusLabel}>
+                                            {getStatusLabel(job.status)}
+                                        </div>
+
+                                        {/* Buttons */}
+                                        <div className="col-md-2 col-sm-2" style={style.buttonContainer}>
+                                            <div className="brows-job-link">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-toggle-visibility btn-visibility"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         navigate(`/ReCreateJob/${job.postId}`);
                                                     }}
                                                 >
-                                                    <FontAwesomeIcon /> sao chép bài viết
+                                                    sao chép bài viết
                                                 </button>
-
-                                                {/* Gửi yêu cầu duyệt bài hoặc Hủy yêu cầu duyệt bài */}
                                                 {(job.status === 0 || job.status === 1) && (
                                                     <button
                                                         className="btn btn-toggle-visibility btn-approval"
@@ -477,8 +520,6 @@ const ViewListJobsCreated = () => {
                                                         {job.status === 0 ? "Gửi yêu cầu duyệt bài" : "Hủy yêu cầu duyệt bài"}
                                                     </button>
                                                 )}
-
-                                                {/* Ẩn bài viết hoặc Hiện bài viết */}
                                                 {(job.status === 2 || job.status === 5) && (
                                                     <button
                                                         className="btn btn-toggle-visibility btn-approval"
@@ -494,6 +535,7 @@ const ViewListJobsCreated = () => {
                                             </div>
                                         </div>
                                     </div>
+
                                     {job.isUrgentRecruitment && <span className="tg-themetag tg-featuretag">Tuyển gấp</span>}
                                 </article>
                             </div>

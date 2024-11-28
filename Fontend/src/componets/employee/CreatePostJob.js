@@ -56,6 +56,7 @@ function CreatePostJob() {
     };
 
     const [isOn, setIsOn] = useState(false);
+    
 
     ///================================================
 
@@ -403,7 +404,7 @@ function CreatePostJob() {
     };
 
     const uploadImages = async (postId) => {
-        
+
         setIsLoading(true);
         const formData = new FormData();
 
@@ -671,7 +672,7 @@ function CreatePostJob() {
         });
 
         if (result.isConfirmed) {
-            
+
             navigate("/viewListJobsCreated");
         }
     };
@@ -761,7 +762,7 @@ function CreatePostJob() {
             } else {
                 try {
                     const errorData = await response.json();
-                    showAlert2(errorData.message+", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
+                    showAlert2(errorData.message + ", bạn muốn mua thêm gói ?" || "Có lỗi xảy ra");
                 } catch {
                     showAlert("Có lỗi xảy ra");
                 }
@@ -784,12 +785,35 @@ function CreatePostJob() {
         setFixSalary(numericValue); // Cập nhật giá trị fixSalary
     };
 
+    const [serviceInfo, setServiceInfo] = useState({
+        numberPosts: 0,
+        numberPostsUrgentRecruitment: 0
+    });
+
+    useEffect(() => {
+        const fetchServiceInfo = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await axios.get("https://localhost:7077/api/Service", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                console.log(response.data);
+                setServiceInfo(response.data);
+            } catch (err) {
+            }
+        };
+        fetchServiceInfo();
+    }, []);
+
     return (
         <>
             <Header />
             <section className="inner-header-title blank">
                 <div className="container">
                     <h1>Tạo bài đăng tuyển</h1>
+                </div>
+                <div className="container">
+                    <h1>Số lượt đăng: {serviceInfo.numberPosts??0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ??0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>

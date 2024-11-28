@@ -63,7 +63,7 @@ const JobListing = () => {
         }
         return { ...job, distance: null }; // Nếu công việc không có tọa độ
       });
-  
+
       setJobs((prevJobs) => {
         if (JSON.stringify(prevJobs) === JSON.stringify(updatedJobs)) {
           return prevJobs; // Ngăn cập nhật lại nếu không có thay đổi
@@ -72,8 +72,7 @@ const JobListing = () => {
       });
     }
   }, [userLocation, jobs]); // Thêm `jobs` vào dependency để theo dõi thay đổi
-  
-  
+
   useEffect(() => {
     const initialSavedJobs = jobs.reduce((acc, job) => {
       if (job.isWishlist === 1) {
@@ -88,7 +87,7 @@ const JobListing = () => {
       return initialSavedJobs;
     });
   }, [jobs]);
-  
+
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
@@ -97,7 +96,7 @@ const JobListing = () => {
           (position) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-  
+
             setUserLocation({
               latitude,
               longitude,
@@ -116,10 +115,9 @@ const JobListing = () => {
         setIsLocationLoading(false);
       }
     };
-  
+
     getLocation();
   }, []);
-  
 
   useEffect(() => {
     const initialSavedJobs = {};
@@ -318,7 +316,7 @@ const JobListing = () => {
   };
 
   const handleJobClick = (postId) => {
-    navigate('/viewJobDetail/'+postId);
+    navigate("/viewJobDetail/" + postId);
   };
 
   // const handlePageChange = (newPage) => {
@@ -412,10 +410,10 @@ const JobListing = () => {
                     >
                       <option value="0">Tất cả các loại trả lương</option>
                       <option value="1">Theo giờ</option>
-                      <option value="2">Theo ngày</option>
-                      <option value="3">Theo công việc</option>
+                      <option value="2">Theo ngày</option>            
                       <option value="4">Theo tuần</option>
                       <option value="5">Theo tháng</option>
+                      <option value="3">Theo công việc</option>
                       <option value="6">Lương cố định</option>
                     </select>
                   </div>
@@ -439,7 +437,7 @@ const JobListing = () => {
                     <input
                       type="number"
                       className="form-control search-input"
-                      placeholder="Khoảng cách bạn mong muốn"
+                      placeholder="Khoảng cách tối đa"
                       value={distance}
                       onChange={(e) => Setdistance(e.target.value)}
                       min="0"
@@ -492,7 +490,8 @@ const JobListing = () => {
                             <span>{job.jobCategoryName}</span>
                             <span className="brows-job-sallery">
                               <i className="fa fa-money"></i>{" "}
-                              {job.salary.toLocaleString("vi-VN") + " VND"}
+                              {job.salary.toLocaleString("vi-VN")} VND /{" "}
+                              {job.salaryTypeName.replace("Theo ", "")}
                             </span>
                           </p>
                           <p>
@@ -501,7 +500,6 @@ const JobListing = () => {
                               Số người đã ứng tuyển: {job.numberOfApplicants}
                             </span>
 
-                            {/* Display distance if userLocation and job.distance are available */}
                             <span className="job-type cl-success bg-trans-success">
                               {isLocationLoading
                                 ? "Đang tải vị trí..."

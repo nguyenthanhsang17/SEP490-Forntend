@@ -18,6 +18,25 @@ const Profile = () => {
   const [file, setFile] = useState(null);
   const [updatedProfile, setUpdatedProfile] = useState({});
   const { enqueueSnackbar } = useSnackbar(); // Initialize notistack
+  const [serviceInfo, setServiceInfo] = useState(null); // Thêm state để lưu thông tin dịch vụ
+  useEffect(() => {
+    const fetchServiceInfo = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await axios.get("https://localhost:7077/api/Service", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setServiceInfo(response.data); // Lưu dữ liệu dịch vụ vào state
+      } catch (err) {
+        enqueueSnackbar("Không thể tải thông tin dịch vụ", {
+          variant: "error",
+        });
+      }
+    };
+
+    fetchServiceInfo();
+  }, [enqueueSnackbar]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -335,11 +354,17 @@ const Profile = () => {
                         <li>
                           <span
                             className="label1"
-                            style={{ marginRight: 60, width: 150 }}
+                            style={{
+                              marginRight: 60,
+                              width: 150,
+                              whiteSpace: "nowrap", // Đảm bảo tiêu đề không xuống dòng
+                            }}
                           >
                             Miêu tả bản thân:
-                          </span>{" "}
-                          <span>{profile.description}</span>
+                          </span>
+                          <span style={{ fontWeight: "normal" }}>
+                            {profile.description}
+                          </span>
                         </li>
 
                         {profile.registerEmployerStatus !== null && (
@@ -380,22 +405,50 @@ const Profile = () => {
                             </span>
                           </li>
                         )}
-                        {profile.registerEmployerStatus === 2 &&
-                          profile.reason && (
-                            <li>
+                        {profile.roleId === 2 && serviceInfo && (
+                          <li>
+                            {serviceInfo.isFindJobseekers === 0 ? (
                               <span
-                                className="label1"
-                                style={{ marginRight: 60, width: 150 }}
+                                style={{
+                                  color: "red",
+                                  fontWeight: "bold",
+                                  display: "inline-block",
+                                }}
                               >
-                                Lý do từ chối:
+                                Tính năng tìm kiếm ứng viên chưa được kích hoạt
                               </span>
+                            ) : serviceInfo.expirationDate &&
+                              new Date(serviceInfo.expirationDate) <
+                                new Date() ? (
                               <span
-                                style={{ color: "red", fontWeight: "bold" }}
+                                style={{
+                                  color: "orange",
+                                  fontWeight: "bold",
+                                  display: "inline-block",
+                                }}
                               >
-                                {profile.reason}
+                                Tính năng tìm kiếm ứng viên đã hết hạn vào ngày{" "}
+                                {new Date(
+                                  serviceInfo.expirationDate
+                                ).toLocaleDateString("vi-VN")}
                               </span>
-                            </li>
-                          )}
+                            ) : (
+                              <span
+                                style={{
+                                  color: "green",
+                                  fontWeight: "bold",
+                                  display: "inline-block",
+                                }}
+                              >
+                                Tính năng tìm kiếm ứng viên đã được bật và sẽ
+                                hết hạn vào ngày{" "}
+                                {new Date(
+                                  serviceInfo.expirationDate
+                                ).toLocaleDateString("vi-VN")}
+                              </span>
+                            )}
+                          </li>
+                        )}
                       </ul>
 
                       {/* Nút ManageCV và Verify Employer Account */}
