@@ -153,94 +153,169 @@ const ViewJobDetailJobSeeker = () => {
       <div className="clearfix"></div>
 
       <section className="detail-desc">
-        <div className="container white-shadow">
-          <div className="row bottom-mrg align-items-center">
-            <div className="col-md-4 col-sm-4 text-center">
-              {jobSeeker && (
-                <img
-                  src={jobSeeker.avatarURL || ""}
-                  alt={`${jobSeeker.fullName || "Avatar"}'s avatar`}
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "50%",
-                  }}
-                />
-              )}
-            </div>
-            <div className="col-md-8 col-sm-8">
-              <div className="detail-desc-caption">
-                <h4 className="designation">Thông Tin Liên Hệ</h4>
-                {jobSeeker ? (
-                  <ul className="job-seeker-info">
-                    <li>
-                      <strong>Tên:</strong> {jobSeeker.fullName}
-                    </li>
-                    <li>
-                      <strong>Tuổi:</strong> {jobSeeker.age}
-                    </li>
-                    <li>
-                      <strong>Email:</strong> {jobSeeker.email}
-                    </li>
-                    <li>
-                      <strong>Số điện thoại:</strong> {jobSeeker.phonenumber}
-                    </li>
-                    <li>
-                      <strong>Địa chỉ:</strong> {jobSeeker.address}
-                    </li>
-                    <li>
-                      <strong>Giới tính:</strong>{" "}
-                      {jobSeeker.gender === "Male" ? "Nam" : "Nữ"}
-                    </li>
-                    <li>
-                      <strong>Mô tả:</strong> {jobSeeker.description}
-                    </li>
-                  </ul>
-                ) : (
-                  <p>Đang tải thông tin ứng viên...</p>
-                )}
-                {/* Thêm nút "Liên hệ ngay" */}
-                {jobSeeker && (
-                  <button
-                    className="btn btn-primary mt-3"
-                    onClick={() => handleContactNow()}
-                  >
-                    Liên hệ ngay
-                  </button>
-                )}
-                {jobSeeker &&
-                (saved[jobSeeker.userId] || jobSeeker.isFavorite === 1) ? (
-                  <button
-                    className="btn btn-save"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FontAwesomeIcon
-                      icon={faHeart}
-                      className="icon-spacing"
-                      style={{ color: "red" }}
-                    />
-                    Đã lưu thông tin
-                  </button>
-                ) : (
-                  jobSeeker && (
-                    <button
-                      className="btn btn-save"
-                      onClick={() => handleAddToFavorites(jobSeeker.userId)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faHeart}
-                        className="icon-spacing"
-                        style={{ color: "gray" }}
-                      />
-                      Lưu thông tin liên hệ
-                    </button>
-                  )
-                )}
+  <div
+    className="container white-shadow"
+    style={{
+      padding: "20px",
+      borderRadius: "10px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    }}
+  >
+    <div className="row align-items-center">
+      {/* Phần hình ảnh */}
+      <div className="col-md-4 col-sm-4 text-center">
+        {jobSeeker && (
+          <img
+            src={jobSeeker.avatarURL || ""}
+            alt={`${jobSeeker.fullName || "Avatar"}'s avatar`}
+            style={{
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              border: "2px solid #28a745",
+            }}
+          />
+        )}
+      </div>
+      {/* Phần thông tin */}
+      <div className="col-md-8 col-sm-8">
+        <div
+          className="detail-desc-content"
+          style={{ padding: "10px 15px", fontSize: "14px", color: "#555" }}
+        >
+          <h4
+            className="designation"
+            style={{
+              fontWeight: "bold",
+              fontSize: "18px",
+              color: "#333",
+              marginBottom: "15px",
+            }}
+          >
+            Thông Tin Liên Hệ
+          </h4>
+          {jobSeeker ? (
+            <div
+              className="info-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "15px",
+              }}
+            >
+              {/* Cột bên trái */}
+              <div className="info-left">
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Tên:</strong>{" "}
+                  {jobSeeker.fullName}
+                </p>
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Tuổi:</strong>{" "}
+                  {jobSeeker.age}
+                </p>
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Email:</strong>{" "}
+                  {jobSeeker.email}
+                </p>
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Số điện thoại:</strong>{" "}
+                  {jobSeeker.phonenumber}
+                </p>
+              </div>
+              {/* Cột bên phải */}
+              <div className="info-right">
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Địa chỉ:</strong>{" "}
+                  {jobSeeker.address}
+                </p>
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Giới tính:</strong>{" "}
+                  {jobSeeker.gender === "Male" ? "Nam" : "Nữ"}
+                </p>
+                <p style={{ margin: "0" }}>
+                  <strong style={{ color: "#333" }}>Mô tả:</strong>{" "}
+                  {jobSeeker.description}
+                </p>
               </div>
             </div>
+          ) : (
+            <p>Đang tải thông tin ứng viên...</p>
+          )}
+          {/* Nút hành động */}
+          <div
+            className="action-buttons mt-3"
+            style={{
+              display: "flex",
+              gap: "15px",
+              marginTop: "20px",
+              justifyContent: "flex-start",
+            }}
+          >
+            <button
+              className="btn btn-primary"
+              style={{
+                width: "150px",
+                height: "40px",
+                borderRadius: "5px",
+                backgroundColor: "#28a745",
+                color: "#fff",
+                border: "none",
+                fontWeight: "bold",
+              }}
+              onClick={() => handleContactNow()}
+            >
+              Liên hệ ngay
+            </button>
+            {jobSeeker &&
+            (saved[jobSeeker.userId] || jobSeeker.isFavorite === 1) ? (
+              <button
+                className="btn btn-save"
+                style={{
+                  width: "200px",
+                  height: "40px",
+                  borderRadius: "5px",
+                  backgroundColor: "#f5f5f5",
+                  color: "#333",
+                  border: "1px solid #ccc",
+                  fontWeight: "bold",
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className="icon-spacing"
+                  style={{ color: "red", marginRight: "5px" }}
+                />
+                Đã lưu thông tin
+              </button>
+            ) : (
+              <button
+                className="btn btn-save"
+                style={{
+                  width: "250px",
+                  height: "40px",
+                  borderRadius: "5px",
+                  backgroundColor: "#f5f5f5",
+                  color: "#333",
+                  border: "1px solid #ccc",
+                  fontWeight: "bold",
+                }}
+                onClick={() => handleAddToFavorites(jobSeeker.userId)}
+              >
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className="icon-spacing"
+                  style={{ color: "gray", marginRight: "5px" }}
+                />
+                Lưu thông tin liên hệ
+              </button>
+            )}
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       <section className="full-detail-description full-detail">
         <div className="container">
