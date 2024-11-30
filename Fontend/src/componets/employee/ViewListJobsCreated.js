@@ -28,22 +28,8 @@ const ViewListJobsCreated = () => {
     const [jobCategoryId, setJobCategoryId] = useState(0);
     const [sortNumberApplied, setSortNumberApplied] = useState(0);
     const [isUrgentRecruitment, setIsUrgentRecruitment] = useState(-1);
-    const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 
     const navigate = useNavigate();
-    const showAlert = async (text, redirect = false) => {
-        const result = await Swal.fire({
-            title: text,
-            icon: 'info',
-            showCancelButton: redirect,
-            confirmButtonText: redirect ? 'Đi đến danh sách công việc' : 'Ok',
-        });
-
-        if (redirect && result.isConfirmed) {
-            navigate("/viewListJobsCreated");
-        }
-    };
-
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -65,8 +51,6 @@ const ViewListJobsCreated = () => {
                         SortNumberApplied: sortNumberApplied,
                         IsUrgentRecruitment: isUrgentRecruitment,
                         pageNumber: currentPage,
-                        Latitude: userLocation.latitude,
-                        Longitude: userLocation.longitude,
                     },
                 });
                 const fetchedJobs = response.data.items || [];
@@ -80,54 +64,9 @@ const ViewListJobsCreated = () => {
             }
         };
 
-        if (userLocation.latitude && userLocation.longitude) {
-            fetchJobs();
-        }
-    }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, status, jobCategoryId, sortNumberApplied, isUrgentRecruitment, userLocation]);
 
-    useEffect(() => {
-        const getLocation = () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        setUserLocation({
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude,
-                        });
-                    },
-                    () => setError('Unable to retrieve your location.')
-                );
-            } else {
-                setError('Geolocation is not supported by this browser.');
-            }
-        };
-        getLocation();
-    }, []);
-
-    const generatePagination = (pageNumber, totalPages) => {
-        const paginationItems = [];
-        paginationItems.push(
-            <li key="prev" className={pageNumber === 1 ? 'disabled' : ''}>
-                <a onClick={() => pageNumber > 1 && setCurrentPage(pageNumber - 1)}>&laquo;</a>
-            </li>
-        );
-
-        for (let i = 1; i <= totalPages; i++) {
-            paginationItems.push(
-                <li key={i} className={pageNumber === i ? 'active' : ''}>
-                    <a onClick={() => setCurrentPage(i)}>{i}</a>
-                </li>
-            );
-        }
-
-        paginationItems.push(
-            <li key="next" className={pageNumber === totalPages ? 'disabled' : ''}>
-                <a onClick={() => pageNumber < totalPages && setCurrentPage(pageNumber + 1)}>&raquo;</a>
-            </li>
-        );
-
-        return paginationItems;
-    };
+        fetchJobs();
+    }, [currentPage, jobKeyword, salaryTypesId, rangeSalaryMin, rangeSalaryMax, status, jobCategoryId, sortNumberApplied, isUrgentRecruitment]);
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -141,8 +80,6 @@ const ViewListJobsCreated = () => {
             SortNumberApplied: sortNumberApplied,
             IsUrgentRecruitment: isUrgentRecruitment,
             pageNumber: currentPage,
-            Latitude: userLocation.latitude,
-            Longitude: userLocation.longitude,
         };
         console.log(params);
     };
@@ -150,17 +87,6 @@ const ViewListJobsCreated = () => {
     const handleJobClick = (job) => {
         navigate(`/viewJobCreatedDetail/${job.postId}`);
     };
-
-    // Định nghĩa ánh xạ trạng thái
-    // const statusLabels = {
-    //     0: "Bản nháp",
-    //     1: "Chờ phê duyệt",
-    //     2: "Đã đăng",
-    //     3: "Bị từ chối",
-    //     4: "Đã xóa",
-    //     5: "Đã ẩn",
-    //     6: "Bị cấm"
-    // };
 
     const getStatusLabel = (status) => {
         switch (status) {
@@ -200,7 +126,7 @@ const ViewListJobsCreated = () => {
             marginTop: "25px", // Tạo khoảng cách giữa status và nút bên dưới
         },
     };
-    
+
 
     const togglePostVisibility = async (job) => {
         const action = job.status === 2 ? "Ẩn bài viết" : "Hiện bài viết";

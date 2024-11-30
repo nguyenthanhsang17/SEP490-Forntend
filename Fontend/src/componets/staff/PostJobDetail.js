@@ -23,7 +23,7 @@ function PostJobDetail() {
     const statusMapping = {
         0: 'Nháp',
         1: 'Chờ Duyệt',
-        2: 'Đã duyệt/Công khai',
+        2: 'Đã duyệt',
         3: 'Bị từ chối',
         4: 'Đã xóa',
         5: 'Đã ẩn',
@@ -174,7 +174,7 @@ function PostJobDetail() {
                                 <p><strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND</p>
                                 <p><strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}</p>
                                 <p><strong>Trạng thái:</strong> {statusMapping[postData.status]} </p>
-                                {postData.reason && (
+                                {postData.status ===3  && (
                                     <p><strong>Lý do từ chối :</strong> {postData.reason} </p>
                                 )}
                                 {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
