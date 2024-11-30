@@ -14,6 +14,7 @@ const AdminDashboard = () => {
   const [packageSoldStatistics, setPackageSoldStatistics] = useState(null);
   const [packageRevenueStatistics, setPackageRevenueStatistics] =
     useState(null);
+  const [userStatistics, setUserStatistics] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,7 +35,7 @@ const AdminDashboard = () => {
     end: dayjs().endOf("month"),
   });
 
-  const fetchData = async (startDate, endDate, type) => {
+  const fetchData = async (type, startDate, endDate) => {
     setLoading(true);
     setError(null);
 
@@ -49,9 +50,7 @@ const AdminDashboard = () => {
           throw new Error("Lỗi khi lấy dữ liệu doanh thu.");
         const revenueData = await revenueResponse.json();
         setRevenueStatistics(revenueData);
-      }
-
-      if (type === "packageSold") {
+      } else if (type === "packageSold") {
         const soldResponse = await fetch(
           `https://localhost:7077/api/DashBoard/DashBoardPackageStatisticsNumberSold?StartDate=${startDate.format(
             "YYYY-MM"
@@ -60,9 +59,7 @@ const AdminDashboard = () => {
         if (!soldResponse.ok) throw new Error("Lỗi khi lấy số lượng bán.");
         const soldData = await soldResponse.json();
         setPackageSoldStatistics(soldData);
-      }
-
-      if (type === "packageRevenue") {
+      } else if (type === "packageRevenue") {
         const revenueResponse = await fetch(
           `https://localhost:7077/api/DashBoard/DashBoardPackageStatisticsRevenue?StartDate=${startDate.format(
             "YYYY-MM"
@@ -72,6 +69,14 @@ const AdminDashboard = () => {
           throw new Error("Lỗi khi lấy doanh thu theo gói.");
         const revenueData = await revenueResponse.json();
         setPackageRevenueStatistics(revenueData);
+      } else if (type === "user") {
+        const userResponse = await fetch(
+          "https://localhost:7077/api/DashBoard/DashBoardUser"
+        );
+        if (!userResponse.ok)
+          throw new Error("Lỗi khi lấy dữ liệu người dùng.");
+        const userData = await userResponse.json();
+        setUserStatistics(userData);
       }
     } catch (err) {
       console.error(err);
@@ -81,21 +86,25 @@ const AdminDashboard = () => {
     }
   };
 
+  // useEffect cho từng loại dữ liệu
   useEffect(() => {
-    fetchData(revenueRange.start, revenueRange.end, "revenue");
+    fetchData("revenue", revenueRange.start, revenueRange.end);
   }, [revenueRange]);
 
   useEffect(() => {
-    fetchData(soldRange.start, soldRange.end, "packageSold");
+    fetchData("packageSold", soldRange.start, soldRange.end);
   }, [soldRange]);
-
   useEffect(() => {
     fetchData(
+      "packageRevenue",
       packageRevenueRange.start,
-      packageRevenueRange.end,
-      "packageRevenue"
+      packageRevenueRange.end
     );
   }, [packageRevenueRange]);
+
+  useEffect(() => {
+    fetchData("user");
+  }, []);
 
   if (loading) return <div className="loading">Đang tải...</div>;
   if (error) return <div className="error">Lỗi: {error}</div>;
@@ -125,8 +134,9 @@ const AdminDashboard = () => {
   // Dữ liệu biểu đồ số lượng gói
   const packageSoldBarChartData = {
     labels:
-      packageSoldStatistics?.mostPopularPackages.map((pkg) => pkg.packageName) ||
-      [],
+      packageSoldStatistics?.mostPopularPackages.map(
+        (pkg) => pkg.packageName
+      ) || [],
     datasets: [
       {
         label: "Số lượng bán",
@@ -160,13 +170,54 @@ const AdminDashboard = () => {
       },
     ],
   };
-
+  // Tính tổng doanh thu và số gói bán được
+  const totalRevenue = revenueStatistics?.totalRevenue || 0;
+  const totalPackagesSold = packageSoldStatistics?.totalPackagesSold || 0;
+  
+  
   return (
     <div className="dashboard-grid-container">
       <Sidebar />
       <Header />
 
       <main className="dashboard-content">
+        {/* Hiển thị thống kê người dùng */}
+        {/* Thông tin tổng quan */}
+        <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
+          <Col span={8}>
+            <Card
+              className="info-card"
+              style={{ backgroundColor: "#e8f5e9", color: "#388e3c" }}
+            >
+              <h4 style={{ color: "#2e7d32" }}>Tổng Doanh Thu</h4>
+              <p>
+                <b>{totalRevenue.toLocaleString("vi-VN")} VND</b>
+              </p>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card
+              className="info-card"
+              style={{ backgroundColor: "#e3f2fd", color: "#1976d2" }}
+            >
+              <h4 style={{ color: "#1565c0" }}>Tổng Gói Bán</h4>
+              <p>
+                <b>{totalPackagesSold} Gói</b>
+              </p>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card
+              className="info-card"
+              style={{ backgroundColor: "#fff3e0", color: "#f57c00" }}
+            >
+              <h4 style={{ color: "#ef6c00" }}>Tổng Số Người Dùng</h4>
+              <p>
+                <b>{userStatistics?.totalUser || 0} Người</b>
+              </p>
+            </Card>
+          </Col>
+        </Row>
         {/* Biểu đồ doanh thu */}
         <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
           <Col span={24}>
