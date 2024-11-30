@@ -76,7 +76,10 @@ const AdminDashboard = () => {
         if (!userResponse.ok)
           throw new Error("Lỗi khi lấy dữ liệu người dùng.");
         const userData = await userResponse.json();
-        setUserStatistics(userData);
+        setUserStatistics({
+          totalUser: userData.totalUser,
+          employersNumber: userData.userStatistics.employersNumber,
+        });
       }
     } catch (err) {
       console.error(err);
@@ -173,51 +176,74 @@ const AdminDashboard = () => {
   // Tính tổng doanh thu và số gói bán được
   const totalRevenue = revenueStatistics?.totalRevenue || 0;
   const totalPackagesSold = packageSoldStatistics?.totalPackagesSold || 0;
-  
-  
+
   return (
     <div className="dashboard-grid-container">
       <Sidebar />
       <Header />
 
       <main className="dashboard-content">
-        {/* Hiển thị thống kê người dùng */}
-        {/* Thông tin tổng quan */}
         <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               className="info-card"
-              style={{ backgroundColor: "#e8f5e9", color: "#388e3c" }}
+              style={{
+                background: "linear-gradient(135deg, #81c784, #388e3c)",
+                color: "#ffffff",
+              }}
             >
-              <h4 style={{ color: "#2e7d32" }}>Tổng Doanh Thu</h4>
+              <h4 style={{ color: "#ffffff" }}>Tổng Doanh Thu</h4>
               <p>
-                <b>{totalRevenue.toLocaleString("vi-VN")} VND</b>
+                <b style={{ color: "#ffffff" }}>{totalRevenue.toLocaleString("vi-VN")} VND</b>
               </p>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               className="info-card"
-              style={{ backgroundColor: "#e3f2fd", color: "#1976d2" }}
+              style={{
+                background: "linear-gradient(135deg, #64b5f6, #1565c0)",
+                color: "#ffffff",
+              }}
             >
-              <h4 style={{ color: "#1565c0" }}>Tổng Gói Bán</h4>
+              <h4 style={{ color: "#ffffff" }}>Tổng Gói Bán</h4>
               <p>
-                <b>{totalPackagesSold} Gói</b>
+                <b style={{ color: "#ffffff" }}>{totalPackagesSold} Gói</b>
               </p>
             </Card>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Card
               className="info-card"
-              style={{ backgroundColor: "#fff3e0", color: "#f57c00" }}
+              style={{
+                background: "linear-gradient(135deg, #ffb74d, #ef6c00)",
+                color: "#ffffff",
+              }}
             >
-              <h4 style={{ color: "#ef6c00" }}>Tổng Số Người Dùng</h4>
+              <h4 style={{ color: "#ffffff" }}>Tổng Số Người Dùng</h4>
               <p>
-                <b>{userStatistics?.totalUser || 0} Người</b>
+                <b style={{ color: "#ffffff" }}>
+                  {userStatistics?.totalUser || 0} Người
+                </b>
+              </p>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              className="info-card"
+              style={{
+                background: "linear-gradient(135deg, #e57373, #d32f2f)",
+                color: "#ffffff",
+              }}
+            >
+              <h4 style={{ color: "#ffffff" }}>Tổng Số Nhà Tuyển Dụng</h4>
+              <p>
+                <b style={{ color: "#ffffff" }}>{userStatistics?.employersNumber || 0} Nhà tuyển dụng</b>
               </p>
             </Card>
           </Col>
         </Row>
+
         {/* Biểu đồ doanh thu */}
         <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
           <Col span={24}>
