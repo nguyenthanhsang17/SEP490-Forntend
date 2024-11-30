@@ -96,7 +96,7 @@ const JobListing = () => {
           (position) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-
+    
             setUserLocation({
               latitude,
               longitude,
@@ -105,16 +105,17 @@ const JobListing = () => {
           },
           (error) => {
             console.warn("Location access denied or unavailable.");
-            setUserLocation(null); // Không thể lấy vị trí
+            setUserLocation({ latitude: null, longitude: null }); // Sử dụng giá trị mặc định thay vì `null`
             setIsLocationLoading(false);
           }
         );
       } else {
         setError("Geolocation is not supported by this browser.");
-        setUserLocation(null);
+        setUserLocation({ latitude: null, longitude: null }); // Sử dụng giá trị mặc định
         setIsLocationLoading(false);
       }
     };
+    
 
     getLocation();
   }, []);
