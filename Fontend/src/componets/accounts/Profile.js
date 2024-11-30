@@ -405,49 +405,118 @@ const Profile = () => {
                             </span>
                           </li>
                         )}
+                        {profile.registerEmployerStatus === 2 &&
+                          profile.reason && (
+                            <li>
+                              <span
+                                className="label1"
+                                style={{ marginRight: 60, width: 150 }}
+                              >
+                                Lý do từ chối:
+                              </span>
+                              <span
+                                style={{ color: "red", fontWeight: "bold" }}
+                              >
+                                {profile.reason}
+                              </span>
+                            </li>
+                          )}
                         {profile.roleId === 2 && serviceInfo && (
-                          <li>
-                            {serviceInfo.isFindJobseekers === 0 ? (
+                          <>
+                            {/* Thông tin số lượt đăng bài */}
+                            <li>
                               <span
+                                className="label1"
                                 style={{
-                                  color: "red",
-                                  fontWeight: "bold",
-                                  display: "inline-block",
+                                  marginRight: 60,
+                                  width: 150,
+                                  whiteSpace: "nowrap", // Đảm bảo tiêu đề không xuống dòng
                                 }}
                               >
-                                Tính năng tìm kiếm ứng viên chưa được kích hoạt
+                                Số lượt đăng bài bình thường:
                               </span>
-                            ) : serviceInfo.expirationDate &&
-                              new Date(serviceInfo.expirationDate) <
-                                new Date() ? (
                               <span
+                                style={{ fontWeight: "bold", color: "#1565c0" }}
+                              >
+                                {serviceInfo.numberPosts ?? "N/A"}
+                              </span>
+                            </li>
+
+                            <li>
+                              <span
+                                className="label1"
                                 style={{
-                                  color: "orange",
-                                  fontWeight: "bold",
-                                  display: "inline-block",
+                                  marginRight: 60,
+                                  width: 150,
+                                  whiteSpace: "nowrap", // Đảm bảo tiêu đề không xuống dòng
                                 }}
                               >
-                                Tính năng tìm kiếm ứng viên đã hết hạn vào ngày{" "}
-                                {new Date(
-                                  serviceInfo.expirationDate
-                                ).toLocaleDateString("vi-VN")}
+                                Số lượt đăng bài khẩn cấp:
                               </span>
-                            ) : (
                               <span
-                                style={{
-                                  color: "green",
-                                  fontWeight: "bold",
-                                  display: "inline-block",
-                                }}
+                                style={{ fontWeight: "bold", color: "#d32f2f" }}
                               >
-                                Tính năng tìm kiếm ứng viên đã được bật và sẽ
-                                hết hạn vào ngày{" "}
-                                {new Date(
-                                  serviceInfo.expirationDate
-                                ).toLocaleDateString("vi-VN")}
+                                {serviceInfo.numberPostsUrgentRecruitment ??
+                                  "N/A"}
                               </span>
-                            )}
-                          </li>
+                            </li>
+
+                            {/* Thông tin tính năng tìm kiếm ứng viên */}
+                            <li>
+                              {serviceInfo.isFindJobseekers === 0 ? (
+                                <span
+                                  style={{
+                                    color: "red",
+                                    fontWeight: "bold",
+                                    display: "inline-block",
+                                  }}
+                                >
+                                  Tính năng tìm kiếm ứng viên chưa được kích
+                                  hoạt
+                                </span>
+                              ) : (
+                                (() => {
+                                  const expirationDate =
+                                    serviceInfo.expirationDate
+                                      ? new Date(serviceInfo.expirationDate)
+                                      : null;
+                                  const isExpired =
+                                    expirationDate &&
+                                    expirationDate < new Date();
+
+                                  return isExpired ? (
+                                    <span
+                                      style={{
+                                        color: "orange",
+                                        fontWeight: "bold",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      Tính năng tìm kiếm ứng viên đã hết hạn vào
+                                      ngày{" "}
+                                      {expirationDate.toLocaleDateString(
+                                        "vi-VN"
+                                      )}
+                                    </span>
+                                  ) : (
+                                    <span
+                                      style={{
+                                        color: "green",
+                                        fontWeight: "bold",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      Tính năng tìm kiếm ứng viên đã được bật và
+                                      sẽ hết hạn vào ngày{" "}
+                                      {expirationDate.toLocaleDateString(
+                                        "vi-VN"
+                                      )}
+                                    </span>
+                                  );
+                                })()
+                              )}
+                            </li>
+                          </>
                         )}
                       </ul>
 
