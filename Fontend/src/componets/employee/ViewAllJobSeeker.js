@@ -197,17 +197,15 @@ const MemberCard = () => {
 
       <section className="member-card gray">
         <div className="container">
-          <div className="search-filter row">
-            <div className="col-md-3 col-sm-6">
+          <div className="search-container">
+            <div className="search-filter">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Từ khóa"
+                placeholder="Từ khóa công việc..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />
-            </div>
-            <div className="col-md-3 col-sm-6">
               <select
                 className="form-control"
                 onChange={(e) => setGender(parseInt(e.target.value))}
@@ -216,8 +214,6 @@ const MemberCard = () => {
                 <option value="1">Nam</option>
                 <option value="0">Nữ</option>
               </select>
-            </div>
-            <div className="col-md-3 col-sm-6">
               <input
                 type="number"
                 className="form-control"
@@ -225,8 +221,6 @@ const MemberCard = () => {
                 value={agemin}
                 onChange={(e) => setAgemin(e.target.value)}
               />
-            </div>
-            <div className="col-md-3 col-sm-6">
               <input
                 type="number"
                 className="form-control"
@@ -234,8 +228,6 @@ const MemberCard = () => {
                 value={agemax}
                 onChange={(e) => setAgemax(e.target.value)}
               />
-            </div>
-            <div className="col-md-3 col-sm-6 mt-3">
               <select
                 className="form-control"
                 onChange={(e) => setCurrentJob(parseInt(e.target.value))}
@@ -245,8 +237,6 @@ const MemberCard = () => {
                 <option value="2">Đang đi học</option>
                 <option value="3">Đang đi làm</option>
               </select>
-            </div>
-            <div className="col-md-3 col-sm-6 mt-3">
               <input
                 type="text"
                 className="form-control"
@@ -254,8 +244,6 @@ const MemberCard = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
-            </div>
-            <div className="col-md-3 col-sm-6 mt-3">
               <select
                 className="form-control"
                 onChange={(e) => setSort(parseInt(e.target.value))}
@@ -264,8 +252,6 @@ const MemberCard = () => {
                 <option value="1">Nhiều lượt ứng tuyển nhất</option>
                 <option value="2">Ít lượt ứng tuyển nhất</option>
               </select>
-            </div>
-            <div className="col-md-3 col-sm-6 mt-3">
               <button
                 type="button"
                 className="btn btn-success"
@@ -275,7 +261,6 @@ const MemberCard = () => {
               </button>
             </div>
           </div>
-
           {loading ? (
             <p>Đang tải ứng viên...</p>
           ) : (
@@ -362,15 +347,29 @@ const MemberCard = () => {
                         </p>
                       </div>
                       <div
-                        className="candidate-actions d-flex flex-column align-items-end"
-                        onClick={(e) => e.stopPropagation()} // Ngăn sự kiện từ các nút bên trong
+                        className="candidate-actions d-flex flex-column align-items-center"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column", // Sắp xếp theo cột
+                          alignItems: "center", // Căn giữa theo chiều ngang
+                          gap: "10px", // Khoảng cách giữa các nút
+                        }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <button
                           className="btn btn-primary"
                           style={{
-                            padding: "6px 12px",
-                            fontSize: "12px",
-                            marginBottom: "5px",
+                            width: "200px", // Chiều rộng cố định
+                            height: "40px", // Chiều cao cố định
+                            display: "inline-flex", // Để căn giữa nội dung
+                            alignItems: "center", // Căn giữa theo chiều dọc
+                            justifyContent: "center", // Căn giữa theo chiều ngang
+                            fontSize: "14px", // Cỡ chữ
+                            borderRadius: "5px", // Bo tròn góc
+                            border: "1px solid #ddd", // Viền
+                            padding: "0", // Bỏ padding mặc định
+                            backgroundColor: "#28a745", // Màu nền xanh
+                            color: "white", // Màu chữ trắng
                           }}
                           onClick={() => {
                             sendFirstTimeMessage(candidate.userId);
@@ -383,17 +382,26 @@ const MemberCard = () => {
                           <button
                             className="btn btn-save"
                             style={{
-                              padding: "6px 12px",
-                              fontSize: "12px",
+                              width: "200px", // Chiều rộng cố định
+                              height: "40px", // Chiều cao cố định
+                              display: "inline-flex", // Để căn giữa nội dung
+                              alignItems: "center", // Căn giữa theo chiều dọc
+                              justifyContent: "center", // Căn giữa theo chiều ngang
+                              fontSize: "14px", // Cỡ chữ
+                              borderRadius: "5px", // Bo tròn góc
+                              border: "1px solid #ddd", // Viền
+                              padding: "0", // Bỏ padding mặc định
+                              backgroundColor: "white", // Màu nền trắng
+                              color: "#666", // Màu chữ xám
                             }}
                             onClick={(e) => {
-                              e.stopPropagation(); // Ngăn sự kiện click lan tới thẻ cha
+                              e.stopPropagation();
                             }}
                           >
                             <FontAwesomeIcon
                               icon={faHeart}
                               className="icon-spacing"
-                              style={{ color: "red" }}
+                              style={{ color: "red", marginRight: "5px" }} // Cách icon với chữ
                             />
                             Đã lưu thông tin
                           </button>
@@ -401,18 +409,27 @@ const MemberCard = () => {
                           <button
                             className="btn btn-save"
                             style={{
-                              padding: "6px 12px",
-                              fontSize: "12px",
+                              width: "200px", // Chiều rộng cố định
+                              height: "40px", // Chiều cao cố định
+                              display: "inline-flex", // Để căn giữa nội dung
+                              alignItems: "center", // Căn giữa theo chiều dọc
+                              justifyContent: "center", // Căn giữa theo chiều ngang
+                              fontSize: "14px", // Cỡ chữ
+                              borderRadius: "5px", // Bo tròn góc
+                              border: "1px solid #ddd", // Viền
+                              padding: "0", // Bỏ padding mặc định
+                              backgroundColor: "white", // Màu nền trắng
+                              color: "#666", // Màu chữ xám
                             }}
                             onClick={(e) => {
-                              e.stopPropagation(); // Ngăn sự kiện click lan tới thẻ cha
+                              e.stopPropagation();
                               handleAddToFavorites(candidate.userId);
                             }}
                           >
                             <FontAwesomeIcon
                               icon={faHeart}
                               className="icon-spacing"
-                              style={{ color: "gray" }}
+                              style={{ color: "gray", marginRight: "5px" }} // Cách icon với chữ
                             />
                             Lưu thông tin liên hệ
                           </button>

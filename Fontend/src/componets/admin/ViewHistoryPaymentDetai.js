@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
+import { useParams } from 'react-router-dom';
 
-const PaymentHistoryTable = () => {
+const PaymentHistoryTableDetail = () => {
+  const { uid } = useParams();
   const [data, setData] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [daysFilter, setDaysFilter] = useState(0); // 0 for no filter, can be set to other values like 7, 10, 30
@@ -13,7 +15,7 @@ const PaymentHistoryTable = () => {
 
   // Fetch data for payment history
   const fetchData = async () => {
-    const query = `pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}`;
+    const query = `uid=${uid}&pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}`;
     console.log('Fetching data with query:', query);
 
     try {
@@ -107,46 +109,39 @@ const PaymentHistoryTable = () => {
           </div>
 
           {/* Table displaying payment history */}
-<table className="payment-history-table">
-  <thead>
-    <tr>
-      <th>Họ tên</th>
-      <th>Giá</th>
-      <th>Tên dịch vụ</th>
-      <th>Thời gian giao dịch</th>
-    </tr>
-  </thead>
-  <tbody>
-    {/* Ensure data is defined and not empty */}
-    {data && data.length > 0 ? (
-      data.map((item) => (
-        <tr 
-          key={item.servicePriceLogId} 
-          onClick={() => window.location.href = `/ViewAllHistoryPaymentDetail/${item.user.userId}`} 
-          style={{ cursor: 'pointer' }}
-        >
-          <td>{item.user.fullName}</td>
-          <td>{item.servicePrice.price} VNĐ</td>
-          <td>{item.servicePrice.servicePriceName}</td>
-          <td>
-            {new Date(item.registerDate).toLocaleDateString('vi-VN', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td colSpan="4">Không có dữ liệu</td>
-      </tr>
-    )}
-  </tbody>
-</table>
-
+          <table className="payment-history-table">
+            <thead>
+              <tr>
+                <th>Họ tên</th>
+                <th>Giá</th>
+                <th>Tên dịch vụ</th>
+                <th>Thời gian giao dịch</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Ensure data is defined and not empty */}
+              {data && data.length > 0 ? (
+                data.map((item) => (
+                  <tr key={item.servicePriceLogId}>
+                    <td>{item.user.fullName}</td>
+                    <td>{item.servicePrice.price} VNĐ</td>
+                    <td>{item.servicePrice.servicePriceName}</td>
+                    <td>{new Date(item.registerDate).toLocaleDateString('vi-VN', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">Không có dữ liệu</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
 
           {/* Pagination controls */}
           <div className="pagination-controls">
@@ -240,4 +235,4 @@ const PaymentHistoryTable = () => {
   );
 };
 
-export default PaymentHistoryTable;
+export default PaymentHistoryTableDetail;
