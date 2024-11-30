@@ -142,6 +142,7 @@ function ReCreateJob() {
         setLongitude(newPosition.lng);
         console.log(newPosition);
         console.log(address);
+        JobDetail.address = address;
     };
     //==================================================================
     const [schedules, setSchedules] = useState([]);
@@ -305,6 +306,8 @@ function ReCreateJob() {
         const longitude_a = parseFloat(lon);
         setLatitude(latitude_a);
         setLongitude(longitude_a);
+        JobDetail.latitude = latitude_a;
+        JobDetail.longitude = longitude_a;
     };
 
     //Hàm gọi API để lưu lịch làm việc
