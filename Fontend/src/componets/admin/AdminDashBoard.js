@@ -18,6 +18,10 @@ const AdminDashboard = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loadingRevenue, setLoadingRevenue] = useState(false);
+  const [loadingPackageSold, setLoadingPackageSold] = useState(false);
+  const [loadingPackageRevenue, setLoadingPackageRevenue] = useState(false);
+  const [loadingUserStatistics, setLoadingUserStatistics] = useState(false);
 
   // Trạng thái cho từng bộ chọn
   const [revenueRange, setRevenueRange] = useState({
@@ -35,78 +39,95 @@ const AdminDashboard = () => {
     end: dayjs().endOf("month"),
   });
 
-  const fetchData = async (type, startDate, endDate) => {
-    setLoading(true);
-    setError(null);
 
+  const fetchRevenueStatistics = async () => {
+    setLoadingRevenue(true);
     try {
-      if (type === "revenue") {
-        const revenueResponse = await fetch(
-          `https://localhost:7077/api/DashBoard/DashBoardRevenueStatistics?StartDate=${startDate.format(
-            "YYYY-MM"
-          )}&EndDate=${endDate.format("YYYY-MM")}`
-        );
-        if (!revenueResponse.ok)
-          throw new Error("Lỗi khi lấy dữ liệu doanh thu.");
-        const revenueData = await revenueResponse.json();
-        setRevenueStatistics(revenueData);
-      } else if (type === "packageSold") {
-        const soldResponse = await fetch(
-          `https://localhost:7077/api/DashBoard/DashBoardPackageStatisticsNumberSold?StartDate=${startDate.format(
-            "YYYY-MM"
-          )}&EndDate=${endDate.format("YYYY-MM")}`
-        );
-        if (!soldResponse.ok) throw new Error("Lỗi khi lấy số lượng bán.");
-        const soldData = await soldResponse.json();
-        setPackageSoldStatistics(soldData);
-      } else if (type === "packageRevenue") {
-        const revenueResponse = await fetch(
-          `https://localhost:7077/api/DashBoard/DashBoardPackageStatisticsRevenue?StartDate=${startDate.format(
-            "YYYY-MM"
-          )}&EndDate=${endDate.format("YYYY-MM")}`
-        );
-        if (!revenueResponse.ok)
-          throw new Error("Lỗi khi lấy doanh thu theo gói.");
-        const revenueData = await revenueResponse.json();
-        setPackageRevenueStatistics(revenueData);
-      } else if (type === "user") {
-        const userResponse = await fetch(
-          "https://localhost:7077/api/DashBoard/DashBoardUser"
-        );
-        if (!userResponse.ok)
-          throw new Error("Lỗi khi lấy dữ liệu người dùng.");
-        const userData = await userResponse.json();
-        setUserStatistics({
-          totalUser: userData.totalUser,
-          employersNumber: userData.userStatistics.employersNumber,
-        });
-      }
+      const response = await fetch(
+        `https://localhost:7077/api/DashBoard/DashBoardRevenueStatistics?StartDate=${revenueRange.start.format(
+          "YYYY-MM"
+        )}&EndDate=${revenueRange.end.format("YYYY-MM")}`
+      );
+      if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu doanh thu.");
+      const data = await response.json();
+      setRevenueStatistics(data);
     } catch (err) {
-      console.error(err);
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoadingRevenue(false);
     }
   };
 
-  // useEffect cho từng loại dữ liệu
+  const fetchPackageSoldStatistics = async () => {
+    setLoadingPackageSold(true);
+    try {
+      const response = await fetch(
+        `https://localhost:7077/api/DashBoard/DashBoardPackageStatisticsNumberSold?StartDate=${soldRange.start.format(
+          "YYYY-MM"
+        )}&EndDate=${soldRange.end.format("YYYY-MM")}`
+      );
+      if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu gói bán.");
+      const data = await response.json();
+      setPackageSoldStatistics(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingPackageSold(false);
+    }
+  };
+
+  const fetchPackageRevenueStatistics = async () => {
+    setLoadingPackageRevenue(true);
+    try {
+      const response = await fetch(
+        `https://localhost:7077/api/DashBoard/DashBoardPackageStatisticsRevenue?StartDate=${packageRevenueRange.start.format(
+          "YYYY-MM"
+        )}&EndDate=${packageRevenueRange.end.format("YYYY-MM")}`
+      );
+      if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu doanh thu gói.");
+      const data = await response.json();
+      setPackageRevenueStatistics(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingPackageRevenue(false);
+    }
+  };
+
+  const fetchUserStatistics = async () => {
+    setLoadingUserStatistics(true);
+    try {
+      const response = await fetch(
+        "https://localhost:7077/api/DashBoard/DashBoardUser"
+      );
+      if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu người dùng.");
+      const data = await response.json();
+      setUserStatistics({
+        totalUser: data.totalUser,
+        employersNumber: data.userStatistics.employersNumber,
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingUserStatistics(false);
+    }
+  };
+
+  
   useEffect(() => {
-    fetchData("revenue", revenueRange.start, revenueRange.end);
+    fetchRevenueStatistics();
   }, [revenueRange]);
 
   useEffect(() => {
-    fetchData("packageSold", soldRange.start, soldRange.end);
+    fetchPackageSoldStatistics();
   }, [soldRange]);
+
   useEffect(() => {
-    fetchData(
-      "packageRevenue",
-      packageRevenueRange.start,
-      packageRevenueRange.end
-    );
+    fetchPackageRevenueStatistics();
   }, [packageRevenueRange]);
 
   useEffect(() => {
-    fetchData("user");
+    fetchUserStatistics();
   }, []);
 
   if (loading) return <div className="loading">Đang tải...</div>;
@@ -194,7 +215,11 @@ const AdminDashboard = () => {
             >
               <h4 style={{ color: "#ffffff" }}>Tổng Doanh Thu</h4>
               <p>
-                <b style={{ color: "#ffffff" }}>{totalRevenue.toLocaleString("vi-VN")} VND</b>
+                {loadingRevenue ? (
+                  <span>Đang tải...</span>
+                ) : (
+                  <b style={{ color: "#ffffff" }}>{totalRevenue.toLocaleString("vi-VN")} VND</b>
+                )}
               </p>
             </Card>
           </Col>
@@ -206,9 +231,13 @@ const AdminDashboard = () => {
                 color: "#ffffff",
               }}
             >
-              <h4 style={{ color: "#ffffff" }}>Tổng Gói Bán</h4>
+              <h4 style={{ color: "#ffffff" }}>Tổng Gói Đã Bán</h4>
               <p>
-                <b style={{ color: "#ffffff" }}>{totalPackagesSold} Gói</b>
+                {loadingPackageSold ? (
+                  <span>Đang tải...</span>
+                ) : (
+                  <b style={{ color: "#ffffff" }}>{totalPackagesSold} Gói</b>
+                )}
               </p>
             </Card>
           </Col>
@@ -222,9 +251,11 @@ const AdminDashboard = () => {
             >
               <h4 style={{ color: "#ffffff" }}>Tổng Số Người Dùng</h4>
               <p>
-                <b style={{ color: "#ffffff" }}>
-                  {userStatistics?.totalUser || 0} Người
-                </b>
+                {loadingUserStatistics ? (
+                  <span>Đang tải...</span>
+                ) : (
+                  <b style={{ color: "#ffffff" }}>{userStatistics?.totalUser || 0} Người</b>
+                )}
               </p>
             </Card>
           </Col>
@@ -238,7 +269,11 @@ const AdminDashboard = () => {
             >
               <h4 style={{ color: "#ffffff" }}>Tổng Số Nhà Tuyển Dụng</h4>
               <p>
-                <b style={{ color: "#ffffff" }}>{userStatistics?.employersNumber || 0} Nhà tuyển dụng</b>
+                {loadingUserStatistics ? (
+                  <span>Đang tải...</span>
+                ) : (
+                  <b style={{ color: "#ffffff" }}>{userStatistics?.employersNumber || 0} Nhà tuyển dụng</b>
+                )}
               </p>
             </Card>
           </Col>
