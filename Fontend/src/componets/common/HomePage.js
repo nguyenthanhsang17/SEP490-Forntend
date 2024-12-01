@@ -40,59 +40,7 @@ const HomePage = () => {
         >
           <div className="container">
             <div className="banner-caption">
-              <div className="col-md-12 col-sm-12 banner-text">
-                <h1>7,000+ Công Việc Được Chọn</h1>
-                <form className="form-horizontal">
-                  <div className="row">
-                    <div className="col-md-4 no-padd">
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          className="form-control right-bor"
-                          id="joblist"
-                          placeholder="Kỹ năng, Chức danh, Công ty"
-                          aria-label="Kỹ năng công việc"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-3 no-padd">
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          className="form-control right-bor"
-                          id="location"
-                          placeholder="Tìm kiếm theo địa điểm..."
-                          aria-label="Địa điểm"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-3 no-padd">
-                      <div className="input-group">
-                        <select
-                          id="choose-city"
-                          className="form-control"
-                          aria-label="Chọn thành phố"
-                        >
-                          <option value="">Chọn thành phố</option>
-                          <option value="Chandigarh">Chandigarh</option>
-                          <option value="London">London</option>
-                          <option value="England">England</option>
-                          <option value="Pratapcity">Pratapcity</option>
-                          <option value="Ukrain">Ukrain</option>
-                          <option value="Wilangana">Wilangana</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-2 no-padd">
-                      <div className="input-group">
-                        <button type="submit" className="btn btn-primary">
-                          Tìm Kiếm
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+              
             </div>
           </div>
         </div>
