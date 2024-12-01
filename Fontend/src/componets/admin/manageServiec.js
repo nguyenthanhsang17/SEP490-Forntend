@@ -123,10 +123,11 @@ const ManageService = () => {
                                 <tr>
                                     <th>Tên gói</th>
                                     <th>Số lượng bài đăng</th>
-                                    <th>Số lượng bài đăng khẩn cấp</th>
+                                    <th>Số lượng bài đăng nổi bật</th>
                                     <th>Tìm kiếm ứng viên</th>
-                                    <th>Thời hạn sử dụng (tháng)</th>
-                                    <th>Mức giá (VNĐ)</th>
+                                    <th>Thời hạn sử dụng </th>
+                                    <th>Mức giá </th>
+                                    <th>Trạng thái </th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
@@ -139,6 +140,7 @@ const ManageService = () => {
                                         <td>{service.isFindJobseekers === 1 ? 'Có' : 'Không'}</td>
                                         <td>{service.durationsMonth ? `${service.durationsMonth} tháng` : 'Không có'}</td>
                                         <td>{service.price ? `${service.price.toLocaleString()} VNĐ` : 'N/A'}</td>
+                                        <td>{service.status == "1" ? 'Đang bán' : 'Không bán'}</td>
                                         <td>
                                             <div className="action-buttons">
                                                 <button
@@ -196,13 +198,13 @@ const ManageService = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Số lượng bài đăng khẩn cấp:</label>
+                                <label>Số lượng bài đăng nổi bật:</label>
                                 <input
                                     type="number"
                                     name="numberPostsUrgentRecruitment"
                                     value={newService.numberPostsUrgentRecruitment}
                                     onChange={handleInputChange}
-                                    placeholder="Nhập số lượng bài khẩn cấp"
+                                    placeholder="Nhập số lượng bài đăng nổi bật"
                                 />
                             </div>
                             <div className="form-group">
@@ -270,7 +272,7 @@ const ManageService = () => {
                         
                     }
                     .service-section {
-                        flex: 2;
+                        flex: 3;
                         background-color: #f9f9f9;
                         padding: 20px;
                         padding-top: 0px;
