@@ -231,7 +231,7 @@ const AdminDashboard = () => {
                 color: "#ffffff",
               }}
             >
-              <h4 style={{ color: "#ffffff" }}>Tổng Gói Bán</h4>
+              <h4 style={{ color: "#ffffff" }}>Tổng Gói Đã Bán</h4>
               <p>
                 {loadingPackageSold ? (
                   <span>Đang tải...</span>
