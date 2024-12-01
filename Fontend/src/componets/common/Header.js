@@ -155,7 +155,7 @@ const Header = () => {
 
   const handleViewAllJobsClick = () => {
     setDropdownVisible(false);
-    navigate("/viewBlogList");
+    navigate("/viewAllPriceList");
   };
 
   const handleViewListCreatedClick = () => {
@@ -166,11 +166,6 @@ const Header = () => {
   const handleViewListAppliedClick = () => {
     setDropdownVisible(false);
     navigate("/ViewAllJobApplied");
-  };
-
-  const handleViewAllCandidatesClick = () => {
-    setDropdownVisible(false);
-    navigate("/viewAllJobSeeker"); // Adjust the route as necessary
   };
 
   const handleManageAllPostJob = () => {
