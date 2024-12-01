@@ -272,7 +272,10 @@ const Header = () => {
                 <a style={styles.viewJobsLink} href="/viewalljob">
                   <FaBriefcase style={styles.icon} /> Tất cả các công việc
                 </a>
-                <ul className="dropdown-menu" style={styles.dropdownMenu}>
+                <ul
+                  className="dropdown-menu"
+                  style={{ ...styles.dropdownMenu, marginLeft: "9px" }} // Thêm marginLeft
+                >
                   <li>
                     <a
                       style={styles.dropdownItem}
