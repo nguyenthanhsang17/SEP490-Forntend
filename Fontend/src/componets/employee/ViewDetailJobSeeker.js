@@ -86,11 +86,49 @@ const ViewJobDetailJobSeeker = () => {
     fetchJobSeekerDetails();
   }, [id, navigate]);
 
-  const handleContactNow = () => {
+  const handleContactNow = async () => {
     if (jobSeeker) {
-      alert(`Contacting ${jobSeeker.fullName}`);
+      try {
+        // Get the token from localStorage
+        const token = localStorage.getItem("token");
+        if (!token) {
+          Swal.fire("Error", "You must be logged in to contact candidates.", "error");
+          return;
+        }
+  
+        // API endpoint to send the first message
+        const apiEndpoint = `https://localhost:7077/api/Chat/SendFisrtTime/${jobSeeker.userId}`;
+  
+        // API call
+        const response = await axios.post(apiEndpoint, null, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.status === 200) {
+          Swal.fire(
+            "Success",
+            "Your message was successfully sent. Redirecting to the chat list...",
+            "success"
+          ).then(() => {
+            window.open("/ChatList", "_blank");
+          });
+        }
+      } catch (error) {
+        if (error.response) {
+          Swal.fire(
+            "Error",
+            error.response.data.message || "Failed to send the message.",
+            "error"
+          );
+        } else {
+          Swal.fire("Error", "An unexpected error occurred.", "error");
+        }
+      }
     }
   };
+  
 
   const handleAddToFavorites = async (id) => {
     const token = localStorage.getItem("token");
