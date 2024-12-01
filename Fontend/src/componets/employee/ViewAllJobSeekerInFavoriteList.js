@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
+import bannerImage from '../assets/img/banner-10.jpg';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import axios from 'axios';
@@ -85,10 +86,12 @@ function ViewAllJobSeekerInFavoriteList() {
     return (
         <>
             <Header />
-            <div className="container job-seeker-list" style={{ paddingTop: '100px' }}>
-
-                <h2 className="text-center">Danh sách ứng viên ưa thích</h2>
-
+            <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
+                <div className="container">
+                    <h1 className="text-center">Danh sách ứng viên ưa thích</h1>
+                </div>
+            </section>
+            <div className="container job-seeker-list" style={{ paddingTop: '80px' }}>
                 <div
                     className="filter-section"
                     style={{
