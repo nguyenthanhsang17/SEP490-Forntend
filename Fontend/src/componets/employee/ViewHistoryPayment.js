@@ -65,7 +65,7 @@ const PaymentHistoryTable = () => {
           <thead>
             <tr>
               <th>Giá</th>
-              <th>Mã dịch vụ</th>
+              <th>Tên dịch vụ</th>
               <th>Thời gian giao dịch</th>
             </tr>
           </thead>
@@ -74,7 +74,7 @@ const PaymentHistoryTable = () => {
               data.map((item) => (
                 <tr key={item.servicePriceLogId}>
                   <td>{item.servicePrice.price} VNĐ</td>
-                  <td>{item.servicePriceId}</td>
+                  <td>{item.servicePriceName}</td>
                   <td>{new Date(item.registerDate).toLocaleDateString('vi-VN', {
                     day: '2-digit',
                     month: '2-digit',

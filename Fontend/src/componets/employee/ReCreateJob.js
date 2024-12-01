@@ -39,6 +39,7 @@ function ReCreateJob() {
     const [jsonOutput, setJsonOutput] = useState('');
     const [isLongTerm, setIsLongTerm] = useState(false);
     const [BamNut, SetBamNut] = useState(false);
+    const [BamNutLuu, SetBamNutLuu] = useState(false);
     const [location, setLocation] = useState({
         addressDetail: '',
         address: {},
@@ -595,7 +596,7 @@ function ReCreateJob() {
 
     const luujob = async (e) => {
         e.preventDefault();
-        SetBamNut(true);
+        SetBamNutLuu(true);
 
         if (!validateJobData()) {
             return;
@@ -682,11 +683,11 @@ function ReCreateJob() {
         } catch (error) {
             console.error('Error:', error);
         }
-        SetBamNut(false);
+        SetBamNutLuu(false);
     };
 
     const luujob2 = async () => {
-        SetBamNut(true);
+        SetBamNutLuu(true);
 
         if (!validateJobData()) {
             return;
@@ -767,17 +768,18 @@ function ReCreateJob() {
         } catch (error) {
             console.error('Error:', error);
         }
-        SetBamNut(false);
+        SetBamNutLuu(false);
     };
 
     const showAlert = async (text) => {
         const result = await Swal.fire({
             title: text,
-            showCancelButton: true,
-            confirmButtonText: 'Ok'
+            showCancelButton: false,
+            confirmButtonText: 'Ok',
         });
 
         if (result.isConfirmed) {
+
             navigate("/viewListJobsCreated");
         }
     };
@@ -786,7 +788,8 @@ function ReCreateJob() {
         const result = await Swal.fire({
             title: text,
             showCancelButton: true,
-            confirmButtonText: 'Ok'
+            confirmButtonText: 'Có',
+            cancelButtonText: 'Không'
         });
 
         if (result.isConfirmed) {
@@ -1563,14 +1566,14 @@ function ReCreateJob() {
                                     <button
                                         style={{
                                             width: "50%",
-                                            backgroundColor: BamNut ? "gray" : "orange",
-                                            cursor: BamNut ? "not-allowed" : "pointer"
+                                            backgroundColor: BamNutLuu ? "gray" : "orange",
+                                            cursor: BamNutLuu ? "not-allowed" : "pointer"
                                         }}
-                                        className={`btn ${BamNut ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
-                                        onClick={!BamNut ? luujob : null} // Chặn click nếu đang xử lý
-                                        disabled={BamNut} // Disable nút khi đang xử lý
+                                        className={`btn ${BamNutLuu ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
+                                        onClick={!BamNutLuu ? luujob : null} // Chặn click nếu đang xử lý
+                                        disabled={BamNutLuu} // Disable nút khi đang xử lý
                                     >
-                                        {BamNut ? "Đang Lưu công việc..." : "Lưu công việc"}
+                                        {BamNutLuu ? "Đang Lưu công việc..." : "Lưu công việc"}
                                     </button>
                                 </div>
                             </div>

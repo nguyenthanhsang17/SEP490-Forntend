@@ -82,7 +82,11 @@ const ManagementCV = () => {
         setCvs(updatedCvs);
     }, [cvForms]);
 
-
+    const hasNullOrEmptyOrWhitespace = (obj) => {
+        return Object.values(obj).some(
+            value => value === null || (typeof value === "string" && value.trim() === "")
+        );
+    };
 
     const handleSaveCV = async (formIndex) => {
         const cvData = {
@@ -93,6 +97,9 @@ const ManagementCV = () => {
         try {
             cvData.cvId = cvData.id;
             console.log(cvData);
+            if(hasNullOrEmptyOrWhitespace(cvData)){
+                enqueueSnackbar("Chưa nhập đầy đủ các thông tin", { variant: "error" });
+            }
             const token = localStorage.getItem("token");
             const response = await axios.post(
                 'https://localhost:7077/api/Cvs/CreateCV', 
@@ -106,6 +113,7 @@ const ManagementCV = () => {
               );
         
             console.log('Tạo CV thành công', response.data);
+            enqueueSnackbar("Cập nhật hồ sơ thành công!", { variant: "success" });
             if (previousPath.includes('ReApplyJob') || previousPath.includes('ApplyJob')) {
                 navigate(previousPath);
               }
