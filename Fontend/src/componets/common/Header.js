@@ -157,7 +157,10 @@ const Header = () => {
     setDropdownVisible(false);
     navigate("/viewAllPriceList");
   };
-
+  const handleBlogClick = () => {
+    setDropdownVisible(false);
+    navigate("/viewBlogList");
+  };
   const handleViewListCreatedClick = () => {
     setDropdownVisible(false);
     navigate("/viewListJobsCreated");
@@ -244,7 +247,7 @@ const Header = () => {
               <li>
                 <a
                   style={styles.viewJobsLink}
-                  onClick={handleViewAllJobsClick}
+                  onClick={handleBlogClick}
                   href="/viewBlogList"
                 >
                   <FaBlog style={styles.icon} /> Blog
