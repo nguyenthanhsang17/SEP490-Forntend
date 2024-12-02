@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Footer from "../common/Footer";
 import Header from "../common/Header";
+import bannerImage from '../assets/img/banner-10.jpg';
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import Swal from 'sweetalert2';
 
 const PaymentHistoryTable = () => {
   const [data, setData] = useState([]);
@@ -29,11 +33,9 @@ const PaymentHistoryTable = () => {
 
       const result = await response.json();
 
-
       if (response.ok) {
         setData(result.items);
         setTotalCount(result.totalCount);
-        console.log(result.item)
       } else {
         console.error('Error:', result.message || 'Không thể tải dữ liệu');
       }
@@ -54,12 +56,18 @@ const PaymentHistoryTable = () => {
     }
   };
 
+  const totalPages = Math.ceil(totalCount / pageSize); // Tính toán tổng số trang
+
   return (
     <>
       <Header />
-      <div className="payment-history-container">
-        <h1>Lịch sử thanh toán</h1>
+      <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
+        <div className="container">
+        <h1 style={{ color: 'white' }}>Lịch sử thanh toán</h1>
+        </div>
+      </section>
 
+      <div className="payment-history-container">
         {/* Table displaying payment history */}
         <table className="payment-history-table">
           <thead>
@@ -93,19 +101,25 @@ const PaymentHistoryTable = () => {
         </table>
 
         {/* Pagination controls */}
-        <div className="pagination-controls">
-          <button
-            onClick={() => handlePageChange(pageNumber - 1)}
-            disabled={pageNumber === 1}>
-            Trước
-          </button>
-          <span>Trang {pageNumber} / {Math.ceil(totalCount / pageSize)}</span>
-          <button
-            onClick={() => handlePageChange(pageNumber + 1)}
-            disabled={pageNumber === Math.ceil(totalCount / pageSize)}>
-            Sau
-          </button>
-        </div>
+        {data.length > 0 && (
+          <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+            <Button
+              shape="circle"
+              icon={<LeftOutlined />}
+              disabled={pageNumber === 1}
+              onClick={() => handlePageChange(pageNumber - 1)}
+            />
+            <span style={{ margin: '0 10px', fontSize: '16px' }}>
+              {pageNumber} / {totalPages} trang
+            </span>
+            <Button
+              shape="circle"
+              icon={< RightOutlined />}
+              disabled={pageNumber === totalPages}
+              onClick={() => handlePageChange(pageNumber + 1)}
+            />
+          </div>
+        )}
 
         <style jsx>{`
         .payment-history-container {
@@ -166,7 +180,6 @@ const PaymentHistoryTable = () => {
       </div>
       <Footer />
     </>
-
   );
 };
 
