@@ -228,7 +228,7 @@ const ViewJobDetailJobSeeker = () => {
                   color: "#555",
                 }}
               >
-                <h4
+                {/* <h4
                   className="designation"
                   style={{
                     fontWeight: "bold",
@@ -238,7 +238,7 @@ const ViewJobDetailJobSeeker = () => {
                   }}
                 >
                   Thông Tin Liên Hệ
-                </h4>
+                </h4> */}
                 {jobSeeker ? (
                   <div
                     className="info-grid"
@@ -292,7 +292,7 @@ const ViewJobDetailJobSeeker = () => {
                       </p>
                       <p style={{ margin: "0" }}>
                         <strong style={{ color: "#333" }}>
-                          Số Lượt Chấp Nhận:
+                          Số Lượt Ứng Tuyển Phù Hợp:
                         </strong>{" "}
                         {jobSeeker.numberAppiledAccept ?? 0}
                       </p>
