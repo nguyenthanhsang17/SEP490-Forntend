@@ -197,8 +197,9 @@ function ApplyJob() {
                         </div>
                     ))}
                 </div>
-
-                <h2 style={styles.title}>Chưa có cv? <a  onClick={handleNavigateToManagementCV}>Tạo mới</a> </h2>
+                <div style={{ paddingTop: '100px', paddingBottom: '100px'}}>
+                    <h2 style={styles.title} >Chưa có cv? <a onClick={handleNavigateToManagementCV}>Tạo mới</a> </h2>
+                </div>
             </div>
             <Footer />
         </>
