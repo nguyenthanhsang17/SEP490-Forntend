@@ -75,16 +75,16 @@ const PaymentHistoryTable = () => {
         <div className="payment-history-container">
 
           <h1 className='pageTitle' style={{
-                        textAlign: 'center',
-                        color: '#2c3e50',
-                        marginBottom: '20px',
-                        fontSize: '28px',
-                        fontWeight: '700',
-                        borderBottom: '3px solid #3498db',
-                        paddingBottom: '15px'
-                    }}>
-                        Lịch sử thanh toán
-                    </h1>
+            textAlign: 'center',
+            color: '#2c3e50',
+            marginBottom: '20px',
+            fontSize: '28px',
+            fontWeight: '700',
+            borderBottom: '3px solid #3498db',
+            paddingBottom: '15px'
+          }}>
+            Lịch sử thanh toán
+          </h1>
 
           {/* Filter controls */}
           <div className="filter-controls">
@@ -103,7 +103,7 @@ const PaymentHistoryTable = () => {
               value={servicePriceIdFilter}
               onChange={handleServicePriceIdFilterChange}
             >
-              <option  value="">Tất cả</option>
+              <option value="">Tất cả</option>
               {/* Ensure servicePrices is defined and not empty */}
               {servicePrices && servicePrices.length > 0 ? (
                 servicePrices.map(service => (
@@ -118,45 +118,45 @@ const PaymentHistoryTable = () => {
           </div>
 
           {/* Table displaying payment history */}
-<table className="payment-history-table">
-  <thead>
-    <tr>
-      <th>Họ tên</th>
-      <th>Giá</th>
-      <th>Tên dịch vụ</th>
-      <th>Thời gian giao dịch</th>
-    </tr>
-  </thead>
-  <tbody>
-    {/* Ensure data is defined and not empty */}
-    {data && data.length > 0 ? (
-      data.map((item) => (
-        <tr 
-          key={item.servicePriceLogId} 
-          onClick={() => window.location.href = `/ViewAllHistoryPaymentDetail/${item.user.userId}`} 
-          style={{ cursor: 'pointer' }}
-        >
-          <td>{item.user.fullName}</td>
-          <td>{item.servicePrice.price} VNĐ</td>
-          <td>{item.servicePrice.servicePriceName}</td>
-          <td>
-            {new Date(item.registerDate).toLocaleDateString('vi-VN', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td colSpan="4">Không có dữ liệu</td>
-      </tr>
-    )}
-  </tbody>
-</table>
+          <table className="payment-history-table">
+            <thead>
+              <tr>
+                <th>Họ tên</th>
+                <th>Giá</th>
+                <th>Tên dịch vụ</th>
+                <th>Thời gian giao dịch</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Ensure data is defined and not empty */}
+              {data && data.length > 0 ? (
+                data.map((item) => (
+                  <tr
+                    key={item.servicePriceLogId}
+                    onClick={() => window.location.href = `/ViewAllHistoryPaymentDetail/${item.user.userId}`}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <td>{item.user.fullName}</td>
+                    <td>{item.servicePrice.price} VNĐ</td>
+                    <td>{item.servicePrice.servicePriceName}</td>
+                    <td>
+                      {new Date(item.registerDate).toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">Không có dữ liệu</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
 
 
           {/* Pagination controls */}
