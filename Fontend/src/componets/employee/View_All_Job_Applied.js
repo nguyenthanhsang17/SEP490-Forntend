@@ -164,10 +164,10 @@ function ViewAllJobApplied() {
             ))
           ) : (
             <div>
-              <h2 className="text-center">Bạn chưa ứng tuyển công việc nào, hãy bắt đầu ứng tuyển.</h2>
-              <a href={`/viewalljob`} className="text-center">
+              <h2 className="text-center">Bạn chưa ứng tuyển công việc nào, hãy bắt đầu ứng tuyển. <a href={`/viewalljob`} >
                 Xem tất cả công việc
-              </a>
+              </a></h2>
+              
             </div>
           )}
         </div>
