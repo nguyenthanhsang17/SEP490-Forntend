@@ -73,7 +73,18 @@ const PaymentHistoryTable = () => {
       {/* Main Content */}
       <main className="dashboard-content">
         <div className="payment-history-container">
-          <h1>Lịch sử thanh toán</h1>
+
+          <h1 className='pageTitle' style={{
+                        textAlign: 'center',
+                        color: '#2c3e50',
+                        marginBottom: '20px',
+                        fontSize: '28px',
+                        fontWeight: '700',
+                        borderBottom: '3px solid #3498db',
+                        paddingBottom: '15px'
+                    }}>
+                        Lịch sử thanh toán
+                    </h1>
 
           {/* Filter controls */}
           <div className="filter-controls">
@@ -164,75 +175,100 @@ const PaymentHistoryTable = () => {
 
           <style jsx>{`
             .payment-history-container {
-              font-family: Arial, sans-serif;
-              max-width: 1000px;
-              margin: 0 auto;
-              padding: 20px;
-            }
+    background-color: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+}
 
-            h1 {
-              text-align: center;
-              color: #333;
-            }
+.filter-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+}
 
-            .filter-controls {
-              margin: 20px 0;
-              display: flex;
-              justify-content: flex-start;
-              gap: 10px;
-            }
+.filter-controls label {
+    margin-right: 15px;
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+}
 
-            .filter-controls label {
-              font-size: 16px;
-            }
+.filter-controls select {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #bdc3c7;
+    background-color: white;
+    font-size: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-right: 20px;
+}
 
-            .filter-controls select {
-              padding: 5px;
-              font-size: 16px;
-            }
+.payment-history-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background-color: white;
+}
 
-            .payment-history-table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 20px;
-            }
+.payment-history-table th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-weight: bold;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
 
-            .payment-history-table th, .payment-history-table td {
-              padding: 10px;
-              text-align: center;
-              border: 1px solid #ddd;
-            }
+.payment-history-table td {
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-            .payment-history-table th {
-              background-color: #f4f4f4;
-              color: #333;
-            }
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+}
 
-            .pagination-controls {
-              text-align: center;
-              margin-top: 20px;
-            }
+.pagination-controls button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-            .pagination-controls button {
-              padding: 8px 16px;
-              font-size: 16px;
-              margin: 0 10px;
-              background-color: #007BFF;
-              color: white;
-              border: none;
-              cursor: pointer;
-              border-radius: 5px;
-            }
+.pagination-controls button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
 
-            .pagination-controls button:disabled {
-              background-color: #ccc;
-              cursor: not-allowed;
-            }
+.pagination-controls button:hover:not(:disabled) {
+    background-color: #2980b9;
+}
 
-            .pagination-controls span {
-              font-size: 16px;
-              margin: 0 10px;
-            }
+/* Tùy chỉnh style cho các dòng trong bảng */
+.payment-history-table tr {
+    transition: all 0.3s ease;
+}
+
+.payment-history-table tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
           `}</style>
         </div>
       </main>

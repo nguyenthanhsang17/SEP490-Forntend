@@ -58,7 +58,17 @@ function EmployerRequests() {
             {/* Main Content */}
             <main className="dashboard-content">
                 <div className="container">
-                    <h1>Danh sách yêu cầu trở thành nhà tuyển dụng</h1>
+                    <h1 className='pageTitle' style={{
+                        textAlign: 'center',
+                        color: '#2c3e50',
+                        marginBottom: '20px',
+                        fontSize: '28px',
+                        fontWeight: '700',
+                        borderBottom: '3px solid #3498db',
+                        paddingBottom: '15px'
+                    }}>
+                        Danh sách yêu cầu trở thành nhà tuyển dụng
+                    </h1>
 
                     <div className="filter-container">
                         <input
@@ -134,72 +144,144 @@ function EmployerRequests() {
 
                 <style jsx>{`
                     .container {
-                        max-width: 90%;
-                        margin: 0 auto;
-                        padding: 20px;
-                    }
+        max-width: 90%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f6f8;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-                    .filter-container {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-bottom: 20px;
-                    }
+    .page-title {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
+    }
 
-                    .search-bar {
-                        width: 40%;
-                        padding: 8px;
-                    }
+    .page-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: #3498db;
+    }
 
-                    .status-dropdown, .sort-dropdown {
-                        padding: 8px;
-                        width: 150px;
-                    }
+    .filter-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+    }
 
-                    .employer-table {
-                        width: 100%;
-                        border-collapse: collapse;
-                    }
+    .search-bar {
+        width: 40%;
+        padding: 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 8px;
+        font-size: 15px;
+    }
 
-                    .employer-table th, .employer-table td {
-                        padding: 10px;
-                        text-align: left;
-                        border: 1px solid #ddd;
-                    }
+    .status-dropdown, .sort-dropdown {
+        padding: 10px;
+        width: 200px;
+        border: 1px solid #bdc3c7;
+        border-radius: 8px;
+        font-size: 15px;
+    }
 
-                    .employer-table th {
-                        background-color: #f4f4f4;
-                    }
+    .employer-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        background-color: white;
+    }
 
-                    .employer-image {
-    width: 80px;  /* Adjusted width to 80px */
-    height: 80px; /* Adjusted height to 80px */
-    object-fit: cover; /* Ensures the image fits nicely */
-    background-color: #e0e0e0; /* Fallback background */
-}
+    .employer-table th {
+        background-color: #f8f9fa;
+        color: #2c3e50;
+        font-weight: bold;
+        text-align: left;
+        padding: 15px;
+        border-bottom: 2px solid #e0e0e0;
+    }
 
+    .employer-table td {
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 
-                    .pagination {
-                        display: flex;
-                        justify-content: center;
-                        margin-top: 20px;
-                    }
+    .employer-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        background-color: #e0e0e0;
+    }
 
-                    .pagination button {
-                        padding: 8px 12px;
-                        margin: 0 5px;
-                    }
+    .view-detail-button {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
 
-                    .view-detail-button {
-                        padding: 6px 12px;
-                        background-color: #4CAF50;
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 4px;
-                    }
+    .view-detail-button:hover {
+        background-color: #2980b9;
+    }
 
-                    .view-detail-button:hover {
-                        background-color: #45a049;
-                    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 15px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .pagination button {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .pagination button:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+    }
+
+    .pagination button:hover:not(:disabled) {
+        background-color: #2980b9;
+    }
+
+    .pageTitle: {
+    textAlign: 'center',
+    color: '#2c3e50',
+    marginBottom: '20px',
+    fontSize: '28px',
+    fontWeight: '700',
+    borderBottom: '3px solid #3498db',
+    paddingBottom: '15px',
+  }
+
                 `}</style>
             </main>
         </div>
