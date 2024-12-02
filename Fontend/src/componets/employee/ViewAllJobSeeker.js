@@ -202,7 +202,7 @@ const MemberCard = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Từ khóa công việc..."
+                placeholder="Từ khóa ứng viên..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />
@@ -244,14 +244,14 @@ const MemberCard = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
-              <select
+              {/* <select
                 className="form-control"
                 onChange={(e) => setSort(parseInt(e.target.value))}
               >
                 <option value="0">Sắp xếp</option>
                 <option value="1">Nhiều lượt ứng tuyển nhất</option>
                 <option value="2">Ít lượt ứng tuyển nhất</option>
-              </select>
+              </select> */}
               <button
                 type="button"
                 className="btn btn-success"

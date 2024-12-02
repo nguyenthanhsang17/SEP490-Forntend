@@ -155,9 +155,12 @@ const Header = () => {
 
   const handleViewAllJobsClick = () => {
     setDropdownVisible(false);
+    navigate("/viewAllPriceList");
+  };
+  const handleBlogClick = () => {
+    setDropdownVisible(false);
     navigate("/viewBlogList");
   };
-
   const handleViewListCreatedClick = () => {
     setDropdownVisible(false);
     navigate("/viewListJobsCreated");
@@ -166,11 +169,6 @@ const Header = () => {
   const handleViewListAppliedClick = () => {
     setDropdownVisible(false);
     navigate("/ViewAllJobApplied");
-  };
-
-  const handleViewAllCandidatesClick = () => {
-    setDropdownVisible(false);
-    navigate("/viewAllJobSeeker"); // Adjust the route as necessary
   };
 
   const handleManageAllPostJob = () => {
@@ -249,7 +247,7 @@ const Header = () => {
               <li>
                 <a
                   style={styles.viewJobsLink}
-                  onClick={handleViewAllJobsClick}
+                  onClick={handleBlogClick}
                   href="/viewBlogList"
                 >
                   <FaBlog style={styles.icon} /> Blog
@@ -274,7 +272,11 @@ const Header = () => {
                 </a>
                 <ul
                   className="dropdown-menu"
-                  style={{ ...styles.dropdownMenu, marginLeft: "9px" }} // Thêm marginLeft
+                  style={{
+                    ...styles.dropdownMenu,
+                    marginLeft: "9px", // Thêm khoảng cách từ bên trái
+                    width: "6cm", // Thiết lập chiều dài 8cm
+                  }}
                 >
                   <li>
                     <a

@@ -269,7 +269,7 @@ const ViewListJobsCreated = () => {
             <Header />
             <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
                 <div className="container">
-                    <h1>Các công việc đã tạo</h1>
+                    <h1>Công việc đã tạo</h1>
                 </div>
             </section>
 
@@ -353,7 +353,7 @@ const ViewListJobsCreated = () => {
                                         value={sortNumberApplied}
                                         onChange={(e) => setSortNumberApplied(parseInt(e.target.value))}
                                     >
-                                        <option value="0">Xắp xếp theo số người ứng tuyển</option>
+                                        <option value="0">Sắp xếp theo số người ứng tuyển</option>
                                         <option value="1">Ứng tuyển tăng dần</option>
                                         <option value="-1">Ứng tuyển giảm dần</option>
                                     </select>
@@ -428,7 +428,7 @@ const ViewListJobsCreated = () => {
                                                         navigate(`/ReCreateJob/${job.postId}`);
                                                     }}
                                                 >
-                                                    sao chép bài viết
+                                                    Sao chép bài viết
                                                 </button>
                                                 {(job.status === 0 || job.status === 1) && (
                                                     <button

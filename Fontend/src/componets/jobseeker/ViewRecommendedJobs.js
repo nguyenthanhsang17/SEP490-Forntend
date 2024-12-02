@@ -16,8 +16,8 @@ const ViewRecommendedJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(0);
   const [notFound, setNotFound] = useState("");
   const [notFoundJob, setNotFoundJob] = useState(false);
   const [savedJobs, setSavedJobs] = useState({});
@@ -81,7 +81,7 @@ const ViewRecommendedJobs = () => {
 
       try {
         const params = {
-          pagenumber: currentPage,
+          // pagenumber: currentPage,
           userLatitude: userLocation?.latitude || null,
           userLongitude: userLocation?.longitude || null,
         };
@@ -95,7 +95,7 @@ const ViewRecommendedJobs = () => {
 
         if (response.status === 200 && response.data.items) {
           setJobs(response.data.items);
-          setTotalPages(response.data.totalPages || 0);
+          // setTotalPages(response.data.totalPages || 0);
           setNotFoundJob(false);
         } else {
           setJobs([]);
@@ -111,7 +111,7 @@ const ViewRecommendedJobs = () => {
     };
 
     fetchJobs();
-  }, [currentPage, userLocation, isLocationLoading]);
+  }, [ userLocation, isLocationLoading]);
 
   const salaryTypeMap = {
     "Theo giờ": "giờ",
@@ -123,11 +123,11 @@ const ViewRecommendedJobs = () => {
   };
 
 
-  const handlePageChange = (newPage) => {
-    if (newPage > 0 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
+  // const handlePageChange = (newPage) => {
+  //   if (newPage > 0 && newPage <= totalPages) {
+  //     setCurrentPage(newPage);
+  //   }
+  // };
 
   const addWishlist = async (postJobId) => {
     const token = localStorage.getItem("token");
@@ -202,7 +202,7 @@ const ViewRecommendedJobs = () => {
         }}
       >
         <div className="container">
-          <h1>Công việc được đề xuất</h1>
+          <h1>Top 10 công việc được đề xuất</h1>
         </div>
       </section>
 
@@ -339,7 +339,7 @@ const ViewRecommendedJobs = () => {
               ))
             )}
 
-            <div
+            {/* <div
               className="pagination-container"
               style={{
                 display: "flex",
@@ -363,7 +363,7 @@ const ViewRecommendedJobs = () => {
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
