@@ -5,10 +5,13 @@ import '../assets/css/colors/green-style.css';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import axios from 'axios';
-import { useParams,useNavigate } from 'react-router-dom'; 
+import { useParams, useNavigate } from 'react-router-dom';
+import bannerImage from '../assets/img/banner-10.jpg';
+import { Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 function ViewAllJobApplied() {
-  
+
   const [jobs, setJobs] = useState([]);
   const [message, setMessage] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
@@ -18,41 +21,41 @@ function ViewAllJobApplied() {
 
   const fetchJobs = async (page = 1) => {
     const token = localStorage.getItem("token");
-            console.log("Token:", token); // Kiểm tra giá trị token
+    console.log("Token:", token); // Kiểm tra giá trị token
 
-            if (!token) {
-                console.log("No token found, cannot fetch CVs.");
-                navigate("/login");
-                return; // Không làm gì cả nếu không có token
-            }
-            try {
-              const response = await axios.get(`https://localhost:7077/api/JobJobSeeker/GetAllJobApplied/`, {
-                  params: {
-                      pageNumber: page,
-                      pageSize,
-                  },
-                  headers: {
-                      Authorization: `Bearer ${token}`,
-                  },
-              });
-              
-              console.log("API response data:", response.data);
-              
-              setJobs(response.data.items || []);
-              setTotalPages(response.data.totalPages || 1);
-              setMessage(''); // Clear message on successful fetch
-            } catch (error) {
-              console.error('Error fetching the job data:', error);
-            }
+    if (!token) {
+      console.log("No token found, cannot fetch CVs.");
+      navigate("/login");
+      return; // Không làm gì cả nếu không có token
+    }
+    try {
+      const response = await axios.get(`https://localhost:7077/api/JobJobSeeker/GetAllJobApplied/`, {
+        params: {
+          pageNumber: page,
+          pageSize,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("API response data:", response.data);
+
+      setJobs(response.data.items || []);
+      setTotalPages(response.data.totalPages || 1);
+      setMessage(''); // Clear message on successful fetch
+    } catch (error) {
+      console.error('Error fetching the job data:', error);
+    }
   };
 
   useEffect(() => {
-    fetchJobs(pageNumber); 
-  }, [ pageNumber]);
+    fetchJobs(pageNumber);
+  }, [pageNumber]);
 
   // const handleCancelApply = async (jobId) => {
   //   console.log(`Canceling application for job ID: ${jobId}`);
-    
+
   //   const newStatus = 5;
 
   //   try {
@@ -79,7 +82,7 @@ function ViewAllJobApplied() {
 
   const handleViewDetail = (jobId) => {
     // Add functionality for viewing job details if needed
-    navigate("/viewJobDetail/"+jobId);
+    navigate("/viewJobDetail/" + jobId);
   };
 
   const handlePageChange = (newPage) => {
@@ -91,18 +94,22 @@ function ViewAllJobApplied() {
   return (
     <>
       <Header />
+      <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
+        <div className="container">
+          <h1 className="text-center">Công việc đã ứng tuyển</h1>
+        </div>
+      </section>
       <div className="container job-list" style={{ paddingTop: '30px' }}>
-        <h2 className="text-center">Công việc đã ứng tuyển</h2>
         {message && <div className="alert alert-info text-center">{message}</div>}
         <div className="row justify-content-center">
           {Array.isArray(jobs) && jobs.length > 0 ? (
             jobs.map((job) => (
               <div key={job.id} className="col-md-6 d-flex align-items-stretch" style={{ margin: '16px 0' }}>
-                <div 
+                <div
                   className="card mb-4"
                   style={{
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px', 
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
                     padding: '16px',
                     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                   }}
@@ -110,11 +117,11 @@ function ViewAllJobApplied() {
                   <div className="card-body">
                     <h3 className="card-title">{job.jobTitle}</h3>
                     <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory}</p>
-                    <p className="card-text"><strong>Mức lương:</strong> {job.fixSalary } VNĐ</p>
+                    <p className="card-text"><strong>Mức lương:</strong> {job.fixSalary} VNĐ</p>
                     <p className="card-text"><strong>Người đăng:</strong> {job.authorname}</p>
                     <p className="card-text"><strong>Ngày hết hạn:</strong> {new Date(job.expirationDate).toLocaleDateString('vi-VN')}</p>
-                    <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory }</p>  
-                    <p className="card-text"><strong>Tên cv ứng tuyển :</strong> {job.cVname }</p>  
+                    <p className="card-text"><strong>Loại công việc:</strong> {job.jobCategory}</p>
+                    <p className="card-text"><strong>Tên cv ứng tuyển :</strong> {job.cVname}</p>
                     <p className="card-text">
                       <strong>Trạng thái đơn xin việc:</strong> {
                         (() => {
@@ -156,28 +163,35 @@ function ViewAllJobApplied() {
               </div>
             ))
           ) : (
-            <p className="text-center">Bạn chưa ứng tuyển công viêvj nào , hãy bắt đầu ứng tuyển.</p>
+            <div>
+              <h2 className="text-center">Bạn chưa ứng tuyển công việc nào, hãy bắt đầu ứng tuyển.</h2>
+              <a href={`/viewalljob`} className="text-center">
+                Xem tất cả công việc
+              </a>
+            </div>
           )}
         </div>
 
         {/* Pagination Controls */}
-        <div className="pagination-controls text-center mt-4">
-          <button
-            className="btn btn-secondary me-2"
-            onClick={() => handlePageChange(pageNumber - 1)}
-            disabled={pageNumber === 1}
-          >
-            Trước
-          </button>
-          <span>Trang {pageNumber} / {totalPages}</span>
-          <button
-            className="btn btn-secondary ms-2"
-            onClick={() => handlePageChange(pageNumber + 1)}
-            disabled={pageNumber === totalPages}
-          >
-            Sau
-          </button>
-        </div>
+        {jobs.length > 0 && (
+          <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
+            <Button
+              shape="circle"
+              icon={<LeftOutlined />}
+              disabled={pageNumber === 1}
+              onClick={() => handlePageChange(pageNumber - 1)}
+            />
+            <span style={{ margin: '0 10px', fontSize: '16px' }}>
+              {pageNumber} / {totalPages} trang
+            </span>
+            <Button
+              shape="circle"
+              icon={<RightOutlined />}
+              disabled={pageNumber === totalPages}
+              onClick={() => handlePageChange(pageNumber + 1)}
+            />
+          </div>
+        )}
       </div>
       <Footer />
     </>
