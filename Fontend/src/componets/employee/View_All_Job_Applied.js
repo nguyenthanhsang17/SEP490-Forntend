@@ -163,11 +163,10 @@ function ViewAllJobApplied() {
               </div>
             ))
           ) : (
-            <div>
+            <div style={{ paddingTop: '100px', paddingBottom:'100px'}}>
               <h2 className="text-center">Bạn chưa ứng tuyển công việc nào, hãy bắt đầu ứng tuyển. <a href={`/viewalljob`} >
                 Xem tất cả công việc
               </a></h2>
-              
             </div>
           )}
         </div>
