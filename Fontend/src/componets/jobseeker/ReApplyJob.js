@@ -121,7 +121,7 @@ function ReApplyJob() {
             boxShadow: '0 1px 5px rgba(0, 0, 0, 0.1)',
         },
         cvItemTitle: {
-            fontSize: '1.5rem',
+            fontSize: '2.3rem',
             marginBottom: '10px',
             color: '#007bff',
         },

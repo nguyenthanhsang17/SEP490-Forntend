@@ -81,26 +81,7 @@ const Sidebar = () => {
             onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
           >
             <FontAwesomeIcon icon={faNewspaper} />
-            Danh sách bài đăng
-          </div>
-        )}
-    
-        {(roleId === "3") && (
-          <div 
-            onClick={() => navigateTo("/CreateBlog")}
-            style={{
-              padding: '12px 20px',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px'
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-          >
-            <FontAwesomeIcon icon={faFileSignature} />
-            Tạo bài đăng mới
+            Danh sách blog
           </div>
         )}
     

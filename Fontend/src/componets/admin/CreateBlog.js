@@ -98,6 +98,7 @@ const CreateBlog = () => {
   const [blogDescription, setBlogDescription] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [BamNut, SetBamNut] = useState(false);
   const navigate = useNavigate();
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -116,7 +117,7 @@ const CreateBlog = () => {
   // Xử lý sự kiện gửi form
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    SetBamNut(true);
 
     try {
       const result = await Swal.fire({
@@ -167,6 +168,8 @@ const CreateBlog = () => {
             title: 'Tạo thành công!',
             icon: 'success',
             confirmButtonText: 'Ok',
+            allowOutsideClick: false, // Ngăn đóng cảnh báo bằng cách nhấp bên ngoài
+            allowEscapeKey: false,
           });
 
           navigate('/BlogList');
@@ -176,6 +179,8 @@ const CreateBlog = () => {
             title: "Có lỗi trong quá trình tạo.",
             icon: 'error',
             confirmButtonText: 'Ok',
+            allowOutsideClick: false, // Ngăn đóng cảnh báo bằng cách nhấp bên ngoài
+            allowEscapeKey: false,
           });
         }
       }
@@ -187,7 +192,7 @@ const CreateBlog = () => {
         confirmButtonText: 'Ok',
       });
     }
-
+    SetBamNut(false);
   };
 
   return (
@@ -241,8 +246,17 @@ const CreateBlog = () => {
                 </div>
               )}
             </div>
-            <button type="submit" style={styles.button}>
-              Tạo bài viết
+            <button
+              type="submit"
+              style={{
+                ...styles.button,
+                backgroundColor: BamNut ? "gray" : styles.button.backgroundColor,
+                cursor: BamNut ? "not-allowed" : "pointer"
+              }}
+              disabled={BamNut}
+              onClick={!BamNut ? handleSubmit : null}
+            >
+              {BamNut ? "Đang tạo bài viết..." : "Tạo bài viết"}
             </button>
           </form>
         </div>

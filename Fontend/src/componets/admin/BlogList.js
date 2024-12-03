@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,107 +60,109 @@ const BlogList = () => {
 
       {/* Main Content */}
       <main className="dashboard-content">
-      <div className="blog-list-container">
-      <h2>Danh sách Blog</h2>
+        <div className="blog-list-container">
+          <h2>Danh sách Blog</h2>
 
-      {/* Search and filter controls */}
-      <div className="filters">
-        <div className="filter-item">
-          <input
-            type="text"
-            placeholder="Tìm kiếm theo tiêu đề..."
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-          />
-        </div>
+          {/* Search and filter controls */}
+          <div className="filters">
+            <div className="filter-item">
+              <input
+                type="text"
+                placeholder="Tìm kiếm theo tiêu đề..."
+                value={searchTitle}
+                onChange={(e) => setSearchTitle(e.target.value)}
+              />
+            </div>
 
-        <div className="filter-item">
-          <label htmlFor="statusFilter">Trạng thái:</label>
-          <select id="statusFilter" onChange={(e) => setStatusFilter(e.target.value)} value={statusFilter}>
-            <option value="">Tất cả </option>
-            <option value="0">Hiện</option>
-            <option value="1">Ẩn</option>
-          </select>
-        </div>
+            <div className="filter-item">
+              <label htmlFor="statusFilter">Trạng thái:</label>
+              <select id="statusFilter" onChange={(e) => setStatusFilter(e.target.value)} value={statusFilter}>
+                <option value="">Tất cả </option>
+                <option value="0">Hiện</option>
+                <option value="1">Ẩn</option>
+              </select>
+            </div>
 
-        <div className="filter-item">
-          <label htmlFor="sortOrder">Sắp xếp:</label>
-          <select id="sortOrder" onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
-            <option value="desc">Mới nhất</option>
-            <option value="asc">Cũ nhất</option>
-          </select>
-        </div>
-      </div>
+            <div className="filter-item">
+              <label htmlFor="sortOrder">Sắp xếp:</label>
+              <select id="sortOrder" onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
+                <option value="desc">Mới nhất</option>
+                <option value="asc">Cũ nhất</option>
+              </select>
+            </div>
+          </div>
+          <div className="create-blog-container">
+            <button onClick={() => navigate("/CreateBlog")} className="create-blog-button"><FontAwesomeIcon icon={faPlus} /> Tạo Blog</button>
+          </div>
+          {/* Displaying blogs as a table */}
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <table className="blog-table">
+              <thead>
+                <tr>
+                  <th>Tiêu đề</th>
+                  <th>Tác giả</th>
+                  <th>Ngày tạo</th>
+                  <th>Ảnh</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {blogs.map((blog) => (
+                  <tr key={blog.blogId}>
+                    <td>{blog.blogTitle}</td>
+                    <td>{blog.authorName}</td>
+                    <td>{new Date(blog.createDate).toLocaleDateString()}</td>
+                    <td><img src={blog.thumbnail} alt={blog.blogTitle} className="thumbnail" /></td>
+                    <td><button className="view-button" onClick={() => handleViewDetail(blog.blogId)}>Xem chi tiết</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
-      {/* Displaying blogs as a table */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table className="blog-table">
-          <thead>
-            <tr>
-              <th>Tiêu đề</th>
-              <th>Tác giả</th>
-              <th>Ngày tạo</th>
-              <th>Ảnh</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blogs.map((blog) => (
-              <tr key={blog.blogId}>
-                <td>{blog.blogTitle}</td>
-                <td>{blog.authorName}</td>
-                <td>{new Date(blog.createDate).toLocaleDateString()}</td>
-                <td><img src={blog.thumbnail} alt={blog.blogTitle} className="thumbnail" /></td>
-                <td><button className="view-button" onClick={() => handleViewDetail(blog.blogId)}>Xem chi tiết</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          <div
+            className="pagination-container mt-4 d-flex justify-content-center align-items-center"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <button
+              className="btn btn-light"
+              disabled={pageNumber === 1}
+              style={{
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                padding: "0",
+              }}
+            >
+              &lt;
+            </button>
+            <span style={{ margin: "0 10px", fontSize: "16px" }}>
+              {pageNumber} / {totalPages} trang
+            </span>
+            <button
+              className="btn btn-light"
+              disabled={pageNumber === totalPages}
+              style={{
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                padding: "0",
+              }}
+            >
+              &gt;
+            </button>
+          </div>
 
-<div
-        className="pagination-container mt-4 d-flex justify-content-center align-items-center"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: "20px",
-        }}
-      >
-        <button
-          className="btn btn-light"
-          disabled={pageNumber === 1}
-          style={{
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            padding: "0",
-          }}
-        >
-          &lt;
-        </button>
-        <span style={{ margin: "0 10px", fontSize: "16px" }}>
-          {pageNumber} / {totalPages} trang
-        </span>
-        <button
-          className="btn btn-light"
-          disabled={pageNumber === totalPages}
-          style={{
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            padding: "0",
-          }}
-        >
-          &gt;
-        </button>
-      </div>
 
-      
 
-      <style jsx>{`
+          <style jsx>{`
         .blog-list-container {
     padding: 30px;
     font-family: 'Inter', 'Roboto', sans-serif;
@@ -330,11 +334,35 @@ h2::after {
     color: #2c3e50;
     font-weight: 500;
 }
+    .create-blog-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    margin: 20px 0; /* Add some margin for spacing */
+  }
+
+  .create-blog-button {
+    padding: 12px 20px; /* Add padding */
+    background-color: #3498db; /* Button background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Rounded corners */
+    font-weight: 600; /* Font weight */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transition effects */
+  }
+
+  .create-blog-button:hover {
+    background-color: #2980b9; /* Darker color on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+  }
+
+  .create-blog-button:active {
+    transform: translateY(0); /* Reset on click */
+  }
       `}</style>
-    </div>
+        </div>
       </main>
     </div>
-    
+
   );
 };
 

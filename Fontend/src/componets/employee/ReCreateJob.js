@@ -776,6 +776,8 @@ function ReCreateJob() {
             title: text,
             showCancelButton: false,
             confirmButtonText: 'Ok',
+            allowOutsideClick: false, // Ngăn đóng cảnh báo bằng cách nhấp bên ngoài
+            allowEscapeKey: false,
         });
 
         if (result.isConfirmed) {
@@ -789,7 +791,9 @@ function ReCreateJob() {
             title: text,
             showCancelButton: true,
             confirmButtonText: 'Có',
-            cancelButtonText: 'Không'
+            cancelButtonText: 'Không',
+            allowOutsideClick: false, // Ngăn đóng cảnh báo bằng cách nhấp bên ngoài
+            allowEscapeKey: false,
         });
 
         if (result.isConfirmed) {
@@ -1550,28 +1554,28 @@ function ReCreateJob() {
                                     <button
                                         style={{
                                             width: "50%",
-                                            backgroundColor: BamNut ? "gray" : "",
-                                            cursor: BamNut ? "not-allowed" : "pointer"
+                                            backgroundColor: BamNut || BamNutLuu ? "gray" : "",
+                                            cursor: BamNut || BamNutLuu ? "not-allowed" : "pointer"
                                         }}
-                                        className={`btn ${BamNut ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
-                                        onClick={!BamNut ? handleSubmit : null} // Chặn click nếu đang xử lý
-                                        disabled={BamNut} // Disable nút khi đang xử lý
+                                        className={`btn ${BamNut || BamNutLuu ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
+                                        onClick={!(BamNut || BamNutLuu) ? handleSubmit : null} // Chặn click nếu đang xử lý
+                                        disabled={BamNut || BamNutLuu} // Disable nút khi đang xử lý
                                     >
                                         {BamNut ? "Đang Đăng công việc..." : "Đăng công việc"}
                                     </button>
                                 </div>
                             </div>
                             <div className="input-group form-group">
-                                <div display="flex">
+                                <div style={{ display: "flex" }}>
                                     <button
                                         style={{
                                             width: "50%",
-                                            backgroundColor: BamNutLuu ? "gray" : "orange",
-                                            cursor: BamNutLuu ? "not-allowed" : "pointer"
+                                            backgroundColor: BamNutLuu || BamNut ? "gray" : "orange", // Thay đổi màu nền khi bất kỳ biến nào là true
+                                            cursor: BamNutLuu || BamNut ? "not-allowed" : "pointer" // Thay đổi con trỏ khi bất kỳ biến nào là true
                                         }}
-                                        className={`btn ${BamNutLuu ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
-                                        onClick={!BamNutLuu ? luujob : null} // Chặn click nếu đang xử lý
-                                        disabled={BamNutLuu} // Disable nút khi đang xử lý
+                                        className={`btn ${BamNutLuu || BamNut ? "btn-secondary" : "btn-success"} btn-primary small-btn`}
+                                        onClick={!(BamNutLuu || BamNut) ? luujob : null} // Chặn click nếu đang xử lý hoặc BamNut là true
+                                        disabled={BamNutLuu || BamNut} // Disable nút khi đang xử lý hoặc BamNut là true
                                     >
                                         {BamNutLuu ? "Đang Lưu công việc..." : "Lưu công việc"}
                                     </button>
