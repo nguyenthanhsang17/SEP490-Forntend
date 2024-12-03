@@ -331,7 +331,7 @@ function ViewJobDetail() {
       <div className="clearfix"></div>
       <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
         <div className="container">
-          <h1>{jobDetails.jobTitle}</h1>
+          <h1 style={{marginBottom: '60px'}}>{jobDetails.jobTitle}</h1>
         </div>
       </section>
       <div className="clearfix"></div>

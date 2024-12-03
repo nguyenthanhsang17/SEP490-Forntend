@@ -257,7 +257,7 @@ function ReportPostJob() {
                             {isbamnut ? 'Đang gửi...' : 'Gửi'}
                         </button>
 
-                        <button type="button" onClick={() => navigate('/')} style={{
+                        <button type="button" onClick={() => navigate("/viewJobDetail/" + postId)} style={{
                             width: '100%',
                             padding: '12px',
                             backgroundColor: '#ff3b3b',

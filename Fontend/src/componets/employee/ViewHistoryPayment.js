@@ -63,7 +63,7 @@ const PaymentHistoryTable = () => {
       <Header />
       <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
         <div className="container">
-        <h1 style={{ color: 'white' }}>Lịch sử thanh toán</h1>
+          <h1 style={{ color: 'white' }}>Lịch sử thanh toán</h1>
         </div>
       </section>
 
@@ -123,59 +123,82 @@ const PaymentHistoryTable = () => {
 
         <style jsx>{`
         .payment-history-container {
-          font-family: Arial, sans-serif;
-          max-width: 1000px;
-          margin: 0 auto;
-          padding: 20px;
-        }
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    min-height: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9; /* Thêm màu nền nhẹ */
+    border-radius: 8px; /* Bo góc cho container */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Thêm bóng cho container */
+}
 
-        h1 {
-          text-align: center;
-          color: #333;
-        }
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+}
 
-        .payment-history-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 20px;
-        }
+.payment-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff; /* Nền trắng cho bảng */
+    border-radius: 8px; /* Bo góc cho bảng */
+    overflow: hidden; /* Để bo góc hoạt động */
+}
 
-        .payment-history-table th, .payment-history-table td {
-          padding: 10px;
-          text-align: center;
-          border: 1px solid #ddd;
-        }
+.payment-history-table th, .payment-history-table td {
+    padding: 12px; /* Tăng khoảng cách cho ô */
+    text-align: center;
+    border: 1px solid #ddd;
+}
 
-        .payment-history-table th {
-          background-color: #f4f4f4;
-          color: #333;
-        }
+.payment-history-table th {
+    background-color: #28a745; /* Màu nền cho tiêu đề bảng */
+    color: white; /* Màu chữ trắng cho tiêu đề */
+}
 
-        .pagination-controls {
-          text-align: center;
-          margin-top: 20px;
-        }
+.payment-history-table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Màu nền cho hàng chẵn */
+}
 
-        .pagination-controls button {
-          padding: 8px 16px;
-          font-size: 16px;
-          margin: 0 10px;
-          background-color: #007BFF;
-          color: white;
-          border: none;
-          cursor: pointer;
-          border-radius: 5px;
-        }
+.payment-history-table tr:hover {
+    background-color: #e0f7fa; /* Màu nền khi hover */
+}
 
-        .pagination-controls button:disabled {
-          background-color: #ccc;
-          cursor: not-allowed;
-        }
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-        .pagination-controls span {
-          font-size: 16px;
-          margin: 0 10px;
-        }
+.pagination-container span {
+    margin: 0 10px;
+    font-size: 16px;
+    font-weight: bold; /* Đậm hơn để nổi bật */
+}
+
+.pagination-container button {
+    padding: 10px 15px; /* Tăng padding cho nút */
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF; /* Màu nền cho nút */
+    color: white; /* Màu chữ trắng cho nút */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.pagination-container button:disabled {
+    background-color: #ccc; /* Màu nền cho nút bị vô hiệu hóa */
+    cursor: not-allowed;
+}
+
+.pagination-container button:hover:not(:disabled) {
+    background-color: #0056b3; /* Màu nền khi hover cho nút */
+}
       `}</style>
       </div>
       <Footer />

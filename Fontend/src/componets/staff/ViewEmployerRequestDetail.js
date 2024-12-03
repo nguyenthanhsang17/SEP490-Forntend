@@ -175,8 +175,8 @@ function EmployerRequestDetail() {
                                 </div>
                             )}
 
-                            <div className="info-item">
-                                <strong style={{Width: "100%"}}>Hình ảnh doanh nghiệp:</strong>
+                            <div >
+                                <strong style={{ display: 'block', width: '100%' }}>Hình ảnh doanh nghiệp:</strong>
                                 <div className="images-container">
                                     {employerDetail.listIMG.map((img, index) => (
                                         <img
@@ -268,11 +268,9 @@ function EmployerRequestDetail() {
 }
 
 .info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f1f3f5;
+    display: flex; /* Sử dụng flexbox để sắp xếp */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 10px; /* Khoảng cách giữa các mục */
 }
 
 .info-item:last-child {
@@ -280,9 +278,7 @@ function EmployerRequestDetail() {
 }
 
 .info-item strong {
-    color: #2c3e50;
-    font-weight: 600;
-    font-size: 15px;
+    margin-right: 5px; /* Khoảng cách giữa nhãn và giá trị */
 }
 
 .info-item span {
@@ -295,6 +291,8 @@ function EmployerRequestDetail() {
     gap: 15px;
     overflow-x: auto;
     padding-bottom: 10px;
+    width: '100%';
+    margin-top: 10px;
 }
 
 .employer-image {
