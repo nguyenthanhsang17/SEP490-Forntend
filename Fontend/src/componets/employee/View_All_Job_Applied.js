@@ -127,15 +127,15 @@ function ViewAllJobApplied() {
                         (() => {
                           switch (job.statusApplyJob) {
                             case 0:
-                              return "Đã ứng tuyển";
+                              return "Chờ duyệt";
                             case 1:
-                              return "Nhà tuyển dụng đánh giá bạn không phù hợp";
+                              return "Từ chối hồ sơ";
                             case 3:
-                              return "Nhà tuyển dụng đã xem thông tin liên hệ";
+                              return "Chấp nhận hồ sơ";
                             case 4:
-                              return "Nhà tuyển dụng xác nhận nhận bạn";
+                              return "Đồng ý tuyển";
                             case 5:
-                              return "Nhà tuyển dụng xác nhận ko nhận bạn";
+                              return "Từ chối tuyển";
                             default:
                               return "Không xác định";
                           }
