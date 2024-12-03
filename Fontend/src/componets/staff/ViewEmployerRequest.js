@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from "../admin/SidebarAdmin";
 import Header from "../admin/HeaderAdmin";
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 function EmployerRequests() {
     const [employers, setEmployers] = useState([]);
     const [status, setStatus] = useState(-1); // Lấy tất cả trạng thái

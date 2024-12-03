@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
-
+import { useNavigate } from 'react-router-dom';
 const PaymentHistoryTable = () => {
   const [data, setData] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -10,7 +10,7 @@ const PaymentHistoryTable = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [servicePrices, setServicePrices] = useState([]); // State for service prices
   const pageSize = 10; // Fixed page size of 5 items per page
-
+  const navigate = useNavigate();
   // Fetch data for payment history
   const fetchData = async () => {
     const query = `pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}`;
@@ -61,6 +61,10 @@ const PaymentHistoryTable = () => {
     setServicePriceIdFilter(event.target.value);
     setPageNumber(1); // Reset to page 1 when filter changes
   };
+
+  const ViewUserDetail = (userid) => {
+    navigate(`/user/${userid}`);
+  }
 
   return (
     <div className="dashboard-grid-container">
@@ -136,7 +140,12 @@ const PaymentHistoryTable = () => {
                     onClick={() => window.location.href = `/ViewAllHistoryPaymentDetail/${item.user.userId}`}
                     style={{ cursor: 'pointer' }}
                   >
-                    <td>{item.user.fullName}</td>
+                    <td><a onClick={(e) => {
+                        e.stopPropagation(); // Ngăn chặn sự kiện click trên <tr>
+                        ViewUserDetail(item.user.userId); // Chuyển hướng đến trang người dùng
+                    }} style={{ cursor: 'pointer' }}>
+                        {item.user.fullName}
+                    </a></td>
                     <td>{item.servicePrice.price} VNĐ</td>
                     <td>{item.servicePrice.servicePriceName}</td>
                     <td>
@@ -216,8 +225,8 @@ const PaymentHistoryTable = () => {
 }
 
 .payment-history-table th {
-    background-color: #f8f9fa;
-    color: #2c3e50;
+    background-color: #3498db;
+    color: white;
     font-weight: bold;
     text-align: left;
     padding: 15px;

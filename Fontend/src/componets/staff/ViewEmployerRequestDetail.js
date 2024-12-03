@@ -3,7 +3,7 @@ import Sidebar from "../admin/SidebarAdmin";
 import Header from "../admin/HeaderAdmin";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
+import Swal from 'sweetalert2';
 function EmployerRequestDetail() {
     const { id } = useParams();
     const [employerDetail, setEmployerDetail] = useState(null);
@@ -32,32 +32,88 @@ function EmployerRequestDetail() {
     };
 
     const handleApprove = async () => {
+
         try {
-            await axios.post(`https://localhost:7077/api/Users/Accept/${id}`);
-            alert('Đã chấp thuận');
-            fetchEmployerDetail(); // Làm mới thông tin
+            const result = await Swal.fire({
+                title: 'Bạn có chắc chấp thuận cho nhà tuyển dụng không ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await axios.post(`https://localhost:7077/api/Users/Accept/${id}`);
+
+                    await Swal.fire({
+                        title: 'Chấp thuận thành công!',
+                        icon: 'success',
+                        confirmButtonText: 'Ok',
+                    });
+
+                    fetchEmployerDetail(); // Làm mới thông tin
+                } catch (error) {
+                    console.error('Error approving employer:', error);
+                    await Swal.fire({
+                        title: 'Lỗi khi chấp thuận',
+                        icon: 'error',
+                        confirmButtonText: 'Ok',
+                    });
+                }
+            }
         } catch (error) {
-            console.error('Error approving employer:', error);
+            console.error("Failed to send request approval:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
     };
 
 
     const handleReject = async () => {
-        if (!reason) {
-            alert('Vui lòng nhập lý do từ chối');
-            return;
-        }
-        try {
-            await axios.post(`https://localhost:7077/api/Users/Reject/${id}`, reason, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            alert('Đã từ chối');
-            fetchEmployerDetail(); // Làm mới thông tin
-        } catch (error) {
-            console.error('Error rejecting employer:', error);
-        }
+        const { value: reason } = await Swal.fire({
+            title: "Bạn có chắc chắn từ chối nhà tuyển dụng? Nếu có hãy nhập lý do",
+            input: "textarea",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            inputPlaceholder: "Nhập lý do từ chối ở đây...", // Thêm placeholder
+            showCancelButton: true,
+            confirmButtonText: "Có",
+            cancelButtonText: "Không",
+            showLoaderOnConfirm: true,
+        });
+
+        console.log(reason);
+    
+        // Kiểm tra nếu người dùng bấm "Có" và có nhập lý do không
+        if (reason !== undefined) { // Kiểm tra nếu người dùng bấm "Có"
+            if (!reason) {
+                //alert('Vui lòng nhập lý do từ chối');
+                await Swal.fire({
+                    title: 'Vui lòng nhập lý do từ chối',
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonText: 'OK',
+                  });
+                return;
+            }
+            try {
+                await axios.post(`https://localhost:7077/api/Users/Reject/${id}`, reason, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                await Swal.fire('Đã từ chối', '', 'success');
+                fetchEmployerDetail(); // Làm mới thông tin
+            } catch (error) {
+                await Swal.fire('Có lỗi xảy ra khi từ chối', '', 'error');
+            }
+        } 
+        // Nếu người dùng bấm "Không", không làm gì cả
     };
 
 
@@ -120,7 +176,7 @@ function EmployerRequestDetail() {
                             )}
 
                             <div className="info-item">
-                                <strong>Hình ảnh doanh nghiệp:</strong>
+                                <strong style={{Width: "100%"}}>Hình ảnh doanh nghiệp:</strong>
                                 <div className="images-container">
                                     {employerDetail.listIMG.map((img, index) => (
                                         <img
@@ -173,12 +229,7 @@ function EmployerRequestDetail() {
                                     <button onClick={handleApprove} className="approve-button">Chấp thuận</button>
                                     <button onClick={handleReject} className="reject-button">Từ chối</button>
                                 </div>
-                                <textarea
-                                    placeholder="Nhập lý do từ chối..."
-                                    value={reason}
-                                    onChange={(e) => setReason(e.target.value)}
-                                    className="reason-input"
-                                />
+                                
                             </div>
                         )}
                     </div>
