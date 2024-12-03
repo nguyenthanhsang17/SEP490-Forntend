@@ -8,6 +8,7 @@ import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const MemberCard = () => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ const MemberCard = () => {
 
   // State for filter inputs
   const [keyword, setKeyword] = useState("");
-  const [sort, setSort] = useState(0);
+  const [sort, setSort] = useState(1); // Giá trị mặc định của sort là 1
   const [currentJob, setCurrentJob] = useState(0);
   const [numberPage, setNumberPage] = useState(1);
   const [agemin, setAgemin] = useState("");
@@ -36,6 +37,7 @@ const MemberCard = () => {
       navigate("/viewAllPriceList");
     }
   };
+
   // Fetch data from API based on filters
   const fetchCandidates = async () => {
     setLoading(true);
@@ -43,7 +45,16 @@ const MemberCard = () => {
     const token = localStorage.getItem("token");
 
     try {
-      console.log("alo");
+      console.log("Search Parameters:", {
+        keyword,
+        sort,
+        currentJob,
+        numberPage,
+        agemin,
+        agemax,
+        address,
+        gender,
+      });
       const response = await axios.get(
         "https://localhost:7077/api/JobJobSeeker/GetAllJobSeeker",
         {
@@ -52,7 +63,7 @@ const MemberCard = () => {
           },
           params: {
             keyword,
-            sort,
+            sort, // Giá trị sort mặc định là 1
             CurrentJob: currentJob,
             numberPage,
             agemin,
@@ -62,29 +73,35 @@ const MemberCard = () => {
           },
         }
       );
-      console.log("alo");
-      console.log(response.data.message);
-      if (response.data.message == "Bạn không dc phép truy cập hãy mua gói") {
+
+      if (response.data.message === "Bạn không dc phép truy cập hãy mua gói") {
         showAlert2("Bạn không dc phép truy cập hãy mua gói");
         return;
       }
-      if (response.status == 200) {
+      if (response.status === 200) {
         setCandidates(response.data.items || []);
         setTotalPages(response.data.totalPages || 1); // Gán tổng số trang từ API
       }
     } catch (error) {
+      console.error("Error fetching candidates:", error);
     } finally {
       setLoading(false);
     }
   };
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setNumberPage(newPage);
     }
   };
+
   useEffect(() => {
     fetchCandidates();
   }, [numberPage]); // Gọi lại API khi số trang thay đổi
+
+  useEffect(() => {
+    fetchCandidates(); // Gọi API lần đầu với giá trị mặc định
+  }, []); // Chỉ gọi một lần khi component được render
 
   // Navigate to candidate detail page
   const handleViewDetail = (id) => {
@@ -144,40 +161,26 @@ const MemberCard = () => {
     setSaved(initialSaved);
   }, [candidates]);
 
-  useEffect(() => {
-    fetchCandidates();
-  }, []);
-
   const sendFirstTimeMessage = async (idto) => {
     try {
-      // Get the JWT token from localStorage (or another secure location)
       const token = localStorage.getItem("token");
-
-      // Define the API endpoint
       const apiEndpoint = `https://localhost:7077/api/Chat/SendFisrtTime/${idto}`;
-
-      // Make the POST request to the API
       const response = await axios.post(apiEndpoint, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // Handle the response
       if (response.status === 200) {
-        console.log("Message sent successfully:", response.data);
+        Swal.fire(
+          "Thành công",
+          "Tin nhắn của bạn đã được gửi thành công. Đang chuyển hướng đến danh sách trò chuyện...",
+          "success"
+        );
         window.open("/ChatList", "_blank");
       }
     } catch (error) {
-      // Handle error
-      if (error.response) {
-        console.error(
-          "API error:",
-          error.response.data.message || error.response.data
-        );
-      } else {
-        console.error("Error:", error.message);
-      }
+      console.error("Error:", error);
     }
   };
 
@@ -202,7 +205,7 @@ const MemberCard = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Từ khóa công việc..."
+                placeholder="Từ khóa ứng viên..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />
@@ -244,14 +247,14 @@ const MemberCard = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
-              <select
+              {/* <select
                 className="form-control"
                 onChange={(e) => setSort(parseInt(e.target.value))}
               >
                 <option value="0">Sắp xếp</option>
                 <option value="1">Nhiều lượt ứng tuyển nhất</option>
                 <option value="2">Ít lượt ứng tuyển nhất</option>
-              </select>
+              </select> */}
               <button
                 type="button"
                 className="btn btn-success"

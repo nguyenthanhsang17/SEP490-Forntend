@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
-
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -119,123 +118,218 @@ const BlogList = () => {
         </table>
       )}
 
-      {/* Pagination controls */}
-      <div className="pagination-controls">
-        <button onClick={() => handlePageChange(pageNumber - 1)} disabled={pageNumber <= 1}>Trước</button>
-        <span>{pageNumber} / {totalPages}</span>
-        <button onClick={() => handlePageChange(pageNumber + 1)} disabled={pageNumber >= totalPages}>Sau</button>
+<div
+        className="pagination-container mt-4 d-flex justify-content-center align-items-center"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: "20px",
+        }}
+      >
+        <button
+          className="btn btn-light"
+          disabled={pageNumber === 1}
+          style={{
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            padding: "0",
+          }}
+        >
+          &lt;
+        </button>
+        <span style={{ margin: "0 10px", fontSize: "16px" }}>
+          {pageNumber} / {totalPages} trang
+        </span>
+        <button
+          className="btn btn-light"
+          disabled={pageNumber === totalPages}
+          style={{
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            padding: "0",
+          }}
+        >
+          &gt;
+        </button>
       </div>
+
+      
 
       <style jsx>{`
         .blog-list-container {
-          padding: 20px;
-          font-family: Arial, sans-serif;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
+    padding: 30px;
+    font-family: 'Inter', 'Roboto', sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
 
-        h2 {
-          text-align: center;
-          margin-bottom: 20px;
-        }
+h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #2c3e50;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
 
-        .filters {
-          margin-bottom: 20px;
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
-        }
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: #3498db;
+    border-radius: 2px;
+}
 
-        .filter-item {
-          margin-bottom: 10px;
-        }
+.filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
 
-        .filters input,
-        .filters select {
-          padding: 8px;
-          margin-right: 10px;
-          border-radius: 4px;
-          border: 1px solid #ddd;
-        }
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .filters select {
-          max-width: 150px;
-        }
+.filters input,
+.filters select {
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+}
 
-        .filters label {
-          margin-right: 5px;
-          font-weight: bold;
-        }
+.filters input:focus,
+.filters select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
 
-        .blog-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-        }
+.filters label {
+    color: #2c3e50;
+    font-weight: 600;
+    white-space: nowrap;
+}
 
-        .blog-table th,
-        .blog-table td {
-          padding: 12px;
-          text-align: left;
-          border: 1px solid #ddd;
-        }
+.blog-table {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
 
-        .blog-table th {
-          background-color: #f4f4f4;
-          font-weight: bold;
-        }
+.blog-table thead {
+    background-color: #f1f5f9;
+}
 
-        .blog-table tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
+.blog-table th,
+.blog-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.3s ease;
+}
 
-        .thumbnail {
-          width: 50px;
-          height: 50px;
-          object-fit: cover;
-          border-radius: 5px;
-        }
+.blog-table th {
+    color: #2c3e50;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-        .view-button {
-          padding: 8px 12px;
-          background-color: #28a745;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          text-align: center;
-        }
+.blog-table tr:hover {
+    background-color: #f1f5f9;
+}
 
-        .view-button:hover {
-          background-color: #218838;
-        }
+.thumbnail {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
 
-        .pagination-controls {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-top: 20px;
-        }
+.thumbnail:hover {
+    transform: scale(1.1);
+}
 
-        .pagination-controls button {
-          padding: 10px 15px;
-          border-radius: 5px;
-          background-color: #007bff;
-          color: white;
-          border: none;
-          margin: 0 5px;
-          cursor: pointer;
-        }
+.view-button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
-        .pagination-controls button:disabled {
-          background-color: #ddd;
-          cursor: not-allowed;
-        }
+.view-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
 
-        .pagination-controls span {
-          margin: 0 10px;
-          font-size: 16px;
-        }
+.view-button:active {
+    transform: translateY(-1px);
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 15px;
+}
+
+.pagination-controls button {
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-controls button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.pagination-controls button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pagination-controls span {
+    color: #2c3e50;
+    font-weight: 500;
+}
       `}</style>
     </div>
       </main>

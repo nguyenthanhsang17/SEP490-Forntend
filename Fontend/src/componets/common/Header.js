@@ -272,7 +272,11 @@ const Header = () => {
                 </a>
                 <ul
                   className="dropdown-menu"
-                  style={{ ...styles.dropdownMenu, marginLeft: "9px" }} // Thêm marginLeft
+                  style={{
+                    ...styles.dropdownMenu,
+                    marginLeft: "9px", // Thêm khoảng cách từ bên trái
+                    width: "6cm", // Thiết lập chiều dài 8cm
+                  }}
                 >
                   <li>
                     <a

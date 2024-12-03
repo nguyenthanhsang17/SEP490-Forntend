@@ -18,7 +18,6 @@ const ViewAllPriceList = () => {
       padding: "15px 25px",
       border: "1px solid #b8daff",
       borderRadius: "8px",
-      marginBottom: "30px",
       display: "flex",
       alignItems: "center",
       boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
@@ -131,9 +130,6 @@ const ViewAllPriceList = () => {
 
     fetchData();
   }, []);
-
-
-
 
   const mua = async (ServiceID) => {
     const token = localStorage.getItem("token"); // Lấy token từ localStorage

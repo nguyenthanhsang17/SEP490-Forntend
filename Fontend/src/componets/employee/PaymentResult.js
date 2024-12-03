@@ -11,7 +11,6 @@ const PaymentResult = () => {
     const [responseCode, SetresponseCode] = useState("");
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
-
         const amount = queryParams.get("vnp_Amount");
         const bankCode = queryParams.get("vnp_BankCode");
         const responseCode = queryParams.get("vnp_ResponseCode");

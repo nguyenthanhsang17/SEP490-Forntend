@@ -72,7 +72,7 @@ function ViewAllPostJob() {
 
       {/* Main Content */}
       <main className="dashboard-content">
-
+      <h1 style={styles.pageTitle}>Tất cả các Công việc</h1>
         <>
           {/* Filter Dropdown */}
           <div style={styles.filterContainer}>
@@ -140,21 +140,29 @@ function ViewAllPostJob() {
   );
 }
 
-// Inline CSS styles
 const styles = {
   filterContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: '0px 0',
+    margin: '20px 0',
+    backgroundColor: '#f8f9fa',
+    padding: '15px',
+    borderRadius: '10px',
   },
   filterLabel: {
-    marginRight: '10px',
+    marginRight: '15px',
     fontWeight: 'bold',
+    color: '#2c3e50',
+    fontSize: '16px',
   },
   filterSelect: {
-    padding: '8px',
-    borderRadius: '5px',
+    padding: '10px 15px',
+    borderRadius: '8px',
+    border: '1px solid #bdc3c7',
+    backgroundColor: 'white',
+    fontSize: '15px',
+    boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
   },
   jobListContainer: {
     display: 'flex',
@@ -164,7 +172,8 @@ const styles = {
     width: '92%',
     maxWidth: '1200px',
     margin: '10px auto',
-    boxSizing: 'border-box',
+    backgroundColor: '#f4f6f8',
+    borderRadius: '15px',
   },
   jobCard: {
     display: 'grid',
@@ -172,81 +181,106 @@ const styles = {
     gap: '20px',
     alignItems: 'center',
     width: '100%',
-    padding: '15px',
+    padding: '20px',
     marginBottom: '20px',
-    borderRadius: '10px',
-    backgroundColor: '#f9f9f9',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+    borderRadius: '12px',
+    backgroundColor: 'white',
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.02)',
+    }
   },
   jobImageContainer: {
-    width: '100%',
+    width: '150px',
     height: '150px',
-    borderRadius: '8px',
+    borderRadius: '10px',
     overflow: 'hidden',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
   },
   jobImage: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    }
   },
   jobDetails: {
     display: 'flex',
     flexDirection: 'column',
+    gap: '8px',
   },
   jobTitle: {
     fontSize: '1.2em',
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: '8px',
+    color: '#2c3e50',
+    marginBottom: '5px',
+    lineHeight: '1.4',
   },
-  jobAddress: {
-    color: '#666',
-    marginBottom: '4px',
-  },
-  jobAuthor: {
-    color: '#666',
-    marginBottom: '4px',
-  },
-  jobDate: {
-    color: '#666',
-    marginBottom: '4px',
-  },
-  jobCategory: {
-    color: '#666',
+  jobMetaInfo: {
+    color: '#7f8c8d',
+    fontSize: '0.9em',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '5px',
   },
   jobStatus: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#007bff',
-  },
-  viewDetailsContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: '8px 12px',
+    borderRadius: '6px',
+    backgroundColor: '#f1f2f6',
+    color: '#3498db',
   },
   viewDetailsButton: {
     padding: '10px 15px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#3498db',
     color: 'white',
     border: 'none',
-    borderRadius: '5px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      backgroundColor: '#2980b9',
+      transform: 'translateY(-2px)',
+    }
   },
   paginationContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     margin: '20px 0',
+    gap: '15px',
+    backgroundColor: '#f8f9fa',
+    padding: '15px',
+    borderRadius: '10px',
   },
   paginationButton: {
-    padding: '8px 16px',
-    backgroundColor: '#007bff',
+    padding: '10px 20px',
+    backgroundColor: '#3498db',
     color: 'white',
     border: 'none',
-    borderRadius: '5px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    margin: '0 10px',
+    transition: 'all 0.3s ease',
+    '&:disabled': {
+      backgroundColor: '#bdc3c7',
+      cursor: 'not-allowed',
+    },
+    '&:hover:not(:disabled)': {
+      backgroundColor: '#2980b9',
+    }
+  },
+  pageTitle: {
+    textAlign: 'center',
+    color: '#2c3e50',
+    marginBottom: '20px',
+    fontSize: '28px',
+    fontWeight: '700',
+    borderBottom: '3px solid #3498db',
+    paddingBottom: '15px',
   },
 };
 
