@@ -7,7 +7,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PiTextbox } from 'react-icons/pi';
+import { useSnackbar } from 'notistack'; 
 import { Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
@@ -25,7 +25,7 @@ function ViewAllJobSeekerInFavoriteList() {
     const [sort, setSort] = useState(null);
     const [descriptionFilter, setDescriptionFilter] = useState(''); // New state for description filter
     const [currentPage, setCurrentPage] = useState(1);
-
+    const { enqueueSnackbar } = useSnackbar();
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -56,8 +56,11 @@ function ViewAllJobSeekerInFavoriteList() {
             });
             setJobSeekers(response.data.items);
             setTotalPages(response.data.totalPages);
+            enqueueSnackbar('Dữ liệu đã được tải thành công!', { variant: 'success' }); // Thông báo khi tải thành công
         } catch (error) {
             console.error('Error fetching the job seeker data:', error);
+            enqueueSnackbar('Không thể tải dữ liệu. Vui lòng thử lại.', { variant: 'error' }); // Thông báo lỗi
+        
         }
     };
 
@@ -71,9 +74,11 @@ function ViewAllJobSeekerInFavoriteList() {
             await axios.delete(`https://localhost:7077/api/FavoriteLists/DeleteFavorite/${jobseekerId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            enqueueSnackbar('Ứng viên đã được xóa khỏi danh sách yêu thích.', { variant: 'success' }); // Thông báo xóa thành công
             setJobSeekers(prevJobSeekers => prevJobSeekers.filter(seeker => seeker.userId !== jobseekerId));
         } catch (error) {
             console.error('Error deleting job seeker:', error);
+            enqueueSnackbar('Xóa ứng viên không thành công. Vui lòng thử lại.', { variant: 'error' }); // Thông báo lỗi
         }
     };
 
