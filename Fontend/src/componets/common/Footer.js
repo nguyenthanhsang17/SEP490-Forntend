@@ -40,7 +40,7 @@ class Footer extends React.Component {
                     <strong>Email:</strong> quickjobvjn2024@gmail.com
                   </p>
                   <p>
-                    <strong>Gọi:</strong>{" "}
+                    <strong>Điện Thoại:</strong>{" "}
                     <a href="tel:+15555555555">0369354782</a>
                   </p>
                   <ul className="footer-social">

@@ -4,7 +4,7 @@ import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import reportWebVitals from "./reportWebVitals";
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 // Import Components
 import Register from "./componets/accounts/Register";
 import Login from "./componets/accounts/Login";
@@ -65,181 +65,184 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <SnackbarProvider maxSnack={3}>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgotPassword" element={<ForgotPassword />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/VerifyRegister" element={<VerifyRegister />} />
-          <Route path="/viewAllJob" element={<PostJobs />} />
-          <Route path="/lich" element={<ScheduleTable />} />
+    <GoogleOAuthProvider clientId="1063758158033-tlgrg1l9blifupdef36jq5or4ugfikfa.apps.googleusercontent.com">
 
-          <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
-          
-          <Route path="/ViewEmployerRequests"element={<PrivateRoute allowedRoles={[3,4]}><EmployerRequests /></PrivateRoute>}/>
-          <Route path="/ViewEmployerRequestsDetail/:id"element={<PrivateRoute allowedRoles={[3,4]}><EmployerRequestDetail /></PrivateRoute>}/>
-          <Route path="/ManageUser"element={<PrivateRoute allowedRoles={[4]}><ManageUser /></PrivateRoute>}/>
-          <Route path="/user/:id"element={<PrivateRoute allowedRoles={[4]}><UserDetail /></PrivateRoute>}/>
-          <Route path="/BlogList"element={<PrivateRoute allowedRoles={[3]}><BlogList /></PrivateRoute>}/>
-          <Route path="/BlogDetailllll/:id"element={<PrivateRoute allowedRoles={[3]}><BlogDetailllll /></PrivateRoute>}/>
-          <Route path="/CreateBlog"element={<PrivateRoute allowedRoles={[3]}><CreateBlog /></PrivateRoute>}/>
-          <Route path="/ViewAllHistoryPayment"element={<PrivateRoute allowedRoles={[4]}><HistoryPayment /></PrivateRoute>}/>  
-          <Route path="/ViewAllHistoryPaymentDetail/:uid"element={<PrivateRoute allowedRoles={[4]}><PaymentHistoryTableDetail /></PrivateRoute>}/>
-          <Route path="/ViewAllPost"element={<PrivateRoute allowedRoles={[3, 4]}><ViewAllPostJob /></PrivateRoute>}/>
-          <Route path="/ViewDetail/:job_id" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>}/>
+      <BrowserRouter>
+        <SnackbarProvider maxSnack={3}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgotPassword" element={<ForgotPassword />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/VerifyRegister" element={<VerifyRegister />} />
+            <Route path="/viewAllJob" element={<PostJobs />} />
+            <Route path="/lich" element={<ScheduleTable />} />
+
+            <Route path="/viewJobDetail/:id" element={<ViewJobDetail />} />
+
+            <Route path="/ViewEmployerRequests" element={<PrivateRoute allowedRoles={[3, 4]}><EmployerRequests /></PrivateRoute>} />
+            <Route path="/ViewEmployerRequestsDetail/:id" element={<PrivateRoute allowedRoles={[3, 4]}><EmployerRequestDetail /></PrivateRoute>} />
+            <Route path="/ManageUser" element={<PrivateRoute allowedRoles={[4]}><ManageUser /></PrivateRoute>} />
+            <Route path="/user/:id" element={<PrivateRoute allowedRoles={[4]}><UserDetail /></PrivateRoute>} />
+            <Route path="/BlogList" element={<PrivateRoute allowedRoles={[3]}><BlogList /></PrivateRoute>} />
+            <Route path="/BlogDetailllll/:id" element={<PrivateRoute allowedRoles={[3]}><BlogDetailllll /></PrivateRoute>} />
+            <Route path="/CreateBlog" element={<PrivateRoute allowedRoles={[3]}><CreateBlog /></PrivateRoute>} />
+            <Route path="/ViewAllHistoryPayment" element={<PrivateRoute allowedRoles={[4]}><HistoryPayment /></PrivateRoute>} />
+            <Route path="/ViewAllHistoryPaymentDetail/:uid" element={<PrivateRoute allowedRoles={[4]}><PaymentHistoryTableDetail /></PrivateRoute>} />
+            <Route path="/ViewAllPost" element={<PrivateRoute allowedRoles={[3, 4]}><ViewAllPostJob /></PrivateRoute>} />
+            <Route path="/ViewDetail/:job_id" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>} />
 
 
-          <Route path="/ManageService"element={<PrivateRoute allowedRoles={[4]}><ManageService /></PrivateRoute>}/>
+            <Route path="/ManageService" element={<PrivateRoute allowedRoles={[4]}><ManageService /></PrivateRoute>} />
 
-          <Route path="/PaymentResult" element={<PaymentResult />} />
+            <Route path="/PaymentResult" element={<PaymentResult />} />
 
-          <Route path="/PaymentSuccess" element={<PaymentSuccess/>}/>
+            <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
 
-           {/* Job Seeker-Only Routes */}
-          <Route
-            path="/ViewAllJobApplied"
-            element={
-              <PrivateRoute allowedRoles={[1, 2]}>
-                <ViewAllJobApplied />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/ApplyJob/:job_id"
-            element={
-              <PrivateRoute allowedRoles={[1, 2]}>
-                <ApplyJob />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/ChatList"
-            element={
-              <PrivateRoute allowedRoles={[1, 2]}>
-                <ChatList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/verifyEmployerAccount"
-            element={
-              <PrivateRoute allowedRoles={[1]}>
-                <VerifyEmployerAccount />
-              </PrivateRoute>
-            }
-          />
-          {/* Employer-Only Routes */}
-          <Route path="/ViewHistoryPayment"element={<PrivateRoute allowedRoles={[2]}><PaymentHistoryTable /></PrivateRoute>}/>
-          <Route
-            path="/createPostJob"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <CreatePostJob />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/viewListJobsCreated"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <ViewListJobsCreated />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/viewJobCreatedDetail/:id"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <ViewJobCreatedDetail />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/viewDetailJobSeeker/:id"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <ViewJobDetailJobSeeker />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/viewAllJobSeeker"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <MemberCard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/ViewAllJobseekerApply/:id"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <ViewAllJobSeekerApply />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/ViewJobSeekerDetail/:id/:apply_id"
-            element={
-              <PrivateRoute allowedRoles={[2]}>
-                <ViewJobSeekerDetail />
-              </PrivateRoute>
-            }
-          />
+            {/* Job Seeker-Only Routes */}
+            <Route
+              path="/ViewAllJobApplied"
+              element={
+                <PrivateRoute allowedRoles={[1, 2]}>
+                  <ViewAllJobApplied />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/ApplyJob/:job_id"
+              element={
+                <PrivateRoute allowedRoles={[1, 2]}>
+                  <ApplyJob />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/ChatList"
+              element={
+                <PrivateRoute allowedRoles={[1, 2]}>
+                  <ChatList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/verifyEmployerAccount"
+              element={
+                <PrivateRoute allowedRoles={[1]}>
+                  <VerifyEmployerAccount />
+                </PrivateRoute>
+              }
+            />
+            {/* Employer-Only Routes */}
+            <Route path="/ViewHistoryPayment" element={<PrivateRoute allowedRoles={[2]}><PaymentHistoryTable /></PrivateRoute>} />
+            <Route
+              path="/createPostJob"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <CreatePostJob />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/viewListJobsCreated"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <ViewListJobsCreated />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/viewJobCreatedDetail/:id"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <ViewJobCreatedDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/viewDetailJobSeeker/:id"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <ViewJobDetailJobSeeker />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/viewAllJobSeeker"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <MemberCard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/ViewAllJobseekerApply/:id"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <ViewAllJobSeekerApply />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/ViewJobSeekerDetail/:id/:apply_id"
+              element={
+                <PrivateRoute allowedRoles={[2]}>
+                  <ViewJobSeekerDetail />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/ReApplyJob/:job_id"
-            element={
-              <PrivateRoute allowedRoles={[1, 2]}>
-                <ReApplyJob />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/ReApplyJob/:job_id"
+              element={
+                <PrivateRoute allowedRoles={[1, 2]}>
+                  <ReApplyJob />
+                </PrivateRoute>
+              }
+            />
 
-          {/* Admin-Only Routes */}
-          <Route
-            path="/AdminDashBoard"
-            element={
-              <PrivateRoute allowedRoles={[4]}>
-                <AdminDashboard />
-              </PrivateRoute>
-            }
-          />
+            {/* Admin-Only Routes */}
+            <Route
+              path="/AdminDashBoard"
+              element={
+                <PrivateRoute allowedRoles={[4]}>
+                  <AdminDashboard />
+                </PrivateRoute>
+              }
+            />
 
-          {/* Miscellaneous Routes */}
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route
-            path="/viewAllPostJobInWishlist"
-            element={<ViewAllPostJobInWishlist />}
-          />
-          <Route
-            path="/viewAllJobSeekerInFavoriteList"
-            element={<ViewAllJobSeekerInFavoriteList />}
-          />
-          <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
-          <Route path="/ManagementCV" element={<ManagementCV />} />
+            {/* Miscellaneous Routes */}
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route
+              path="/viewAllPostJobInWishlist"
+              element={<ViewAllPostJobInWishlist />}
+            />
+            <Route
+              path="/viewAllJobSeekerInFavoriteList"
+              element={<ViewAllJobSeekerInFavoriteList />}
+            />
+            <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
+            <Route path="/ManagementCV" element={<ManagementCV />} />
 
-          <Route path="/EditPostJob/:id" element={<EditPostJob />} />
-          <Route path="/Payment" element={<PaymentScreen />} />
-          <Route
-            path="/viewEmployerProfile/:authorId"
-            element={<ViewEmployerProfile />}
-          />
-          <Route path="/viewBlogList" element={<ViewBlogList />} />
-          <Route path="/blogDetail/:id" element={<BlogDetail />} />
-          <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
-          <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
-          <Route
-            path="/viewRecommendedJobs"
-            element={<ViewRecommendedJobs />}
-          />
-        </Routes>
-      </SnackbarProvider>
-    </BrowserRouter>
+            <Route path="/EditPostJob/:id" element={<EditPostJob />} />
+            <Route path="/Payment" element={<PaymentScreen />} />
+            <Route
+              path="/viewEmployerProfile/:authorId"
+              element={<ViewEmployerProfile />}
+            />
+            <Route path="/viewBlogList" element={<ViewBlogList />} />
+            <Route path="/blogDetail/:id" element={<BlogDetail />} />
+            <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
+            <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
+            <Route
+              path="/viewRecommendedJobs"
+              element={<ViewRecommendedJobs />}
+            />
+          </Routes>
+        </SnackbarProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );
 

@@ -330,7 +330,7 @@ const ViewRecommendedJobs = () => {
                       </div>
                     </div>
                     {job.isUrgentRecruitment ? (
-                      <span class="tg-themetag tg-featuretag">Premium</span>
+                      <span class="tg-themetag tg-featuretag">HOT</span>
                     ) : (
                       ""
                     )}
