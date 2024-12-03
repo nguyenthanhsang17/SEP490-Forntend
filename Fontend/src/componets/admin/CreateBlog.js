@@ -2,7 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
-
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 const styles = {
   container: {
     padding: "30px",
@@ -97,6 +98,7 @@ const CreateBlog = () => {
   const [blogDescription, setBlogDescription] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const navigate = useNavigate();
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -115,39 +117,77 @@ const CreateBlog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Kiểm tra dữ liệu đầu vào
-    if (!blogTitle.trim() || !blogDescription.trim()) {
-      alert("Vui lòng nhập tiêu đề và mô tả.");
-      return;
-    }
-
-    // Tạo FormData để gửi file
-    const formData = new FormData();
-    formData.append("BlogTitle", blogTitle);
-    formData.append("BlogDescription", blogDescription);
-    if (thumbnail) {
-      formData.append("Thumbnail", thumbnail);
-    }
-
-
-    const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(
-        "https://localhost:7077/api/Blogs/createblog",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert("Tạo thành công");
+      const result = await Swal.fire({
+        title: 'Bạn chắc chắn muốn tạo Blog?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Có',
+        cancelButtonText: 'Không',
+      });
 
+      if (result.isConfirmed) {
+        // Kiểm tra dữ liệu đầu vào
+        if (!blogTitle.trim() || !blogDescription.trim()) {
+          //alert("Vui lòng nhập tiêu đề và mô tả.");
+          await Swal.fire({
+            title: 'Vui lòng nhập tiêu đề và mô tả.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ok',
+          });
+          return;
+        }
+
+        // Tạo FormData để gửi file
+        const formData = new FormData();
+        formData.append("BlogTitle", blogTitle);
+        formData.append("BlogDescription", blogDescription);
+        if (thumbnail) {
+          formData.append("Thumbnail", thumbnail);
+        }
+
+
+        const token = localStorage.getItem("token");
+
+        try {
+          const response = await axios.post(
+            "https://localhost:7077/api/Blogs/createblog",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log("Tạo thành công");
+          await Swal.fire({
+            title: 'Tạo thành công!',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+          });
+
+          navigate('/BlogList');
+        } catch (error) {
+          console.log("Lỗi khi tạo");
+          await Swal.fire({
+            title: "Có lỗi trong quá trình tạo.",
+            icon: 'error',
+            confirmButtonText: 'Ok',
+          });
+        }
+      }
     } catch (error) {
-      alert("Có lỗi trong quá trình tạo.");
+      console.error("Failed to send request approval:", error);
+      await Swal.fire({
+        title: error.response.data.message,
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
     }
+
   };
 
   return (
