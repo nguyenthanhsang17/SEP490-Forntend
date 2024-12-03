@@ -271,6 +271,7 @@ function ReportPostJob() {
                         }}
                             onMouseOver={(e) => e.target.style.backgroundColor = '#e62e2e'}
                             onMouseOut={(e) => e.target.style.backgroundColor = '#ff3b3b'}
+                            disabled={isbamnut}
                         >
                             Hủy
                         </button>

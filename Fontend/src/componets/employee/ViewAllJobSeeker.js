@@ -205,7 +205,7 @@ const MemberCard = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Từ khóa ứng viên..."
+                placeholder="Từ khóa cv ứng viên..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />

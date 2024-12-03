@@ -451,7 +451,7 @@ const Profile = () => {
                                   whiteSpace: "nowrap", // Đảm bảo tiêu đề không xuống dòng
                                 }}
                               >
-                                Số lượt đăng bài khẩn cấp:
+                                Số lượt đăng bài nổi bật:
                               </span>
                               <span
                                 style={{ fontWeight: "bold", color: "#d32f2f" }}
