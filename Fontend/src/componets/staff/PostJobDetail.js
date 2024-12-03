@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Sidebar from "../admin/SidebarAdmin";
 import Header from "../admin/HeaderAdmin";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 function PostJobDetail() {
     const { job_id } = useParams();
@@ -17,6 +18,7 @@ function PostJobDetail() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5; // Set page size for pagination
     const navigate = useNavigate();
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     const token = localStorage.getItem("token");
 
@@ -41,8 +43,17 @@ function PostJobDetail() {
     }, [job_id]);
 
     const handleApprove = async () => {
+        setIsButtonDisabled(true);
         try {
-            // Gọi API duyệt bài viết
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn  duyệt bài viết này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+            if (result.isConfirmed) {
             const response = await fetch(`https://localhost:7077/api/PostJobs/Accept/${job_id}`, {
                 method: 'PUT',
                 headers: {
@@ -50,58 +61,98 @@ function PostJobDetail() {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            await Swal.fire({
+                title: 'Đã duyệt bài thành công!',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+            });
 
-            if (response.ok) {
-                alert("Duyệt bài viết thành công");
-                navigate(`/ViewDetail/${job_id}`);
+               navigate(`/ViewDetail/${job_id}`);
                 window.location.reload()
-            } else {
-                const result = await response.json();
-                alert(result.Message || "Có lỗi khi duyệt bài viết");
+
             }
+
         } catch (error) {
-            console.error("Error during approve:", error);
-            alert("Có lỗi khi duyệt bài viết");
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
+        setIsButtonDisabled(false);
     };
 
     const handleReject = async () => {
         if (!banReason) {
-            alert("Vui lòng nhập lý do không duyệt.");
+            await Swal.fire({
+                title: 'Nhập lý do từ chối',
+                icon: 'warning',
+                confirmButtonText: 'Ok',
+            });
             return;
         }
-
+        setIsButtonDisabled(true);
+                    
         try {
-            // Gọi API từ chối duyệt bài viết với lý do từ textarea
-            const response = await fetch(`https://localhost:7077/api/PostJobs/Reject/${job_id}?reasonRejecr=${encodeURIComponent(banReason)}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn từ chối bài viết này ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
             });
-
-            if (response.ok) {
-                alert("Từ chối duyệt bài viết thành công");
-                navigate(`/ViewDetail/${job_id}`);
-                window.location.reload()
-            } else {
-                const result = await response.json();
-                alert(result.Message || "Có lỗi khi từ chối duyệt bài viết");
+            if (result.isConfirmed) {
+                const response = await fetch(`https://localhost:7077/api/PostJobs/Reject/${job_id}?reasonRejecr=${encodeURIComponent(banReason)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+    
+                await Swal.fire({
+                    title: 'Từ chối bài viết thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+                   navigate(`/ViewDetail/${job_id}`);
+                    window.location.reload()
             }
+            // Gọi API từ chối duyệt bài viết với lý do từ textarea
+
         } catch (error) {
-            console.error("Error during reject:", error);
-            alert("Có lỗi khi từ chối duyệt bài viết");
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
+        setIsButtonDisabled(false);
     };
 
     const handleBan = async () => {
         if (!banReason) {
-            alert("Vui lòng nhập lý do cấm.");
+            await Swal.fire({
+                title: 'Nhập lý do cấm',
+                icon: 'warning',
+                confirmButtonText: 'Ok',
+            });
             return;
         }
 
+        setIsButtonDisabled(true);
         try {
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn cấm bài viết này ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+            if (result.isConfirmed) {
             // Gọi API cấm bài viết với lý do
             const response = await fetch(`https://localhost:7077/api/PostJobs/Ban/${job_id}?reasonBan=${encodeURIComponent(banReason)}`, {
                 method: 'PUT',
@@ -110,19 +161,24 @@ function PostJobDetail() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
-            if (response.ok) {
-                alert("Bài viết đã bị cấm.");
-                window.location.reload()// Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
-            } else {
-                const result = await response.json(banReason);
-                console.log()
-                alert(result.Message || "Có lỗi khi cấm bài viết");
+            await Swal.fire({
+                title: 'Từ chối bài viết thành công!',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+            });
+                window.location.reload()
             }
+
+
         } catch (error) {
-            console.error("Error during ban:", error);
-            alert("Có lỗi khi cấm bài viết");
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
+        setIsButtonDisabled(false);
     };
 
 
@@ -216,8 +272,8 @@ function PostJobDetail() {
                                                         placeholder="Nhập lý do không duyệt"
                                                         className="reason-input"
                                                     />
-                                                    <button onClick={handleApprove} className="approve-button">Duyệt</button>
-                                                    <button onClick={handleReject} className="reject-button">Không Duyệt</button>
+                                                    <button onClick={handleApprove} disabled={isButtonDisabled} className="approve-button">Duyệt</button>
+                                                    <button onClick={handleReject} disabled={isButtonDisabled} className="reject-button">Không Duyệt</button>
                                                 </>
                                             ) : status === 2 ? (
                                                 <>
@@ -227,7 +283,7 @@ function PostJobDetail() {
                                                         placeholder="Nhập lý do cấm"
                                                         className="reason-input"
                                                     />
-                                                    <button onClick={handleBan} className="btn-ban">Cấm</button>
+                                                    <button onClick={handleBan} disabled={isButtonDisabled} className="btn-ban">Cấm</button>
                                                 </>
                                             ) : null}
                                         </div>
