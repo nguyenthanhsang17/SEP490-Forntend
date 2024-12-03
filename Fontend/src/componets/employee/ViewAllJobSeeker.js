@@ -381,7 +381,7 @@ const MemberCard = () => {
                           Liên Hệ Ngay
                         </button>
                         {saved[candidate.userId] ||
-                        candidate.isFavorite === 1 ? (
+                          candidate.isFavorite === 1 ? (
                           <button
                             className="btn btn-save"
                             style={{
