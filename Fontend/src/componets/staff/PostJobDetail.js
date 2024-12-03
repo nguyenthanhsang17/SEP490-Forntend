@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Sidebar from "../admin/SidebarAdmin";
 import Header from "../admin/HeaderAdmin";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 function PostJobDetail() {
     const { job_id } = useParams();
@@ -17,6 +18,7 @@ function PostJobDetail() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5; // Set page size for pagination
     const navigate = useNavigate();
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     const token = localStorage.getItem("token");
 
@@ -41,8 +43,17 @@ function PostJobDetail() {
     }, [job_id]);
 
     const handleApprove = async () => {
+        setIsButtonDisabled(true);
         try {
-            // Gọi API duyệt bài viết
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn  duyệt bài viết này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+            if (result.isConfirmed) {
             const response = await fetch(`https://localhost:7077/api/PostJobs/Accept/${job_id}`, {
                 method: 'PUT',
                 headers: {
@@ -50,58 +61,98 @@ function PostJobDetail() {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            await Swal.fire({
+                title: 'Đã duyệt bài thành công!',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+            });
 
-            if (response.ok) {
-                alert("Duyệt bài viết thành công");
-                navigate(`/ViewDetail/${job_id}`);
+               navigate(`/ViewDetail/${job_id}`);
                 window.location.reload()
-            } else {
-                const result = await response.json();
-                alert(result.Message || "Có lỗi khi duyệt bài viết");
+
             }
+
         } catch (error) {
-            console.error("Error during approve:", error);
-            alert("Có lỗi khi duyệt bài viết");
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
+        setIsButtonDisabled(false);
     };
 
     const handleReject = async () => {
         if (!banReason) {
-            alert("Vui lòng nhập lý do không duyệt.");
+            await Swal.fire({
+                title: 'Nhập lý do từ chối',
+                icon: 'warning',
+                confirmButtonText: 'Ok',
+            });
             return;
         }
-
+        setIsButtonDisabled(true);
+                    
         try {
-            // Gọi API từ chối duyệt bài viết với lý do từ textarea
-            const response = await fetch(`https://localhost:7077/api/PostJobs/Reject/${job_id}?reasonRejecr=${encodeURIComponent(banReason)}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
+            // Hiển thị xác nhận
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn từ chối bài viết này ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
             });
-
-            if (response.ok) {
-                alert("Từ chối duyệt bài viết thành công");
-                navigate(`/ViewDetail/${job_id}`);
-                window.location.reload()
-            } else {
-                const result = await response.json();
-                alert(result.Message || "Có lỗi khi từ chối duyệt bài viết");
+            if (result.isConfirmed) {
+                const response = await fetch(`https://localhost:7077/api/PostJobs/Reject/${job_id}?reasonRejecr=${encodeURIComponent(banReason)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+    
+                await Swal.fire({
+                    title: 'Từ chối bài viết thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                });
+                   navigate(`/ViewDetail/${job_id}`);
+                    window.location.reload()
             }
+            // Gọi API từ chối duyệt bài viết với lý do từ textarea
+
         } catch (error) {
-            console.error("Error during reject:", error);
-            alert("Có lỗi khi từ chối duyệt bài viết");
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
+        setIsButtonDisabled(false);
     };
 
     const handleBan = async () => {
         if (!banReason) {
-            alert("Vui lòng nhập lý do cấm.");
+            await Swal.fire({
+                title: 'Nhập lý do cấm',
+                icon: 'warning',
+                confirmButtonText: 'Ok',
+            });
             return;
         }
 
+        setIsButtonDisabled(true);
         try {
+            const result = await Swal.fire({
+                title: 'Bạn có chắc muốn cấm bài viết này ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            });
+            if (result.isConfirmed) {
             // Gọi API cấm bài viết với lý do
             const response = await fetch(`https://localhost:7077/api/PostJobs/Ban/${job_id}?reasonBan=${encodeURIComponent(banReason)}`, {
                 method: 'PUT',
@@ -110,19 +161,24 @@ function PostJobDetail() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
-            if (response.ok) {
-                alert("Bài viết đã bị cấm.");
-                window.location.reload()// Chuyển hướng đến trang chi tiết bài viết với trạng thái cấm
-            } else {
-                const result = await response.json(banReason);
-                console.log()
-                alert(result.Message || "Có lỗi khi cấm bài viết");
+            await Swal.fire({
+                title: 'Từ chối bài viết thành công!',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+            });
+                window.location.reload()
             }
+
+
         } catch (error) {
-            console.error("Error during ban:", error);
-            alert("Có lỗi khi cấm bài viết");
+            console.error("Failed to send request:", error);
+            await Swal.fire({
+                title: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+            });
         }
+        setIsButtonDisabled(false);
     };
 
 
@@ -163,194 +219,192 @@ function PostJobDetail() {
 
             {/* Main Content */}
             <main className="dashboard-content">
-  <div className="container">
-    <h1 className="pageTitle">Chi tiết công việc</h1>
+                <div className="container">
+                    <h1 className="pageTitle">Chi tiết công việc</h1>
 
-    {postData ? (
-      <div className="layout-container">
-        <div className="details-container">
-          <h2 className="section-title">{postData.jobTitle}</h2>
-          <div className="info-item">
-            <strong>Mô tả công việc:</strong> {postData.jobDescription}
-          </div>
-          <div className="info-item">
-            <strong>Địa chỉ:</strong> {postData.address}
-          </div>
-          <div className="info-item">
-            <strong>Số lượng tuyển:</strong> {postData.numberPeople}
-          </div>
-          <div className="info-item">
-            <strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND
-          </div>
-          <div className="info-item">
-            <strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}
-          </div>
-          <div className="info-item">
-            <strong>Trạng thái:</strong> {statusMapping[postData.status]}
-          </div>
-          {postData.status === 3 && (
-            <div className="info-item">
-              <strong>Lý do từ chối:</strong> {postData.reason}
-            </div>
-          )}
-          {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
-            <div className="images-container">
-              <strong>Hình ảnh công việc:</strong>
-              <div className="image-gallery">
-                {postData.imagePostJobs.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image.image.url}
-                    alt={`Image ${index + 1}`}
-                    className="job-image image-thumbnail"
-                    onClick={() => handleImageClick(image.image.url)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+                    {postData ? (
+                        <div className="layout-container">
+                            <div className="details-container">
+                                <h2 className="section-title">{postData.jobTitle}</h2>
+                                <div className="info-item">
+                                    <strong>Mô tả công việc:</strong> {postData.jobDescription}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Địa chỉ:</strong> {postData.address}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Số lượng tuyển:</strong> {postData.numberPeople}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND
+                                </div>
+                                <div className="info-item">
+                                    <strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Trạng thái:</strong> {statusMapping[postData.status]}
+                                </div>
+                                {postData.status === 3 && (
+                                    <div className="info-item">
+                                        <strong>Lý do từ chối:</strong> {postData.reason}
+                                    </div>
+                                )}
+                                {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
+                                    <div className="images-container">
+                                        <strong>Hình ảnh công việc:</strong>
+                                        <div className="image-gallery">
+                                            {postData.imagePostJobs.map((image, index) => (
+                                                <img
+                                                    key={index}
+                                                    src={image.image.url}
+                                                    alt={`Image ${index + 1}`}
+                                                    className="job-image image-thumbnail"
+                                                    onClick={() => handleImageClick(image.image.url)}
+                                                />
+                                            ))}
+                                        </div>
+                                        <div className="action-buttons">
+                                            {status === 1 ? (
+                                                <>
+                                                    <textarea
+                                                        value={banReason}
+                                                        onChange={(e) => setBanReason(e.target.value)}
+                                                        placeholder="Nhập lý do không duyệt"
+                                                        className="reason-input"
+                                                    />
+                                                    <button onClick={handleApprove} disabled={isButtonDisabled} className="approve-button">Duyệt</button>
+                                                    <button onClick={handleReject} disabled={isButtonDisabled} className="reject-button">Không Duyệt</button>
+                                                </>
+                                            ) : status === 2 ? (
+                                                <>
+                                                    <textarea
+                                                        value={banReason}
+                                                        onChange={(e) => setBanReason(e.target.value)}
+                                                        placeholder="Nhập lý do cấm"
+                                                        className="reason-input"
+                                                    />
+                                                    <button onClick={handleBan} disabled={isButtonDisabled} className="btn-ban">Cấm</button>
+                                                </>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                )}
 
-          {showImage && (
-            <div className="modal" onClick={closeImageModal}>
-              <img src={selectedImage} alt="Selected" className="modal-image" />
-            </div>
-          )}
+                                {showImage && (
+                                    <div className="modal" onClick={closeImageModal}>
+                                        <img src={selectedImage} alt="Selected" className="modal-image" />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="sidebar">
+                                <div className="user-info">
+                                    <div className="user-item">
+                                        <img src={postData.author.avatarURL} alt="Avatar" className="user-avatar" />
+                                        <div className="user-details">
+                                            <div className="info-item">
+                                                <strong>Người đăng:</strong> {postData.author.fullName}
+                                            </div>
+                                            <div className="info-item">
+                                                <strong>Tuổi:</strong> {postData.author.age}
+                                            </div>
+                                            <div className="info-item">
+                                                <strong>Số điện thoại:</strong> {postData.author.phonenumber}
+                                            </div>
+                                            <div className="info-item">
+                                                <strong>Email:</strong> {postData.author.email}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {status !== 1 && status !== 0 && postData.censor && (
+                                    <div className="user-info">
+                                        <div className="user-item">
+                                            <img src={postData.censor.avatarURL} alt="Censor Avatar" className="user-avatar" />
+                                            <div className="user-details">
+                                                <div className="info-item">
+                                                    <strong>Người duyệt:</strong> {postData.censor.fullName}
+                                                </div>
+                                                <div className="info-item">
+                                                    <strong>Tuổi:</strong> {postData.censor.age}
+                                                </div>
+                                                <div className="info-item">
+                                                    <strong>Số điện thoại:</strong> {postData.censor.phonenumber}
+                                                </div>
+                                                <div className="info-item">
+                                                    <strong>Email:</strong> {postData.censor.email}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <p>Loading job details...</p>
+                    )}
+
+
+
+{reports.totalCount > 0 && (
+  <div className="report-section">
+    <h2 className="section-title">Danh sách báo cáo</h2>
+    {reports.items.map((report, index) => (
+      <div key={index} className="report-item">
+        <div >
+          <strong>Lý do báo cáo:</strong> {report.reason}
         </div>
-
-        <div className="sidebar">
-          <div className="user-info">
-            <h2 className="section-title">Thông tin người đăng</h2>
-            <div className="user-item">
-              <img src={postData.author.avatarURL} alt="Avatar" className="user-avatar" />
-              <div className="user-details">
-                <div className="info-item">
-                  <strong>Họ và tên:</strong> {postData.author.fullName}
-                </div>
-                <div className="info-item">
-                  <strong>Tuổi:</strong> {postData.author.age}
-                </div>
-                <div className="info-item">
-                  <strong>Số điện thoại:</strong> {postData.author.phonenumber}
-                </div>
-                <div className="info-item">
-                  <strong>Email:</strong> {postData.author.email}
-                </div>
-              </div>
+        {report.reportMedia && report.reportMedia.length > 0 && (
+          <div className="report-images-container">
+            {report.reportMedia.map((media, idx) => (
+              <img
+                key={idx}
+                src={media.image.url}
+                alt={`Report Media ${idx + 1}`}
+                className="report-image-thumbnail"
+                onClick={() => handleImageClick(media.image.url)}
+              />
+            ))}
+          </div>
+        )}
+        <div className="reporter-info">
+          <img src={report.jobSeeker.avatarURL} alt="Reporter Avatar" className="user-avatar" />
+          <div className="reporter-details">
+            <div className="info-item">
+              <strong>Họ và tên:</strong> {report.jobSeeker.fullName}
+            </div>
+            <div className="info-item">
+              <strong>Email:</strong> {report.jobSeeker.email}
             </div>
           </div>
-
-          {status !== 1 && status !== 0 && postData.censor && (
-            <div className="user-info">
-              <h2 className="section-title">Thông tin người duyệt</h2>
-              <div className="user-item">
-                <img src={postData.censor.avatarURL} alt="Censor Avatar" className="user-avatar" />
-                <div className="user-details">
-                  <div className="info-item">
-                    <strong>Họ và tên:</strong> {postData.censor.fullName}
-                  </div>
-                  <div className="info-item">
-                    <strong>Tuổi:</strong> {postData.censor.age}
-                  </div>
-                  <div className="info-item">
-                    <strong>Số điện thoại:</strong> {postData.censor.phonenumber}
-                  </div>
-                  <div className="info-item">
-                    <strong>Email:</strong> {postData.censor.email}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
-    ) : (
-      <p>Loading job details...</p>
-    )}
-
-    <div className="action-buttons">
-      {status === 1 ? (
-        <>
-          <button onClick={handleApprove} className="approve-button">Duyệt</button>
-          <button onClick={handleReject} className="reject-button">Không Duyệt</button>
-          <textarea
-            value={banReason}
-            onChange={(e) => setBanReason(e.target.value)}
-            placeholder="Nhập lý do không duyệt"
-            className="reason-input"
-          />
-        </>
-      ) : status === 2 ? (
-        <>
-          <button onClick={handleBan} className="btn-ban">Cấm</button>
-          <textarea
-            value={banReason}
-            onChange={(e) => setBanReason(e.target.value)}
-            placeholder="Nhập lý do cấm"
-            className="reason-input"
-          />
-        </>
-      ) : null}
+    ))}
+    <div className="pagination">
+      <button
+        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+      >
+        Trang trước
+      </button>
+      <span>Trang {currentPage} / {reports.totalPages}</span>
+      <button
+        onClick={() => setCurrentPage(prev => Math.min(prev + 1, reports.totalPages))}
+        disabled={currentPage === reports.totalPages}
+      >
+        Trang sau
+      </button>
     </div>
-
-    {reports.totalCount > 0 && (
-      <div className="report-section">
-        <h2 className="section-title">Danh sách báo cáo</h2>
-        {reports.items.map((report, index) => (
-          <div key={index} className="report-item">
-            <div className="reporter-info">
-              <img src={report.jobSeeker.avatarURL} alt="Reporter Avatar" className="user-avatar" />
-              <div className="reporter-details">
-                <div className="info-item">
-                  <strong>Họ và tên:</strong> {report.jobSeeker.fullName}
-                </div>
-                <div className="info-item">
-                  <strong>Email:</strong> {report.jobSeeker.email}
-                </div>
-              </div>
-            </div>
-            <div className="info-item">
-              <strong>Lý do báo cáo:</strong> {report.reason}
-            </div>
-
-            {report.reportMedia && report.reportMedia.length > 0 && (
-              <div className="report-images-container">
-                {report.reportMedia.map((media, idx) => (
-                  <img
-                    key={idx}
-                    src={media.image.url}
-                    alt={`Report Media ${idx + 1}`}
-                    className="report-image-thumbnail"
-                    onClick={() => handleImageClick(media.image.url)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-
-        <div className="pagination">
-          <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Trang trước
-          </button>
-          <span>Trang {currentPage} / {reports.totalPages}</span>
-          <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, reports.totalPages))}
-            disabled={currentPage === reports.totalPages}
-          >
-            Trang sau
-          </button>
-        </div>
-      </div>
-    )}
   </div>
-</main>
+)}
+
+                </div>
+            </main>
 
 
 
-<style jsx>{`
+            <style jsx>{`
   .container {
     max-width: 100%;
     margin: 0 auto;
@@ -375,8 +429,8 @@ function PostJobDetail() {
     gap: 20px;
   }
 
-  .details-container, 
-  .user-info, 
+  .details-container,
+  .user-info,
   .report-section {
     background-color: white;
     border-radius: 12px;
@@ -388,7 +442,8 @@ function PostJobDetail() {
 
   .details-container:hover,
   .user-info:hover,
-  .report-section:hover {
+  .report-section:hover,
+  .sidebar:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
   }
@@ -401,7 +456,14 @@ function PostJobDetail() {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 10px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    align-self: stretch;
   }
 
   .info-item {
@@ -420,11 +482,15 @@ function PostJobDetail() {
     color: #2c3e50;
     font-weight: 600;
     font-size: 15px;
+    flex-shrink: 0;
   }
 
   .info-item span {
     color: #34495e;
     font-size: 15px;
+    flex-grow: 1;
+    text-align: right;
+    margin-left: 10px;
   }
 
   .images-container {
@@ -456,6 +522,7 @@ function PostJobDetail() {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
+    margin-top: 15px; /* Khoảng cách giữa lý do báo cáo và hình ảnh */
   }
 
   .report-image-thumbnail {
@@ -492,8 +559,9 @@ function PostJobDetail() {
 
   .user-info .user-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 25px;
+    gap: 10px;
   }
 
   .user-avatar {
@@ -506,10 +574,28 @@ function PostJobDetail() {
   }
 
   .user-details {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .reporter-info {
+    display: flex;
+    align-items: center;
+    margin-top: 15px; /* Khoảng cách giữa lý do báo cáo và thông tin người báo cáo */
+  }
+
+  .reporter-info .user-avatar {
+    width: 50px;
+    height: 50px;
+    border: none;
+  }
+
+  .reporter-details {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
   }
 
   .action-buttons {
@@ -520,7 +606,7 @@ function PostJobDetail() {
     margin-top: 30px;
   }
 
-  .approve-button, 
+  .approve-button,
   .reject-button {
     padding: 12px 30px;
     font-size: 16px;
@@ -532,7 +618,7 @@ function PostJobDetail() {
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    width: 200px; /* Ensures both buttons are the same size */
+    width: 200px;
   }
 
   .approve-button {
@@ -562,7 +648,7 @@ function PostJobDetail() {
 
   .reason-input {
     width: 100%;
-    max-width: 780px; /* Limits the width */
+    max-width: 780px;
     height: 120px;
     padding: 15px;
     margin-top: 15px;
@@ -587,11 +673,13 @@ function PostJobDetail() {
     margin-bottom: 20px;
   }
 
-  .reporter-info {
+  .report-item .info-item {
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 10px;
+  }
+
+  .report-item .info-item strong {
+    margin-right: 10px;
   }
 
   .pagination {
@@ -624,6 +712,18 @@ function PostJobDetail() {
     background-color: #2980b9;
   }
 `}</style>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

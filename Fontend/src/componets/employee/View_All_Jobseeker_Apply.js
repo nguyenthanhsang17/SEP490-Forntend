@@ -25,6 +25,7 @@ function ViewAllJobSeekerApply() {
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
+      setPageNumber(newPage);
     }
   };
 
