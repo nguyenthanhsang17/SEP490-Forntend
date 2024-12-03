@@ -38,7 +38,7 @@ const ManagementCV = () => {
     };
 
     const handleCreateNewCV = () => {
-        setCvForms([...cvForms, {
+        setCvForms([{
             id: -1,
             nameCv: "CV mẫu",
             itemOfCvs:
@@ -99,6 +99,7 @@ const ManagementCV = () => {
             console.log(cvData);
             if(hasNullOrEmptyOrWhitespace(cvData)){
                 enqueueSnackbar("Chưa nhập đầy đủ các thông tin", { variant: "error" });
+                return;
             }
             const token = localStorage.getItem("token");
             const response = await axios.post(
@@ -143,11 +144,11 @@ const ManagementCV = () => {
     };
 
     const handleEdit = (cv) => {
-        setCvForms([...cvForms, {
-            id: cv.cvId,
-            nameCv: cv.nameCv,
-            itemOfCvs: cv.itemOfCvs
-        }]);
+        setCvForms([{
+        id: cv.cvId,
+        nameCv: cv.nameCv,
+        itemOfCvs: cv.itemOfCvs
+    }]);
     };
 
     const syncCvFormsToCvs = () => {
@@ -189,7 +190,7 @@ const ManagementCV = () => {
             <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "2rem", marginTop: "100px" }}>
                 <div style={{ maxWidth: "1200px", margin: "0 auto", backgroundColor: "white", borderRadius: "16px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", overflow: "hidden" }}>
                     {/* Header */}
-                    <div style={{ backgroundColor: "#1e40af", padding: "2rem", color: "white" }}>
+                    <div style={{ backgroundColor: "#008000", padding: "2rem", color: "white" }}>
                         <h2 style={{ fontSize: "2rem", fontWeight: "bold", margin: 0 }}>Quản lý CV của bạn</h2>
                         <p style={{ marginTop: "0.5rem", color: "white" }}>Tạo và quản lý CV chuyên nghiệp</p>
                     </div>
@@ -200,7 +201,7 @@ const ManagementCV = () => {
                         <button
                             onClick={handleCreateNewCV}
                             style={{
-                                backgroundColor: "#3b82f6",
+                                backgroundColor: "#22c55e",
                                 color: "white",
                                 padding: "0.75rem 1.5rem",
                                 borderRadius: "8px",
