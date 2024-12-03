@@ -172,7 +172,11 @@ const MemberCard = () => {
       });
 
       if (response.status === 200) {
-        Swal.fire("Success", "Message sent successfully!", "success");
+        Swal.fire(
+          "Thành công",
+          "Tin nhắn của bạn đã được gửi thành công. Đang chuyển hướng đến danh sách trò chuyện...",
+          "success"
+        );
         window.open("/ChatList", "_blank");
       }
     } catch (error) {

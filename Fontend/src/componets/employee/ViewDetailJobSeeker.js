@@ -112,8 +112,8 @@ const ViewJobDetailJobSeeker = () => {
 
         if (response.status === 200) {
           Swal.fire(
-            "Success",
-            "Your message was successfully sent. Redirecting to the chat list...",
+            "Thành công",
+            "Tin nhắn của bạn đã được gửi thành công. Đang chuyển hướng đến danh sách trò chuyện...",
             "success"
           ).then(() => {
             window.open("/ChatList", "_blank");
