@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/css/style.css";
 import '../assets/plugins/css/plugins.css';
 import '../assets/css/colors/green-style.css';
 import bannerImage from '../assets/img/banner-6.jpg';
 import logoImage from '../assets/img/Nice Job Logo-Photoroom.png';
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from '@react-oauth/google';
+const CLIENT_ID = "1063758158033-tlgrg1l9blifupdef36jq5or4ugfikfa.apps.googleusercontent.com";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,8 +16,9 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [warningMessage, setWarningMessage] = useState(null); // Thông báo cảnh báo
-
+  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
   const navigate = useNavigate();
+
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,6 +29,116 @@ function Login() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
+
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        // Gọi API để lấy thông tin người dùng từ token
+        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`
+          }
+        });
+  
+        const userData = await response.json();
+        console.log('User Data:', userData);
+        const body = {
+          email: userData.email,
+          avatar: userData.picture,
+          fullName: userData.name,
+          email_verified: true,
+        };
+        // Gửi thông tin người dùng đến backend của bạn để xác thực
+        const backendResponse = await fetch("https://localhost:7077/api/Users/LoginWithgg2", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body), 
+        });
+  
+        const result = await backendResponse.json();
+        if (backendResponse.status === 401) {
+          // Kiểm tra thông điệp trả về
+          if (result.message === "Tài khoản của bạn hiện chưa được xác thực.") {
+            console.log("Chuyển đến trang xác minh email");
+            navigate('/VerifyRegister');
+            return;
+          } else {
+            setError(result.message || "Đăng nhập không thành công");
+            return;
+          }
+        }
+        // Xử lý kết quả từ backend
+        if (backendResponse.ok) {
+          // Lưu thông tin đăng nhập
+          localStorage.setItem('token', result.token);
+          localStorage.setItem('fullName', result.fullName);
+          localStorage.setItem('roleId', result.roleId);
+          localStorage.setItem('userId', result.userId);
+  
+          // Chuyển hướng dựa trên vai trò
+          if (result.roleId === 4) {
+            navigate('/AdminDashboard');
+          } else if (result.roleId === 3) {
+            navigate('/Bloglist');
+          } else {
+            navigate('/');
+          }
+        } else {
+          // Xử lý lỗi đăng nhập
+          setError(result.message || "Đăng nhập không thành công");
+        }
+      } catch (error) {
+        console.error('Google login error:', error);
+        setError("Đã xảy ra lỗi trong quá trình đăng nhập");
+      }
+    },
+    onError: (error) => {
+      console.error('Login Failed:', error);
+      setError("Đăng nhập Google không thành công");
+    }
+  });
+
+
+  useEffect(() => {
+    // Hàm tải script Google
+    const loadGoogleScript = () => {
+      const script = document.createElement('script');
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+
+      // Sử dụng arrow function để giữ context
+      script.onload = () => {
+        // Kiểm tra Google API đã tải
+        if (window.google && window.google.accounts) {
+          // Khởi tạo Google Sign-In
+          window.google.accounts.id.initialize({
+            client_id: CLIENT_ID,
+            callback: handleCredentialResponse
+          });
+
+          // Cập nhật trạng thái script đã tải
+          setIsGoogleScriptLoaded(true);
+        }
+      };
+
+      // Thêm script vào head
+      document.head.appendChild(script);
+    };
+
+    // Gọi hàm tải script
+    loadGoogleScript();
+
+    // Cleanup function
+    return () => {
+      const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      if (script) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -106,9 +220,23 @@ function Login() {
 
 
   const handleGoogleLogin = () => {
-    console.log("Google login clicked");
-    // Logic cho đăng nhập bằng Google
+    // Kiểm tra script đã tải chưa
+    if (!isGoogleScriptLoaded || !window.google || !window.google.accounts) {
+      console.error("Script Google chưa được tải đúng");
+      return;
+    }
+    try {
+      // Hiển thị popup đăng nhập Google
+      window.google.accounts.id.prompt();
+    } catch (error) {
+      console.error("Lỗi đăng nhập Google:", error);
+      setError("Không thể thực hiện đăng nhập Google");
+    }
   };
+
+  const handleCredentialResponse = () => {
+
+  }
 
   const styles = {
     googleButton: {
@@ -194,10 +322,26 @@ function Login() {
                   onMouseEnter={(e) => e.target.style.backgroundColor = styles.googleButtonHover.backgroundColor}
                   onMouseLeave={(e) => e.target.style.backgroundColor = styles.googleButton.backgroundColor}
                   type="button"
-                  onClick={handleGoogleLogin}
+                  onClick={()=>login()}
                 >
-                   Đăng nhập bằng Google
+                  Đăng nhập bằng Google
                 </button>
+                {/* <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    console.log("Login Success:", credentialResponse);
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+
+                  type="standard"
+                  theme="filled_blue"
+                  size="medium"
+                  text="signup_with"
+                  shape="circle"
+                  width="340"
+                  logo_alignment="center"
+                /> */}
                 <div className="login-links text-center">
                   <span>Bạn chưa có tài khoản? <a href="/register">Tạo tài khoản</a></span>
                   <span><a href="/forgotPassword">Quên mật khẩu</a></span>

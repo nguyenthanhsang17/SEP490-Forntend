@@ -357,7 +357,7 @@ const ViewAllPostJobInWishlist = () => {
 
 
                                     </div>
-                                    {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">Premium</span> : ""}
+                                    {job.isUrgentRecruitment ? <span class="tg-themetag tg-featuretag">HOT</span> : ""}
                                 </article>
                             </div>
                         )))}
