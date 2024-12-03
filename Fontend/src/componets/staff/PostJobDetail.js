@@ -163,305 +163,473 @@ function PostJobDetail() {
 
             {/* Main Content */}
             <main className="dashboard-content">
-                <>
-                    <div className="post-job-container">
-                        {postData && (
-                            <div className="post-job-details">
-                                <h2>{postData.jobTitle}</h2>
-                                <p><strong>Mô tả công việc:</strong> {postData.jobDescription}</p>
-                                <p><strong>Địa chỉ:</strong> {postData.address}</p>
-                                <p><strong>Số lượng tuyển:</strong> {postData.numberPeople}</p>
-                                <p><strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND</p>
-                                <p><strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}</p>
-                                <p><strong>Trạng thái:</strong> {statusMapping[postData.status]} </p>
-                                {postData.status ===3  && (
-                                    <p><strong>Lý do từ chối :</strong> {postData.reason} </p>
-                                )}
-                                {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
-                                    <div className="images-gallery">
-                                        <div className="image-container">
-                                            {postData.imagePostJobs.map((image, index) => (
-                                                <img
-                                                    key={index}
-                                                    src={image.image.url}
-                                                    alt={`Image ${index + 1}`}
-                                                    className="image-thumbnail"
-                                                    onClick={() => handleImageClick(image.image.url)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+  <div className="container">
+    <h1 className="pageTitle">Chi tiết công việc</h1>
 
-                                {showImage && (
-                                    <div className="modal" onClick={closeImageModal}>
-                                        <img src={selectedImage} alt="Selected" className="modal-image" />
-                                    </div>
-                                )}
+    {postData ? (
+      <div className="layout-container">
+        <div className="details-container">
+          <h2 className="section-title">{postData.jobTitle}</h2>
+          <div className="info-item">
+            <strong>Mô tả công việc:</strong> {postData.jobDescription}
+          </div>
+          <div className="info-item">
+            <strong>Địa chỉ:</strong> {postData.address}
+          </div>
+          <div className="info-item">
+            <strong>Số lượng tuyển:</strong> {postData.numberPeople}
+          </div>
+          <div className="info-item">
+            <strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND
+          </div>
+          <div className="info-item">
+            <strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}
+          </div>
+          <div className="info-item">
+            <strong>Trạng thái:</strong> {statusMapping[postData.status]}
+          </div>
+          {postData.status === 3 && (
+            <div className="info-item">
+              <strong>Lý do từ chối:</strong> {postData.reason}
+            </div>
+          )}
+          {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
+            <div className="images-container">
+              <strong>Hình ảnh công việc:</strong>
+              <div className="image-gallery">
+                {postData.imagePostJobs.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.image.url}
+                    alt={`Image ${index + 1}`}
+                    className="job-image image-thumbnail"
+                    onClick={() => handleImageClick(image.image.url)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-                                {/* Author Information */}
-                                <div className="author-info">
-                                    <h3>Thông tin người đăng</h3>
-                                    <img src={postData.author.avatarURL} alt="Avatar" className="author-avatar" />
-                                    <p><strong>Họ và tên:</strong> {postData.author.fullName}</p>
-                                    <p><strong>Tuổi:</strong> {postData.author.age}</p>
-                                    <p><strong>Số điện thoại:</strong> {postData.author.phonenumber}</p>
-                                    <p><strong>Email:</strong> {postData.author.email}</p>
-                                </div>
+          {showImage && (
+            <div className="modal" onClick={closeImageModal}>
+              <img src={selectedImage} alt="Selected" className="modal-image" />
+            </div>
+          )}
+        </div>
 
-                                {status !== 1 && status !== 0 && postData.censor && (
-                                    <div className="author-info">
-                                        <h3>Thông tin người duyệt</h3>
-                                        <img src={postData.censor.avatarURL} alt="Censor Avatar" className="author-avatar" />
-                                        <p><strong>Họ và tên:</strong> {postData.censor.fullName}</p>
-                                        <p><strong>Tuổi:</strong> {postData.censor.age}</p>
-                                        <p><strong>Số điện thoại:</strong> {postData.censor.phonenumber}</p>
-                                        <p><strong>Email:</strong> {postData.censor.email}</p>
-                                    </div>
-                                )}
+        <div className="sidebar">
+          <div className="user-info">
+            <h2 className="section-title">Thông tin người đăng</h2>
+            <div className="user-item">
+              <img src={postData.author.avatarURL} alt="Avatar" className="user-avatar" />
+              <div className="user-details">
+                <div className="info-item">
+                  <strong>Họ và tên:</strong> {postData.author.fullName}
+                </div>
+                <div className="info-item">
+                  <strong>Tuổi:</strong> {postData.author.age}
+                </div>
+                <div className="info-item">
+                  <strong>Số điện thoại:</strong> {postData.author.phonenumber}
+                </div>
+                <div className="info-item">
+                  <strong>Email:</strong> {postData.author.email}
+                </div>
+              </div>
+            </div>
+          </div>
 
-                                {/* Conditional Button Rendering */}
-                                <div className="action-section">
-                                    {status === 1 ? (
-                                        <>
-                                            <button onClick={handleApprove} className="btn-approve">Duyệt</button>
-                                            <button onClick={handleReject} className="btn-reject">Không Duyệt</button>
-                                            <textarea
-                                                value={banReason}
-                                                onChange={(e) => setBanReason(e.target.value)}
-                                                placeholder="Nhập lý do không duyệt"
-                                                className="reason-textarea"
-                                            />
-                                        </>
-                                    ) : status === 2 ? (
-                                        <>
-                                            <button onClick={handleBan} className="btn-ban">Cấm</button>
-                                            <textarea
-                                                value={banReason}
-                                                onChange={(e) => setBanReason(e.target.value)}
-                                                placeholder="Nhập lý do cấm"
-                                                className="reason-textarea"
-                                            />
-                                        </>
-                                    ) : null}
-                                </div>
+          {status !== 1 && status !== 0 && postData.censor && (
+            <div className="user-info">
+              <h2 className="section-title">Thông tin người duyệt</h2>
+              <div className="user-item">
+                <img src={postData.censor.avatarURL} alt="Censor Avatar" className="user-avatar" />
+                <div className="user-details">
+                  <div className="info-item">
+                    <strong>Họ và tên:</strong> {postData.censor.fullName}
+                  </div>
+                  <div className="info-item">
+                    <strong>Tuổi:</strong> {postData.censor.age}
+                  </div>
+                  <div className="info-item">
+                    <strong>Số điện thoại:</strong> {postData.censor.phonenumber}
+                  </div>
+                  <div className="info-item">
+                    <strong>Email:</strong> {postData.censor.email}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    ) : (
+      <p>Loading job details...</p>
+    )}
 
-                                {reports.totalCount > 0 && (
-                                    <div className="report-section">
-                                        <h3>Danh sách báo cáo</h3>
-                                        {reports.items.map((report, index) => (
-                                            <div key={index} className="report-item">
-                                                <div className="reporter-info">
-                                                    <img src={report.jobSeeker.avatarURL} alt="Reporter Avatar" className="author-avatar" />
-                                                    <p><strong>Họ và tên:</strong> {report.jobSeeker.fullName}</p>
-                                                    <p><strong>Email:</strong> {report.jobSeeker.email}</p>
-                                                </div>
-                                                <p><strong>Lý do báo cáo:</strong> {report.reason}</p>
+    <div className="action-buttons">
+      {status === 1 ? (
+        <>
+          <button onClick={handleApprove} className="approve-button">Duyệt</button>
+          <button onClick={handleReject} className="reject-button">Không Duyệt</button>
+          <textarea
+            value={banReason}
+            onChange={(e) => setBanReason(e.target.value)}
+            placeholder="Nhập lý do không duyệt"
+            className="reason-input"
+          />
+        </>
+      ) : status === 2 ? (
+        <>
+          <button onClick={handleBan} className="btn-ban">Cấm</button>
+          <textarea
+            value={banReason}
+            onChange={(e) => setBanReason(e.target.value)}
+            placeholder="Nhập lý do cấm"
+            className="reason-input"
+          />
+        </>
+      ) : null}
+    </div>
 
-                                                {report.reportMedia && report.reportMedia.length > 0 && (
-                                                    <div className="report-images">
-                                                        {report.reportMedia.map((media, idx) => (
-                                                            <img
-                                                                key={idx}
-                                                                src={media.image.url}
-                                                                alt={`Report Media ${idx + 1}`}
-                                                                className="image-thumbnail"
-                                                                onClick={() => handleImageClick(media.image.url)}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+    {reports.totalCount > 0 && (
+      <div className="report-section">
+        <h2 className="section-title">Danh sách báo cáo</h2>
+        {reports.items.map((report, index) => (
+          <div key={index} className="report-item">
+            <div className="reporter-info">
+              <img src={report.jobSeeker.avatarURL} alt="Reporter Avatar" className="user-avatar" />
+              <div className="reporter-details">
+                <div className="info-item">
+                  <strong>Họ và tên:</strong> {report.jobSeeker.fullName}
+                </div>
+                <div className="info-item">
+                  <strong>Email:</strong> {report.jobSeeker.email}
+                </div>
+              </div>
+            </div>
+            <div className="info-item">
+              <strong>Lý do báo cáo:</strong> {report.reason}
+            </div>
 
-                                        {/* Pagination buttons */}
-                                        <div className="pagination">
-                                            <button
-                                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                                disabled={currentPage === 1}
-                                            >
-                                                Previous
-                                            </button>
-                                            <span>Trang {currentPage} / {reports.totalPages}</span>
-                                            <button
-                                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, reports.totalPages))}
-                                                disabled={currentPage === reports.totalPages}
-                                            >
-                                                Next
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+            {report.reportMedia && report.reportMedia.length > 0 && (
+              <div className="report-images-container">
+                {report.reportMedia.map((media, idx) => (
+                  <img
+                    key={idx}
+                    src={media.image.url}
+                    alt={`Report Media ${idx + 1}`}
+                    className="report-image-thumbnail"
+                    onClick={() => handleImageClick(media.image.url)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        <div className="pagination">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Trang trước
+          </button>
+          <span>Trang {currentPage} / {reports.totalPages}</span>
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, reports.totalPages))}
+            disabled={currentPage === reports.totalPages}
+          >
+            Trang sau
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+</main>
 
 
-                    <style jsx>{`
-            .report-section {
-                    margin-top: 20px;
-                    padding: 20px;
-                    background-color: #f8f9fa;
-                    border-radius: 8px;
-                }
-                
-                .report-item {
-                    margin-top: 15px;
-                    padding: 15px;
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                    background-color: #e9ecef;
-                }
 
-                .reporter-info {
-                    display: flex;
-                    align-items: center;
-                    gap: 15px;
-                }
+<style jsx>{`
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #f9fafb;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
 
-                .report-images {
-                    display: flex;
-                    gap: 10px;
-                    margin-top: 10px;
-                }
-                .post-job-container {
-                    padding: 20px;
-                    max-width: 80%;
-                    margin: 0 auto;
-                }
+  .pageTitle {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 15px;
+  }
 
-                .post-job-details {
-                    background-color: #f8f9fa;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
+  .layout-container {
+    display: flex;
+    gap: 20px;
+  }
 
-                h2 {
-                    color: #333;
-                    font-size: 24px;
-                    margin-bottom: 20px;
-                }
+  .details-container, 
+  .user-info, 
+  .report-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+  }
 
-                .author-info {
-                    background-color: #e9ecef;
-                    padding: 15px;
-                    border-radius: 8px;
-                    margin-top: 20px;
-                }
+  .details-container:hover,
+  .user-info:hover,
+  .report-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  }
 
-                .author-avatar {
-                    width: 60px;
-                    height: 60px;
-                    border-radius: 50%;
-                    margin-right: 15px;
-                }
+  .details-container {
+    flex: 2;
+  }
 
-                .action-section {
-                    margin-top: 20px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
+  .sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
 
-                .reason-textarea {
-                    width: 100%;
-                    height: 80px;
-                    padding: 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 5px;
-                    font-size: 16px;
-                    resize: none;
-                }
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f5;
+  }
 
-                .btn-approve, .btn-reject, .btn-ban, .btn-unban {
-                    padding: 10px 20px;
-                    color: #fff;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    transition: background-color 0.3s;
-                    font-size: 16px;
-                }
+  .info-item:last-child {
+    border-bottom: none;
+  }
 
-                .btn-approve {
-                    background-color: #28a745;
-                }
+  .info-item strong {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 15px;
+  }
 
-                .btn-reject {
-                    background-color: #dc3545;
-                }
+  .info-item span {
+    color: #34495e;
+    font-size: 15px;
+  }
 
-                .btn-ban {
-                    background-color: #ffc107;
-                }
+  .images-container {
+    margin-top: 15px;
+  }
 
-                .btn-unban {
-                    background-color: #007bff;
-                }
-
-                .btn-approve:hover {
-                    background-color: #218838;
-                }
-
-                .btn-reject:hover {
-                    background-color: #c82333;
-                }
-
-                .btn-ban:hover {
-                    background-color: #e0a800;
-                }
-
-                .btn-unban:hover {
-                    background-color: #0069d9;
-                }
-                    .images-gallery {
-    margin-top: 30px;
-}
-
-.image-container {
+  .image-gallery {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
+    gap: 10px;
+  }
 
-.image-thumbnail {
+  .job-image {
     width: 150px;
-    height: 100px;
+    height: 150px;
     object-fit: cover;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.3s ease;
-}
+    transition: transform 0.2s;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
 
-.image-thumbnail:hover {
-    transform: scale(1.1);
-}
+  .job-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
 
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
+  .report-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .report-image-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .report-image-thumbnail:hover {
+    transform: scale(1.05);
+  }
+
+  .modal {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-}
+  }
 
-.modal-image {
+  .modal-image {
     max-width: 90%;
     max-height: 90%;
+    border-radius: 10px;
+  }
+
+  .user-info .user-item {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .user-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #3498db;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-details {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .approve-button, 
+  .reject-button {
+    padding: 12px 30px;
+    font-size: 16px;
+    cursor: pointer;
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    object-fit: contain;
-}
-            `}</style>
-                </>
-            </main>
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 200px; /* Ensures both buttons are the same size */
+  }
+
+  .approve-button {
+    background-color: #2ecc71;
+    color: white;
+  }
+
+  .reject-button {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .btn-ban {
+    background-color: #e74c3c;
+    color: white;
+    padding: 12px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .reason-input {
+    width: 100%;
+    max-width: 780px; /* Limits the width */
+    height: 120px;
+    padding: 15px;
+    margin-top: 15px;
+    border: 2px solid #ecf0f1;
+    border-radius: 10px;
+    font-size: 15px;
+    resize: vertical;
+    transition: all 0.3s ease;
+  }
+
+  .reason-input:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+
+  .report-item {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .reporter-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+  }
+
+  .pagination button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .pagination button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+
+  .pagination button:hover:not(:disabled) {
+    background-color: #2980b9;
+  }
+`}</style>
+
+
+
+
+
+
         </div>
 
     );
