@@ -63,11 +63,11 @@ function ViewAllJobSeekerApply() {
     fetchJobSeekers();
   };
   const statusMapping = {
-    0: 'Đang chờ',
-    1: 'Không phù hợp',
-    3: 'Đã xem thông tin liên lạc',
-    4: 'Đã nhận',
-    5: 'Không nhận'
+    0: 'Chờ duyệt',
+    1: 'Từ chối hồ sơ',
+    3: 'Chấp nhận hồ sơ',
+    4: 'Đồng ý tuyển dụng',
+    5: 'Từ chối tuyển dụng'
   };
 
   return (
@@ -154,11 +154,11 @@ function ViewAllJobSeekerApply() {
                 onChange={e => setApplyFilter(e.target.value)}
               >
                 <option value="">Tất cả</option>
-                <option value="0">Đang chờ</option>
-                <option value="1">Không phù hợp</option>
-                <option value="3">Đã xem thông tin liên lạc</option>
-                <option value="4">Đã nhận</option>
-                <option value="5">Không nhận</option>
+                <option value="0">Chờ duyệt</option>
+                <option value="1">Từ chối hồ sơ</option>
+                <option value="3">Chấp nhận hồ sơ</option>
+                <option value="4">Đồng ý tuyển dụng</option>
+                <option value="5">Từ chối tuyển dụng</option>
               </select>
             </div>
             <button onClick={handleSearch} className="btn btn-primary">Tìm kiếm</button>
