@@ -220,12 +220,12 @@ root.render(
             />
             <Route
               path="/viewAllJobSeekerInFavoriteList"
-              element={<ViewAllJobSeekerInFavoriteList />}
+              element={<PrivateRoute allowedRoles={[2]}><ViewAllJobSeekerInFavoriteList /></PrivateRoute>}
             />
             <Route path="/reportPostJob/:id" element={<ReportPostJob />} />
-            <Route path="/ManagementCV" element={<ManagementCV />} />
+            <Route path="/ManagementCV" element={<PrivateRoute allowedRoles={[1, 2]}><ManagementCV /></PrivateRoute>} />
 
-            <Route path="/EditPostJob/:id" element={<EditPostJob />} />
+            <Route path="/EditPostJob/:id" element={<PrivateRoute allowedRoles={[2]}><EditPostJob /></PrivateRoute>} />
             <Route path="/Payment" element={<PaymentScreen />} />
             <Route
               path="/viewEmployerProfile/:authorId"
@@ -233,7 +233,7 @@ root.render(
             />
             <Route path="/viewBlogList" element={<ViewBlogList />} />
             <Route path="/blogDetail/:id" element={<BlogDetail />} />
-            <Route path="/viewAllPriceList" element={<ViewAllPriceList />} />
+            <Route path="/viewAllPriceList" element={<PrivateRoute allowedRoles={[2]}><ViewAllPriceList /></PrivateRoute>} />
             <Route path="/ReCreateJob/:id" element={<ReCreateJob />} />
             <Route
               path="/viewRecommendedJobs"
