@@ -6,6 +6,7 @@ import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
 import "../assets/css/colors/green-style.css";
 import dayjs from "dayjs";
+import { message } from "antd";
 
 const { MonthPicker } = DatePicker;
 
@@ -25,20 +26,19 @@ const AdminDashboard = () => {
 
   // Trạng thái cho từng bộ chọn
   const [revenueRange, setRevenueRange] = useState({
-    start: dayjs().startOf("month"),
-    end: dayjs().endOf("month"),
+    start: dayjs().subtract(5, "month").startOf("month"), // Lùi lại 5 tháng từ tháng hiện tại
+    end: dayjs().endOf("month"), // Tháng hiện tại
   });
 
   const [soldRange, setSoldRange] = useState({
-    start: dayjs().startOf("month"),
+    start: dayjs().subtract(5, "month").startOf("month"),
     end: dayjs().endOf("month"),
   });
 
   const [packageRevenueRange, setPackageRevenueRange] = useState({
-    start: dayjs().startOf("month"),
+    start: dayjs().subtract(5, "month").startOf("month"),
     end: dayjs().endOf("month"),
   });
-
 
   const fetchRevenueStatistics = async () => {
     setLoadingRevenue(true);
@@ -113,7 +113,6 @@ const AdminDashboard = () => {
     }
   };
 
-  
   useEffect(() => {
     fetchRevenueStatistics();
   }, [revenueRange]);
@@ -174,7 +173,18 @@ const AdminDashboard = () => {
       },
     ],
   };
-
+  const packageSoldBarChartOptions = {
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 1, // Bước nhảy giữa các giá trị
+          callback: function (value) {
+            return Number.isInteger(value) ? value : null; // Chỉ hiển thị số nguyên
+          },
+        },
+      },
+    },
+  };
   // Dữ liệu biểu đồ doanh thu gói
   const packageRevenueBarChartData = {
     labels:
@@ -218,7 +228,9 @@ const AdminDashboard = () => {
                 {loadingRevenue ? (
                   <span>Đang tải...</span>
                 ) : (
-                  <b style={{ color: "#ffffff" }}>{totalRevenue.toLocaleString("vi-VN")} VND</b>
+                  <b style={{ color: "#ffffff" }}>
+                    {totalRevenue.toLocaleString("vi-VN")} VND
+                  </b>
                 )}
               </p>
             </Card>
@@ -254,7 +266,9 @@ const AdminDashboard = () => {
                 {loadingUserStatistics ? (
                   <span>Đang tải...</span>
                 ) : (
-                  <b style={{ color: "#ffffff" }}>{userStatistics?.totalUser || 0} Người</b>
+                  <b style={{ color: "#ffffff" }}>
+                    {userStatistics?.totalUser || 0} Người
+                  </b>
                 )}
               </p>
             </Card>
@@ -272,7 +286,9 @@ const AdminDashboard = () => {
                 {loadingUserStatistics ? (
                   <span>Đang tải...</span>
                 ) : (
-                  <b style={{ color: "#ffffff" }}>{userStatistics?.employersNumber || 0} Nhà tuyển dụng</b>
+                  <b style={{ color: "#ffffff" }}>
+                    {userStatistics?.employersNumber || 0} Nhà tuyển dụng
+                  </b>
                 )}
               </p>
             </Card>
@@ -292,7 +308,7 @@ const AdminDashboard = () => {
                     onChange={(value) =>
                       setRevenueRange((prev) => ({
                         ...prev,
-                        start: value.startOf("month"),
+                        start: value ? value.startOf("month") : prev.start, // Kiểm tra null
                       }))
                     }
                     format="MM-YYYY"
@@ -305,12 +321,21 @@ const AdminDashboard = () => {
                   <div style={{ marginBottom: "8px" }}>Đến:</div>
                   <MonthPicker
                     value={revenueRange.end}
-                    onChange={(value) =>
+                    onChange={(value) => {
+                      if (
+                        value &&
+                        value.isBefore(revenueRange.start, "month")
+                      ) {
+                        message.error(
+                          "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu."
+                        );
+                        return;
+                      }
                       setRevenueRange((prev) => ({
                         ...prev,
-                        end: value.endOf("month"),
-                      }))
-                    }
+                        end: value ? value.endOf("month") : prev.end, // Kiểm tra null
+                      }));
+                    }}
                     format="MM-YYYY"
                     placeholder="Chọn tháng kết thúc"
                     style={{ width: "100%" }}
@@ -336,7 +361,7 @@ const AdminDashboard = () => {
                     onChange={(value) =>
                       setSoldRange((prev) => ({
                         ...prev,
-                        start: value.startOf("month"),
+                        start: value ? value.startOf("month") : prev.start,
                       }))
                     }
                     format="MM-YYYY"
@@ -349,12 +374,18 @@ const AdminDashboard = () => {
                   <div style={{ marginBottom: "8px" }}>Đến:</div>
                   <MonthPicker
                     value={soldRange.end}
-                    onChange={(value) =>
+                    onChange={(value) => {
+                      if (value && value.isBefore(soldRange.start, "month")) {
+                        message.error(
+                          "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu."
+                        );
+                        return;
+                      }
                       setSoldRange((prev) => ({
                         ...prev,
-                        end: value.endOf("month"),
-                      }))
-                    }
+                        end: value ? value.endOf("month") : prev.end,
+                      }));
+                    }}
                     format="MM-YYYY"
                     placeholder="Chọn tháng kết thúc"
                     style={{ width: "100%" }}
@@ -362,7 +393,7 @@ const AdminDashboard = () => {
                   />
                 </Col>
               </Row>
-              <Bar data={packageSoldBarChartData} />
+              <Bar data={packageSoldBarChartData} options={packageSoldBarChartOptions} />
             </Card>
           </Col>
 
@@ -377,7 +408,7 @@ const AdminDashboard = () => {
                     onChange={(value) =>
                       setPackageRevenueRange((prev) => ({
                         ...prev,
-                        start: value.startOf("month"),
+                        start: value ? value.startOf("month") : prev.start,
                       }))
                     }
                     format="MM-YYYY"
@@ -390,12 +421,21 @@ const AdminDashboard = () => {
                   <div style={{ marginBottom: "8px" }}>Đến:</div>
                   <MonthPicker
                     value={packageRevenueRange.end}
-                    onChange={(value) =>
+                    onChange={(value) => {
+                      if (
+                        value &&
+                        value.isBefore(packageRevenueRange.start, "month")
+                      ) {
+                        message.error(
+                          "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu."
+                        );
+                        return;
+                      }
                       setPackageRevenueRange((prev) => ({
                         ...prev,
-                        end: value.endOf("month"),
-                      }))
-                    }
+                        end: value ? value.endOf("month") : prev.end,
+                      }));
+                    }}
                     format="MM-YYYY"
                     placeholder="Chọn tháng kết thúc"
                     style={{ width: "100%" }}
