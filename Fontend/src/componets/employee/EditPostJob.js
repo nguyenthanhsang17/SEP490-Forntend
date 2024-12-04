@@ -143,8 +143,6 @@ function EditPostJob() {
         setLongitude(newPosition.lng);
         console.log(newPosition);
         console.log(address);
-        JobDetail.address = address;
-
     };
     //==================================================================
     const [schedules, setSchedules] = useState([]);
@@ -578,10 +576,11 @@ function EditPostJob() {
             toast.error('Số lượng người cần tuyển phải là số dương');
             return false;
         }
+
         // Kiểm tra định dạng tọa độ
-        if (latitude === '' || longitude === '' || 
-            latitude === null || longitude === null || 
-            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
+        if (JobDetail.latitude === '' || JobDetail.longitude === '' || 
+            JobDetail.latitude === null || JobDetail.longitude === null || 
+            isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
         }
@@ -1558,7 +1557,7 @@ function EditPostJob() {
                             </div>
                             <div className="full-width">
                                 <label>Tọa độ chi tiết công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
-                                <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} initialLatitude={JobDetail.latitude} initialLongitude={JobDetail.longitude} address={JobDetail.address} />
+                                <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} initialLatitude={JobDetail.latitude} initialLongitude={JobDetail.longitude} />
                             </div>
                             <div className="input-group form-group">
                                 <div display="flex">

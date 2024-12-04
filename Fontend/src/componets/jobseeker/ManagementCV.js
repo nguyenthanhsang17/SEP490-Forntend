@@ -19,7 +19,7 @@ const ManagementCV = () => {
 
     const fetchCVs = async () => {
         const previousPath = location.state?.from || '';
-    console.log('Trang trước:', previousPath);
+        console.log('Trang trước:', previousPath);
         setpreviousPath(previousPath);
         try {
             const token = localStorage.getItem("token");
@@ -42,17 +42,17 @@ const ManagementCV = () => {
             id: -1,
             nameCv: "CV mẫu",
             itemOfCvs:
-            [{ itemName: "", itemDescription: "", itemDescriptionPlaced: "Họ tên, địa chỉ, số điện thoại, email, và các liên kết (LinkedIn, GitHub nếu có).", itemNamePlaced:"Thông tin cá nhân"  },
-            { itemName: "", itemDescription: "",itemNamePlaced: "Mục tiêu nghề nghiệp:", itemDescriptionPlaced: "Một đoạn ngắn nêu rõ mục tiêu nghề nghiệp, định hướng và giá trị mà bạn có thể mang lại cho công ty." },
-            { itemName: "", itemDescription: "",itemNamePlaced: "Kinh nghiệm làm việc:", itemDescriptionPlaced: "Chi tiết các công việc đã làm, vị trí công tác, nhiệm vụ chính, thời gian làm việc, và thành tựu nổi bật." },
-            { itemName: "", itemDescription: "",itemNamePlaced: "Học vấn:", itemDescriptionPlaced: "Các bằng cấp, chứng chỉ, khóa học liên quan và thời gian học." },
-            { itemName: "", itemDescription: "",itemNamePlaced: "Kỹ năng:", itemDescriptionPlaced: "Các kỹ năng chuyên môn liên quan đến vị trí ứng tuyển như kỹ năng phần mềm, kỹ năng kỹ thuật, kỹ năng mềm (giao tiếp, làm việc nhóm…)." }]
+                [{ itemName: "", itemDescription: "", itemDescriptionPlaced: "Họ tên, địa chỉ, số điện thoại, email, và các liên kết (LinkedIn, GitHub nếu có).", itemNamePlaced: "Thông tin cá nhân" },
+                { itemName: "", itemDescription: "", itemNamePlaced: "Mục tiêu nghề nghiệp:", itemDescriptionPlaced: "Một đoạn ngắn nêu rõ mục tiêu nghề nghiệp, định hướng và giá trị mà bạn có thể mang lại cho công ty." },
+                { itemName: "", itemDescription: "", itemNamePlaced: "Kinh nghiệm làm việc:", itemDescriptionPlaced: "Chi tiết các công việc đã làm, vị trí công tác, nhiệm vụ chính, thời gian làm việc, và thành tựu nổi bật." },
+                { itemName: "", itemDescription: "", itemNamePlaced: "Học vấn:", itemDescriptionPlaced: "Các bằng cấp, chứng chỉ, khóa học liên quan và thời gian học." },
+                { itemName: "", itemDescription: "", itemNamePlaced: "Kỹ năng:", itemDescriptionPlaced: "Các kỹ năng chuyên môn liên quan đến vị trí ứng tuyển như kỹ năng phần mềm, kỹ năng kỹ thuật, kỹ năng mềm (giao tiếp, làm việc nhóm…)." }]
         }]);
     };
 
     const handleAddItem = (formIndex) => {
         const newForms = [...cvForms];
-        newForms[formIndex].itemOfCvs.push({ itemName: "", itemDescription: "" });
+        newForms[formIndex].itemOfCvs.push({ itemName: "", itemDescription: "", itemNamePlaced: "Tiêu đề mục", itemDescriptionPlaced: "Mô tả chi tiết" });
         setCvForms(newForms);
     };
 
@@ -87,17 +87,17 @@ const ManagementCV = () => {
         if (typeof obj !== 'object' || obj === null) {
             return false; // Hoặc true tùy thuộc vào cách bạn muốn xử lý
         }
-    
+
         // Duyệt qua các trường của đối tượng
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
                 const value = obj[key];
-    
+
                 // Kiểm tra nếu giá trị là null hoặc chuỗi rỗng
                 if (value === null || (typeof value === 'string' && value.trim() === '')) {
                     return true; // Có trường null hoặc chuỗi rỗng
                 }
-    
+
                 // Nếu giá trị là một mảng, kiểm tra từng phần tử
                 if (Array.isArray(value)) {
                     for (const item of value) {
@@ -106,7 +106,7 @@ const ManagementCV = () => {
                         }
                     }
                 }
-    
+
                 // Nếu giá trị là một đối tượng, kiểm tra đệ quy
                 if (typeof value === 'object') {
                     if (hasNullFields(value)) {
@@ -115,53 +115,75 @@ const ManagementCV = () => {
                 }
             }
         }
-    
+
         return false; // Không có trường nào là null hoặc chuỗi rỗng
     }
 
     const handleSaveCV = async (formIndex) => {
         const cvData = {
             ...cvForms[formIndex],
-            cvId: -1
+            cvId: -1,
+            id: cvForms[formIndex].id
         };
-        
+
         try {
             cvData.cvId = cvData.id;
             console.log(cvData);
-            if(hasNullFields(cvData)){
+            if (hasNullFields(cvData)) {
                 enqueueSnackbar("Chưa nhập đầy đủ các thông tin", { variant: "error" });
+                return;
+            }
+
+            if (!cvData.itemOfCvs || cvData.itemOfCvs.length === 0) {
+                fetchCVs();
+                enqueueSnackbar("Vui lòng thêm ít nhất một mục trong CV", { variant: "error" });
                 return;
             }
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                'https://localhost:7077/api/Cvs/CreateCV', 
+                'https://localhost:7077/api/Cvs/CreateCV',
                 cvData,
                 {
-                  headers: {
-                    'Authorization': `Bearer ${token}`, // Thêm token vào header
-                    'Content-Type': 'application/json'
-                  }
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 }
-              );
-        
+            );
+
             console.log('Tạo CV thành công', response.data);
+            const newCvId = response.data;
+            const newForms = [...cvForms];
+            newForms[formIndex] = {
+                ...newForms[formIndex],
+                id: newCvId,
+                cvId: newCvId
+            };
+            setCvForms(newForms);
             enqueueSnackbar("Cập nhật hồ sơ thành công!", { variant: "success" });
+            fetchCVs();
+
             if (previousPath.includes('ReApplyJob') || previousPath.includes('ApplyJob')) {
                 navigate(previousPath);
-              }
-            if(cvData.id!=-1){
-                return;
             }
-          } catch (error) {
+
+            // Nếu là CV mới (id = -1) thì thêm vào danh sách CVs
+            if (cvData.id === -1) {
+                setCvs(prevCvs => [...prevCvs, { ...cvData, cvId: newCvId }]);
+
+                // Xóa form hiện tại
+                const updatedForms = cvForms.filter((_, idx) => idx !== formIndex);
+                setCvForms(updatedForms);
+            }
+
+        } catch (error) {
             console.error('Lỗi khi tạo CV', error);
-          }
-        setCvs([...cvs, cvData]);
-        // Remove the form after saving
-        const newForms = cvForms.filter((_, idx) => idx !== formIndex);
-        setCvForms(newForms);
+        }
     };
 
     const handleDelete = async (cvId) => {
+        setCvForms([]);
+        console.log("xóa cv " + cvId);
         if (window.confirm("Bạn có chắc chắn muốn xóa CV này không?")) {
             const updatedCvs = cvs.filter((cv) => cv.cvId !== cvId);
             setCvs(updatedCvs);
@@ -169,17 +191,18 @@ const ManagementCV = () => {
         try {
             const response = await axios.put(`https://localhost:7077/api/Cvs/DeleteCV/${cvId}`);
             console.log('Xóa CV thành công');
-          } catch (error) {
+            fetchCVs();
+        } catch (error) {
             console.error('Lỗi khi xóa CV', error);
-          }
+        }
     };
 
     const handleEdit = (cv) => {
         setCvForms([{
-        id: cv.cvId,
-        nameCv: cv.nameCv,
-        itemOfCvs: cv.itemOfCvs
-    }]);
+            id: cv.cvId,
+            nameCv: cv.nameCv,
+            itemOfCvs: cv.itemOfCvs
+        }]);
     };
 
     const syncCvFormsToCvs = () => {
@@ -195,24 +218,24 @@ const ManagementCV = () => {
         try {
             const token = localStorage.getItem("token"); // Giả sử bạn lưu JWT token trong localStorage
             const response = await axios.put(
-              'https://localhost:7077/api/Cvs/UpdateCv',  // Thay bằng URL thực tế của API
-              cvs,
-              {
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json',  // Đảm bảo gửi dữ liệu dưới dạng JSON
+                'https://localhost:7077/api/Cvs/UpdateCv',  // Thay bằng URL thực tế của API
+                cvs,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',  // Đảm bảo gửi dữ liệu dưới dạng JSON
+                    }
                 }
-              }
             );
             // Xử lý phản hồi từ API nếu thành công
             console.log('CV updated successfully:', response.data);
             //return response.data; // Hoặc bạn có thể xử lý theo cách khác tùy nhu cầu
             enqueueSnackbar("đã thêm việc làm đã lưu, Vui lòng truy cập Công việc đã lưu", { variant: 'success' });
-          } catch (error) {
+        } catch (error) {
             // Xử lý lỗi
             console.error('Error updating CV:', error);
             throw error; // Hoặc xử lý thông báo lỗi tùy nhu cầu
-          }
+        }
     }
 
     return (
