@@ -257,20 +257,30 @@ function ReportPostJob() {
                             {isbamnut ? 'Đang gửi...' : 'Gửi'}
                         </button>
 
-                        <button type="button" onClick={() => navigate("/viewJobDetail/" + postId)} style={{
-                            width: '100%',
-                            padding: '12px',
-                            backgroundColor: '#ff3b3b',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '1em',
-                            fontWeight: 'bold',
-                            transition: 'background-color 0.3s',
-                        }}
-                            onMouseOver={(e) => e.target.style.backgroundColor = '#e62e2e'}
-                            onMouseOut={(e) => e.target.style.backgroundColor = '#ff3b3b'}
+                        <button type="button"
+                            onClick={() => navigate("/viewJobDetail/" + postId)}
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                backgroundColor: isbamnut ? '#dcdcdc' : '#ff3b3b', // Màu xám khi isbamnut là true
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: isbamnut ? 'not-allowed' : 'pointer', // Thay đổi con trỏ khi nút bị vô hiệu hóa
+                                fontSize: '1em',
+                                fontWeight: 'bold',
+                                transition: 'background-color 0.3s',
+                            }}
+                            onMouseOver={(e) => {
+                                if (!isbamnut) {
+                                    e.target.style.backgroundColor = '#e62e2e';
+                                }
+                            }}
+                            onMouseOut={(e) => {
+                                if (!isbamnut) {
+                                    e.target.style.backgroundColor = '#ff3b3b';
+                                }
+                            }}
                             disabled={isbamnut}
                         >
                             Hủy

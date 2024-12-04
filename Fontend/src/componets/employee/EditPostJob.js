@@ -579,7 +579,9 @@ function EditPostJob() {
             return false;
         }
         // Kiểm tra định dạng tọa độ
-        if (isNaN(JobDetail.latitude) || isNaN(JobDetail.longitude)) {
+        if (latitude === '' || longitude === '' || 
+            latitude === null || longitude === null || 
+            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
         }
@@ -589,7 +591,7 @@ function EditPostJob() {
 
     const luujob = async (e) => {
         e.preventDefault();
-        SetBamNutLuu(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -650,7 +652,7 @@ function EditPostJob() {
         console.log(token);
 
         console.log(isLongTerm);
-
+        SetBamNutLuu(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/UpdatePostJob', {
                 method: 'PUT',
@@ -683,7 +685,7 @@ function EditPostJob() {
     }
 
     const luujob2 = async () => {
-        SetBamNutLuu(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -744,7 +746,7 @@ function EditPostJob() {
         console.log(token);
 
         console.log(isLongTerm);
-
+        SetBamNutLuu(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/UpdatePostJob', {
                 method: 'PUT',
@@ -803,7 +805,7 @@ function EditPostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        SetBamNut(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -864,7 +866,7 @@ function EditPostJob() {
         console.log(token);
 
         console.log(isLongTerm);
-
+        SetBamNut(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/UpdatePostJob', {
                 method: 'PUT',

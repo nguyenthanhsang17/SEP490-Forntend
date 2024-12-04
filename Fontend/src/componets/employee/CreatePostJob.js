@@ -501,7 +501,9 @@ function CreatePostJob() {
         }
 
         // Kiểm tra định dạng tọa độ
-        if (isNaN(latitude) || isNaN(longitude)) {
+        if (latitude === '' || longitude === '' || 
+            latitude === null || longitude === null || 
+            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
         }
@@ -511,7 +513,7 @@ function CreatePostJob() {
 
     const luujob = async (e) => {
         e.preventDefault();
-        SetBamNutLuu(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -530,6 +532,8 @@ function CreatePostJob() {
                 return 0;
             }
         }
+
+
 
         const formattedPostJobDates = postJobDates.map((date, index) => ({
             postId: -1,
@@ -561,7 +565,7 @@ function CreatePostJob() {
         const token = localStorage.getItem('token');
         console.log(token);
 
-
+        SetBamNutLuu(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -592,7 +596,7 @@ function CreatePostJob() {
     };
 
     const luujob2 = async () => {
-        SetBamNutLuu(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -642,7 +646,7 @@ function CreatePostJob() {
         const token = localStorage.getItem('token');
         console.log(token);
 
-
+        SetBamNutLuu(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -699,7 +703,7 @@ function CreatePostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        SetBamNut(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -749,7 +753,7 @@ function CreatePostJob() {
         const token = localStorage.getItem('token');
         console.log(token);
 
-
+        SetBamNut(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',

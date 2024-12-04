@@ -74,8 +74,8 @@ const MemberCard = () => {
         }
       );
 
-      if (response.data.message === "Bạn không dc phép truy cập hãy mua gói") {
-        showAlert2("Bạn không dc phép truy cập hãy mua gói");
+      if (response.data.message === "Bạn không được phép truy cập hãy mua gói") {
+        showAlert2("Bạn không được phép truy cập hãy mua gói");
         return;
       }
       if (response.status === 200) {
