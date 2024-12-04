@@ -142,8 +142,6 @@ function ReCreateJob() {
         setLatitude(newPosition.lat);
         setLongitude(newPosition.lng);
         console.log(newPosition);
-        console.log(address);
-        JobDetail.address = address;
     };
     //==================================================================
     const [schedules, setSchedules] = useState([]);
@@ -586,9 +584,9 @@ function ReCreateJob() {
             return false;
         }
         // Kiểm tra định dạng tọa độ
-        if (latitude === '' || longitude === '' || 
-            latitude === null || longitude === null || 
-            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
+        if (JobDetail.latitude === '' || JobDetail.longitude === '' || 
+            JobDetail.latitude === null || JobDetail.longitude === null || 
+            isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
         }

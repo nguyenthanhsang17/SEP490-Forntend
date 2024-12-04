@@ -38,14 +38,10 @@ function removeVietnamFromAddress(address) {
   return address; // Nếu không có "Việt Nam", trả về chuỗi gốc
 }
 
-const GeocodingMap = ({handlePositionChange, handlePositionChangeToado, initialLatitude , initialLongitude, address }) => {
+const GeocodingMap = ({handlePositionChange, handlePositionChangeToado, initialLatitude , initialLongitude }) => {
   const [position, setPosition] = useState([21.0285, 105.8542]); // Default: Hà Nội
   const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLocation(address);
-  }, [address]);
 
   useEffect(() => {
     // Kiểm tra nếu cả hai tọa độ đều hợp lệ
