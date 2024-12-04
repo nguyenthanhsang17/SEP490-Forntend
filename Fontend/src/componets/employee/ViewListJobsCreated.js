@@ -462,7 +462,7 @@ const ViewListJobsCreated = () => {
                                         </div>
                                     </div>
 
-                                    {job.isUrgentRecruitment && <span className="tg-themetag tg-featuretag">Tuyển gấp</span>}
+                                    {job.isUrgentRecruitment && <span className="tg-themetag tg-featuretag">HOT</span>}
                                 </article>
                             </div>
                         ))

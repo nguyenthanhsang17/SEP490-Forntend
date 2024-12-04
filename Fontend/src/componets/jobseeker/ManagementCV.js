@@ -82,11 +82,42 @@ const ManagementCV = () => {
         setCvs(updatedCvs);
     }, [cvForms]);
 
-    const hasNullOrEmptyOrWhitespace = (obj) => {
-        return Object.values(obj).some(
-            value => value === null || (typeof value === "string" && value.trim() === "")
-        );
-    };
+    function hasNullFields(obj) {
+        // Kiểm tra trường hợp đối tượng không phải là một đối tượng hợp lệ
+        if (typeof obj !== 'object' || obj === null) {
+            return false; // Hoặc true tùy thuộc vào cách bạn muốn xử lý
+        }
+    
+        // Duyệt qua các trường của đối tượng
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+    
+                // Kiểm tra nếu giá trị là null hoặc chuỗi rỗng
+                if (value === null || (typeof value === 'string' && value.trim() === '')) {
+                    return true; // Có trường null hoặc chuỗi rỗng
+                }
+    
+                // Nếu giá trị là một mảng, kiểm tra từng phần tử
+                if (Array.isArray(value)) {
+                    for (const item of value) {
+                        if (hasNullFields(item)) {
+                            return true; // Có trường null trong mảng
+                        }
+                    }
+                }
+    
+                // Nếu giá trị là một đối tượng, kiểm tra đệ quy
+                if (typeof value === 'object') {
+                    if (hasNullFields(value)) {
+                        return true; // Có trường null trong đối tượng con
+                    }
+                }
+            }
+        }
+    
+        return false; // Không có trường nào là null hoặc chuỗi rỗng
+    }
 
     const handleSaveCV = async (formIndex) => {
         const cvData = {
@@ -97,7 +128,7 @@ const ManagementCV = () => {
         try {
             cvData.cvId = cvData.id;
             console.log(cvData);
-            if(hasNullOrEmptyOrWhitespace(cvData)){
+            if(hasNullFields(cvData)){
                 enqueueSnackbar("Chưa nhập đầy đủ các thông tin", { variant: "error" });
                 return;
             }

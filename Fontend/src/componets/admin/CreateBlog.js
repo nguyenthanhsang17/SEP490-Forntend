@@ -206,24 +206,24 @@ const CreateBlog = () => {
       {/* Main Content */}
       <main className="dashboard-content">
         <div style={styles.container}>
-          <h1 style={styles.heading}>Tạo bài viết mới</h1>
+          <h1 style={styles.heading}>Tạo Blog mới</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Tiêu đề bài viết:</label>
+              <label style={styles.label}>Tiêu đề :</label>
               <input
                 type="text"
                 value={blogTitle}
                 onChange={(e) => setBlogTitle(e.target.value)}
-                placeholder="Nhập tiêu đề bài viết"
+                placeholder="Nhập tiêu đề ..."
                 style={styles.input}
               />
             </div>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Mô tả bài viết:</label>
+              <label style={styles.label}>Mô tả :</label>
               <textarea
                 value={blogDescription}
                 onChange={(e) => setBlogDescription(e.target.value)}
-                placeholder="Nhập mô tả bài viết"
+                placeholder="Nhập mô tả "
                 style={styles.textarea}
               />
             </div>
@@ -256,7 +256,7 @@ const CreateBlog = () => {
               disabled={BamNut}
               onClick={!BamNut ? handleSubmit : null}
             >
-              {BamNut ? "Đang tạo bài viết..." : "Tạo bài viết"}
+              {BamNut ? "Đang tạo blog ..." : "Tạo Blog"}
             </button>
           </form>
         </div>

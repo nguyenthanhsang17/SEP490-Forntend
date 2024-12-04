@@ -56,7 +56,7 @@ function ReCreateJob() {
     };
 
     const [isOn, setIsOn] = useState(false);
-    
+
 
     const [imagesData, setImagesData] = useState([
         // Sẽ chứa cả URL và ID
@@ -586,7 +586,9 @@ function ReCreateJob() {
             return false;
         }
         // Kiểm tra định dạng tọa độ
-        if (isNaN(JobDetail.latitude) || isNaN(JobDetail.longitude)) {
+        if (latitude === '' || longitude === '' || 
+            latitude === null || longitude === null || 
+            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
         }
@@ -596,7 +598,7 @@ function ReCreateJob() {
 
     const luujob = async (e) => {
         e.preventDefault();
-        SetBamNutLuu(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -654,7 +656,7 @@ function ReCreateJob() {
         console.log(token);
 
         console.log(isLongTerm);
-
+        SetBamNutLuu(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -687,7 +689,7 @@ function ReCreateJob() {
     };
 
     const luujob2 = async () => {
-        SetBamNutLuu(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -745,7 +747,7 @@ function ReCreateJob() {
         console.log(token);
 
         console.log(isLongTerm);
-
+        SetBamNutLuu(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -804,7 +806,7 @@ function ReCreateJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        SetBamNut(true);
+        
 
         if (!validateJobData()) {
             return;
@@ -862,7 +864,7 @@ function ReCreateJob() {
         console.log(token);
 
         console.log(isLongTerm);
-
+        SetBamNut(true);
         try {
             const response = await fetch('https://localhost:7077/api/PostJobs/CreatePost', {
                 method: 'POST',
@@ -959,7 +961,7 @@ function ReCreateJob() {
                     <h1>Tạo bài đăng tuyển</h1>
                 </div>
                 <div className="container">
-                    <h1>Số lượt đăng: {serviceInfo.numberPosts??0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ??0}</h1>
+                    <h1>Số lượt đăng: {serviceInfo.numberPosts ?? 0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>
@@ -1547,6 +1549,7 @@ function ReCreateJob() {
 
                             </div>
                             <div className="full-width">
+                                <label>Tọa độ chi tiết công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
                                 <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} initialLatitude={JobDetail.latitude} initialLongitude={JobDetail.longitude} address={JobDetail.address} />
                             </div>
                             <div className="input-group form-group">
