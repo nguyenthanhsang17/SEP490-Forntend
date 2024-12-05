@@ -7,7 +7,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSnackbar } from 'notistack'; 
+import { useSnackbar } from 'notistack';
 import { Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
@@ -60,7 +60,7 @@ function ViewAllJobSeekerInFavoriteList() {
         } catch (error) {
             console.error('Error fetching the job seeker data:', error);
             enqueueSnackbar('Không thể tải dữ liệu. Vui lòng thử lại.', { variant: 'error' }); // Thông báo lỗi
-        
+
         }
     };
 
@@ -160,43 +160,82 @@ function ViewAllJobSeekerInFavoriteList() {
                                     className="card"
                                     style={{
                                         display: 'flex',
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
+                                        flexDirection: 'column', // Thay đổi thành column
                                         border: '1px solid #ddd',
                                         borderRadius: '8px',
                                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                                         transition: '0.3s',
                                     }}
                                 >
-                                    <img
-                                        src={seeker.avatarURL}
-                                        alt={`${seeker.fullName}'s avatar`}
-                                        className="card-img-top"
-                                        style={{
-                                            width: '150px',
-                                            height: '150px',
-                                            objectFit: 'cover',
-                                            borderRadius: '5px',
-                                            marginRight: '20px',
-                                            marginLeft: '10px'
-                                        }}
-                                    />
-                                    <div className="card-body">
-                                        <h5 className="card-title">{seeker.fullName}</h5>
-                                        <p className="card-text"><strong>Tuổi:</strong> {seeker.age}</p>
-                                        <p className="card-text"><strong>Công việc hiện tại:</strong> {seeker.currentJob}</p>
-                                        <p className="card-text"><strong>Giới tính:</strong> {seeker.gender ? 'Nam' : 'Nữ'}</p>
-                                        <p className="card-text"><strong>Mô tả:</strong> {seeker.descriptionFavorite}</p>
-                                        <p className="card-text"><strong>Số công việc đã chấp nhận:</strong> {seeker.numberAppliedAccept}</p>
-                                        <p className="card-text"><strong>Số công việc đã ứng tuyển:</strong> {seeker.numberApplied}</p>
-                                        <a href={`/viewDetailJobSeeker/${seeker.userId}`} className="btn btn-primary">
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}>
+                                        <img
+                                            src={seeker.avatarURL}
+                                            alt={`${seeker.fullName}'s avatar`}
+                                            className="card-img-top"
+                                            style={{
+                                                width: '150px',
+                                                height: '150px',
+                                                objectFit: 'cover',
+                                                borderRadius: '5px',
+                                                marginRight: '20px',
+                                                marginLeft: '10px'
+                                            }}
+                                        />
+
+                                        <div className="card-body">
+                                            <p className="card-title" style={{ fontSize: '1.5rem' }}>{seeker.fullName}</p>
+                                            <p className="card-text"><strong>Tuổi:</strong> {seeker.age}</p>
+                                            <p className="card-text"><strong>Công việc hiện tại:</strong> {seeker.currentJob}</p>
+                                            <p className="card-text"><strong>Giới tính:</strong> {seeker.gender ? 'Nam' : 'Nữ'}</p>
+                                            <p className="card-text"><strong>Số công việc đã chấp nhận:</strong> {seeker.numberAppliedAccept}</p>
+                                            <p className="card-text"><strong>Số công việc đã ứng tuyển:</strong> {seeker.numberApplied}</p>
+                                        </div>
+                                    </div>
+                                    <div className='card-text' style={{
+                                        display: 'flex',
+                                        flexDirection: 'row', // Giữ nguyên column
+                                        alignItems: 'flex-start',
+                                        borderTop: '1px solid #ddd',
+                                        padding: '10px', // Thêm padding
+                                        width: '100%',
+                                    }}>
+                                        <p className="card-text" style={{
+                                            marginTop: '5px', 
+                                            width: '100%',
+                                            wordBreak: 'break-word', // Cho phép từ dài xuống dòng
+                                            whiteSpace: 'normal', // Cho phép xuống dòng
+                                            overflowWrap: 'break-word' // Đảm bảo từ dài được ngắt
+                                        }}><strong style={{ color: 'red' }}>Ghi chú :</strong> {seeker.descriptionFavorite+" jsdajkhsghdjkahsdhajksdhkjahsdjkhajksdhkjashdjkahsdjkhajksdhjkahsdkhaskdhakjsdhkahsdkashdkjahsdkjahsdjkhasdkjhfhaksjhfdkasdhfkasdhfkajshdfkshfkshdfsh"}</p>
+                                    </div>
+
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'row', // Giữ nguyên column
+                                        alignItems: 'flex-start',
+                                        borderTop: '1px solid #ddd',
+                                        padding: '10px', // Thêm padding
+                                        width: '100%',
+                                        justifyContent: 'space-around'
+                                    }}>
+                                        <a
+                                            href={`/viewDetailJobSeeker/${seeker.userId}`}
+                                            className="btn btn-primary mb-2" 
+                                        >
                                             Xem chi tiết
                                         </a>
-                                        <button onClick={() => handleDelete(seeker.userId)} className="btn btn-danger" style={{ marginLeft: '10px' }}>
+                                        <button
+                                            onClick={() => handleDelete(seeker.userId)}
+                                            className="btn btn-danger" 
+                                        >
                                             Xóa khỏi danh sách
                                         </button>
                                     </div>
                                 </div>
+
                             </div>
                         ))
                     ) : (
