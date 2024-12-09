@@ -1021,7 +1021,7 @@ function CreatePostJob() {
                             </div>
 
                             <div className="input-group form-group ">
-                                <label>Thời gian duy trì bài đăng: <span style={{ color: "red" }}>(*)</span></label>
+                                <label>Thời gian duy trì bài đăng (1 tháng tương ứng với 1 lượt đăng bài): <span style={{ color: "red" }}>(*)</span></label>
                                 <select className="form-control" value={time} onChange={(e) => SetTime(e.target.value)}>
                                     <option value={1}>1 tháng</option>
                                     <option value={2}>2 tháng</option>

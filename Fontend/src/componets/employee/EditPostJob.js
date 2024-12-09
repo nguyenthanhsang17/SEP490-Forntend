@@ -1271,7 +1271,7 @@ function EditPostJob() {
                             </div>
 
                             <div className="input-group form-group ">
-                                <label>Thời gian duy trì bài đăng: <span style={{ color: "red" }}>(*)</span></label>
+                                <label>Thời gian duy trì bài đăng (1 tháng tương ứng với 1 lượt đăng bài): <span style={{ color: "red" }}>(*)</span></label>
                                 <select className="form-control" value={JobDetail.time} onChange={(e) => {
                                     const newValue = e.target.value;
                                     SetJobDetail(prev => ({
