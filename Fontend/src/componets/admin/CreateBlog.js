@@ -209,7 +209,7 @@ const CreateBlog = () => {
           <h1 style={styles.heading}>Tạo Blog mới</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Tiêu đề :</label>
+              <label style={styles.label}>Tiêu đề: <span style={{ color: "red" }}>(*)</span></label>
               <input
                 type="text"
                 value={blogTitle}
@@ -219,7 +219,7 @@ const CreateBlog = () => {
               />
             </div>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Mô tả :</label>
+              <label style={styles.label}>Mô tả: <span style={{ color: "red" }}>(*)</span></label>
               <textarea
                 value={blogDescription}
                 onChange={(e) => setBlogDescription(e.target.value)}
@@ -228,7 +228,7 @@ const CreateBlog = () => {
               />
             </div>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Ảnh Thumbnail:</label>
+              <label style={styles.label}>Ảnh Thumbnail: <span style={{ color: "red" }}>(*)</span></label>
               <input
                 type="file"
                 onChange={handleFileChange}
