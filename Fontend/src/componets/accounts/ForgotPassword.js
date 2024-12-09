@@ -14,7 +14,7 @@ function ForgotPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [emailVerified, setEmailVerified] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -119,7 +119,7 @@ function ForgotPassword() {
               </a>
               {!emailVerified ? (
                 <form onSubmit={handleSubmit}>
-                  <label htmlFor="email" className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label">Email: </label><label style={{ marginLeft: "10px", color: 'red' }}> (*) </label>
                   <input
                     type="email"
                     className="form-control"
@@ -132,7 +132,7 @@ function ForgotPassword() {
                 </form>
               ) : (
                 <form onSubmit={handleResetPassword}>
-                  <label htmlFor="otp" className="form-label">Nhập OTP</label>
+                  <label htmlFor="otp" className="form-label">Nhập OTP: </label><label style={{ marginLeft: "10px", color: 'red' }}> (*) </label>
                   <input
                     type="text"
                     className="form-control"
@@ -142,7 +142,7 @@ function ForgotPassword() {
                     required
                   />
                   <div className="password-field" style={{ position: "relative", marginBottom: "20px" }}>
-                    <label htmlFor="password" className="form-label">Mật khẩu mới</label>
+                    <label htmlFor="password" className="form-label">Mật khẩu mới: </label><label style={{ marginLeft: "10px", color: 'red' }}> (*) </label>
                     <input
                       type={showPassword ? "text" : "password"}
                       className="form-control"
@@ -173,7 +173,7 @@ function ForgotPassword() {
                     </span>
                   </div>
                   <div className="password-field" style={{ position: "relative" }}>
-                    <label htmlFor="confirmPassword" className="form-label">Nhập lại mật khẩu</label>
+                    <label htmlFor="confirmPassword" className="form-label">Nhập lại mật khẩu: </label><label style={{ marginLeft: "10px", color: 'red' }}> (*) </label>
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       className="form-control"

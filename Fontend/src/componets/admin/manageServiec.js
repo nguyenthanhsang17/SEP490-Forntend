@@ -157,7 +157,7 @@ const ManageService = () => {
                 console.log("Error response:", error.response);
                 // Nếu có phản hồi từ server
                 await Swal.fire({
-                    title: error.response.data.message ||'Không thể xóa vì có gói dịch vụ đã có giao dịch',
+                    title: error.response.data.message || 'Không thể xóa vì có gói dịch vụ đã có giao dịch',
                     icon: 'error',
                     confirmButtonText: 'Ok',
                 });
@@ -316,7 +316,7 @@ const ManageService = () => {
                         <form onSubmit={handleCreateService} className="service-form">
                             <div className="form-group">
 
-                                <label>Tên gói dịch vụ:</label>
+                                <label>Tên gói dịch vụ: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     name="servicePriceName"
@@ -327,7 +327,7 @@ const ManageService = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Số lượng bài đăng:</label>
+                                <label>Số lượng bài đăng: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     name="numberPosts"
@@ -339,7 +339,7 @@ const ManageService = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Số lượng bài đăng nổi bật:</label>
+                                <label>Số lượng bài đăng nổi bật: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     name="numberPostsUrgentRecruitment"
@@ -350,7 +350,7 @@ const ManageService = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Tìm kiếm ứng viên:</label>
+                                <label>Tìm kiếm ứng viên: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     name="isFindJobseekers"
                                     value={newService.isFindJobseekers}
@@ -363,7 +363,7 @@ const ManageService = () => {
                                 </select>
                             </div>
                             {newService.isFindJobseekers == "1" ? (<div className="form-group">
-                                <label>Thời hạn sử dụng (tháng):</label>
+                                <label>Thời hạn sử dụng (tháng): <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     name="durationsMonth"
@@ -376,7 +376,7 @@ const ManageService = () => {
                             </div>) : ("")}
 
                             <div className="form-group">
-                                <label>Mức giá:</label>
+                                <label>Mức giá: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     name="price"
@@ -388,7 +388,7 @@ const ManageService = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Trạng thái:</label>
+                                <label>Trạng thái: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     name="status"
                                     value={newService.status}

@@ -111,13 +111,13 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-  
+
     // Validate confirm password
     if (newPassword !== confirmPassword) {
       setErrorNotification("Mật khẩu không khớp.");
       return;
     }
-  
+
     // Validate password format
     const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[$@#&!])[A-Za-z\d$@#&!]{8,}$/;
     if (!passwordRegex.test(newPassword)) {
@@ -126,9 +126,9 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
       );
       return;
     }
-  
+
     const token = localStorage.getItem("token");
-  
+
     try {
       const response = await fetch(
         "https://localhost:7077/api/Users/ChangePassword",
@@ -145,19 +145,19 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
           }),
         }
       );
-  
+
       const result = await response.json();
-  
+
       console.log("API Response:", result); // Hiển thị toàn bộ phản hồi từ API
-  
+
       if (!response.ok) {
         throw new Error(result.message || "Thay đổi mật khẩu không thành công.");
       }
-  
+
       // Hiển thị thông báo thành công
       setNotification("Mật khẩu đã được thay đổi thành công.");
       setErrorNotification("");
-  
+
       // Xóa các ô input sau khi thành công
       setOldPassword("");
       setNewPassword("");
@@ -169,8 +169,8 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
       console.error("Error changing password:", error);
     }
   };
-  
-  
+
+
 
   const checkPasswordStrength = (password) => {
     let strength = 0;
@@ -223,7 +223,7 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
         <form onSubmit={handleChangePassword}>
           <div style={styles.formGroup}>
             <label style={styles.label} htmlFor="old-password">
-              Mật Khẩu Cũ
+              Mật Khẩu Cũ: <span style={{ color: "red" }}>(*)</span>
             </label>
             <input
               style={styles.input}
@@ -242,7 +242,7 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label} htmlFor="new-password">
-              Mật Khẩu Mới
+              Mật Khẩu Mới: <span style={{ color: "red" }}>(*)</span>
             </label>
             <input
               style={styles.input}
@@ -268,7 +268,7 @@ const ChangePasswordModal = ({ show, handleClose, fullName }) => {
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label} htmlFor="confirm-password">
-              Xác Nhận Mật Khẩu
+              Xác Nhận Mật Khẩu: <span style={{ color: "red" }}>(*)</span>
             </label>
             <input
               style={styles.input}

@@ -25,7 +25,7 @@ const Signup = () => {
 
   const validateForm = () => {
     const newErrors = {};
-  
+
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Họ và tên không được để trống.";
     }
@@ -37,7 +37,7 @@ const Signup = () => {
         newErrors.email = "Email không đúng định dạng.";
       }
     }
-  
+
     if (!formData.password.trim()) {
       newErrors.password = "Mật khẩu không được để trống.";
     } else {
@@ -48,14 +48,14 @@ const Signup = () => {
           "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
       }
     }
-  
+
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu và xác nhận mật khẩu không khớp.";
     }
-  
+
     return newErrors;
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -156,7 +156,7 @@ const Signup = () => {
       border: "none",
       borderRadius: "20px",
       cursor: "pointer",
-      marginTop:"8px"
+      marginTop: "8px"
     },
     loginButton: {
       width: "100%",
@@ -192,7 +192,7 @@ const Signup = () => {
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
         <form onSubmit={handleSubmit}>
-          <span>Họ và tên</span>
+          <span>Họ và tên <span style={{ color: "red" }}>(*)</span></span>
           <input
             type="text"
             style={styles.input}
@@ -202,7 +202,7 @@ const Signup = () => {
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
           />
           {errors.fullName && <div style={styles.error}>{errors.fullName}</div>}
-          <span>Email</span>
+          <span>Email <span style={{ color: "red" }}>(*)</span></span>
           <input
             type="email"
             style={styles.input}
@@ -212,7 +212,7 @@ const Signup = () => {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
           {errors.email && <div style={styles.error}>{errors.email}</div>}
-          <span>Mật khẩu</span>
+          <span>Mật khẩu <span style={{ color: "red" }}>(*)</span></span>
           <div style={styles.passwordInput}>
             <input
               type={showPassword ? "text" : "password"}
@@ -227,7 +227,7 @@ const Signup = () => {
             </span>
           </div>
           {errors.password && <div style={styles.error}>{errors.password}</div>}
-          <span>Xác nhận mật khẩu</span>
+          <span>Xác nhận mật khẩu <span style={{ color: "red" }}>(*)</span></span>
           <div style={styles.passwordInput}>
             <input
               type={showConfirmPassword ? "text" : "password"}

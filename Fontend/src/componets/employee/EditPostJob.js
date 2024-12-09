@@ -59,7 +59,7 @@ function EditPostJob() {
     };
 
     const [isOn, setIsOn] = useState(false);
-    
+
 
     const [imagesData, setImagesData] = useState([
         // Sẽ chứa cả URL và ID
@@ -135,7 +135,7 @@ function EditPostJob() {
         }
     }, [latitude, longitude]);
 
-    
+
 
     const handlePositionChange = (newPosition, address) => {
         setPosition(newPosition);
@@ -212,7 +212,7 @@ function EditPostJob() {
             setImagesData(updatedImagesData);
         }
     }, [JobDetail]);
-    
+
     useEffect(() => {
         const fetchServiceInfo = async () => {
             const token = localStorage.getItem("token");
@@ -578,8 +578,8 @@ function EditPostJob() {
         }
 
         // Kiểm tra định dạng tọa độ
-        if (JobDetail.latitude === '' || JobDetail.longitude === '' || 
-            JobDetail.latitude === null || JobDetail.longitude === null || 
+        if (JobDetail.latitude === '' || JobDetail.longitude === '' ||
+            JobDetail.latitude === null || JobDetail.longitude === null ||
             isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))) {
             toast.error('Vĩ độ và kinh độ phải là số');
             return false;
@@ -590,7 +590,7 @@ function EditPostJob() {
 
     const luujob = async (e) => {
         e.preventDefault();
-        
+
 
         if (!validateJobData()) {
             return;
@@ -684,7 +684,7 @@ function EditPostJob() {
     }
 
     const luujob2 = async () => {
-        
+
 
         if (!validateJobData()) {
             return;
@@ -804,7 +804,7 @@ function EditPostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
 
         if (!validateJobData()) {
             return;
@@ -967,7 +967,10 @@ function EditPostJob() {
                     <h1>Chỉnh sửa bài đăng tuyển</h1>
                 </div>
                 <div className="container">
-                    <h1>Số lượt đăng: {serviceInfo.numberPosts ?? 0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
+                    <h1>Số lượt đăng bài: {serviceInfo.numberPosts ?? 0} </h1>
+                </div>
+                <div className="container">
+                    <h1>Số lượt đăng bài nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>
@@ -977,7 +980,7 @@ function EditPostJob() {
                     <div className="row bottom-mrg">
                         <form className="add-feild form-container" >
                             <div className="input-group form-group">
-                                <label>Tiêu đề công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Tiêu đề công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -994,7 +997,7 @@ function EditPostJob() {
                             </div>
 
                             <div className="input-group form-group">
-                                <label>Chọn loại công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Chọn loại công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     className="form-control"
                                     value={JobDetail.jobCategoryId}
@@ -1020,7 +1023,7 @@ function EditPostJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
-                                <label>Chọn kiểu trả lương</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Chọn kiểu trả lương: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     className="form-control"
                                     value={JobDetail.salaryTypesId}
@@ -1042,7 +1045,7 @@ function EditPostJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
-                                <label>Mức lương vnd</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Mức lương (VND): <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     min={0}
@@ -1059,7 +1062,7 @@ function EditPostJob() {
                                 />
                             </div>
                             <div className="input-group form-group">
-                                <label>Số lượng người cần tuyển</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Số lượng người cần tuyển: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -1077,7 +1080,7 @@ function EditPostJob() {
                             </div>
 
                             <div className="input-group form-group full-width">
-                                <label>Mô tả công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Mô tả công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <textarea
                                     className="form-control"
                                     placeholder="Mô tả công việc"
@@ -1093,7 +1096,7 @@ function EditPostJob() {
                             </div>
 
                             <div className="input-group form-group full-width">
-                                <label>Địa chỉ chi tiết</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Địa chỉ chi tiết: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -1268,7 +1271,7 @@ function EditPostJob() {
                             </div>
 
                             <div className="input-group form-group ">
-                                <label>Thời gian duy trì bài đăng:</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Thời gian duy trì bài đăng (1 tháng tương ứng với 1 lượt đăng bài): <span style={{ color: "red" }}>(*)</span></label>
                                 <select className="form-control" value={JobDetail.time} onChange={(e) => {
                                     const newValue = e.target.value;
                                     SetJobDetail(prev => ({
@@ -1352,7 +1355,7 @@ function EditPostJob() {
                                 </label>
                             </div>
                             <div className="full-width">
-                                <label>Lịch Làm việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Lịch Làm việc: <span style={{ color: "red" }}>(*)</span></label>
                                 {isLongTerm ? (
                                     <div>
                                         {/* Schedule Selection Tabs */}
@@ -1492,7 +1495,7 @@ function EditPostJob() {
                                     </div>
                                 ) : (
                                     <div style={styles.container}>
-                                        <h2 style={styles.title}>Tạo ngày làm việc</h2>
+                                        <h2 style={styles.title}>Tạo ngày làm việc <span style={{ color: "red" }}>(*)</span></h2>
 
                                         <div style={styles.dateGrid}>
                                             {postJobDates.map((date, index) => (
@@ -1505,7 +1508,7 @@ function EditPostJob() {
                                                         Xóa
                                                     </button>
                                                     <div style={styles.formGroup}>
-                                                        <label style={styles.label}>Ngày:</label>
+                                                        <label style={styles.label}>Ngày: <span style={{ color: "red" }}>(*)</span></label>
                                                         <input
                                                             type="date"
                                                             value={date.eventDate}
@@ -1515,7 +1518,7 @@ function EditPostJob() {
                                                     </div>
 
                                                     <div style={styles.formGroup}>
-                                                        <label style={styles.label}>Giờ bắt đầu:</label>
+                                                        <label style={styles.label}>Giờ bắt đầu: <span style={{ color: "red" }}>(*)</span></label>
                                                         <input
                                                             type="time"
                                                             value={date.startTime}
@@ -1525,7 +1528,7 @@ function EditPostJob() {
                                                     </div>
 
                                                     <div style={styles.formGroup}>
-                                                        <label style={styles.label}>Giờ kết thúc:</label>
+                                                        <label style={styles.label}>Giờ kết thúc: <span style={{ color: "red" }}>(*)</span></label>
                                                         <input
                                                             type="time"
                                                             value={date.endTime}
@@ -1556,7 +1559,7 @@ function EditPostJob() {
 
                             </div>
                             <div className="full-width">
-                                <label>Tọa độ chi tiết công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Tọa độ chi tiết công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} initialLatitude={JobDetail.latitude} initialLongitude={JobDetail.longitude} />
                             </div>
                             <div className="input-group form-group">
@@ -1593,8 +1596,8 @@ function EditPostJob() {
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
             <Footer />
         </>
     );
