@@ -259,15 +259,17 @@ function ViewJobSeekerDetail() {
                     Không nhận
                   </button>
 
-                  <button
+                </>
+              )}
+                   {(status === 3 || status === 4) && (
+    <button
                     className="btn btn-success mx-2"
                     onClick={() => sendFirstTimeMessage(jobSeeker.userId)}
                     style={{ marginRight: '10px', marginLeft: '10px' }}
                   >
                     Liên hệ ngay
                   </button>
-                </>
-              )}
+)}
             </div>
 
 
