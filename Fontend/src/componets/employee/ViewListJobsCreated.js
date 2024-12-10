@@ -340,7 +340,6 @@ const ViewListJobsCreated = () => {
                                         <option value="1">Chờ phê duyệt</option>
                                         <option value="2">Đã đăng</option>
                                         <option value="3">Bị từ chối</option>
-                                        <option value="4">Đã xóa</option>
                                         <option value="5">Đã ẩn</option>
                                         <option value="6">Bị cấm</option>
                                     </select>
