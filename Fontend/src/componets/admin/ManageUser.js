@@ -218,7 +218,7 @@ const ManageUser = () => {
                       ? "Ứng Viên"
                       : user.roleId === 2
                         ? "Nhà tuyển dụng"
-                        : user.roleId === 32
+                        : user.roleId === 3
                           ? "Nhân Viên Hệ Thống"
                           : "Quản Trị Viên"}
                   </td>
