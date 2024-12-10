@@ -16,7 +16,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-
+  const [isTermsChecked, setIsTermsChecked] = useState(false); // State for checkbox
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar(); // Initialize notistack
   const [showPassword, setShowPassword] = useState(false);
@@ -41,8 +41,8 @@ const Signup = () => {
     if (!formData.password.trim()) {
       newErrors.password = "Mật khẩu không được để trống.";
     } else {
-      // Kiểm tra mật khẩu với regex
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+      const passwordRegex =
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
       if (!passwordRegex.test(formData.password)) {
         newErrors.password =
           "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
@@ -53,45 +53,58 @@ const Signup = () => {
       newErrors.confirmPassword = "Mật khẩu và xác nhận mật khẩu không khớp.";
     }
 
+    // Kiểm tra điều khoản dịch vụ
+    if (!isTermsChecked) {
+      newErrors.isTermsChecked = "Bạn phải đồng ý với điều khoản dịch vụ.";
+    }
+
     return newErrors;
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      enqueueSnackbar("Vui lòng kiểm tra thông tin đăng ký!", { variant: "warning" });
+      enqueueSnackbar("Vui lòng kiểm tra thông tin đăng ký!", {
+        variant: "warning",
+      });
       return;
     }
-
+  
     setErrors({});
     try {
-      const response = await fetch("https://localhost:7077/api/Users/ResgisterUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
+      const response = await fetch(
+        "https://localhost:7077/api/Users/ResgisterUser",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(result.message || "Đăng ký không thành công.");
       }
-
-      enqueueSnackbar("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.", {
-        variant: "success",
-      });
+  
+      enqueueSnackbar(
+        "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.",
+        {
+          variant: "success",
+        }
+      );
       navigate("/VerifyRegister");
     } catch (error) {
       enqueueSnackbar(error.message, { variant: "error" });
       setErrors({ global: error.message });
     }
   };
+  
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -156,7 +169,7 @@ const Signup = () => {
       border: "none",
       borderRadius: "20px",
       cursor: "pointer",
-      marginTop: "8px"
+      marginTop: "8px",
     },
     loginButton: {
       width: "100%",
@@ -192,27 +205,37 @@ const Signup = () => {
           <img src={logoImage} className="img-responsive" alt="Logo" />
         </a>
         <form onSubmit={handleSubmit}>
-          <span>Họ và tên <span style={{ color: "red" }}>(*)</span></span>
+          <span>
+            Họ và tên <span style={{ color: "red" }}>(*)</span>
+          </span>
           <input
             type="text"
             style={styles.input}
             name="fullName"
             placeholder="Họ và tên"
             value={formData.fullName}
-            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, fullName: e.target.value })
+            }
           />
           {errors.fullName && <div style={styles.error}>{errors.fullName}</div>}
-          <span>Email <span style={{ color: "red" }}>(*)</span></span>
+          <span>
+            Email <span style={{ color: "red" }}>(*)</span>
+          </span>
           <input
             type="email"
             style={styles.input}
             name="email"
             placeholder="Email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
           />
           {errors.email && <div style={styles.error}>{errors.email}</div>}
-          <span>Mật khẩu <span style={{ color: "red" }}>(*)</span></span>
+          <span>
+            Mật khẩu <span style={{ color: "red" }}>(*)</span>
+          </span>
           <div style={styles.passwordInput}>
             <input
               type={showPassword ? "text" : "password"}
@@ -220,14 +243,18 @@ const Signup = () => {
               name="password"
               placeholder="Mật khẩu"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
             <span onClick={togglePasswordVisibility} style={styles.icon}>
               <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
             </span>
           </div>
           {errors.password && <div style={styles.error}>{errors.password}</div>}
-          <span>Xác nhận mật khẩu <span style={{ color: "red" }}>(*)</span></span>
+          <span>
+            Xác nhận mật khẩu <span style={{ color: "red" }}>(*)</span>
+          </span>
           <div style={styles.passwordInput}>
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -235,13 +262,39 @@ const Signup = () => {
               name="confirmPassword"
               placeholder="Xác nhận mật khẩu"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
             />
             <span onClick={toggleConfirmPasswordVisibility} style={styles.icon}>
-              <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
+              <FontAwesomeIcon
+                icon={showConfirmPassword ? faEye : faEyeSlash}
+              />
             </span>
           </div>
-          {errors.confirmPassword && <div style={styles.error}>{errors.confirmPassword}</div>}
+          {errors.confirmPassword && (
+            <div style={styles.error}>{errors.confirmPassword}</div>
+          )}
+          {/* Checkbox for Terms and Conditions */}
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={isTermsChecked}
+                onChange={() => setIsTermsChecked(!isTermsChecked)}
+                style={{ marginRight: "10px" }}
+              />
+              Tôi đã đọc và đồng ý với{" "}
+              <a href="/terms.html" target="_blank">
+                điều khoản dịch vụ
+              </a>
+              .
+            </label>
+            {errors.isTermsChecked && (
+              <div style={styles.error}>{errors.isTermsChecked}</div>
+            )}
+          </div>
+
           {errors.global && <div style={styles.error}>{errors.global}</div>}
           <button style={styles.button} type="submit">
             Đăng Ký Tài Khoản
