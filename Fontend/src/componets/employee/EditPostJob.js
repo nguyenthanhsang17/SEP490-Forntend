@@ -668,7 +668,7 @@ function EditPostJob() {
                 const sang = formatDataForApi();
                 console.log(JSON.stringify(sang, null, 2));
                 uploadImages();
-                showAlert("Đăng Bài thành công");
+                showAlert("Lưu bài đăng thành công");
             } else {
                 try {
                     const errorData = await response.json();
