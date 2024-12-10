@@ -452,68 +452,116 @@ function CreatePostJob() {
     const validateJobData = () => {
         // Kiểm tra các trường không được null hoặc khoảng trắng
         if (!jobTitle || jobTitle.trim() === '') {
-            toast.error('Vui lòng nhập tiêu đề công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập tiêu đề công việc',
+            });
             return false;
         }
         if (!jobDescription || jobDescription.trim() === '') {
-            toast.error('Vui lòng nhập mô tả công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập mô tả công việc',
+            });
             return false;
         }
         if (!fixSalary || fixSalary.trim() === '') {
-            toast.error('Vui lòng nhập lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập lương',
+            });
             return false;
         }
         if (!numberPeople || numberPeople.trim() === '') {
-            toast.error('Vui lòng nhập số lượng người cần tuyển');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập số lượng người cần tuyển',
+            });
             return false;
         }
         if (!address || address.trim() === '') {
-            toast.error('Vui lòng nhập địa chỉ');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập địa chỉ',
+            });
             return false;
         }
-
-        // Kiểm tra salary_types_id và JobCategory_Id phải > 0
+    
+        // Kiểm tra salaryType và jobCategory phải > 0
         if (!salaryType || parseInt(salaryType) <= 0) {
-            toast.error('Vui lòng chọn loại lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại lương',
+            });
             return false;
         }
         if (!jobCategory || parseInt(jobCategory) <= 0) {
-            toast.error('Vui lòng chọn loại công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại công việc',
+            });
             return false;
         }
+    
         // Kiểm tra định dạng số
         if (isNaN(fixSalary) || parseFloat(fixSalary) <= 0) {
-            toast.error('Lương phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Lương phải là số dương',
+            });
             return false;
         }
-
+    
         if (isNaN(numberPeople) || parseInt(numberPeople) <= 0) {
-            toast.error('Số lượng người cần tuyển phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Số lượng người cần tuyển phải là số dương',
+            });
             return false;
         }
-
+    
         // Kiểm tra định dạng ngày
         const currentDate = new Date();
         const expDate = new Date(expirationDate);
         if (expDate <= currentDate) {
-            toast.error('Ngày hết hạn phải lớn hơn ngày hiện tại');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Ngày hết hạn phải lớn hơn ngày hiện tại',
+            });
             return false;
         }
-
+    
         // Kiểm tra định dạng tọa độ
-        if (latitude === '' || longitude === '' || 
-            latitude === null || longitude === null || 
-            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
-            toast.error('Vĩ độ và kinh độ phải là số');
+        if (
+            latitude === '' || longitude === '' ||
+            latitude === null || longitude === null ||
+            isNaN(Number(latitude)) || isNaN(Number(longitude))
+        ) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vĩ độ và kinh độ phải là số',
+            });
             return false;
         }
-
-        return true;
+    
+        return true; // Nếu tất cả kiểm tra đều hợp lệ
     };
+    
 
     const luujob = async (e) => {
         e.preventDefault();
-        
+
 
         if (!validateJobData()) {
             return;
@@ -596,7 +644,7 @@ function CreatePostJob() {
     };
 
     const luujob2 = async () => {
-        
+
 
         if (!validateJobData()) {
             return;
@@ -703,7 +751,7 @@ function CreatePostJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
 
         if (!validateJobData()) {
             return;
@@ -823,7 +871,10 @@ function CreatePostJob() {
                     <h1>Tạo bài đăng tuyển</h1>
                 </div>
                 <div className="container">
-                    <h1>Số lượt đăng: {serviceInfo.numberPosts ?? 0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
+                    <h1>Số lượt đăng bài: {serviceInfo.numberPosts ?? 0}  </h1>
+                </div>
+                <div className="container">
+                    <h1>Số lượt đăng bài nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>
@@ -833,7 +884,7 @@ function CreatePostJob() {
                     <div className="row bottom-mrg">
                         <form className="add-feild form-container" >
                             <div className="input-group form-group">
-                                <label>Tiêu đề công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Tiêu đề công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -844,7 +895,7 @@ function CreatePostJob() {
                             </div>
 
                             <div className="input-group form-group">
-                                <label>Chọn loại công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Chọn loại công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     className="form-control"
                                     value={jobCategory}
@@ -864,7 +915,7 @@ function CreatePostJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
-                                <label>Chọn kiểu trả lương</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Chọn kiểu trả lương: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     className="form-control"
                                     value={salaryType}
@@ -880,7 +931,7 @@ function CreatePostJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
-                                <label>Mức lương vnd</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Mức lương (VND): <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -891,7 +942,7 @@ function CreatePostJob() {
                                 />
                             </div>
                             <div className="input-group form-group">
-                                <label>Số lượng người cần tuyển</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Số lượng người cần tuyển: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -904,7 +955,7 @@ function CreatePostJob() {
                             </div>
 
                             <div className="input-group form-group full-width">
-                                <label>Mô tả công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Mô tả công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <textarea
                                     className="form-control"
                                     placeholder="Mô tả công việc"
@@ -914,7 +965,7 @@ function CreatePostJob() {
                             </div>
 
                             <div className="input-group form-group">
-                                <label>Địa chỉ chi tiết</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Địa chỉ chi tiết: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -926,7 +977,7 @@ function CreatePostJob() {
 
 
                             <div className="input-group form-group full-width">
-                                <label>Ảnh công việc</label>
+                                <label>Ảnh công việc: </label>
                                 <div className="image-upload-container" style={{
                                     display: 'flex',
                                     flexDirection: 'row', // đảm bảo các items nằm ngang
@@ -1018,7 +1069,7 @@ function CreatePostJob() {
                             </div>
 
                             <div className="input-group form-group ">
-                                <label>Thời gian duy trì bài đăng:</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Thời gian duy trì bài đăng (1 tháng tương ứng với 1 lượt đăng bài): <span style={{ color: "red" }}>(*)</span></label>
                                 <select className="form-control" value={time} onChange={(e) => SetTime(e.target.value)}>
                                     <option value={1}>1 tháng</option>
                                     <option value={2}>2 tháng</option>
@@ -1096,7 +1147,7 @@ function CreatePostJob() {
                                 </label>
                             </div>
                             <div className="full-width">
-                                <label>Lịch Làm việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Lịch Làm việc: <span style={{ color: "red" }}>(*)</span></label>
                                 {isLongTerm ? (<div>
                                     {/* Schedule Selection Tabs */}
                                     <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
@@ -1233,7 +1284,7 @@ function CreatePostJob() {
                                         </div>
                                     )}
                                 </div>) : (<div style={styles.container}>
-                                    <h2 style={styles.title}>Tạo ngày làm việc</h2>
+                                    <h2 style={styles.title}>Tạo ngày làm việc: <span style={{ color: "red" }}>(*)</span></h2>
 
                                     <div style={styles.dateGrid}>
                                         {postJobDates.map((date, index) => (
@@ -1246,7 +1297,7 @@ function CreatePostJob() {
                                                     Xóa
                                                 </button>
                                                 <div style={styles.formGroup}>
-                                                    <label style={styles.label}>Ngày:</label>
+                                                    <label style={styles.label}>Ngày: <span style={{ color: "red" }}>(*)</span></label>
                                                     <input
                                                         type="date"
                                                         value={date.eventDate}  // Nếu `date.eventDate` null thì lấy ngày hiện tại
@@ -1257,7 +1308,7 @@ function CreatePostJob() {
                                                 </div>
 
                                                 <div style={styles.formGroup}>
-                                                    <label style={styles.label}>Giờ bắt đầu:</label>
+                                                    <label style={styles.label}>Giờ bắt đầu: <span style={{ color: "red" }}>(*)</span></label>
                                                     <input
                                                         type="time"
                                                         value={date.startTime}
@@ -1267,7 +1318,7 @@ function CreatePostJob() {
                                                 </div>
 
                                                 <div style={styles.formGroup}>
-                                                    <label style={styles.label}>Giờ kết thúc:</label>
+                                                    <label style={styles.label}>Giờ kết thúc: <span style={{ color: "red" }}>(*)</span></label>
                                                     <input
                                                         type="time"
                                                         value={date.endTime}
@@ -1301,7 +1352,7 @@ function CreatePostJob() {
 
                             </div>
                             <div className="full-width">
-                                <label>Tọa độ chi tiết công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Tọa độ chi tiết công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} />
                             </div>
                             <div className="input-group form-group">

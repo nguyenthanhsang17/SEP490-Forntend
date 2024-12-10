@@ -223,7 +223,9 @@ const AdminDashboard = () => {
                 color: "#ffffff",
               }}
             >
-              <h4 style={{ color: "#ffffff" }}>Tổng Doanh Thu</h4>
+              <h4 style={{ color: "#ffffff" }}>
+                Tổng Doanh Thu ({new Date().getFullYear()})
+              </h4>
               <p>
                 {loadingRevenue ? (
                   <span>Đang tải...</span>
@@ -243,7 +245,9 @@ const AdminDashboard = () => {
                 color: "#ffffff",
               }}
             >
-              <h4 style={{ color: "#ffffff" }}>Tổng Gói Đã Bán</h4>
+              <h4 style={{ color: "#ffffff" }}>
+                Tổng Gói Đã Bán ({new Date().getFullYear()})
+              </h4>
               <p>
                 {loadingPackageSold ? (
                   <span>Đang tải...</span>
@@ -393,7 +397,10 @@ const AdminDashboard = () => {
                   />
                 </Col>
               </Row>
-              <Bar data={packageSoldBarChartData} options={packageSoldBarChartOptions} />
+              <Bar
+                data={packageSoldBarChartData}
+                options={packageSoldBarChartOptions}
+              />
             </Card>
           </Col>
 

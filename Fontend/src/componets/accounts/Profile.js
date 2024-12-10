@@ -308,8 +308,8 @@ const Profile = () => {
                           {profile.roleName === "Employer"
                             ? "Nhà tuyển dụng"
                             : profile.roleName === "Job seeker"
-                            ? "Người tìm việc"
-                            : "Không xác định"}
+                              ? "Người tìm việc"
+                              : "Không xác định"}
                         </li>
                         <li>
                           <span
@@ -386,10 +386,10 @@ const Profile = () => {
                                   profile.registerEmployerStatus === 0
                                     ? "orange" // Màu cam cho trạng thái "Đang chờ duyệt"
                                     : profile.registerEmployerStatus === 1
-                                    ? "green" // Màu xanh lá cho trạng thái "Đã được phê duyệt"
-                                    : profile.registerEmployerStatus === 2
-                                    ? "red" // Màu đỏ cho trạng thái "Bị từ chối"
-                                    : "black", // Mặc định
+                                      ? "green" // Màu xanh lá cho trạng thái "Đã được phê duyệt"
+                                      : profile.registerEmployerStatus === 2
+                                        ? "red" // Màu đỏ cho trạng thái "Bị từ chối"
+                                        : "black", // Mặc định
                                 fontWeight: "bold",
                                 whiteSpace: "nowrap", // Đảm bảo không ngắt dòng
                                 display: "inline-block",
@@ -398,10 +398,10 @@ const Profile = () => {
                               {profile.registerEmployerStatus === 0
                                 ? "Đang chờ duyệt"
                                 : profile.registerEmployerStatus === 1
-                                ? "Đã được phê duyệt"
-                                : profile.registerEmployerStatus === 2
-                                ? "Bị từ chối"
-                                : "Không xác định"}
+                                  ? "Đã được phê duyệt"
+                                  : profile.registerEmployerStatus === 2
+                                    ? "Bị từ chối"
+                                    : "Không xác định"}
                             </span>
                           </li>
                         )}
@@ -566,7 +566,7 @@ const Profile = () => {
                               />
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Họ và tên</label>
+                              <label>Họ và tên <span style={{ color: "red" }}>(*)</span></label>
                               <input
                                 type="text"
                                 name="fullName"
@@ -577,7 +577,7 @@ const Profile = () => {
                               />
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Tuổi</label>
+                              <label>Tuổi <span style={{ color: "red" }}>(*)</span></label>
                               <input
                                 type="number"
                                 min={1}
@@ -589,7 +589,7 @@ const Profile = () => {
                               />
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Email</label>
+                              <label>Email </label>
                               <input
                                 disabled
                                 type="email"
@@ -600,7 +600,7 @@ const Profile = () => {
                               />
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Số điện thoại</label>
+                              <label>Số điện thoại <span style={{ color: "red" }}>(*)</span></label>
                               <input
                                 type="text"
                                 name="phonenumber"
@@ -611,7 +611,7 @@ const Profile = () => {
                               />
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Địa chỉ</label>
+                              <label>Địa chỉ <span style={{ color: "red" }}>(*)</span></label>
                               <input
                                 type="text"
                                 name="address"
@@ -622,7 +622,7 @@ const Profile = () => {
                               />
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Giới tính</label>
+                              <label>Giới tính <span style={{ color: "red" }}>(*)</span></label>
                               <select
                                 name="gender"
                                 value={updatedProfile.gender ?? ""}
@@ -635,7 +635,7 @@ const Profile = () => {
                               </select>
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Tình trạng hiện tại</label>
+                              <label>Tình trạng hiện tại <span style={{ color: "red" }}>(*)</span></label>
                               <select
                                 name="currentJob"
                                 className="form-control"
@@ -651,7 +651,7 @@ const Profile = () => {
                               </select>
                             </div>
                             <div className="col-md-4 col-sm-6">
-                              <label>Miêu tả bản thân</label>
+                              <label>Miêu tả bản thân <span style={{ color: "red" }}>(*)</span></label>
                               <textarea
                                 name="description"
                                 value={updatedProfile.description}

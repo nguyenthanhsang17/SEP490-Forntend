@@ -544,59 +544,102 @@ function ReCreateJob() {
     const validateJobData = () => {
         // Kiểm tra các trường không được null hoặc khoảng trắng
         if (!JobDetail.jobTitle || JobDetail.jobTitle.trim() === '') {
-            toast.error('Vui lòng nhập tiêu đề công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập tiêu đề công việc',
+            });
             return false;
         }
         if (!JobDetail.jobDescription || JobDetail.jobDescription.trim() === '') {
-            toast.error('Vui lòng nhập mô tả công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập mô tả công việc',
+            });
             return false;
         }
         if (!JobDetail.salary || JobDetail.salary === 0) {
-            toast.error('Vui lòng nhập lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập lương',
+            });
             return false;
         }
         if (!JobDetail.numberPeople || JobDetail.numberPeople == 0) {
-            toast.error('Vui lòng nhập số lượng người cần tuyển');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập số lượng người cần tuyển',
+            });
             return false;
         }
         if (!JobDetail.address || JobDetail.address.trim() === '') {
-            toast.error('Vui lòng nhập địa chỉ');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập địa chỉ',
+            });
             return false;
         }
-
+    
         // Kiểm tra salary_types_id và JobCategory_Id phải > 0
         if (!JobDetail.salaryTypesId || parseInt(JobDetail.salaryTypesId) <= 0) {
-            toast.error('Vui lòng chọn loại lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại lương',
+            });
             return false;
         }
         if (!JobDetail.jobCategoryId || parseInt(JobDetail.jobCategoryId) <= 0) {
-            toast.error('Vui lòng chọn loại công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại công việc',
+            });
             return false;
         }
         // Kiểm tra định dạng số
         if (isNaN(JobDetail.salary) || parseFloat(JobDetail.salary) <= 0) {
-            toast.error('Lương phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Lương phải là số dương',
+            });
             return false;
         }
-
+    
         if (isNaN(JobDetail.numberPeople) || parseInt(JobDetail.numberPeople) <= 0) {
-            toast.error('Số lượng người cần tuyển phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Số lượng người cần tuyển phải là số dương',
+            });
             return false;
         }
         // Kiểm tra định dạng tọa độ
-        if (JobDetail.latitude === '' || JobDetail.longitude === '' || 
-            JobDetail.latitude === null || JobDetail.longitude === null || 
-            isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))) {
-            toast.error('Vĩ độ và kinh độ phải là số');
+        if (
+            JobDetail.latitude === '' || JobDetail.longitude === '' ||
+            JobDetail.latitude === null || JobDetail.longitude === null ||
+            isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))
+        ) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vĩ độ và kinh độ phải là số hợp lệ',
+            });
             return false;
         }
-
-        return true;
+    
+        return true; // Nếu tất cả kiểm tra đều hợp lệ
     };
+    
 
     const luujob = async (e) => {
         e.preventDefault();
-        
+
 
         if (!validateJobData()) {
             return;
@@ -687,7 +730,7 @@ function ReCreateJob() {
     };
 
     const luujob2 = async () => {
-        
+
 
         if (!validateJobData()) {
             return;
@@ -804,7 +847,7 @@ function ReCreateJob() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
 
         if (!validateJobData()) {
             return;
@@ -959,7 +1002,10 @@ function ReCreateJob() {
                     <h1>Tạo bài đăng tuyển</h1>
                 </div>
                 <div className="container">
-                    <h1>Số lượt đăng: {serviceInfo.numberPosts ?? 0}  Số lượt đăng nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
+                    <h1>Số lượt đăng bài: {serviceInfo.numberPosts ?? 0} </h1>
+                </div>
+                <div className="container">
+                    <h1>Số lượt đăng bài nổi bật: {serviceInfo.numberPostsUrgentRecruitment ?? 0}</h1>
                 </div>
             </section>
             <div className="clearfix"></div>
@@ -969,7 +1015,7 @@ function ReCreateJob() {
                     <div className="row bottom-mrg">
                         <form className="add-feild form-container" >
                             <div className="input-group form-group">
-                                <label>Tiêu đề công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Tiêu đề công việc: : <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -986,7 +1032,7 @@ function ReCreateJob() {
                             </div>
 
                             <div className="input-group form-group">
-                                <label>Chọn loại công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Chọn loại công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     className="form-control"
                                     value={JobDetail.jobCategoryId}
@@ -1012,7 +1058,7 @@ function ReCreateJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
-                                <label>Chọn kiểu trả lương</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Chọn kiểu trả lương : <span style={{ color: "red" }}>(*)</span></label>
                                 <select
                                     className="form-control"
                                     value={JobDetail.salaryTypesId}
@@ -1034,7 +1080,7 @@ function ReCreateJob() {
                                 </select>
                             </div>
                             <div className="input-group form-group">
-                                <label>Mức lương vnd</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Mức lương (VND): <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     min={0}
@@ -1051,7 +1097,7 @@ function ReCreateJob() {
                                 />
                             </div>
                             <div className="input-group form-group">
-                                <label>Số lượng người cần tuyển</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Số lượng người cần tuyển: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -1069,7 +1115,7 @@ function ReCreateJob() {
                             </div>
 
                             <div className="input-group form-group full-width">
-                                <label>Mô tả công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Mô tả công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <textarea
                                     className="form-control"
                                     placeholder="Mô tả công việc"
@@ -1084,7 +1130,7 @@ function ReCreateJob() {
                                 ></textarea>
                             </div>
                             <div className="input-group form-group full-width">
-                                <label>Địa chỉ chi tiết</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Địa chỉ chi tiết: <span style={{ color: "red" }}>(*)</span></label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -1259,7 +1305,7 @@ function ReCreateJob() {
                             </div>
 
                             <div className="input-group form-group ">
-                                <label>Thời gian duy trì bài đăng:</label>
+                                <label>Thời gian duy trì bài đăng (1 tháng tương ứng với 1 lượt đăng bài): <span style={{ color: "red" }}>(*)</span></label>
                                 <select className="form-control" value={JobDetail.time} onChange={(e) => {
                                     const newValue = e.target.value;
                                     SetJobDetail(prev => ({
@@ -1343,7 +1389,7 @@ function ReCreateJob() {
                                 </label>
                             </div>
                             <div className="full-width">
-                                <label>Lịch công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Lịch công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 {isLongTerm ? (
                                     <div>
                                         {/* Schedule Selection Tabs */}
@@ -1483,12 +1529,12 @@ function ReCreateJob() {
                                     </div>
                                 ) : (
                                     <div style={styles.container}>
-                                        <h2 style={styles.title}>Tạo ngày làm việc</h2>
+                                        <h2 style={styles.title}>Tạo ngày làm việc: <span style={{ color: "red" }}>(*)</span></h2>
 
                                         <div style={styles.dateGrid}>
                                             {postJobDates.map((date, index) => (
                                                 <div key={index} style={styles.dateCard}>
-                                                    <h3 style={styles.cardTitle}>Ngày làm việc {index + 1}</h3>
+                                                    <h3 style={styles.cardTitle}>Ngày làm việc: {index + 1}</h3>
                                                     <button
                                                         style={styles.deleteButton}
                                                         onClick={() => handleDeletePostJobDate(index)}
@@ -1496,7 +1542,7 @@ function ReCreateJob() {
                                                         Xóa
                                                     </button>
                                                     <div style={styles.formGroup}>
-                                                        <label style={styles.label}>Ngày:</label>
+                                                        <label style={styles.label}>Ngày: <span style={{ color: "red" }}>(*)</span></label>
                                                         <input
                                                             type="date"
                                                             value={date.eventDate}
@@ -1506,7 +1552,7 @@ function ReCreateJob() {
                                                     </div>
 
                                                     <div style={styles.formGroup}>
-                                                        <label style={styles.label}>Giờ bắt đầu:</label>
+                                                        <label style={styles.label}>Giờ bắt đầu: <span style={{ color: "red" }}>(*)</span></label>
                                                         <input
                                                             type="time"
                                                             value={date.startTime}
@@ -1516,7 +1562,7 @@ function ReCreateJob() {
                                                     </div>
 
                                                     <div style={styles.formGroup}>
-                                                        <label style={styles.label}>Giờ kết thúc:</label>
+                                                        <label style={styles.label}>Giờ kết thúc: <span style={{ color: "red" }}>(*)</span></label>
                                                         <input
                                                             type="time"
                                                             value={date.endTime}
@@ -1547,7 +1593,7 @@ function ReCreateJob() {
 
                             </div>
                             <div className="full-width">
-                                <label>Tọa độ chi tiết công việc</label><label style={{ marginLeft: "10px", color: 'red' }}> * </label>
+                                <label>Tọa độ chi tiết công việc: <span style={{ color: "red" }}>(*)</span></label>
                                 <GeocodingMap handlePositionChange={handlePositionChange} handlePositionChangeToado={handlePositionChangeToado} initialLatitude={JobDetail.latitude} initialLongitude={JobDetail.longitude} address={JobDetail.address} />
                             </div>
                             <div className="input-group form-group">
