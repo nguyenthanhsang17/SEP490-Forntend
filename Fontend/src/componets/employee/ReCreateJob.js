@@ -544,55 +544,98 @@ function ReCreateJob() {
     const validateJobData = () => {
         // Kiểm tra các trường không được null hoặc khoảng trắng
         if (!JobDetail.jobTitle || JobDetail.jobTitle.trim() === '') {
-            toast.error('Vui lòng nhập tiêu đề công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập tiêu đề công việc',
+            });
             return false;
         }
         if (!JobDetail.jobDescription || JobDetail.jobDescription.trim() === '') {
-            toast.error('Vui lòng nhập mô tả công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập mô tả công việc',
+            });
             return false;
         }
         if (!JobDetail.salary || JobDetail.salary === 0) {
-            toast.error('Vui lòng nhập lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập lương',
+            });
             return false;
         }
         if (!JobDetail.numberPeople || JobDetail.numberPeople == 0) {
-            toast.error('Vui lòng nhập số lượng người cần tuyển');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập số lượng người cần tuyển',
+            });
             return false;
         }
         if (!JobDetail.address || JobDetail.address.trim() === '') {
-            toast.error('Vui lòng nhập địa chỉ');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập địa chỉ',
+            });
             return false;
         }
-
+    
         // Kiểm tra salary_types_id và JobCategory_Id phải > 0
         if (!JobDetail.salaryTypesId || parseInt(JobDetail.salaryTypesId) <= 0) {
-            toast.error('Vui lòng chọn loại lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại lương',
+            });
             return false;
         }
         if (!JobDetail.jobCategoryId || parseInt(JobDetail.jobCategoryId) <= 0) {
-            toast.error('Vui lòng chọn loại công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại công việc',
+            });
             return false;
         }
         // Kiểm tra định dạng số
         if (isNaN(JobDetail.salary) || parseFloat(JobDetail.salary) <= 0) {
-            toast.error('Lương phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Lương phải là số dương',
+            });
             return false;
         }
-
+    
         if (isNaN(JobDetail.numberPeople) || parseInt(JobDetail.numberPeople) <= 0) {
-            toast.error('Số lượng người cần tuyển phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Số lượng người cần tuyển phải là số dương',
+            });
             return false;
         }
         // Kiểm tra định dạng tọa độ
-        if (JobDetail.latitude === '' || JobDetail.longitude === '' ||
+        if (
+            JobDetail.latitude === '' || JobDetail.longitude === '' ||
             JobDetail.latitude === null || JobDetail.longitude === null ||
-            isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))) {
-            toast.error('Vĩ độ và kinh độ phải là số');
+            isNaN(Number(JobDetail.latitude)) || isNaN(Number(JobDetail.longitude))
+        ) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vĩ độ và kinh độ phải là số hợp lệ',
+            });
             return false;
         }
-
-        return true;
+    
+        return true; // Nếu tất cả kiểm tra đều hợp lệ
     };
+    
 
     const luujob = async (e) => {
         e.preventDefault();

@@ -452,64 +452,112 @@ function CreatePostJob() {
     const validateJobData = () => {
         // Kiểm tra các trường không được null hoặc khoảng trắng
         if (!jobTitle || jobTitle.trim() === '') {
-            toast.error('Vui lòng nhập tiêu đề công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập tiêu đề công việc',
+            });
             return false;
         }
         if (!jobDescription || jobDescription.trim() === '') {
-            toast.error('Vui lòng nhập mô tả công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập mô tả công việc',
+            });
             return false;
         }
         if (!fixSalary || fixSalary.trim() === '') {
-            toast.error('Vui lòng nhập lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập lương',
+            });
             return false;
         }
         if (!numberPeople || numberPeople.trim() === '') {
-            toast.error('Vui lòng nhập số lượng người cần tuyển');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập số lượng người cần tuyển',
+            });
             return false;
         }
         if (!address || address.trim() === '') {
-            toast.error('Vui lòng nhập địa chỉ');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng nhập địa chỉ',
+            });
             return false;
         }
-
-        // Kiểm tra salary_types_id và JobCategory_Id phải > 0
+    
+        // Kiểm tra salaryType và jobCategory phải > 0
         if (!salaryType || parseInt(salaryType) <= 0) {
-            toast.error('Vui lòng chọn loại lương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại lương',
+            });
             return false;
         }
         if (!jobCategory || parseInt(jobCategory) <= 0) {
-            toast.error('Vui lòng chọn loại công việc');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn loại công việc',
+            });
             return false;
         }
+    
         // Kiểm tra định dạng số
         if (isNaN(fixSalary) || parseFloat(fixSalary) <= 0) {
-            toast.error('Lương phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Lương phải là số dương',
+            });
             return false;
         }
-
+    
         if (isNaN(numberPeople) || parseInt(numberPeople) <= 0) {
-            toast.error('Số lượng người cần tuyển phải là số dương');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Số lượng người cần tuyển phải là số dương',
+            });
             return false;
         }
-
+    
         // Kiểm tra định dạng ngày
         const currentDate = new Date();
         const expDate = new Date(expirationDate);
         if (expDate <= currentDate) {
-            toast.error('Ngày hết hạn phải lớn hơn ngày hiện tại');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Ngày hết hạn phải lớn hơn ngày hiện tại',
+            });
             return false;
         }
-
+    
         // Kiểm tra định dạng tọa độ
-        if (latitude === '' || longitude === '' ||
+        if (
+            latitude === '' || longitude === '' ||
             latitude === null || longitude === null ||
-            isNaN(Number(latitude)) || isNaN(Number(longitude))) {
-            toast.error('Vĩ độ và kinh độ phải là số');
+            isNaN(Number(latitude)) || isNaN(Number(longitude))
+        ) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vĩ độ và kinh độ phải là số',
+            });
             return false;
         }
-
-        return true;
+    
+        return true; // Nếu tất cả kiểm tra đều hợp lệ
     };
+    
 
     const luujob = async (e) => {
         e.preventDefault();
