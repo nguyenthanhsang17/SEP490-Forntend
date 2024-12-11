@@ -10,10 +10,11 @@ const PaymentHistoryTable = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [servicePrices, setServicePrices] = useState([]); // State for service prices
   const pageSize = 10; // Fixed page size of 5 items per page
+  const [username, Setusername] = useState("");
   const navigate = useNavigate();
   // Fetch data for payment history
   const fetchData = async () => {
-    const query = `pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}`;
+    const query = `pageNumber=${pageNumber}&pageSize=${pageSize}&daysFilter=${daysFilter}&servicePriceId=${servicePriceIdFilter}&username=${username}`;
     console.log('Fetching data with query:', query);
 
     try {
@@ -41,7 +42,7 @@ const PaymentHistoryTable = () => {
   useEffect(() => {
     fetchData();
     fetchServicePrices();
-  }, [pageNumber, daysFilter, servicePriceIdFilter]);
+  }, [pageNumber, daysFilter, servicePriceIdFilter, username]);
 
   // Handle page change
   const handlePageChange = (newPage) => {
@@ -61,6 +62,11 @@ const PaymentHistoryTable = () => {
     setServicePriceIdFilter(event.target.value);
     setPageNumber(1); // Reset to page 1 when filter changes
   };
+
+  const handleUsernameChange = (event) =>{
+    Setusername(event.target.value);
+    setPageNumber(1); // Reset to page 1 when filter changes
+  }
 
   const ViewUserDetail = (userid) => {
     navigate(`/user/${userid}`);
@@ -119,6 +125,8 @@ const PaymentHistoryTable = () => {
                 <option value="">Không có dịch vụ</option>
               )}
             </select>
+            <label htmlFor="servicePriceId">Lọc theo tên người dùng: </label>
+            <input type='text' placeholder='Tên người dùng' value={username} style={{width: "300px"}} onChange={handleUsernameChange}/>
           </div>
 
           {/* Table displaying payment history */}
@@ -194,14 +202,14 @@ const PaymentHistoryTable = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0;
+    margin: 5px 0;
     background-color: #f8f9fa;
     padding: 15px;
     border-radius: 10px;
 }
 
 .filter-controls label {
-    margin-right: 15px;
+    margin-right: 5px;
     font-weight: bold;
     color: #2c3e50;
     font-size: 16px;
@@ -214,7 +222,17 @@ const PaymentHistoryTable = () => {
     background-color: white;
     font-size: 15px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-right: 20px;
+    margin-right: 10px;
+}
+
+.filter-controls input {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #bdc3c7;
+    background-color: white;
+    font-size: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-right: 10px;
 }
 
 .payment-history-table {

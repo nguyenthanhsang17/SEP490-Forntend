@@ -19,9 +19,18 @@ function PostJobDetail() {
   const pageSize = 5; // Set page size for pagination
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  const [schedules, setSchedules] = useState();
   const token = localStorage.getItem("token");
-
+  const [activeScheduleIndex, setActiveScheduleIndex] = useState(0);
+  const daysOfWeek = [
+    { name: "Thứ 2", icon: "📅" },
+    { name: "Thứ 3", icon: "📅" },
+    { name: "Thứ 4", icon: "📅" },
+    { name: "Thứ 5", icon: "📅" },
+    { name: "Thứ 6", icon: "📅" },
+    { name: "Thứ 7", icon: "📅" },
+    { name: "Chủ Nhật", icon: "🌞" }
+  ];
   const statusMapping = {
     0: 'Nháp',
     1: 'Chờ Duyệt',
@@ -32,12 +41,47 @@ function PostJobDetail() {
     6: 'Bị Cấm',
   };
 
+  const getMaxWorkingHours = () => {
+    if (!schedules || schedules.length === 0) return 0;
+
+    // Lấy slot hiện tại
+    const currentSlot = schedules[activeScheduleIndex];
+
+    // Tìm số lượng giờ làm việc nhiều nhất trong các ngày
+    const maxHours = currentSlot.jobScheduleDTOs.reduce((max, schedule) => {
+      return Math.max(max, schedule.workingHourDTOs.length);
+    }, 0);
+
+    return maxHours;
+  };
+
+  const getWorkingHoursForDay = (dayOfWeek) => {
+    if (!schedules || schedules.length === 0) return null;
+
+    const currentSlot = schedules[activeScheduleIndex];
+    const scheduleForDay = currentSlot.jobScheduleDTOs.find(
+      schedule => schedule.dayOfWeek === dayOfWeek
+    );
+
+    if (!scheduleForDay) return null;
+
+    return scheduleForDay.workingHourDTOs.map(
+      hour => `${hour.startTime.slice(0, 5)} - ${hour.endTime.slice(0, 5)}`
+    );
+  };
+  
+
   useEffect(() => {
     axios.get(`https://localhost:7077/api/PostJobs/GetPostDetailForStaff?id=${job_id}`)
       .then(response => {
         setPostData(response.data);
         setIsBanned(response.data.status === 3);
-        setStatus(response.data.status)
+        console.log(response.data.status===1);
+        console.log(response.data.status);
+        setStatus(response.data.status);
+        if (response.data.slots && response.data.slots.length > 0) {
+          setSchedules(response.data.slots);
+        }
       })
       .catch(error => console.error('Error fetching post data:', error));
   }, [job_id]);
@@ -211,6 +255,12 @@ function PostJobDetail() {
       setShowImage(false);
     }
   };
+  function removeTheo(text) {
+    if (text.startsWith("Theo ")) {
+      return text.slice(5); // Bỏ chữ "Theo " (5 ký tự đầu)
+    }
+    return text; // Trả về chuỗi gốc nếu không bắt đầu bằng "Theo "
+  }
 
   return (
 
@@ -237,13 +287,16 @@ function PostJobDetail() {
                   <strong>Địa chỉ:</strong> {postData.address}
                 </div>
                 <div className="info-item">
-                  <strong>Số lượng tuyển:</strong> {postData.numberPeople}
+                  <strong>Số lượng tuyển:</strong> {postData.numberPeople} người
                 </div>
                 <div className="info-item">
-                  <strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND
+                  <strong>Mức lương:</strong> {postData.salary.toLocaleString()} VND / {removeTheo(postData.salaryTypes.typeName)}
                 </div>
                 <div className="info-item">
                   <strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}
+                </div>
+                <div className="info-item">
+                  <strong>Thời gian duy trì:</strong> {postData.time}
                 </div>
                 <div className="info-item">
                   <strong>Trạng thái:</strong> {statusMapping[postData.status]}
@@ -253,6 +306,109 @@ function PostJobDetail() {
                     <strong>Lý do từ chối:</strong> {postData.reason}
                   </div>
                 )}
+                <section style={{width: "750px", marginTop: "0px"}}>
+                  <div className="container">
+                    <div className="row row-bottom">
+                      {postData.slots ? (
+                        <div style={styles.container}>
+                          
+                          {Array.isArray(schedules) && schedules.length > 0 && (
+                            <div style={{ overflowX: 'auto' }}>
+                              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                                <thead>
+                                  <tr>
+                                    {daysOfWeek.map((day, index) => (
+                                      <th
+                                        key={index}
+                                        style={{
+                                          border: '1px solid #ddd',
+                                          padding: '5px 5px',
+                                          backgroundColor: '#f2f2f2',
+                                          minWidth: '200px',
+                                        }}
+                                      >
+                                        <div style={{ marginBottom: '10px' }}>{day.name}{day.icon}</div>
+                                      </th>
+                                    ))}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {[...Array(getMaxWorkingHours())].map((_, rowIndex) => (
+                                    <tr key={rowIndex}>
+                                      {daysOfWeek.map((_, dayIndex) => {
+                                        const workingHours = getWorkingHoursForDay(dayIndex + 2);
+                                        return (
+                                          <td
+                                            key={dayIndex}
+                                            style={{
+                                              border: '1px solid #ddd',
+                                              padding: '8px',
+                                              verticalAlign: 'top',
+                                            }}
+                                          >
+                                            {workingHours && workingHours[rowIndex] ? workingHours[rowIndex] : '-'}
+                                          </td>
+                                        );
+                                      })}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      ) : null}
+
+                      {postData.jobPostDates ? (
+                        <div className="container">
+                          {postData.jobPostDates ? (
+                            <div style={styles.dateGrid}>
+                              {postData.jobPostDates.map((date, index) => (
+                                <div key={index} style={styles.dateCard}>
+                                  <h3 style={styles.cardTitle}>Ngày làm việc {index + 1}</h3>
+                                  <div style={styles.formGroup}>
+                                    <label style={styles.label}>Ngày:</label>
+                                    <input
+                                      type="date"
+                                      value={date.eventDate ? date.eventDate.slice(0, 10) : new Date().toISOString().split('T')[0]}
+                                      style={styles.input}
+                                      min={new Date().toISOString().split('T')[0]} // Giới hạn ngày chọn chỉ có thể là ngày hiện tại trở đi
+                                      readOnly
+                                    />
+                                  </div>
+
+                                  <div style={styles.formGroup}>
+                                    <label style={styles.label}>Giờ bắt đầu:</label>
+                                    <input
+                                      type="time"
+                                      value={date.startTime}
+                                      style={styles.input}
+                                      readOnly
+                                    />
+                                  </div>
+
+                                  <div style={styles.formGroup}>
+                                    <label style={styles.label}>Giờ kết thúc:</label>
+                                    <input
+                                      type="time"
+                                      value={date.endTime}
+                                      style={styles.input}
+                                      readOnly
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p style={{ color: '#999' }}>Không có lịch làm việc</p>
+                          )}
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                </section>
                 {postData.imagePostJobs && postData.imagePostJobs.length > 0 && (
                   <div className="images-container">
                     <strong>Hình ảnh công việc:</strong>
@@ -294,6 +450,7 @@ function PostJobDetail() {
                   </div>
                 )}
 
+                
               </div>
 
               <div className="sidebar">
@@ -324,9 +481,6 @@ function PostJobDetail() {
                       <div className="user-details">
                         <div className="info-item">
                           <strong>Người duyệt:</strong> {postData.censor.fullName}
-                        </div>
-                        <div className="info-item">
-                          <strong>Tuổi:</strong> {postData.censor.age}
                         </div>
                         <div className="info-item">
                           <strong>Số điện thoại:</strong> {postData.censor.phonenumber}
@@ -430,7 +584,7 @@ function PostJobDetail() {
   .container {
     max-width: 100%;
     margin: 0 auto;
-    padding: 40px;
+    padding: 10px;
     background-color: #f9fafb;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -786,27 +940,108 @@ function PostJobDetail() {
     background-color: #2980b9;
   }
 `}</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
-
   );
 }
+
+const styles = {
+  container: {
+    maxWidth: '1600px',
+    margin: '20px auto',
+    padding: '30px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '12px',
+    boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+    fontFamily: 'Arial, sans-serif'
+  },
+  title: {
+    textAlign: 'center',
+    color: '#343a40',
+    marginBottom: '30px',
+    fontSize: '28px',
+    fontWeight: '600'
+  },
+  dateGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '20px',
+    marginBottom: '30px'
+  },
+  dateCard: {
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+    position: 'relative'
+  },
+  cardTitle: {
+    color: '#495057',
+    marginBottom: '15px',
+    fontSize: '18px'
+  },
+  formGroup: {
+    marginBottom: '15px'
+  },
+  label: {
+    display: 'block',
+    marginBottom: '5px',
+    color: '#6c757d',
+    fontSize: '14px'
+  },
+  input: {
+    width: '100%',
+    padding: '8px 12px',
+    borderRadius: '4px',
+    border: '1px solid #ced4da',
+    fontSize: '14px',
+    transition: 'border-color 0.15s ease-in-out',
+    boxSizing: 'border-box'
+  },
+  buttonContainer: {
+    display: 'flex',
+    gap: '15px',
+    marginTop: '20px'
+  },
+  button: {
+    flex: 1,
+    padding: '10px 15px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+    fontSize: '16px',
+    transition: 'opacity 0.2s ease'
+  },
+  addButton: {
+    backgroundColor: '#28a745',
+    color: 'white',
+  },
+  publishButton: {
+    backgroundColor: '#007bff',
+    color: 'white',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '12px'
+  },
+  jsonOutput: {
+    marginTop: '30px',
+    padding: '20px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #e9ecef',
+    borderRadius: '8px',
+    whiteSpace: 'pre-wrap',
+    fontSize: '14px',
+    color: '#212529'
+  }
+};
 
 export default PostJobDetail;

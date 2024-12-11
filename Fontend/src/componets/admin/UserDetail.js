@@ -98,7 +98,7 @@ const UserDetail = () => {
       showLoaderOnConfirm: true,
     });
 
-    if(result.isConfirmed){
+    if (result.isConfirmed) {
       try {
         const response = await axios.post(
           `https://localhost:7077/api/Users/Ban_Unban_user/${id}?ban=false`, // Không cần gửi body
@@ -149,11 +149,15 @@ const UserDetail = () => {
                 ? "Ứng Viên"
                 : user.roleId === 2
                   ? "Nhà tuyển dụng"
-                  : user.roleId === 32
+                  : user.roleId === 3
                     ? "Nhân Viên Hệ Thống"
                     : "Quản Trị Viên"} </p>
-              <p><strong>Trạng thái công việc:</strong> {user.jobName}</p>
-              <p><strong>Mô Tả:</strong> {user.description}</p>
+              {user && user.roleId !== 3 ? (
+                <>
+                  <p><strong>Trạng thái công việc:</strong> {user.jobName}</p>
+                  <p><strong>Mô Tả:</strong> {user.description}</p>
+                </>
+              ) : null}
               <p><strong>Địa Chỉ:</strong> {user.address}</p>
               <p><strong>Giới Tính:</strong> {user.gender ? "Nam" : "Nữ"}</p>
             </div>
@@ -166,7 +170,7 @@ const UserDetail = () => {
             ) : (
               <>
                 {/* Hiển thị nút Cấm và ô nhập lý do cấm nếu người dùng chưa bị cấm */}
-                
+
                 <button style={styles.button1} onClick={handleBan}>Cấm người dùng</button>
               </>
             )}

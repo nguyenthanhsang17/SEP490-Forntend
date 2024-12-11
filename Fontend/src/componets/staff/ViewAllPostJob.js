@@ -155,7 +155,7 @@ function ViewAllPostJob() {
           .container {
             max-width: 90%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
             background-color: #f4f6f8;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
