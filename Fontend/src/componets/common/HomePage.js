@@ -40,11 +40,12 @@ const HomePage = () => {
         >
           <div className="container">
             <div className="banner-caption">
-              
+              <div className="col-md-12 col-sm-12 banner-text">
+                <h1>"Chào Mừng Bạn Đến Với VJN"</h1>
+              </div>
             </div>
           </div>
         </div>
-
         {/* Job List Section */}
         <section>
           <div className="container">
