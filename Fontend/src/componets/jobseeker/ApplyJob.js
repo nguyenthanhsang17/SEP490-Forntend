@@ -16,7 +16,14 @@ function ApplyJob() {
     useEffect(() => {
         const fetchCvs = async () => {
             const haveProfile = localStorage.getItem("haveProfile");
-            if (!haveProfile) {
+            console.log("Giá trị haveProfile:", haveProfile);
+            console.log("Điều kiện if:", !haveProfile);
+
+            // Chuyển đổi giá trị từ localStorage sang boolean
+            const hasProfile = haveProfile === 'true';
+            //alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
+            if (!hasProfile) {
+                console.log("Alert sẽ được gọi");
                 alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
                 navigate("/profile");
                 return;
@@ -197,7 +204,7 @@ function ApplyJob() {
                         </div>
                     ))}
                 </div>
-                <div style={{ paddingTop: '100px', paddingBottom: '100px'}}>
+                <div style={{ paddingTop: '100px', paddingBottom: '100px' }}>
                     <h2 style={styles.title} >Chưa có cv? <a onClick={handleNavigateToManagementCV}>Tạo mới</a> </h2>
                 </div>
             </div>

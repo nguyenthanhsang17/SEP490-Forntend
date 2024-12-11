@@ -168,6 +168,7 @@ const Profile = () => {
       setProfile(updatedProfile);
       localStorage.setItem("fullName", updatedProfile.fullName); // Update fullName in localStorage
       setIsUpdateProfile(false);
+      localStorage.setItem('haveProfile', true);
     } catch (err) {
       console.log(err.response.data);
       enqueueSnackbar("Không thể cập nhật hồ sơ. Vui lòng thử lại.", {

@@ -76,7 +76,7 @@ function Login() {
           localStorage.setItem('fullName', result.fullName);
           localStorage.setItem('roleId', result.roleId);
           localStorage.setItem('userId', result.userId);
-  
+          localStorage.setItem('haveProfile', result.haveProfile);
           // Chuyển hướng dựa trên vai trò
           if (result.roleId === 4) {
             navigate('/AdminDashboard');

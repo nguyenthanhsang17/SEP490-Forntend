@@ -9,7 +9,8 @@ import Header from '../common/Header';
 import Map from '../utils/Map';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
+import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function ViewJobCreatedDetail() {
   const [jobDetails, setJobDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -346,7 +347,7 @@ function ViewJobCreatedDetail() {
           <div className="row bottom-mrg">
             <div className="col-md-8 col-sm-8">
               <div className="detail-desc-caption">
-                <h4>{jobDetails.jobCategoryName}</h4>
+                <h4>Loại công việc: {jobDetails.jobCategoryName}</h4>
                 <span></span>
                 <ul>
                   <li><i className="fa fa-briefcase"></i><span>Số người cần tuyển : {jobDetails.numberPeople} người</span></li>
@@ -354,6 +355,7 @@ function ViewJobCreatedDetail() {
                   <i className="fa fa-money"></i>Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
                   </li>
                   <li><i className="fa fa-user"></i><span> {jobDetails.numberAppliedUser} lượt đã ứng tuyển</span></li>
+                  <li><FontAwesomeIcon icon={faClock}/><span> Thời gian duy trì bài đăng: {jobDetails.time} Tháng</span></li>
                 </ul>
               </div>
             </div>
@@ -374,7 +376,7 @@ function ViewJobCreatedDetail() {
                 <h4 style={styles.expirationDate}>
                   Ngày hết hạn: {jobDetails.expirationDate
                     ? `${new Date(jobDetails.expirationDate).toLocaleDateString('en-GB')}`
-                    : null}
+                    : "Chưa Xác Định"}
                 </h4>
                 {(jobDetails.status === 3 || jobDetails.status === 6) && jobDetails.reason && (
                   // Hiển thị lý do bị từ chối nếu có lý do

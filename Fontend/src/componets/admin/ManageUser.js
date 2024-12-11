@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./SidebarAdmin";
 import Header from "./HeaderAdmin";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 const ManageUser = () => {
   const [users, setUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -51,6 +53,21 @@ const ManageUser = () => {
   };
 
   const styles = {
+    createBlogButton: { // camelCase tên key
+      padding: "12px 20px", /* Add padding */
+      backgroundColor: "#3498db", /* Button background color */
+      color: "white", /* Text color */
+      border: "none", /* Remove border */
+      borderRadius: "8px", /* Rounded corners */
+      fontWeight: 600, /* Font weight */
+      transition: "background-color 0.3s ease, transform 0.3s ease", /* Transition effects */
+    },
+    createBlogContainer: {          // Đổi tên thuộc tính sang camelCase.
+      display: "flex",              // Giá trị phải nằm trong dấu ngoặc kép.
+      justifyContent: "center",     // Đổi "justifycontent" thành "justifyContent".
+      margin: "20px 0",             // Giá trị phải là chuỗi.
+    },
+    
     container: {
       padding: "20px",
       fontFamily: "'Roboto', sans-serif",
@@ -187,6 +204,9 @@ const ManageUser = () => {
               Tìm kiếm
             </button>
           </form>
+          <div style={styles.createBlogContainer}>
+            <button onClick={() => navigate("/CreateStaffAccount")} style={styles.createBlogButton}><FontAwesomeIcon icon={faPlus} /> Tạo Tài khoản nhân viên hệ thống</button>
+          </div>
 
           {/* User List */}
           <table style={styles.table}>

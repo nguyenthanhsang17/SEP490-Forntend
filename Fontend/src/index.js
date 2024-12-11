@@ -61,6 +61,7 @@ import ManageService from "./componets/admin/manageServiec";
 import PaymentResult from "./componets/employee/PaymentResult";
 import ReApplyJob from "./componets/jobseeker/ReApplyJob";
 import PaymentHistoryTableDetail from "./componets/admin/ViewHistoryPaymentDetai";
+import CreateStaffAccount from "./componets/admin/CreateStaffAccount";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -94,6 +95,7 @@ root.render(
             <Route path="/ViewAllPost" element={<PrivateRoute allowedRoles={[3, 4]}><ViewAllPostJob /></PrivateRoute>} />
             <Route path="/ViewDetail/:job_id" element={<PrivateRoute allowedRoles={[3, 4]}><PostJobDetail /></PrivateRoute>} />
 
+            <Route path="/CreateStaffAccount" element={<CreateStaffAccount />} />
 
             <Route path="/ManageService" element={<PrivateRoute allowedRoles={[4]}><ManageService /></PrivateRoute>} />
 
