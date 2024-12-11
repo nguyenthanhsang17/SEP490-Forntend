@@ -1362,4 +1362,22 @@ textarea.form-control {
     border-color: #28a745;
     outline: none;
   }
- 
+  .banner-text h1 {
+    font-size: 5rem;
+    color: #fff;
+    text-align: center;
+    animation: fadeInUp 1.5s ease-in-out; /* Gọi animation */
+  }
+  
+  /* Định nghĩa animation fadeInUp */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px); /* Di chuyển từ dưới lên */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0); /* Về vị trí ban đầu */
+    }
+  }
+  
