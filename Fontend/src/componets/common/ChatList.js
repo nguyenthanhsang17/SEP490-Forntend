@@ -25,7 +25,7 @@ const styles = {
     padding: "10px",
     height: "100vh", // Đảm bảo chiều cao full màn hình
   },
-  
+
   header: {
     fontSize: "20px",
     padding: "10px 0",
@@ -41,7 +41,7 @@ const styles = {
     height: "calc(100% - 50px)", // Đặt chiều cao trừ phần header và input
     maxHeight: "calc(100vh - 150px)", // Đặt chiều cao tối đa
   },
-  
+
   messageContainer: {
     display: "flex",
     margin: "5px 0",
@@ -121,7 +121,6 @@ const ChatList = () => {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
   }, [messages]);
-  
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -133,6 +132,7 @@ const ChatList = () => {
       }
 
       try {
+        // Lấy danh sách các cuộc trò chuyện
         const response = await axios.get(
           "https://localhost:7077/api/Chat/GetChatUsers",
           {
@@ -141,7 +141,49 @@ const ChatList = () => {
             },
           }
         );
-        setChats(response.data);
+
+        const chatUsers = response.data;
+
+        // Duyệt qua từng cuộc trò chuyện để lấy tin nhắn cuối
+        const updatedChats = await Promise.all(
+          chatUsers.map(async (chat) => {
+            try {
+              const messagesResponse = await axios.get(
+                `https://localhost:7077/api/Chat/GetAllChat/${chat.userId}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+
+              const messages = messagesResponse.data;
+              const lastMessage =
+                messages.length > 0
+                  ? messages[messages.length - 1]
+                  : { message: "Không có tin nhắn", sendTime: null };
+
+              return {
+                ...chat,
+                lastMessage: lastMessage.message,
+                lastMessageTime: lastMessage.sendTime
+                  ? new Date(lastMessage.sendTime).toLocaleTimeString("vi-VN")
+                  : null,
+              };
+            } catch (error) {
+              console.error(
+                `Không thể lấy tin nhắn cho cuộc trò chuyện với userId: ${chat.userId}`
+              );
+              return {
+                ...chat,
+                lastMessage: "Không có tin nhắn",
+                lastMessageTime: null,
+              };
+            }
+          })
+        );
+
+        setChats(updatedChats);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách chat:", error);
         alert("Không thể tải danh sách trò chuyện!");
@@ -156,61 +198,50 @@ const ChatList = () => {
     socket.onopen = () => {
       console.log("WebSocket connected");
     };
-
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Received message:", data);
-
-      // Cập nhật tin nhắn cho cuộc trò chuyện hiện tại nếu đang mở
+    
+      const newMessage = {
+        id: data.chatId,
+        text: data.message,
+        isMine: data.sendFromId === parseInt(localStorage.getItem("userId")),
+        time: new Date(data.sendTime).toLocaleTimeString("vi-VN"),
+      };
+    
       if (
         selectedChatRef.current === data.chatId ||
         selectedChatRef.current === data.sendFromId ||
         selectedChatRef.current === data.sendToId
       ) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            id: data.chatId,
-            text: data.message,
-            isMine:
-              data.sendFromId === parseInt(localStorage.getItem("userId")),
-            time: new Date(data.sendTime).toLocaleTimeString("vi-VN"),
-          },
-        ]);
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
-
-      // Cập nhật danh sách chat bên sidebar với tin nhắn mới nhất
-      setChats((prevChats) =>
-        prevChats.map((chat) => {
-          if (
-            chat.userId === data.sendFromId ||
-            chat.userId === data.sendToId
-          ) {
-            return {
-              ...chat,
-              lastMessage: data.message,
-              unreadCount:
-                selectedChatRef.current === chat.userId
-                  ? 0
-                  : (chat.unreadCount || 0) + 1,
-            };
-          }
-          return chat;
-        })
-      );
-
-      // Tự động load tin nhắn mới nếu là cuộc trò chuyện hiện tại
-      const currentUserId = parseInt(localStorage.getItem("userId"));
-      if (
-        (data.sendFromId === currentUserId ||
-          data.sendToId === currentUserId) &&
-        (data.sendFromId === selectedChatRef.current ||
-          data.sendToId === selectedChatRef.current)
-      ) {
-        fetchMessages(selectedChatRef.current);
-      }
-    };
-
+    
+      setChats((prevChats) => {
+        const updatedChats = prevChats.map((chat) =>
+          chat.userId === data.sendFromId || chat.userId === data.sendToId
+            ? {
+                ...chat,
+                lastMessage: data.message,
+                lastMessageTime: new Date(data.sendTime).toLocaleTimeString("vi-VN"),
+                unreadCount:
+                  selectedChatRef.current === chat.userId
+                    ? 0
+                    : (chat.unreadCount || 0) + 1,
+              }
+            : chat
+        );
+    
+        // Sắp xếp lại danh sách
+        return [
+          ...updatedChats.sort((a, b) => {
+            const timeA = new Date(a.lastMessageTime || 0).getTime();
+            const timeB = new Date(b.lastMessageTime || 0).getTime();
+            return timeB - timeA;
+          }),
+        ];
+      });
+    };      
     socket.onclose = () => {
       console.log("WebSocket disconnected");
     };
@@ -224,8 +255,6 @@ const ChatList = () => {
     };
   }, []);
 
-
-
   // Sửa hàm fetchMessages để reset số tin nhắn chưa đọc khi mở chat
   const fetchMessages = async (chatId) => {
     const token = localStorage.getItem("token");
@@ -234,7 +263,7 @@ const ChatList = () => {
       window.location.href = "/login";
       return;
     }
-  
+
     try {
       const response = await axios.get(
         `https://localhost:7077/api/Chat/GetAllChat/${chatId}`,
@@ -244,25 +273,25 @@ const ChatList = () => {
           },
         }
       );
-  
+
       const processedMessages = response.data.map((msg) => ({
         id: msg.chatId,
         text: msg.message,
         isMine: msg.sendFromId === parseInt(localStorage.getItem("userId")),
         time: new Date(msg.sendTime).toLocaleTimeString("vi-VN"),
       }));
-  
+
       setMessages(processedMessages);
       setSelectedChat(chatId);
       selectedChatRef.current = chatId;
-  
+
       // Reset unread count khi mở chat
       setChats((prevChats) =>
         prevChats.map((chat) =>
           chat.userId === chatId ? { ...chat, unreadCount: 0 } : chat
         )
       );
-  
+
       // Cuộn xuống cuối cùng sau khi tải tin nhắn
       setTimeout(() => {
         if (chatContentRef.current) {
@@ -280,22 +309,21 @@ const ChatList = () => {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
   }, [messages]);
-  
 
   const sendMessage = () => {
     if (!newMessage.trim()) {
       alert("Tin nhắn không được để trống!");
       return;
     }
-
+  
     const userId = parseInt(localStorage.getItem("userId"));
     const chat = chats.find((chat) => chat.userId === selectedChat);
-
+  
     if (!chat) {
       alert("Không thể tìm thấy người nhận!");
       return;
     }
-
+  
     const messageData = {
       sendFromId: userId,
       sendToId: chat.userId,
@@ -303,7 +331,7 @@ const ChatList = () => {
       sendTime: new Date().toISOString(),
       chatId: selectedChat,
     };
-
+  
     // Gửi tin nhắn qua WebSocket
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(messageData));
@@ -311,7 +339,7 @@ const ChatList = () => {
       alert("Không thể gửi tin nhắn. WebSocket chưa kết nối!");
       return;
     }
-
+  
     // Cập nhật UI ngay lập tức
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -322,10 +350,31 @@ const ChatList = () => {
         time: new Date(messageData.sendTime).toLocaleTimeString("vi-VN"),
       },
     ]);
-
+  
     setNewMessage(""); // Xóa nội dung input
-  };
 
+    // Đưa người nhận lên đầu danh sách
+    setChats((prevChats) => {
+      const updatedChats = prevChats.map((chat) =>
+        chat.userId === selectedChat
+          ? {
+              ...chat,
+              lastMessage: messageData.message,
+              lastMessageTime: new Date(messageData.sendTime).toLocaleTimeString("vi-VN"),
+            }
+          : chat
+      );
+  
+      // Sắp xếp lại danh sách, đưa cuộc trò chuyện mới nhất lên đầu
+      return [
+        ...updatedChats.sort((a, b) => {
+          const timeA = new Date(a.lastMessageTime || 0).getTime();
+          const timeB = new Date(b.lastMessageTime || 0).getTime();
+          return timeB - timeA; // Sắp xếp giảm dần theo thời gian
+        }),
+      ];
+    });
+  };
   useEffect(() => {
     console.log("Messages updated:", messages);
   }, [messages]);
@@ -377,10 +426,14 @@ const ChatList = () => {
                   </Avatar>
                 }
                 title={
-                  <div style={styles.chatHeader}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <Text style={{ color: "#e4e6eb" }}>{chat.fullName}</Text>
-                    {chat.unreadCount > 0 && (
-                      <span style={styles.unreadBadge}>{chat.unreadCount}</span>
+                    {chat.lastMessageTime && (
+                      <Text style={{ fontSize: "12px", color: "#b0b3b8" }}>
+                        {chat.lastMessageTime}
+                      </Text>
                     )}
                   </div>
                 }
