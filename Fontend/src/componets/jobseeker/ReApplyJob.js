@@ -96,6 +96,15 @@ function ReApplyJob() {
 
     // Styles for the component
     const styles = {
+        layout: {
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+        },
+        content: {
+            flex: 1,
+            padding: '20px',
+        },
         container: {
             maxWidth: '800px',
             margin: '0 auto',
@@ -133,10 +142,6 @@ function ReApplyJob() {
             fontWeight: 'bold',
             color: '#555',
         },
-        cvDetailDescription: {
-            margin: '5px 0 0',
-            color: '#777',
-        },
         applyButton: {
             marginTop: '10px',
             padding: '10px 15px',
@@ -147,25 +152,9 @@ function ReApplyJob() {
             cursor: 'pointer',
             transition: 'background-color 0.3s',
         },
-        loading: {
-            textAlign: 'center',
-            color: '#888',
-            marginTop: '20px',
-        },
-        error: {
-            textAlign: 'center',
-            color: '#888',
-            marginTop: '20px',
-        },
-        applyStatus: {
-            textAlign: 'center',
-            color: '#007bff',
-            marginTop: '20px',
-        },
         appliedMessage: { color: '#28a745', fontWeight: 'bold' },
     };
 
-    // Ở trang ReApplyJob
     const handleNavigateToManagementCV = () => {
         navigate('/ManagementCV', {
             state: {
@@ -175,52 +164,56 @@ function ReApplyJob() {
     };
 
     if (loading) {
-        return <div style={styles.loading}>Loading...</div>;
+        return <div style={{ textAlign: 'center', color: '#888', marginTop: '20px' }}>Loading...</div>;
     }
 
     if (error) {
-        return <div style={styles.error}>Error: {error}</div>;
+        return <div style={{ textAlign: 'center', color: '#888', marginTop: '20px' }}>Error: {error}</div>;
     }
 
     return (
-        <>
+        <div style={styles.layout}>
             <Header />
-            <div style={styles.container}>
-                <h2 style={styles.title}>Chọn CV để ứng tuyển</h2>
-                {applyStatus && <div style={styles.applyStatus}>{applyStatus}</div>}
-                <div style={styles.cvItems}>
-                    {cvs.map(cv => (
-                        <div key={cv.cvId} style={styles.cvItem}>
-                            <h3 style={styles.cvItemTitle}>{cv.nameCv}</h3>
-                            {cv.itemOfCvs.map(item => (
-                                <div key={item.itemOfCvId} style={styles.cvDetail}>
-                                    <h4 style={styles.cvDetailTitle}>{item.itemName}</h4>
-                                    <p>{item.itemDescription}</p>
-                                </div>
-                            ))}
-                            {appliedCvs.includes(cv.cvId) ? (
-                                <p style={styles.appliedMessage}>Bạn đã ứng tuyển bằng CV này rồi</p>
-                            ) : (
-                                <button
-                                    style={styles.applyButton}
-                                    onClick={() => handleApply(cv.cvId)}
-                                >
-                                    Ứng tuyển bằng CV này
-                                </button>
-                            )}
-                        </div>
-                    ))}
+            <main style={styles.content}>
+                <div style={styles.container}>
+                    <h2 style={styles.title}>Chọn CV để ứng tuyển</h2>
+                    {applyStatus && (
+                        <div style={{ textAlign: 'center', color: '#007bff', marginBottom: '20px' }}>{applyStatus}</div>
+                    )}
+                    <div style={styles.cvItems}>
+                        {cvs.map(cv => (
+                            <div key={cv.cvId} style={styles.cvItem}>
+                                <h3 style={styles.cvItemTitle}>{cv.nameCv}</h3>
+                                {cv.itemOfCvs.map(item => (
+                                    <div key={item.itemOfCvId} style={styles.cvDetail}>
+                                        <h4 style={styles.cvDetailTitle}>{item.itemName}</h4>
+                                        <p style={{ margin: '5px 0 0', color: '#777' }}>{item.itemDescription}</p>
+                                    </div>
+                                ))}
+                                {appliedCvs.includes(cv.cvId) ? (
+                                    <p style={styles.appliedMessage}>Bạn đã ứng tuyển bằng CV này rồi</p>
+                                ) : (
+                                    <button
+                                        style={styles.applyButton}
+                                        onClick={() => handleApply(cv.cvId)}
+                                    >
+                                        Ứng tuyển bằng CV này
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                    <h2 style={styles.title}>
+                        Chưa có CV?{' '}
+                        <a onClick={handleNavigateToManagementCV} style={{ color: '#007bff', cursor: 'pointer' }}>
+                            Tạo mới
+                        </a>
+                    </h2>
                 </div>
-                <h2 style={styles.title}>
-                    Chưa có CV? <a  onClick={handleNavigateToManagementCV}>Tạo mới</a>
-                </h2>
-            </div>
+            </main>
             <Footer />
-        </>
+        </div>
     );
 }
 
 export default ReApplyJob;
-
-
-

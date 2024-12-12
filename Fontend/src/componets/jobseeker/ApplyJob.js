@@ -4,6 +4,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 function ApplyJob() {
     const { job_id } = useParams(); // Lấy job_id từ URL
@@ -23,12 +24,16 @@ function ApplyJob() {
             const hasProfile = haveProfile === 'true';
             //alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
             if (!hasProfile) {
-                console.log("Alert sẽ được gọi");
-                alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
-                navigate("/profile");
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Thông báo',
+                    text: 'Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển!',
+                }).then(() => {
+                    navigate("/profile");
+                });
                 return;
             }
-
+            
             const token = localStorage.getItem("token");
             console.log("Token:", token); // Kiểm tra giá trị token
 
@@ -138,7 +143,7 @@ function ApplyJob() {
             PostId: job_id,
             CvId: cvId,
         };
-
+    
         try {
             const response = await axios.post(
                 "https://localhost:7077/api/ApplyJobs/ApplyJob",
@@ -149,18 +154,33 @@ function ApplyJob() {
                     },
                 }
             );
-
+    
             if (response.status === 200) {
                 setApplyStatus('Ứng tuyển thành công!');
-                navigate("/ViewAllJobApplied");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Ứng tuyển thành công!',
+                }).then(() => navigate("/ViewAllJobApplied"));
             } else {
                 setApplyStatus('Có lỗi xảy ra. Vui lòng thử lại.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất bại!',
+                    text: 'Có lỗi xảy ra. Vui lòng thử lại.',
+                });
             }
         } catch (err) {
             console.error("Error applying for job:", err);
             setApplyStatus('Bạn đã ứng tuyển, không thể ứng tuyển lại nữa.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo!',
+                text: 'Bạn đã ứng tuyển, không thể ứng tuyển lại nữa.',
+            });
         }
     };
+    
 
     const handleNavigateToManagementCV = () => {
         navigate('/ManagementCV', {
