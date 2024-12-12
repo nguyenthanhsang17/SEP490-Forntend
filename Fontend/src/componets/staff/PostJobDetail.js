@@ -279,7 +279,7 @@ function PostJobDetail() {
           {postData ? (
             <div className="layout-container">
               <div className="details-container">
-                <h2 className="section-title">{postData.jobTitle}</h2>
+                <h2 className="section-title"> {postData.jobTitle}</h2>
                 <div className="info-item">
                   <strong>Mô tả công việc:</strong> {postData.jobDescription}
                 </div>
