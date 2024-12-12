@@ -216,7 +216,7 @@ function ViewJobSeekerDetail() {
                     <p style={{ color: '#000', opacity: 1 }}><strong>Tuổi:</strong> {jobSeeker.age}</p>
                     <p style={{ color: '#000', opacity: 1 }}><strong>Giới tính:</strong> {jobSeeker.gender ? "Nam" : "Nữ"}</p>
                     <p style={{ color: '#000', opacity: 1 }}><strong>Mô tả:</strong> {jobSeeker.description}</p>
-                    <p style={{ color: '#000', opacity: 1 }}><strong>Trạng thái:</strong>{getStatusLabel(jobSeeker.status)}</p>
+                    <p style={{ color: '#000', opacity: 1 }}><strong>Trạng thái:</strong> {getStatusLabel(jobSeeker.status)}</p>
                   </div>
                 </div>
               </div>
