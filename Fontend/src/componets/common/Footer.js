@@ -36,18 +36,17 @@ class Footer extends React.Component {
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-    
+
       // Kiểm tra nếu tin nhắn thuộc chat hiện tại
       const isCurrentChat =
         data.chatId === parseInt(localStorage.getItem("currentChatId")); // Lưu `currentChatId` khi mở chat
-    
+
       this.setState((prevState) => ({
         unreadMessages: isCurrentChat
           ? prevState.unreadMessages // Nếu đang ở trong chat, không tăng số
           : prevState.unreadMessages + 1, // Nếu không thì tăng số
       }));
     };
-    
 
     socket.onclose = () => {
       console.log("WebSocket disconnected");
@@ -147,72 +146,63 @@ class Footer extends React.Component {
             </p>
           </div>
         </div>
-
         {/* Floating Chat Icon - Visible only for roleId 1 or 2 */}
         {isLoggedIn && showChatList && (
-          <div
-            className="floating-icons"
+          <a
+            href="/ChatList"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon messenger-icon"
+            onClick={this.handleChatClick}
             style={{
               position: "fixed",
               bottom: "20px", // Cách đáy màn hình
               right: "20px", // Cách mép phải màn hình
               zIndex: 1000, // Hiển thị trên tất cả các thành phần khác
+              width: "60px",
+              height: "60px",
+              backgroundColor: "#28a745", // Màu nền xanh lá
+              borderRadius: "10px", // Bo góc vuông thành bo tròn
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Đổ bóng
+              textDecoration: "none", // Loại bỏ gạch chân
+              transition: "transform 0.3s", // Hiệu ứng hover
+              cursor: "pointer",
             }}
           >
-            <a
-              href="/ChatList"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="icon messenger-icon"
-              onClick={this.handleChatClick} // Gọi hàm khi click vào biểu tượng
+            <i
+              className="fa fa-comments"
               style={{
-                position: "relative",
-                display: "inline-block",
-                width: "60px",
-                height: "60px",
-                backgroundColor: "#28a745", // Màu nền xanh lá
-                borderRadius: "10px", // Bo góc vuông thành bo tròn
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Đổ bóng
-                textDecoration: "none", // Loại bỏ gạch chân
-                transition: "transform 0.3s", // Hiệu ứng hover
-                cursor: "pointer",
+                fontSize: "30px",
+                color: "white", // Màu icon
               }}
-            >
-              <i
-                className="fa fa-comments"
+            ></i>
+            {unreadMessages > 0 && (
+              <span
                 style={{
-                  fontSize: "30px",
-                  color: "white", // Màu icon
+                  position: "absolute",
+                  top: "-10px",
+                  right: "-10px",
+                  width: "24px",
+                  height: "24px",
+                  backgroundColor: "red", // Màu đỏ nổi bật
+                  color: "white", // Màu chữ
+                  fontSize: "14px", // Cỡ chữ
+                  fontWeight: "bold",
+                  borderRadius: "50%", // Hình tròn
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "2px solid white", // Đường viền trắng
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)", // Đổ bóng
                 }}
-              ></i>
-              {unreadMessages > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "-10px",
-                    right: "-10px",
-                    width: "24px",
-                    height: "24px",
-                    backgroundColor: "red", // Màu đỏ nổi bật
-                    color: "white", // Màu chữ
-                    fontSize: "14px", // Cỡ chữ
-                    fontWeight: "bold",
-                    borderRadius: "50%", // Hình tròn
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "2px solid white", // Đường viền trắng
-                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)", // Đổ bóng
-                  }}
-                >
-                  {unreadMessages}
-                </span>
-              )}
-            </a>
-          </div>
+              >
+                {unreadMessages}
+              </span>
+            )}
+          </a>
         )}
       </footer>
     );
