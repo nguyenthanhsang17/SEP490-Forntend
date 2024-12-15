@@ -52,7 +52,7 @@ function ForgotPassword() {
         setEmailVerified(true);
         setEmail(email);
       } else {
-        Swal.fire('Error', result.message, 'error');
+        Swal.fire('Error', 'Email của bạn không tồn tại trong hệ thống', 'error');
       }
     } catch (error) {
       console.error("Có lỗi xảy ra khi kiểm tra email:", error);
