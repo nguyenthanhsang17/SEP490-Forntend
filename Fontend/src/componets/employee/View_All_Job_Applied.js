@@ -100,6 +100,9 @@ function ViewAllJobApplied() {
         </div>
       </section>
       <div className="container job-list" style={{ paddingTop: '30px' }}>
+        <div className="container">
+          <h4 className="text-center" style={{color: "red"}}>Nếu công việc lừa đảo hãy báo cáo vị phạm cho hệ thống</h4>
+        </div>
         {message && <div className="alert alert-info text-center">{message}</div>}
         <div className="row justify-content-center">
           {Array.isArray(jobs) && jobs.length > 0 ? (
@@ -163,7 +166,7 @@ function ViewAllJobApplied() {
               </div>
             ))
           ) : (
-            <div style={{ paddingTop: '100px', paddingBottom:'100px'}}>
+            <div style={{ paddingTop: '100px', paddingBottom: '100px' }}>
               <h2 className="text-center">Bạn chưa ứng tuyển công việc nào, hãy bắt đầu ứng tuyển. <a href={`/viewalljob`} >
                 Xem tất cả công việc
               </a></h2>
