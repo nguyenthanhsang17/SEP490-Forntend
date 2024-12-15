@@ -331,7 +331,7 @@ function ViewJobDetail() {
       <div className="clearfix"></div>
       <section className="inner-header-title" style={{ backgroundImage: `url(${bannerImage})` }}>
         <div className="container">
-          <h1 style={{marginBottom: '60px'}}>{jobDetails.jobTitle}</h1>
+          <h1 style={{ marginBottom: '60px' }}>{jobDetails.jobTitle}</h1>
         </div>
       </section>
       <div className="clearfix"></div>
@@ -349,6 +349,20 @@ function ViewJobDetail() {
           <div className="row bottom-mrg">
             <div className="col-md-8 col-sm-8">
               <div className="detail-desc-caption">
+                <h4 className="designation">
+                  <a
+                    style={{
+                      color: '#c82333',  // Màu xanh dương nổi bật
+                      textDecoration: 'none',  // Loại bỏ gạch dưới mặc định
+                      fontWeight: 'bold',  // Làm đậm tên người đăng
+                      padding: '5px 0px',  // Thêm khoảng cách để tạo cảm giác dễ bấm
+                      borderRadius: '5px',  // Bo góc để làm nút mềm mại
+                      transition: 'all 0.3s ease',  // Hiệu ứng chuyển động mượt mà khi hover
+                    }}
+                  >
+                    {jobDetails.statusAuthor === 3 ? ("Tác giả đã bị cấm") : ("")}
+                  </a>
+                </h4>
                 <h4 className="designation">
                   Người đăng:
                   <a
@@ -370,9 +384,10 @@ function ViewJobDetail() {
                 <ul>
                   <li><i className="fa fa-briefcase"></i><span>Số người cần tuyển : {jobDetails.numberPeople} người</span></li>
                   <li>
-                  <i className="fa fa-money"></i>Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
+                    <i className="fa fa-money"></i>Mức lương: {formatWithCommas(jobDetails.salary)} VND/{salaryTypeMap[jobDetails.salaryTypeName]}
                   </li>
                   <li><i className="fa fa-user"></i><span> {jobDetails.numberAppliedUser} lượt đã ứng tuyển</span></li>
+
                 </ul>
               </div>
             </div>
@@ -395,7 +410,7 @@ function ViewJobDetail() {
                 </h4>
               </div>
               <div className="col-md-7 col-sm-7">
-                {jobDetails.owner === 0 && ( // Chỉ hiển thị khi owner === 0
+                {jobDetails.owner === 0 && jobDetails.status === 2 && ( // Chỉ hiển thị khi owner === 0
                   <div className="detail-pannel-footer-btn pull-right">
                     {/* Nút Ứng tuyển ngay hoặc Ứng tuyển lại */}
                     <button
@@ -459,6 +474,11 @@ function ViewJobDetail() {
                     </button>
                   </div>
                 )}
+                <div className="detail-pannel-footer-btn pull-right">
+                  <h4 style={{color: "#c82333", fontWeight: 'bold'}}>
+                    {jobDetails.status === 6 ? ("Bài viết đã bị cấm") : ("")}
+                  </h4>
+                </div>
               </div>
             </div>
           </div>

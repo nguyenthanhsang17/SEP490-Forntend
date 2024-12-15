@@ -158,10 +158,10 @@ const HomePage = () => {
                           {job.salaryTypeName.replace(/^[Tt]heo\s/, "")}
                         </h4>
                         <div className="freelance-inner-box">
-                          <div className="freelance-box-thumb">
+                          <div className="freelance-box-thumb" style={{ width: "150px", height: "150px" }}>
                             <img
                               src={job.thumnail || "path/to/default-image.jpg"}
-                              className="img-responsive img-circle"
+                              style={{ width: "200px", height: "200px" }}
                               alt={job.jobTitle}
                             />
                           </div>

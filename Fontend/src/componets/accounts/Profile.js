@@ -525,6 +525,7 @@ const Profile = () => {
                       <div className="button-group">
                         <button
                           className="manage-btn"
+                          style={{backgroundColor: "#39c139"}}
                           onClick={() => navigate("/ManagementCV")}
                         >
                           Quản lý CV
@@ -561,6 +562,7 @@ const Profile = () => {
 
                         <button
                           className="update-btn"
+                          style={{backgroundColor: "#39c139"}}
                           onClick={() => setIsUpdateProfile(true)}
                         >
                           Cập Nhật
