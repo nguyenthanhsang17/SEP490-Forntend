@@ -34,6 +34,58 @@ function ReApplyJob() {
             }
             const token = localStorage.getItem("token");
 
+
+            try {
+                const response = await axios.get(
+                    `https://localhost:7077/api/ApplyJobs/CheckPostJob?postid=${job_id}`,
+                );
+
+                if (response.status === 200) {
+                    const result = response.data;
+                    if (result === 6) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Bài đăng này đã bị cấm.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Optional: Add any specific action when user clicks the confirm button
+                                navigate('/viewalljob'); // Example of navigating somewhere
+                            }
+                        });
+                    } else if (result === 7) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Bài đăng này đã hết hạn.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Optional: Add any specific action when user clicks the confirm button
+                                navigate('/viewalljob'); // Example of navigating somewhere
+                            }
+                        });
+                    } else {
+                        // Không làm gì cả nếu result là 1
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại!',
+                        text: 'Có lỗi xảy ra. Vui lòng thử lại.',
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất bại!',
+                    text: 'Có lỗi xảy ra. Vui lòng thử lại.',
+                });
+            }
+
             try {
                 const response = await axios.get('https://localhost:7077/api/ApplyJobs/checkReapply', {
                     headers: {
