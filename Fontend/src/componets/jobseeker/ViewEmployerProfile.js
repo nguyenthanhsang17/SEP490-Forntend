@@ -326,7 +326,7 @@ const ViewEmployerProfile = () => {
                       </div>
                     </div>
                     {job.isUrgentRecruitment && (
-                      <span className="tg-themetag tg-featuretag">Premium</span>
+                      <span className="tg-themetag tg-featuretag">HOT</span>
                     )}
                   </article>
                 </div>
