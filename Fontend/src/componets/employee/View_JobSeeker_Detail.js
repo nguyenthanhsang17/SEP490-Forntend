@@ -7,9 +7,11 @@ import Header from '../common/Header';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 function ViewJobSeekerDetail() {
   const { id, apply_id } = useParams();
-
+  const [saved, setSaved] = useState({});
   const [jobSeeker, setJobSeeker] = useState(null);
   const [canViewDetails, setCanViewDetails] = useState(false);
   const [status, setStatus] = useState(null);
@@ -18,11 +20,16 @@ function ViewJobSeekerDetail() {
   useEffect(() => {
     const fetchJobSeekerDetail = async () => {
       try {
-        const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetDetailJobseekerApply/${id}/${apply_id}`);
+        const token = localStorage.getItem("token"); // Lấy token từ localStorage
+        const response = await axios.get(`https://localhost:7077/api/JobEmployer/GetDetailJobseekerApply/${id}/${apply_id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Thêm token vào header
+          },
+        });
         setJobSeeker(response.data);
         console.log(response.data.status);
         setStatus(response.data.status);
-        if (response.data.status === 4) { setCanViewDetails(true) }
+        if (response.data.status === 4 || response.data.status === 5) { setCanViewDetails(true) }
       } catch (error) {
         console.error('Error fetching the jobseeker detail data:', error);
       }
@@ -145,6 +152,51 @@ function ViewJobSeekerDetail() {
     }
   };
 
+  const handleAddToFavorites = async (id) => {
+    const token = localStorage.getItem("token");
+
+    Swal.fire({
+      title: "Lưu thông tin liên hệ",
+      input: "text",
+      inputLabel: "Nhập mô tả",
+      showCancelButton: true,
+      confirmButtonText: "Có",
+      cancelButtonText: "Không",
+      showLoaderOnConfirm: true,
+      preConfirm: async (description) => {
+        try {
+          const payload = {
+            jobSeekerId: id,
+            description: description,
+          };
+          await axios.post(
+            "https://localhost:7077/api/FavoriteLists/AddFavorite",
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          Swal.fire(
+            "Thành công",
+            "Ứng viên đã được lưu vào danh sách yêu thích",
+            "success"
+          );
+
+          // Cập nhật trạng thái đã lưu thành công
+          setSaved((prevSaved) => ({
+            ...prevSaved,
+            [id]: true,
+          }));
+        } catch (error) {
+          Swal.showValidationMessage(`Không thể lưu ứng viên: ${error}`);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
+
   const sendFirstTimeMessage = async (idto) => {
     try {
       const token = localStorage.getItem("token");
@@ -259,17 +311,67 @@ function ViewJobSeekerDetail() {
                     Không nhận
                   </button>
 
+
+
+
                 </>
               )}
-                   {(status === 3 || status === 4) && (
-    <button
-                    className="btn btn-success mx-2"
-                    onClick={() => sendFirstTimeMessage(jobSeeker.userId)}
-                    style={{ marginRight: '10px', marginLeft: '10px' }}
+              {(status === 3 || status === 4 || status === 5) && (
+                <button
+                  className="btn btn-success mx-2"
+                  onClick={() => sendFirstTimeMessage(jobSeeker.userId)}
+                  style={{ marginRight: '10px', marginLeft: '10px' }}
+                >
+                  Liên hệ ngay
+                </button>
+              )}
+              {(status === 3 || status === 4 || status === 5) && (
+                jobSeeker && (saved[jobSeeker.userId] || jobSeeker.isFavorite === 1) ? (
+                  <button
+                    className="btn btn-save"
+                    style={{
+                      width: "100px",
+                      height: "43px",
+                      borderRadius: "5px",
+                      backgroundColor: "#f5f5f5",
+                      color: "#333",
+                      border: "1px solid #ccc",
+                      fontWeight: "bold",
+                      marginRight: '10px', marginLeft: '10px'
+                    }}
                   >
-                    Liên hệ ngay
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="icon-spacing"
+                      style={{ color: "red", marginRight: "5px" }}
+                    />
+                    Đã lưu
                   </button>
-)}
+                ) : (
+                  <button
+                    className="btn btn-save"
+                    style={{
+                      width: "100px",
+                      height: "43px",
+                      borderRadius: "5px",
+                      backgroundColor: "#f5f5f5",
+                      color: "#333",
+                      border: "1px solid #ccc",
+                      fontWeight: "bold",
+                      marginRight: '10px', marginLeft: '10px'
+                    }}
+                    onClick={() => handleAddToFavorites(jobSeeker.userId)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="icon-spacing"
+                      style={{ color: "gray", marginRight: "5px" }}
+                    />
+                    Lưu
+                  </button>
+                )
+              )}
+
             </div>
 
 

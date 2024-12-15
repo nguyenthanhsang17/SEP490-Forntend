@@ -69,14 +69,14 @@ function PostJobDetail() {
       hour => `${hour.startTime.slice(0, 5)} - ${hour.endTime.slice(0, 5)}`
     );
   };
-  
+
 
   useEffect(() => {
     axios.get(`https://localhost:7077/api/PostJobs/GetPostDetailForStaff?id=${job_id}`)
       .then(response => {
         setPostData(response.data);
         setIsBanned(response.data.status === 3);
-        console.log(response.data.status===1);
+        console.log(response.data.status === 1);
         console.log(response.data.status);
         setStatus(response.data.status);
         if (response.data.slots && response.data.slots.length > 0) {
@@ -296,7 +296,7 @@ function PostJobDetail() {
                   <strong>Ngày tạo:</strong> {new Date(postData.createDate).toLocaleDateString()}
                 </div>
                 <div className="info-item">
-                  <strong>Thời gian duy trì:</strong> {postData.time}
+                  <strong>Thời gian duy trì:</strong> {postData.time} tháng
                 </div>
                 <div className="info-item">
                   <strong>Trạng thái:</strong> {statusMapping[postData.status]}
@@ -306,12 +306,12 @@ function PostJobDetail() {
                     <strong>Lý do từ chối:</strong> {postData.reason}
                   </div>
                 )}
-                <section style={{width: "750px", marginTop: "0px"}}>
+                <section style={{ width: "700px", marginTop: "0px" }}>
                   <div className="container">
                     <div className="row row-bottom">
                       {postData.slots ? (
                         <div style={styles.container}>
-                          
+
                           {Array.isArray(schedules) && schedules.length > 0 && (
                             <div style={{ overflowX: 'auto' }}>
                               <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -423,34 +423,35 @@ function PostJobDetail() {
                         />
                       ))}
                     </div>
-                    <div className="action-buttons">
-                      {status === 1 ? (
-                        <>
-                          <textarea
-                            value={banReason}
-                            onChange={(e) => setBanReason(e.target.value)}
-                            placeholder="Nhập lý do không duyệt"
-                            className="reason-input"
-                          />
-                          <button onClick={handleApprove} disabled={isButtonDisabled} className="approve-button">Duyệt</button>
-                          <button onClick={handleReject} disabled={isButtonDisabled} className="reject-button">Không Duyệt</button>
-                        </>
-                      ) : status === 2 ? (
-                        <>
-                          <textarea
-                            value={banReason}
-                            onChange={(e) => setBanReason(e.target.value)}
-                            placeholder="Nhập lý do cấm"
-                            className="reason-input"
-                          />
-                          <button onClick={handleBan} disabled={isButtonDisabled} className="btn-ban">Cấm</button>
-                        </>
-                      ) : null}
-                    </div>
+
                   </div>
                 )}
+                <div className="action-buttons">
+                  {status === 1 ? (
+                    <>
+                      <textarea
+                        value={banReason}
+                        onChange={(e) => setBanReason(e.target.value)}
+                        placeholder="Nhập lý do không duyệt"
+                        className="reason-input"
+                      />
+                      <button onClick={handleApprove} disabled={isButtonDisabled} className="approve-button">Duyệt</button>
+                      <button onClick={handleReject} disabled={isButtonDisabled} className="reject-button">Không Duyệt</button>
+                    </>
+                  ) : status === 2 ? (
+                    <>
+                      <textarea
+                        value={banReason}
+                        onChange={(e) => setBanReason(e.target.value)}
+                        placeholder="Nhập lý do cấm"
+                        className="reason-input"
+                      />
+                      <button onClick={handleBan} disabled={isButtonDisabled} className="btn-ban">Cấm</button>
+                    </>
+                  ) : null}
+                </div>
 
-                
+
               </div>
 
               <div className="sidebar">

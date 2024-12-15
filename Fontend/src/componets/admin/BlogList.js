@@ -78,8 +78,8 @@ const BlogList = () => {
               <label htmlFor="statusFilter">Trạng thái:</label>
               <select id="statusFilter" onChange={(e) => setStatusFilter(e.target.value)} value={statusFilter}>
                 <option value="">Tất cả </option>
-                <option value="0">Hiện</option>
-                <option value="1">Ẩn</option>
+                <option value="1">Hiện</option>
+                <option value="0">Ẩn</option>
               </select>
             </div>
 

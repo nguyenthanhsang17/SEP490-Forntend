@@ -7,7 +7,7 @@ import Header from "../common/Header";
 import "../assets/css/style.css";
 import "../assets/plugins/css/plugins.css";
 import "../assets/css/colors/green-style.css";
-
+import Swal from 'sweetalert2';
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -534,7 +534,26 @@ const Profile = () => {
                           profile.registerEmployerStatus !== 0 && (
                             <button
                               className="verify-btn"
-                              onClick={() => navigate("/verifyEmployerAccount")}
+                              onClick={() => {
+                                const haveProfile = localStorage.getItem("haveProfile");
+                                console.log("Giá trị haveProfile:", haveProfile);
+                                console.log("Điều kiện if:", !haveProfile);
+
+                                // Chuyển đổi giá trị từ localStorage sang boolean
+                                const hasProfile = haveProfile === 'true';
+                                //alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
+                                if (!hasProfile) {
+                                  Swal.fire({
+                                    icon: 'info',
+                                    title: 'Thông báo',
+                                    text: 'Hãy cập nhật hồ sơ trước khi ứng tuyển nhà tuyển dụng!',
+                                  }).then(() => {
+                                    navigate("/profile");
+                                  });
+                                  return;
+                                }
+                                navigate("/verifyEmployerAccount")
+                              }}
                             >
                               Xác minh tài khoản nhà tuyển dụng
                             </button>

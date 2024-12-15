@@ -151,7 +151,7 @@ const HomePage = () => {
                             job.isUrgentRecruitment ? "urgent" : ""
                           }`}
                         >
-                          {job.isUrgentRecruitment ? "Khẩn Cấp" : "Có Sẵn"}
+                          {job.isUrgentRecruitment ? "Nổi Bật" : "Có Sẵn"}
                         </span>
                         <h4 className="flc-rate">
                           ₫{job.salary.toLocaleString("vi-VN")} /{" "}
