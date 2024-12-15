@@ -56,7 +56,7 @@ const ViewListJobsCreated = () => {
                 const fetchedJobs = response.data.items || [];
                 setJobs(fetchedJobs);
                 setTotalPages(response.data.totalPages || 0);
-                setNotFoundMessage(fetchedJobs.length ? '' : 'Không tìm thấy công việc phù hợp');
+                setNotFoundMessage(fetchedJobs.length ? '' : 'Không tìm thấy công việc đã tạo');
             } catch (err) {
                 setError('An error occurred while fetching jobs.');
             } finally {

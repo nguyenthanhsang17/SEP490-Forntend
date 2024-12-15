@@ -4,7 +4,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-
+import Swal from 'sweetalert2';
 function ReApplyJob() {
     const { job_id } = useParams(); // Lấy job_id từ URL
     const [cvs, setCvs] = useState([]);
@@ -17,13 +17,58 @@ function ReApplyJob() {
     useEffect(() => {
         const fetchData = async () => {
             const haveProfile = localStorage.getItem("haveProfile");
-            if (!haveProfile) {
-                alert("Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển");
-                navigate("/profile");
+            console.log("Giá trị haveProfile:", haveProfile);
+            console.log("Điều kiện if:", !haveProfile);
+
+            // Chuyển đổi giá trị từ localStorage sang boolean
+            const hasProfile = haveProfile === 'true';
+            if (!hasProfile) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Thông báo',
+                    text: 'Hãy cập nhật hồ sơ trước khi ứng tuyển!',
+                }).then(() => {
+                    navigate("/profile");
+                });
                 return;
             }
-
             const token = localStorage.getItem("token");
+
+            try {
+                const response = await axios.get('https://localhost:7077/api/ApplyJobs/checkReapply', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // Use the actual token from localStorage
+                    },
+                    params: { postId: job_id }, // Make sure to use the correct parameter name
+                });
+
+                console.log('Response:', response.data); // This will log the boolean result
+                const canReapply = response.data; // true or false
+
+                // You can then use canReapply to determine if the user can reapply
+                if (canReapply) {
+                    // Proceed with reapplication logic
+                } else {
+                    // Show a message that reapplication is not allowed
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Thông báo',
+                        text: 'Bạn không thể ứng tuyển lại công việc này.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false, 
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Optional: Add any specific action when user clicks the confirm button
+                            navigate('/viewJobDetail/'+job_id); // Example of navigating somewhere
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error checking reapply:', error);
+                // Handle error appropriately
+            }
+
+
             if (!token) {
                 setLoading(false);
                 navigate("/login");

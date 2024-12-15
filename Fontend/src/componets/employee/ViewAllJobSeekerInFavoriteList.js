@@ -209,7 +209,7 @@ function ViewAllJobSeekerInFavoriteList() {
                                             wordBreak: 'break-word', // Cho phép từ dài xuống dòng
                                             whiteSpace: 'normal', // Cho phép xuống dòng
                                             overflowWrap: 'break-word' // Đảm bảo từ dài được ngắt
-                                        }}><strong style={{ color: 'red' }}>Ghi chú :</strong> {seeker.descriptionFavorite+" jsdajkhsghdjkahsdhajksdhkjahsdjkhajksdhkjashdjkahsdjkhajksdhjkahsdkhaskdhakjsdhkahsdkashdkjahsdkjahsdjkhasdkjhfhaksjhfdkasdhfkasdhfkajshdfkshfkshdfsh"}</p>
+                                        }}><strong style={{ color: 'red' }}>Ghi chú :</strong> {seeker.descriptionFavorite+""}</p>
                                     </div>
 
                                     <div style={{

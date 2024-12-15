@@ -27,7 +27,7 @@ function ApplyJob() {
                 Swal.fire({
                     icon: 'info',
                     title: 'Thông báo',
-                    text: 'Hãy cập nhật hồ sơ và xác thực tài khoản trước khi ứng tuyển!',
+                    text: 'Hãy cập nhật hồ sơ trước khi ứng tuyển!',
                 }).then(() => {
                     navigate("/profile");
                 });

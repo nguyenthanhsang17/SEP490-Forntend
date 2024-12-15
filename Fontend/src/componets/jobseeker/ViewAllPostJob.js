@@ -96,7 +96,8 @@ const JobListing = () => {
           (position) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-    
+            console.log(latitude);
+            console.log(longitude);
             setUserLocation({
               latitude,
               longitude,
